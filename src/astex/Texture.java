@@ -304,12 +304,12 @@ public class Texture {
 
 	int pos = 0;
 	String temp = docURL.toString();
-	while (temp.indexOf("/", pos) > 0){
-	    pos = temp.indexOf("/", pos) + 1;
+	while (temp.indexOf('/', pos) > 0){
+	    pos = temp.indexOf('/', pos) + 1;
 	}
 	temp = temp.substring(0, pos) + filename;
-	while (temp.indexOf("/", pos) > 0){
-	    pos = temp.indexOf("/", pos) + 1;
+	while (temp.indexOf('/', pos) > 0){
+	    pos = temp.indexOf('/', pos) + 1;
 	}
 	String file = temp.substring(pos);
 	String base = temp.substring(0, pos);

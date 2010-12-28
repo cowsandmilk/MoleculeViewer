@@ -388,7 +388,7 @@ public class Color32 {
 	int len = colorName.length();
 	int color = undefinedColor;
 
-	if(colorName.indexOf(",") != -1){
+	if(colorName.indexOf(',') != -1){
 	    String components[] = FILE.split(colorName, ",");
 	    if(components.length == 3){
 		int r = FILE.readInteger(components[0]);
