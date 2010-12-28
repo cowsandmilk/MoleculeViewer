@@ -71,7 +71,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	masterPanel.setLayout(new GridBagLayout());
 
-	JCTabManager tab_manager = new JCTabManager();;
+	JCTabManager tab_manager = new JCTabManager();
 
 	Layout.fill(masterPanel, tab_manager, 0, 0);
 
