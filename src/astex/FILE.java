@@ -786,8 +786,8 @@ public class FILE extends InputStream {
 	byte localtb[] = tb;
 
 	if(d != 0){
-	    while(dd > 10){ e++; factor /= 10; dd = dd / 10; }
-	    while(dd < 1){ e--; factor *= 10; dd = dd * 10; }
+	    while(dd > 10){ e++; factor /= 10; dd /= 10; }
+	    while(dd < 1){ e--; factor *= 10; dd *= 10; }
 	}
 	
 	if((fmt == 'g' || fmt == 'G') && e >= -4 && e < precision){ 
@@ -824,7 +824,7 @@ public class FILE extends InputStream {
 	ntbE = ntb;
 	
 	/* Now add the floating point bit. */
-	d = d * factor;
+		d *= factor;
 	fixedFormat(d);
     }
 

@@ -195,8 +195,8 @@ public class Color32 {
 	double HueLocal, Diff, m, n, k;
 
 	HueLocal = hsv[0];
-	while (HueLocal >= 360.0)  HueLocal = HueLocal - 360.0;
-	HueLocal = HueLocal / 60.0;
+	while (HueLocal >= 360.0)  HueLocal -= 360.0;
+	HueLocal /= 60.0;
 	HueQuadrant = (int)HueLocal;
 	Diff = HueLocal - HueQuadrant;
 	m = hsv[2] * (1.0 - hsv[1]);

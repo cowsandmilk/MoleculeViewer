@@ -105,7 +105,7 @@ public class Format {
 			else if (s.charAt(i) == '%') {
 				if (i < length - 1) {
 					if (s.charAt(i + 1) == '%') {
-						pre = pre + '%';
+						pre += '%';
 						i++;
 					}
 					else
@@ -114,7 +114,7 @@ public class Format {
 				else throw new java.lang.IllegalArgumentException();
 			}
 			else
-				pre = pre + s.charAt(i);
+				pre += s.charAt(i);
 			i++;
 		}
 		while (parse_state == 1) {
@@ -268,8 +268,8 @@ public class Format {
 				if (state == 0)
 					r = r * 10 + ch - '0';
 				else if (state == 1) {
-					p = p / 10;
-					r = r + p * (ch - '0');
+					p /= 10;
+					r += p * (ch - '0');
 				}
 			}
 			else if (ch == '.')  {
@@ -453,7 +453,7 @@ public class Format {
 		String r = "";
 		while (x != 0) {
 			r = d.charAt((int)(x & m)) + r;
-			x = x >>> n;
+			x >>>= n;
 		}
 		return r;
 	}
@@ -498,7 +498,7 @@ public class Format {
 		String leading_zeroes = "";
 		for (int i = 1; i <= precision && factor <= 0x7FFFFFFFFFFFFFFFL; i++)  {
 			factor *= 10; 
-			leading_zeroes = leading_zeroes + "0"; 
+			leading_zeroes += "0";
 		}
 		long l = (long) (factor * fr + 0.5);
 		if (l >= factor) { l = 0; whole++; } // CSH 10-25-97
@@ -519,27 +519,27 @@ public class Format {
 		double dd = d;
 		double factor = 1;
 		if (d != 0) {
-			while (dd > 10) { e++; factor /= 10; dd = dd / 10; }
-			while (dd < 1) { e--; factor *= 10; dd = dd * 10; }
+			while (dd > 10) { e++; factor /= 10; dd /= 10; }
+			while (dd < 1) { e--; factor *= 10; dd *= 10; }
 		}
 		if ((fmt == 'g' || fmt == 'G') && e >= -4 && e < precision) 
 			return fixed_format(d);
       
-		d = d * factor;
-		f = f + fixed_format(d);
+		d *= factor;
+		f += fixed_format(d);
       
 		if (fmt == 'e' || fmt == 'g')
-			f = f + "e";
+			f += "e";
 		else
-			f = f + "E";
+			f += "E";
 		String p = "000";      
 		if (e >= 0)  {
-			f = f + "+";
-			p = p + e;
+			f += "+";
+			p += e;
 		}
 		else {
-			f = f + "-";
-			p = p + (-e);
+			f += "-";
+			p += (-e);
 		}
          
 		return f + p.substring(p.length() - 3, p.length());

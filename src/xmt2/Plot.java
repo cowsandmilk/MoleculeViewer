@@ -235,7 +235,7 @@ public class Plot extends CustomComponent implements MouseListener, MouseMotionL
         if(xbackwards){
             xs = width - (xs + right);
         }else{
-            xs = xs - left;
+            xs -= left;
         }
         double x = plotxmin + (plotxmax - plotxmin)*((xs)/plotWidth);
 

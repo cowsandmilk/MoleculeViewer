@@ -405,7 +405,7 @@ public class PASS {
 	    double dz = p[2] - probe.x[2];
 
 	    double rsq = probe.r + r;
-	    rsq = rsq * rsq;
+	    rsq *= rsq;
 
 	    if(dx*dx+dy*dy+dz*dz < rsq){
 	    //if(distance2(p, x[neighbour]) < rsq[neighbour]){

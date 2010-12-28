@@ -345,7 +345,7 @@ public class LBFGS
 		{
 			if ( execute_entire_while_loop )
 			{
-				iter= iter+1;
+				iter++;
 				info[0]=0;
 				bound=iter-1;
 				if ( iter != 1 )
@@ -397,7 +397,7 @@ public class LBFGS
 
 					for ( i = 1 ; i <= bound ; i += 1 )
 					{
-						cp=cp-1;
+						cp--;
 						if ( cp == - 1 ) cp = m - 1;
 						sq = ddot ( n , w , ispt + cp * n , 1 , w , 0 , 1 );
 						inmc=n+m+cp+1;
@@ -419,7 +419,7 @@ public class LBFGS
 						beta = w [ inmc -1] - beta;
 						iscn=ispt+cp*n;
 						daxpy ( n , beta , w , iscn , 1 , w , 0 , 1 );
-						cp=cp+1;
+						cp++;
 						if ( cp == m ) cp = 0;
 					}
 
@@ -453,7 +453,7 @@ public class LBFGS
 				throw new ExceptionWithIflag( iflag[0], "Line search failed. See documentation of routine mcsrch. Error return of line search: info = "+info[0]+" Possible causes: function or gradient are incorrect, or incorrect tolerances." );
 			}
 
-			nfun= nfun + nfev[0];
+			nfun += nfev[0];
 			npt=point*n;
 
 			for ( i = 1 ; i <= n ; i += 1 )
@@ -462,7 +462,7 @@ public class LBFGS
 				w [ iypt + npt + i -1] = g [ i -1] - w [ i -1];
 			}
 
-			point=point+1;
+			point++;
 			if ( point == m ) point = 0;
 
 			gnorm = Math.sqrt ( ddot ( n , g , 0 , 1 , g , 0 , 1 ) );
@@ -622,9 +622,9 @@ public class LBFGS
 
 			for ( i = 1 ; i <= n ; i += 1 )
 			{
-				dy [ iy0+iy -1] = dy [ iy0+iy -1] + da * dx [ ix0+ix -1];
-				ix = ix + incx;
-				iy = iy + incy;
+				dy[iy0 + iy - 1] += da * dx[ix0 + ix - 1];
+				ix += incx;
+				iy += incy;
 			}
 
 			return;
@@ -635,7 +635,7 @@ public class LBFGS
 		{
 			for ( i = 1 ; i <= m ; i += 1 )
 			{
-				dy [ iy0+i -1] = dy [ iy0+i -1] + da * dx [ ix0+i -1];
+				dy[iy0 + i - 1] += da * dx[ix0 + i - 1];
 			}
 
 			if ( n < 4 ) return;
@@ -644,10 +644,10 @@ public class LBFGS
 		mp1 = m + 1;
 		for ( i = mp1 ; i <= n ; i += 4 )
 		{
-			dy [ iy0+i -1] = dy [ iy0+i -1] + da * dx [ ix0+i -1];
-			dy [ iy0+i + 1 -1] = dy [ iy0+i + 1 -1] + da * dx [ ix0+i + 1 -1];
-			dy [ iy0+i + 2 -1] = dy [ iy0+i + 2 -1] + da * dx [ ix0+i + 2 -1];
-			dy [ iy0+i + 3 -1] = dy [ iy0+i + 3 -1] + da * dx [ ix0+i + 3 -1];
+			dy[iy0 + i - 1] += da * dx[ix0 + i - 1];
+			dy[iy0 + i + 1 - 1] += da * dx[ix0 + i + 1 - 1];
+			dy[iy0 + i + 2 - 1] += da * dx[ix0 + i + 2 - 1];
+			dy[iy0 + i + 3 - 1] += da * dx[ix0 + i + 3 - 1];
 		}
 		return;
 	}
@@ -674,9 +674,9 @@ public class LBFGS
 			if ( incy < 0 ) iy = ( - n + 1 ) * incy + 1;
 			for ( i = 1 ; i <= n ; i += 1 )
 			{
-				dtemp = dtemp + dx [ ix0+ix -1] * dy [ iy0+iy -1];
-				ix = ix + incx;
-				iy = iy + incy;
+				dtemp += dx[ix0 + ix - 1] * dy[iy0 + iy - 1];
+				ix += incx;
+				iy += incy;
 			}
 			return dtemp;
 		}
@@ -686,7 +686,7 @@ public class LBFGS
 		{
 			for ( i = 1 ; i <= m ; i += 1 )
 			{
-				dtemp = dtemp + dx [ ix0+i -1] * dy [ iy0+i -1];
+				dtemp += dx[ix0 + i - 1] * dy[iy0 + i - 1];
 			}
 			if ( n < 5 ) return dtemp;
 		}
