@@ -64,9 +64,9 @@ public class PropertyPlot extends Plot {
         for(int a = 0; a < atomCount; a++){
             Atom atom = res.getAtom(a);
 
-            if(property == "ball"){
+            if("ball".equals(property)){
                 total += atom.getBFactor();
-            }else if(property == "bmain"){
+            }else if("bmain".equals(property)){
                 String name = atom.getAtomLabel();
                 if(name.equals("CA") || name.equals("O") ||
                    name.equals("C") || name.equals("N")){

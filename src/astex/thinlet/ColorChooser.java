@@ -113,7 +113,7 @@ public class ColorChooser extends Thinlet {
         Color newcolor = null;
         int red = 0, green = 0, blue = 0;
 
-        if(getClass(component) == "button"){
+        if("button".equals(getClass(component))){
             newcolor = getColor(component, "background");
             if(newcolor == null){
                 newcolor = new Color(0, 255, 0);

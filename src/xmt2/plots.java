@@ -41,7 +41,7 @@ public class plots extends ThinletUI {
     public void installProperties(Object source, Object plotComponent){
         Plot plot = (Plot)getComponent(plotComponent, "bean");
 
-        if(getClass(source) == "combobox"){
+        if("combobox".equals(getClass(source))){
             source = getSelectedItem(source);
         }
 

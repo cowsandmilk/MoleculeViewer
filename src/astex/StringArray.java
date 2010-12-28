@@ -138,7 +138,7 @@ public class StringArray {
      */
     public void remove(String object){
         for(int i = objectCount - 1; i >= 0; i--){
-            if(objects[i] == object){
+            if(object.equals(objects[i])){
                 removeElement(i);
             }
         }
@@ -205,7 +205,7 @@ public class StringArray {
     /** Return the location of the object or -1 if its not present. */
     public int getIndex(String object){
         for(int i = 0; i < objectCount; i++){
-            if(objects[i] == object){
+            if(object.equals(objects[i])){
                 return i;
             }
         }

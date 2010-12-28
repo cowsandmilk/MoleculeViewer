@@ -86,7 +86,7 @@ public class ThinletOracle extends ThinletUI {
     }
 
     public void setCluster(Object component){
-        if(getClass(component) == "table"){
+        if("table".equals(getClass(component))){
             String cluster = getCellValueWithName(component, "id");
 
             Object clusterSpinbox = find("clusterSpinbox");
@@ -128,7 +128,7 @@ public class ThinletOracle extends ThinletUI {
             }
         }
 	
-        if(getClass(component) == "tabbedpane"){
+        if("tabbedpane".equals(getClass(component))){
             component = getSelectedItem(component);
         }
 
@@ -847,7 +847,7 @@ public class ThinletOracle extends ThinletUI {
             Object column = getItem(header, i);
             String sort = getChoice(column, "sort");
 
-            if(sort != "none"){
+            if(!"none".equals(sort)){
                 sortColumn = i;
                 sortDir = sort;
                 break;
@@ -967,12 +967,12 @@ public class ThinletOracle extends ThinletUI {
             if(d1 == d2){
                 return 0;
             }else if(d1 < d2){
-                return (sortDir == "descent") ? 1 : -1;
+                return ("descent".equals(sortDir)) ? 1 : -1;
             }else if(d1 > d2){
-                return (sortDir == "descent") ? -1 : 1;
+                return ("descent".equals(sortDir)) ? -1 : 1;
             }
         }else{
-            return (sortDir == "descent") ? s1.compareTo(s2) : -s1.compareTo(s2);
+            return ("descent".equals(sortDir)) ? s1.compareTo(s2) : -s1.compareTo(s2);
         }
 
         return 0;

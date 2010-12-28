@@ -119,15 +119,15 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
             //System.out.println(commands[i] + " " + command);
 
-            if(command == null && getClass(component) != "table"){
-                if(getClass(component) == "checkbox"){
+            if(command == null && !"table".equals(getClass(component))){
+                if("checkbox".equals(getClass(component))){
                     boolean selected = getBoolean(component, "selected");
                     if(selected){
                         command = (String)getProperty(component, "commandon");
                     }else{
                         command = (String)getProperty(component, "commandoff");
                     }
-                }else if(getClass(component) == "tabbedpane"){
+                }else if("tabbedpane".equals(getClass(component))){
                     component = getSelectedItem(component);
                     
                     if(getProperty(component, "command") != null){
@@ -137,10 +137,10 @@ public class ThinletUI extends Thinlet implements WindowListener,
                     return;
                     // this next block was commented out - why?
                     // must have caused some other effect, restrict it to a textarea
-                }else if(getClass(component) == "textarea"){
+                }else if("textarea".equals(getClass(component))){
                     command = getString(component, "text");
                 }
-            }else if(command != null && (getClass(component) == "table" || getClass(component) == "tree")){
+            }else if(command != null && ("table".equals(getClass(component)) || "tree".equals(getClass(component)))){
 
                 if(i == 1){
                     //System.out.println("doing row part command = " + command);
@@ -271,7 +271,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
     public String getValue(Object component, String s){
         //System.out.println("getValue " + getClass(component) + " " + s);
 
-        if(getClass(component).equals("table") || getClass(component).equals("row")){
+        if("table".equals(getClass(component)) || "row".equals(getClass(component))){
 
             String field = s.substring(1);
 
@@ -322,7 +322,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
 
         if(s.equals("$n")){
-            if(getClass(component) == "combobox"){
+            if("combobox".equals(getClass(component))){
                 component = getSelectedItem(component);
             }
             String name = getString(component, "name");
@@ -1008,7 +1008,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         boolean checkbox = false;
         boolean boolValue = false;
 
-        if(getClass(editor) == "checkbox"){
+        if("checkbox".equals(getClass(editor))){
             checkbox = true;
             boolValue = getBoolean(editor, "selected");
         }

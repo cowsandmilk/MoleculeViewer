@@ -41,14 +41,14 @@ public class GenericEvent extends Generic {
         set(Type, type);
         set(Target, target);
 
-        if(type == PropertyChanged){
+        if(PropertyChanged.equals(type)){
             set(Name, a);
             set(Value, b);
-        }else if(type == ChildAdded ||
-                 type == ChildRemoved){
+        }else if(ChildAdded.equals(type) ||
+                 ChildRemoved.equals(type)){
             set(Child, a);
-        }else if(type == ParentAdded ||
-                 type == ParentRemoved){
+        }else if(ParentAdded.equals(type) ||
+                 ParentRemoved.equals(type)){
             set(Parent, a);
         }
     }

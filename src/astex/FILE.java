@@ -369,7 +369,7 @@ public class FILE extends InputStream {
     public void print(String f, double d1, double d2, double d3){
    
 	/* Parse the format string. */
-	if(prevFormat != f){
+	if(	prevFormat == null ? f != null : !prevFormat.equals(f)){
 	    parseFormat(f);
 	    f.intern();
 	    prevFormat = f;
@@ -389,7 +389,7 @@ public class FILE extends InputStream {
     public void print(String f, long d1, long d2, long d3){
    	
 	/* Parse the format string. */
-	if(prevFormat != f){
+	if(	prevFormat == null ? f != null : !prevFormat.equals(f)){
 	    parseFormat(f);
 	    f.intern();
 	    prevFormat = f;
@@ -437,7 +437,7 @@ public class FILE extends InputStream {
     /** Print a formatted String. */
     public void print(String f, String s){
 	
-	if(prevFormat != f){
+	if(	prevFormat == null ? f != null : !prevFormat.equals(f)){
 	    parseFormat(f);
 	    f.intern();
 	    prevFormat = f;
@@ -449,7 +449,7 @@ public class FILE extends InputStream {
     /** Print a formatted char. */
     public void print(String f, char c){
 	
-	if(prevFormat != f){
+	if(	prevFormat == null ? f != null : !prevFormat.equals(f)){
 	    parseFormat(f);
 	    f.intern();
 	    prevFormat = f;
@@ -461,7 +461,7 @@ public class FILE extends InputStream {
     /** Print a formatted integer. */
     public void print(String f, long d){
 	
-	if(prevFormat != f){
+	if(	prevFormat == null ? f != null : !prevFormat.equals(f)){
 	    parseFormat(f);
 	    f.intern();
 	    prevFormat = f;
@@ -473,7 +473,7 @@ public class FILE extends InputStream {
     /** Print a formatted double. */
     public void print(String f, double d){
 	
-	if(prevFormat != f){
+	if(	prevFormat == null ? f != null : !prevFormat.equals(f)){
 	    parseFormat(f);
 	    f.intern();
 	    prevFormat = f;
