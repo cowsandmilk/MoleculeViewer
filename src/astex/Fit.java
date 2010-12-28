@@ -288,11 +288,11 @@ public class Fit {
 	}
     }
 
-    private static final double SQR(double a){
+    private static double SQR(double a){
 	return a*a;
     }
 
-    private static final double SIGN(double a, double b){
+    private static double SIGN(double a, double b){
 	double absa = (a < 0.0 ? -a : a);
 	if(b >= 0.0){
 	    return absa;
@@ -304,7 +304,7 @@ public class Fit {
     /**
      * Computes (a^2 + b^2 )^1/2 without destructive under or overflow.
      */
-    private static final double pythag(double a, double b) {
+    private static double pythag(double a, double b) {
 	double absa,absb;
 	//absa=Math.abs(a);
 	//absb=Math.abs(b);

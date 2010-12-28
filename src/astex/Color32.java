@@ -109,13 +109,13 @@ public class Color32 {
     }
 
     /** Clamp number to range specified. */
-    public static final int clamp(int num) {
+    public static int clamp(int num) {
 	if(num < 0) return 0;
 	else if(num > 255) return 255;
 	else return num;
     }
 
-    public static final int scale(int c, int factor) {
+    public static int scale(int c, int factor) {
 	if (factor == 255) return c;
 	if (factor == 0) return 0;
 	int r = (c>>16)&0xff;
@@ -129,7 +129,7 @@ public class Color32 {
 	return (r<<16)|(g<<8)|b;
     }
 
-    public static final int add(int color1, int color2) {
+    public static int add(int color1, int color2) {
 	int r = (color1 & Red) + (color2 & Red);
 	int g = (color1 & Green) + (color2 & Green);
 	int b = (color1 & Blue) + (color2 & Blue);
@@ -139,7 +139,7 @@ public class Color32 {
 	return (r|g|b);
     }
 
-    public static final int multiply(int c1, int c2) {
+    public static int multiply(int c1, int c2) {
 	int c1r = (c1 >> 16) & 0xff;
 	int c1g = (c1 >> 8) & 0xff;
 	int c1b = (c1 >> 0) & 0xff;
@@ -157,7 +157,7 @@ public class Color32 {
     }
 
     /** multiply by intensity between 0 and 255 and specularise. */
-    public static final int intensitySpecularise(int c1, int intensity, int specular) {
+    public static int intensitySpecularise(int c1, int intensity, int specular) {
 
 	c1 = scale(c1, intensity);
 
@@ -221,7 +221,7 @@ public class Color32 {
     }
 
     /** Pack r,g,b triple into a single int. */
-    public static final int pack(int r, int g, int b) {
+    public static int pack(int r, int g, int b) {
 	return Alpha | r << 16 | g << 8 | b;
     }
 
@@ -291,12 +291,12 @@ public class Color32 {
     }
 
     /** Print a colour representation. */
-    public static final void print(String s, int c){
+    public static void print(String s, int c){
 	print(s, getRed(c), getGreen(c), getBlue(c));
     }
 
     /** Print a colour representation. */
-    public static final void print(String s, int r, int g, int b){
+    public static void print(String s, int r, int g, int b){
 	FILE.out.print(s);
 	FILE.out.print(" [%03d", r);
 	FILE.out.print(",%03d", g);
