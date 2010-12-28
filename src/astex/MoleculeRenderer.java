@@ -5359,7 +5359,7 @@ public class MoleculeRenderer {
 	    if(renderer.shadowMode != Renderer.ShadowsOff){
 		drawLine(firstAtom.x, firstAtom.y, firstAtom.z,
 			 secondAtom.x, secondAtom.y, secondAtom.z,
-			 firstAtomColor, secondAtomColor, (double)(-w * bondLineRadius));
+			 firstAtomColor, secondAtomColor, (-w * bondLineRadius));
 	    }else{
 		drawLine(firstAtom.xs, firstAtom.ys, firstAtom.zs,
 			 secondAtom.xs, secondAtom.ys, secondAtom.zs,

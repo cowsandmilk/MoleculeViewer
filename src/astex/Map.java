@@ -826,7 +826,7 @@ public class Map extends Symmetry {
 			    //System.out.println("odata " + (int)b);
 			    short sb = 0;
 			    if(b < 0){
-				sb = (short)((int)b + (int)256);
+				sb = (short)((int)b + 256);
 			    }else{
 				sb = b;
 			    }

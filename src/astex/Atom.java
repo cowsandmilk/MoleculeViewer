@@ -1407,7 +1407,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
         else if(key.equals(OAttribute)) occupancy = (float)((Double)value).doubleValue();
         else if(key.equals(QAttribute)) partialCharge = (float)((Double)value).doubleValue();
         else if(key.equals(Radius)) radius = (float)((Double)value).doubleValue();
-        else if(key.equals(Element)) element = (int)((Integer)value).intValue();
+        else if(key.equals(Element)) element = ((Integer) value).intValue();
         else if(key.equals(Color)) setColor(((Color)value).getRGB());
         else if(key.equals(Opacity)) transparency = ((Integer)value).intValue();
         else{

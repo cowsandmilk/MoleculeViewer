@@ -246,7 +246,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
         for(int i = 0; i < getCount(header); i++){
             Object column = getItem(header, i);
-            String text = (String)getString(column, "text");
+            String text = getString(column, "text");
             if(text != null && text.equalsIgnoreCase(name)){
                 columnId = i;
                 break;
@@ -591,7 +591,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         //print.f("object " + object);
 
         for(int d = 0; d < distanceCount; d++){
-            Distance distance = (Distance)moleculeRenderer.getDistance(d);
+            Distance distance = moleculeRenderer.getDistance(d);
 
             addDistance(object, distance);
         }

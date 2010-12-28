@@ -220,7 +220,7 @@ public class AnimationObject {
 
 	}else if(animationMode == Roll){
 	    if(step == 0){
-		deltaAngle = (double)rockAngle/(double)stepCount;
+		deltaAngle = rockAngle/(double)stepCount;
                 if(!interactive){
                     System.out.println("delta " + deltaAngle);
                 }

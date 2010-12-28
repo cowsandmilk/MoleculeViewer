@@ -333,7 +333,7 @@ public class ObjectPropertyDialog extends Dialog
 	String actionCommand  = e.getActionCommand();
 	boolean handled       = true;
 
-	String name           = "'" + (String)object.getName() + "'";
+	String name           = "'" + object.getName() + "'";
 	int tc                = textureCoordinate.getValue();
 	String texCoord       = textureCoords[tc];
 	boolean needTexture   = true;

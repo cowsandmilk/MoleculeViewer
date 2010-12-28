@@ -73,7 +73,7 @@ public class SecondaryStructure {
 	    Chain chain = mol.getChain(c);
 	    int residueCount = chain.getResidueCount();
 	    for(int r = 0; r < residueCount; r++){
-		Residue res = (Residue)chain.getResidue(r);
+		Residue res = chain.getResidue(r);
 
 		//assignInitialType(res);
 		res.setSecondaryStructure(Residue.Coil);
@@ -324,7 +324,7 @@ public class SecondaryStructure {
 
 	    // copy them back
 	    for(int r = 0; r < residueCount; r++){
-		Residue res = (Residue)chain.getResidue(r);
+		Residue res = chain.getResidue(r);
 		//System.out.println(types[mapping[nres]] + " "+ res);
 		res.setSecondaryStructure(types[mapping[nres++]]);
 	    }

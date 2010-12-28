@@ -1400,7 +1400,7 @@ public class ActiveSite {
 	Log.info("map min %f", min);
 	Log.info("map max %f", max);
 
-	min = (double)Math.rint(min);
+	min = Math.rint(min);
 
 	Log.info("round min %f", min);
 

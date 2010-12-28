@@ -4196,7 +4196,7 @@ public class Renderer {
 	if(false && shadowMode != ShadowsOff){
 	    drawCylinder(tmesh.x[v1], tmesh.y[v1], tmesh.z[v1],
 			 tmesh.x[v2], tmesh.y[v2], tmesh.z[v2],
-			 rgb1, rgb2, (double)(pixelWidth * 0.02));
+			 rgb1, rgb2, (pixelWidth * 0.02));
 	    return;
 	}
 
@@ -4559,7 +4559,7 @@ public class Renderer {
         if(dy>dx) { // y-major line
 	    dz = dy != 0 ? (z1 - z0)/dy : 0;
 	    z = z0;
-            int ErrorAdj=((int)dx<<16) / (int)dy;
+            int ErrorAdj=(dx<<16) / dy;
             if(xDir<0) {
                 while(--dy != 0) {
                     if(dy <= dy2){
@@ -4567,7 +4567,7 @@ public class Renderer {
                     }
                     ErrorAcc+=ErrorAdj;
                     ++y0;
-                    x1=x0-(int)(ErrorAcc>>16);
+                    x1=x0-(ErrorAcc>>16);
                     Transparency=(ErrorAcc>>8);
                     blendPixel(x1  , y0, z, Colour, ~Transparency);
                     blendPixel(x1-1, y0, z, Colour,  Transparency);
@@ -4580,8 +4580,8 @@ public class Renderer {
                     }
                     ErrorAcc+=ErrorAdj;
                     ++y0;
-                    x1=x0+(int)(ErrorAcc>>16);
-                    Transparency=(int)(ErrorAcc>>8);
+                    x1=x0+(ErrorAcc>>16);
+                    Transparency=(ErrorAcc>>8);
                     blendPixel(x1     , y0, z, Colour, ~Transparency);
                     blendPixel(x1+xDir, y0, z, Colour,  Transparency);
 		    z += dz;
@@ -4591,15 +4591,15 @@ public class Renderer {
 	    dz = dx != 0 ? (z1 - z0)/dx : 0;
 	    z = z0;
 
-            int ErrorAdj=((int)dy<<16) / (int)dx;
+            int ErrorAdj=(dy<<16) / dx;
             while(--dx != 0) {
                 if(dx <= dx2){
                     Colour = Colour1;
                 }
                 ErrorAcc+=ErrorAdj;
                 x0+=xDir;
-                y1=y0+(int)(ErrorAcc>>16);
-                Transparency=(int)(ErrorAcc>>8);
+                y1=y0+(ErrorAcc>>16);
+                Transparency=(ErrorAcc>>8);
                 blendPixel(x0, y1  , z, Colour, ~Transparency);
                 blendPixel(x0, y1+1, z, Colour,  Transparency);
 		z += dz;

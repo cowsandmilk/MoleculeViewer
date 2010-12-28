@@ -304,7 +304,7 @@ public class ResidueDictionary {
     /** Find the torsion number from the torsion name. */
     public int findTorsionNumber(String name){
 	for(int i = 0; i < torsionNames.size(); i++){
-	    String torsionName = (String)torsionNames.get(i);
+	    String torsionName = torsionNames.get(i);
 
 	    if(name.equals(torsionName)){
 		return i;

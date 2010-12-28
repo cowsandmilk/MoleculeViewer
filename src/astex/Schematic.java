@@ -47,7 +47,7 @@ public class Schematic {
 	    for(int i = 0; i < moleculeCount; i++){
 		Molecule m = mr.getMolecule(i);
 		for(int c = 0; c < m.getChainCount(); c++){
-		    Chain chain = (Chain)m.getChain(c);
+		    Chain chain = m.getChain(c);
 
 		    chainSchematic(args, tm, chain);
 		}
@@ -140,7 +140,7 @@ public class Schematic {
 
 	// store the calpha positions and secondary structure types
 	for(int r = 0; r < chain.getResidueCount(); r++){
-	    Residue res = (Residue)chain.getResidue(r);
+	    Residue res = chain.getResidue(r);
 	    Atom CA = res.getAtom("CA");
 	    if(CA != null && CA.isTemporarilySelected()){
 		
@@ -164,7 +164,7 @@ public class Schematic {
 
         // MLV 17/09/07 DNA/RNA schematics
 	for(int r = 0; r < chain.getResidueCount(); r++){
-	    Residue res = (Residue)chain.getResidue(r);
+	    Residue res = chain.getResidue(r);
 	    Atom C5 = res.getAtom("C5*");
 	    if(C5 != null && C5.isTemporarilySelected()){
 		widthInitialised[guideCount] = false;

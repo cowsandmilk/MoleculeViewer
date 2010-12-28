@@ -1686,7 +1686,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		    
 		for(int i = 0; i < selectedObjects.size(); i++){
 		    Tmesh tm = (Tmesh)selectedObjects.get(i);
-		    String name = "'" + (String)tm.getName() + "'";
+		    String name = "'" + tm.getName() + "'";
 		    int tc = textureCoordinate.getValue();
 		    String texCoord = null;
 		    boolean needTexture = true;
@@ -1905,7 +1905,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		    
 		for(int i = 0; i < selectedObjects.size(); i++){
 		    Tmesh tm = (Tmesh)selectedObjects.get(i);
-		    String name = "'" + (String)tm.getName() + "'";
+		    String name = "'" + tm.getName() + "'";
 		    //JCVector item = (JCVector)selectedObjects[i];
 		    //String name = "'" + (String)item.at(0) + "'";
 		    int tc = textureCoordinate.getValue();
@@ -1991,7 +1991,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     private Format f = new Format("%4.1f");
 
     public void adjustmentValueChanged(JCAdjustmentEvent e){
-	Object o = (Object)e.getSource();
+	Object o = e.getSource();
 
 	if(o == frontClip){
 	    //System.out.println("frontClip " + e);
