@@ -39,8 +39,6 @@ package astex;
  *
  */
 
-import java.util.*;
-
 /** Instances of this class represents a wildcard expression,
  *  which can be matched against String objects.
  *

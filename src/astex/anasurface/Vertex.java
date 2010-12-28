@@ -17,8 +17,6 @@
 
 package astex.anasurface;
 
-import astex.*;
-
 public class Vertex {
     /** Copy of the coordinates of the vertex. */
     public double x[] = new double[3];

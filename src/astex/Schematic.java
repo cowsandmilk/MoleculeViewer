@@ -20,7 +20,6 @@ package astex;
 /**
  * Class for creating schematic diagrams.
  */
-import java.util.*;
 
 public class Schematic {
     /** Create a schematic. */

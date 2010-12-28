@@ -93,7 +93,6 @@ package astex;
  *	created
  */
 
-import java.io.*;
 import java.util.*;
 
 /**

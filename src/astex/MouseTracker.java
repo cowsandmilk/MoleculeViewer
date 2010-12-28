@@ -18,7 +18,6 @@
 package astex;
 
 import java.util.*;
-import astex.*;
 
 public class MouseTracker {
     public static void handleCommand(MoleculeViewer mv,

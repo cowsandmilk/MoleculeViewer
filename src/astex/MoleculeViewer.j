@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import nanoxml.*;
 
-import astex.parser.*;
 #ifdef XRAYTOOLS
 import astex.xmt.Manipulator;
 #endif

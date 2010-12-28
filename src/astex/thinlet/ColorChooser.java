@@ -18,7 +18,6 @@
 package astex.thinlet;
 
 import thinlet.*;
-import astex.*;
 import java.awt.*;
 import java.awt.event.*;
 

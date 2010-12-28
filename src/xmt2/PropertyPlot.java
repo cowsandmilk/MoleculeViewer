@@ -2,7 +2,6 @@ package xmt2;
 
 import astex.*;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
 
 public class PropertyPlot extends Plot {

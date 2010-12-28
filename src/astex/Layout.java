@@ -27,7 +27,6 @@ package astex;
 /**
  * Convenience methods for using GridBagLayout manager.
  */
-import java.util.*;
 import java.awt.*;
 import java.io.Serializable;
 

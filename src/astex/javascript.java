@@ -18,9 +18,7 @@
 package astex;
 
 import java.lang.reflect.*;
-import java.util.*;
 import java.applet.*;
-import astex.*;
 
 //import netscape.javascript.JSObject;
 

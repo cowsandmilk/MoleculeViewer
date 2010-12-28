@@ -24,7 +24,6 @@ package astex.anasurface;
 
 import astex.*;
 
-import java.io.*;
 import java.util.*;
 
 public class AnaSurface2 {

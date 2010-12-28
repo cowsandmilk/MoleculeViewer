@@ -23,7 +23,6 @@ package astex;
  * Object for storing a triangular mesh object.
  */
 
-import java.io.*;
 import java.util.*;
 
 public class Tmesh {

@@ -68,8 +68,6 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 import java.net.*;
-import java.awt.*;
-import java.applet.*;
 
 /**
  * A class which implements a high performance byte based input

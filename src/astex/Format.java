@@ -44,7 +44,6 @@ package astex;
  * @version 1.04 13 Sep 1998
  * @author Cay Horstmann
  */
-import java.io.*;
 
 public class Format {
 	/** 

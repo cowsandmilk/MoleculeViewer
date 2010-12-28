@@ -17,8 +17,6 @@
 
 package astex;
 
-import jclass.bwt.*;
-
 /**
  * Interface for controls that can be added to the
  * tab manager in AstexViewer2.

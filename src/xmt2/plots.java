@@ -2,9 +2,7 @@ package xmt2;
 
 import thinlet.*;
 import astex.*;
-import astex.splitter.*;
 import astex.thinlet.*;
-import java.awt.*;
 import java.util.*;
 
 public class plots extends ThinletUI {

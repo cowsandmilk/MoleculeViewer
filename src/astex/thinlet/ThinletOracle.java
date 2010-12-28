@@ -19,14 +19,10 @@ package astex.thinlet;
 
 import astex.*;
 import astex.thinlet.*;
-import astex.splitter.*;
-import thinlet.*;
 import java.awt.*;
 import java.lang.*;
 import java.util.*;
 import java.sql.*;
-import oracle.jdbc.driver.*;
-import oracle.jdbc.pool.*;
 
 public class ThinletOracle extends ThinletUI {
     public ThinletOracle(String xml){

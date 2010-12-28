@@ -23,10 +23,6 @@ package astex;
   Data and utility functions for periodic table
 */
 
-import java.io.Serializable;
-import java.util.*;
-import java.io.*;
-
 public class PeriodicTable {
     public static final AtomicElement elements[] = new AtomicElement[] {
 	new AtomicElement(  0, "h+",    0.00000, 15,  0,  0,  0,  0,  0),
