@@ -93,12 +93,12 @@ public class ImageButton extends Canvas {
 	return super.handleEvent(e);
     }
 
-    public Dimension minimumSize() {
+    public Dimension getMinimumSize() {
 	return size;
     }
 
     public void paint(Graphics g) {
-	Dimension s = size();
+	Dimension s = getSize();
 	Color bg = getBackground();
 
 	for(int i = 0; i < shadowWidth; i++){
@@ -129,8 +129,8 @@ public class ImageButton extends Canvas {
 	}
     }
 
-    public Dimension preferredSize() {
-	return minimumSize();
+    public Dimension getPreferredSize() {
+	return getMinimumSize();
     }
 
     public void update(Graphics g) {

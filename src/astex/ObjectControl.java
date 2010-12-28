@@ -213,11 +213,11 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 	}
 
 	window.add(container);
-	//window.layout();
+	//window.doLayout();
 	f.add(window);
 
 	f.pack();
-	f.show();
+	f.setVisible(true);
 	
     }
 }

@@ -36,10 +36,10 @@ public class ColorSpace extends Canvas {
     private int irgb[] = new int[3];
 
     public void paint(Graphics gr){
-	if(bounds().width != width ||
-	   bounds().height != height){
-	    width = bounds().width;
-	    height = bounds().height;
+	if(getBounds().width != width ||
+	   getBounds().height != height){
+	    width = getBounds().width;
+	    height = getBounds().height;
 
 	    pixels = new int[width*height];
 
@@ -103,10 +103,10 @@ public class ColorSpace extends Canvas {
      * Its nice, but you only get fully saturated colours.
      */
     public void paint2(Graphics gr){
-	if(bounds().width != width ||
-	   bounds().height != height){
-	    width = bounds().width;
-	    height = bounds().height;
+	if(getBounds().width != width ||
+	   getBounds().height != height){
+	    width = getBounds().width;
+	    height = getBounds().height;
 
 	    pixels = new int[width*height];
 
@@ -184,6 +184,6 @@ public class ColorSpace extends Canvas {
 	f.add(new ColorSpace());
 
 	f.pack();
-	f.show();
+	f.setVisible(true);
     }
 }

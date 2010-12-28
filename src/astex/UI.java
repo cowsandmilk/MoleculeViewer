@@ -174,6 +174,6 @@ public class UI {
 	pop();
 
 	f.pack();
-	f.show();
+	f.setVisible(true);
     }
 }

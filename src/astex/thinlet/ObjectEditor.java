@@ -126,7 +126,7 @@ public class ObjectEditor extends ThinletUI {
     public void ok(Object dialogPanel){
         Dialog dialog = (Dialog)getProperty(getDesktop(), "dialog");
 
-        dialog.hide();
+        dialog.setVisible(false);
     }
 
     public boolean destroy(){
@@ -134,7 +134,7 @@ public class ObjectEditor extends ThinletUI {
     }
 
     public void windowClosing(WindowEvent e){
-	e.getWindow().hide();
+	e.getWindow().setVisible(false);
     }
 
     public void windowActivated(WindowEvent e){ }

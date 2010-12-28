@@ -93,7 +93,7 @@ public class Plot extends CustomComponent implements MouseListener, MouseMotionL
 
         //g.setClip(left, top, width - right - left, height - bottom - top);
 
-        Rectangle r = g.getClipRect();
+        Rectangle r = g.getClipBounds();
 
         g.clipRect(left, top, width - right - left, height - bottom - top);
 

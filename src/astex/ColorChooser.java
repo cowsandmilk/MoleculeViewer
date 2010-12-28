@@ -141,7 +141,7 @@ public class ColorChooser extends Panel
 
 	Layout.fill(this, buttonContainer, 0, 2, GridBagConstraints.NONE);
 
-	layout();
+	doLayout();
     }
 
     public int rgb = 0xff000000;
@@ -273,10 +273,10 @@ public class ColorChooser extends Panel
 	d.add(ccd);
 
 	f.pack();
-	f.show();
+	f.setVisible(true);
 
 	d.pack();
-	d.show();
+	d.setVisible(true);
 
 	if(ccd.accept){
 	    System.out.println("accepted colour "+ ccd.rgb);

@@ -615,7 +615,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     /** Function that paints the image when we load. */
     public void drawLoadingScreen(Graphics g){
 	g.setColor(Color.black);
-	g.fillRect(0, 0, bounds().width, bounds().height);
+	g.fillRect(0, 0, getBounds().width, getBounds().height);
 
 	if(announce){
 	    g.setColor(Color.gray);
@@ -657,11 +657,11 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	if(!ready){
 	    //System.out.println("Viewer paint() uninitialised");
 	    g.setColor(Color.white);
-	    g.fillRect(0, 0, bounds().width, bounds().height);
+	    g.fillRect(0, 0, getBounds().width, getBounds().height);
 
 	    if(splashImage != null && splashImage.getWidth(this) != -1){
-		int imageX = (bounds().width - splashImage.getWidth(this))/2;
-		int imageY = (bounds().height - splashImage.getHeight(this))/2;
+		int imageX = (getBounds().width - splashImage.getWidth(this))/2;
+		int imageY = (getBounds().height - splashImage.getHeight(this))/2;
 
 		g.drawImage(splashImage, imageX, imageY, null);
 	    }
@@ -670,7 +670,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}
 
 	if(awtImage == null){
-	    moleculeRenderer.renderer.setSize(bounds().width, bounds().height);
+	    moleculeRenderer.renderer.setSize(getBounds().width, getBounds().height);
 	    moleculeRenderer.dirty = true;
 
 	    // Add the DirectColorModel statement to remove the
@@ -679,11 +679,11 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    // performance, as presumably the DirectColorModel
 	    // has to do more work? Test later.
 	    memoryImageSource =
-		new MemoryImageSource(bounds().width, bounds().height,
+		new MemoryImageSource(getBounds().width, getBounds().height,
 				      new DirectColorModel(32, 0xff0000,
 				      		   0xff00, 0xff),
 				      moleculeRenderer.renderer.pbuffer,
-				      0, bounds().width);
+				      0, getBounds().width);
 	    memoryImageSource.setAnimated(true);
 	    //memoryImageSource.setFullBufferUpdates(true);
 	    awtImage = createImage(memoryImageSource);
@@ -702,8 +702,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	//try {
 	//    BufferedImage image =
-	//	new BufferedImage(bounds().width, bounds().height, BufferedImage.TYPE_INT_RGB);
-	//    image.setRGB(0, 0, bounds().width, bounds().height, renderer.pbuffer, 0, bounds().width);
+	//	new BufferedImage(getBounds().width, getBounds().height, BufferedImage.TYPE_INT_RGB);
+	//    image.setRGB(0, 0, getBounds().width, getBounds().height, renderer.pbuffer, 0, getBounds().width);
 	//    image.flush();
 		
 	//    OutputStream os = new FileOutputStream("image.jpg");
@@ -864,7 +864,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
             frame.add("1", new Panel());
         }
 	frame.pack();
-	frame.show();
+	frame.setVisible(true);
     }
 
     /** The last mouse event. */
@@ -936,12 +936,12 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	Window w = e.getWindow();
 
 	if(w == contourLevelDialog){
-	    //contourLevelDialog.hide();
-	    contourLevelDialog.hide();
+	    //contourLevelDialog.setVisible(false);
+	    contourLevelDialog.setVisible(false);
 	    contourLevelDialog.dispose();
 	    contourLevelDialog = null;
 	}else{
-	    w.hide();
+	    w.setVisible(false);
 	    w.dispose();
 	    saveAndExit();
 	}
@@ -1159,7 +1159,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		// scale the molecule
 		moleculeRenderer.renderer.applyZoom(dy * 0.005);
 	    }else{
-		if(mousePressedEvent.getY() < bounds().height * 0.05){
+		if(mousePressedEvent.getY() < getBounds().height * 0.05){
 		    moleculeRenderer.renderer.rotateZ(dx * 0.5);
 		}else{
 		//System.out.println("drag rotating");
@@ -1853,7 +1853,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    if(ui == null){
 		ui = new UserInterface(this);
 	    }else{
-		ui.userInterfaceFrame.show();
+		ui.userInterfaceFrame.setVisible(true);
 	    }
 #endif
 
@@ -1966,10 +1966,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	contourLevelDialog.addWindowListener(this);
 
 	//contourLevelDialog.setSize(400, 0);
-	contourLevelDialog.reshape(0, 709, 240, 80);
+	contourLevelDialog.setBounds(0, 709, 240, 80);
 	contourLevelDialog.pack();
-	//contourLevelDialog.layout();
-	contourLevelDialog.show();
+	//contourLevelDialog.doLayout();
+	contourLevelDialog.setVisible(true);
     }
 
     /** Add a single contour level control to the dialog. */
@@ -2055,14 +2055,14 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		
 	    buildContourLevelDialog();
 	}else{
-	    contourLevelDialog.show();
+	    contourLevelDialog.setVisible(true);
 	}
     }
 
     /** Hide the contour level dialog. */
     public void hideContourLevelDialog(){
 	if(contourLevelDialog != null){
-	    //contourLevelDialog.hide();
+	    //contourLevelDialog.setVisible(false);
 	    contourLevelDialog.dispose();
 	    contourLevelDialog = null;
 	}
@@ -2396,7 +2396,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	//dialog.setDirectory("C:\\htx");
 
 	//  wait here for the dialog to be answered
-	dialog.show();
+	dialog.setVisible(true);
 
 	dialog.dispose();
 
@@ -2405,9 +2405,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	String returnValue = null;
 
-	if(directory == null || file == null){
-	    ;
-	}else{
+	if(!(directory == null || file == null)){
 	    if(directory.endsWith(File.separator)){
 		returnValue = directory + file;
 	    }else{
@@ -2437,7 +2435,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    dialog.setFilenameFilter(filter);
 	}
 
-	dialog.show();
+	dialog.setVisible(true);
 
 	String directory = dialog.getDirectory();
 	String file = dialog.getFile();
@@ -2719,7 +2717,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    screenSize.height -= 54;
 	    
 	    colorChooserDialog.pack();
-	    Dimension chooserSize = colorChooserDialog.size();
+	    Dimension chooserSize = colorChooserDialog.getSize();
 	    
 	    // center chooser on the passed location
 	    x -= (int)(chooserSize.width * 0.5);
@@ -2740,7 +2738,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    }
 	    
 	    colorChooserDialog.setLocation(x, y);
-	    colorChooserDialog.show();
+	    colorChooserDialog.setVisible(true);
 	}
 
 	if(colorChooser.accept){
@@ -2762,7 +2760,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	d.pack();
 
-	Dimension dSize = d.size();
+	Dimension dSize = d.getSize();
 
 	// center chooser on the passed location
 	//x -= (int)(dSize.width * 0.5);
@@ -2783,7 +2781,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}
 
 	d.setLocation(x, y);
-	d.show();
+	d.setVisible(true);
 
     }
 }

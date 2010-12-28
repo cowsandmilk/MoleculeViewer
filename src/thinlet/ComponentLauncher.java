@@ -31,7 +31,7 @@ public class ComponentLauncher extends Container {
         this.content = content;
         setLayout(new BorderLayout());
         add(content, BorderLayout.CENTER);
-        layout();
+        doLayout();
     }
 		
     /**

@@ -106,7 +106,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
             add(moleculeViewer, BorderLayout.CENTER);
         }
 
-        layout();
+        doLayout();
     }
 
     public void run(){
@@ -791,7 +791,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	}
 
 	colorChooserDialog.setLocation(x, y);
-	colorChooserDialog.show();
+	colorChooserDialog.setVisible(true);
 
 	Log.info("show color chooser");
 

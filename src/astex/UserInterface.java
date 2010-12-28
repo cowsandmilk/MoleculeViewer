@@ -110,9 +110,9 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
  Layout.fill(masterPanel, view, 0, 1);
 
- userInterfaceFrame.reshape(806, 0, 120, 400);
+ userInterfaceFrame.setBounds(806, 0, 120, 400);
  userInterfaceFrame.pack();
- userInterfaceFrame.show();
+ userInterfaceFrame.setVisible(true);
 
  Renderer r = moleculeRenderer.renderer;
 
@@ -1618,7 +1618,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
  }
 
  colorChooserDialog.pack();
- colorChooserDialog.show();
+ colorChooserDialog.setVisible(true);
 
  if(colorChooser.accept){
      return colorChooser.rgb;
@@ -1854,7 +1854,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
      ObjectControl oc = new ObjectControl(this, tm);
 
      objectContainer.add(oc);
-     objectContainer.layout();
+     objectContainer.doLayout();
  }else if(type == RendererEvent.ObjectRemoved){
      Tmesh tm = (Tmesh)re.getItem();
 
@@ -1867,7 +1867,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
   if(oc.tmesh == tm){
       // it was this one that was deleted.
       objectContainer.remove(oc);
-      objectContainer.layout();
+      objectContainer.doLayout();
   }
      }
 
@@ -2052,7 +2052,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     /* Implementation of WindowListener. */
     public void windowClosing(WindowEvent e){
  Window w = e.getWindow();
- w.hide();
+ w.setVisible(false);
  //w.dispose();
     }
 

@@ -438,7 +438,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
     public void windowOpened(WindowEvent e){ }
 
     private void close(Window window){
-        window.hide();
+        window.setVisible(false);
         window.dispose();
     }
 
@@ -489,7 +489,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 parent.add(mv, BorderLayout.CENTER);
             }
 
-            parent.layout();
+            parent.doLayout();
         }else{
             DialogLauncher dialogLauncher =
                 new DialogLauncher(Util.getFrame(mv), title,

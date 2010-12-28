@@ -443,7 +443,7 @@ public class ObjectPropertyDialog extends Dialog
 
     /* Implementation of WindowListener. */
     public void windowClosing(WindowEvent e){
-	hide();
+	setVisible(false);
 	//dispose();
     }
 

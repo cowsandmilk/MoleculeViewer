@@ -49,7 +49,7 @@ public class test extends Thinlet {
             parent.add(mv, BorderLayout.CENTER);
         }
 
-        parent.layout();
+        parent.doLayout();
 
     }
 

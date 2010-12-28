@@ -87,7 +87,7 @@ public class ColorChooser extends Thinlet {
     public void colorok(Object dialogPanel){
         Dialog dialog = (Dialog)getProperty(getDesktop(), "dialog");
 
-        dialog.hide();
+        dialog.setVisible(false);
 
         Object sample = find("ccsample");
         Color color = getColor(sample, "background");
@@ -99,7 +99,7 @@ public class ColorChooser extends Thinlet {
     public void colorcancel(Object component){
         Dialog dialog = (Dialog)getProperty(getDesktop(), "dialog");
 
-        dialog.hide();
+        dialog.setVisible(false);
 
         putProperty(getDesktop(), "ok", Boolean.FALSE);
     }
@@ -147,7 +147,7 @@ public class ColorChooser extends Thinlet {
     }
 
     public void windowClosing(WindowEvent e){
-	e.getWindow().hide();
+	e.getWindow().setVisible(false);
     }
 
     public void windowActivated(WindowEvent e){ }

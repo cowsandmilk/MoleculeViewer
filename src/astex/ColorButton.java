@@ -71,7 +71,7 @@ public class ColorButton extends ImageButton {
 
 	d.pack();
 
-	Dimension dSize = d.size();
+	Dimension dSize = d.getSize();
 
 	// center chooser on the passed location
 	//x -= (int)(dSize.width * 0.5);
@@ -92,7 +92,7 @@ public class ColorButton extends ImageButton {
 	}
 
 	d.setLocation(x, y);
-	d.show();
+	d.setVisible(true);
     }
 
     /**
