@@ -544,10 +544,7 @@ public class Schematic {
 					   color);
 			}
 		    }
-
-		    for(int iep = 0; iep < ellipsePoints; iep++){
-			lastEllipse[iep] = currentEllipse[iep];
-		    }
+		  System.arraycopy(currentEllipse, 0, lastEllipse, 0, ellipsePoints);
 
 		}else{
 
@@ -609,11 +606,7 @@ public class Schematic {
 					   cylRadius, color, color);
 			}
 		    }
-		
-		    // remember points on last perimeter
-		    for(int j = 0; j < 8; j++){
-			lastv[j] = v[j];
-		    }
+		  System.arraycopy(v, 0, lastv, 0, 8);
 		}
 
 		wmlast.set(wm);
@@ -924,11 +917,7 @@ public class Schematic {
 		    tm.addTriangle(face[0], face[ip-1], face[ip], color);
 		}
 	    }
-	    
-	    
-	    for(int ip = 0; ip < perimPoints; ip++){
-		plast[ip] = pnew[ip];
-	    }
+	   System.arraycopy(pnew, 0, plast, 0, perimPoints);
 	    
 	    first = false;
 	    alast = a;
@@ -1237,11 +1226,7 @@ public class Schematic {
 			}
 		    }
 		}
-		
-		// remember points on last perimeter
-		for(int j = 0; j < 8; j++){
-		    lastv[j] = v[j];
-		}
+	       System.arraycopy(v, 0, lastv, 0, 8);
 		
 		first = false;
 	    }

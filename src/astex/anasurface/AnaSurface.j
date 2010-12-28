@@ -3235,9 +3235,7 @@ public class AnaSurface {
 	}
 
 	for(int i = 0; i < nsp; i++){
-	    for(int j = 0; j < 3; j++){
-		snx[i][j] = sx[i][j];
-	    }
+	    System.arraycopy(sx[i], 0, snx[i], 0, 3);
 	}
 
 	longestEdge = 0.0;

@@ -101,9 +101,7 @@ public class IntArray {
             int newObjects[] = new int[newCapacity];
 
             if(objects != null){
-                for(int i = 0; i < objectCount; i++){
-                    newObjects[i] = objects[i];
-                }
+	       System.arraycopy(objects, 0, newObjects, 0, objectCount);
             }
 
             objects = newObjects;

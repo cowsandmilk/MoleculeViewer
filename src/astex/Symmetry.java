@@ -239,9 +239,7 @@ public class Symmetry {
 
     /** Set the unit cell. */
     public void setUnitCell(double newCell[]){
-	for(int i = 0; i < 6; i++){
-	    unitCell[i] = newCell[i];
-	}
+        System.arraycopy(newCell, 0, unitCell, 0, 6);
 
 	cartesianToFractional = new Matrix();
 	fractionalToCartesian = new Matrix();

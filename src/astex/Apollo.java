@@ -272,9 +272,7 @@ public class Apollo {
 //       ENDIF
 	if(rt < 1.e-6 || (rt1 >= 1.e-6 && rt1 < rt)){
 	    rt = rt1;
-	    for(int i = 0; i < 3; i++){
-		xt[i] = xt1[i];
-	    }
+	    System.arraycopy(xt1, 0, xt, 0, 3);
 	}
 
 // C
