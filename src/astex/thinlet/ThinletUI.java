@@ -578,11 +578,11 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     public void initialiseFrontClip(Object fc){
-        setString(fc, "text", new String(FILE.sprint("%.1f", moleculeRenderer.renderer.front)));
+        setString(fc, "text", FILE.sprint("%.1f", moleculeRenderer.renderer.front));
     }
 
     public void initialiseBackClip(Object fc){
-        setString(fc, "text", new String(FILE.sprint("%.1f", moleculeRenderer.renderer.back)));
+        setString(fc, "text", FILE.sprint("%.1f", moleculeRenderer.renderer.back));
     }
 
     public void initialiseDistances(Object object){
