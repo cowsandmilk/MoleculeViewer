@@ -1562,7 +1562,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	//System.out.println("itemStateChanged " + ev);
 
-	if(ev.getStateChange() == ev.SELECTED){
+	if(ev.getStateChange() == JCItemEvent.SELECTED){
 
 	    if(false){
 		Object userData = folder.getUserData();

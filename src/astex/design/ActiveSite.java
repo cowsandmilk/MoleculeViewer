@@ -392,7 +392,7 @@ public class ActiveSite {
 	String command = null;
 	String commandPrefix = null;
 
-	for(int i = 0; i < map.MaximumContourLevels; i++){
+	for(int i = 0; i < astex.Map.MaximumContourLevels; i++){
             map.setContourLevel(i, startLevel + i);
             map.setContourDisplayed(i, true);
             map.setContourStyle(i, astex.Map.Lines);
@@ -1415,7 +1415,7 @@ public class ActiveSite {
 	colors[1] = "'0x69ff69'";
 	colors[2] = "'0xc3ffc3'";
 
-	for(int i = 0; i < map.MaximumContourLevels; i++){
+	for(int i = 0; i < astex.Map.MaximumContourLevels; i++){
             map.setContourLevel(i, startLevel - 2*i);
             map.setContourDisplayed(i, true);
             map.setContourStyle(i, astex.Map.Lines);

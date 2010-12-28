@@ -170,7 +170,7 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 	    if(newColorString != null){
 		int newColor = Color32.getColorFromName(newColorString);
 
-		if(newColor != userInterface.undefinedColor){
+		if(newColor != UserInterface.undefinedColor){
 		    String color = Color32.format(newColor);
 		    String command = "object '" + tmesh.getName() + "' color " + color + ";";
 		    mr.execute(command);

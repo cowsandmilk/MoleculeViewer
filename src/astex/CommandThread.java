@@ -65,7 +65,7 @@ class CommandThread extends Thread {
                 command = (String)commandQueue.elementAt(0);
                 commandQueue.removeElementAt(0);
 
-                p.setMoleculeRenderer(mr);
+                parser.setMoleculeRenderer(mr);
 
                 p.setScanner(l);
                 l.setInput(new StringReader(command));

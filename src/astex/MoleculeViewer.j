@@ -1299,8 +1299,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	key += (char)e.getKeyCode();
 
-	String modifiers = e.getKeyModifiersText(e.getModifiers());
-	key       = e.getKeyText(e.getKeyCode());
+	String modifiers = KeyEvent.getKeyModifiersText(e.getModifiers());
+	key       = KeyEvent.getKeyText(e.getKeyCode());
 
 	if(!modifiers.equals("")){
 	    key = modifiers + "+" + key;
@@ -1420,10 +1420,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    //System.out.println("emulate555 " + moleculeRenderer.renderer.emulate555);
 	}else if(c == 'a'){
 	    
-	    if(moleculeRenderer.pickMode != moleculeRenderer.ANGLE_PICK){
-		moleculeRenderer.setPickMode(moleculeRenderer.ANGLE_PICK);
+	    if(moleculeRenderer.pickMode != MoleculeRenderer.ANGLE_PICK){
+		moleculeRenderer.setPickMode(MoleculeRenderer.ANGLE_PICK);
 	    }else{
-		moleculeRenderer.setPickMode(moleculeRenderer.NORMAL_PICK);
+		moleculeRenderer.setPickMode(MoleculeRenderer.NORMAL_PICK);
 	    }
 	}else{
 	    redraw = false;

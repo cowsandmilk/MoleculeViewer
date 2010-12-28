@@ -170,7 +170,7 @@ public class Schematic {
 		widthInitialised[guideCount] = false;
 		colors[guideCount] = C5.getColor();
 		guides[guideCount].set(C5);
-		type[guideCount] = res.Sheet;
+		type[guideCount] = Residue.Sheet;
 		guideCount++;
 	    }
 	}

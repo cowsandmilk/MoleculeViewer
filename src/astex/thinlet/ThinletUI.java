@@ -1089,7 +1089,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
         String mapTemplate = readTemplate("/astex/thinlet/maptemplate.xml.properties");
 
-        for(int i = 0; i < map.MaximumContourLevels; i++){
+        for(int i = 0; i < astex.Map.MaximumContourLevels; i++){
             String contourTemplate = readTemplate("/astex/thinlet/contourtemplate.xml.properties");
             int color = map.getContourColor(i);
             String scolor = getColorString(color);
