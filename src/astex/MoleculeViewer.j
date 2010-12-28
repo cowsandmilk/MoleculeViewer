@@ -1302,7 +1302,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	String modifiers = KeyEvent.getKeyModifiersText(e.getModifiers());
 	key       = KeyEvent.getKeyText(e.getKeyCode());
 
-	if(!modifiers.equals("")){
+	if(modifiers.length() != 0){
 	    key = modifiers + "+" + key;
 	}
 

@@ -41,7 +41,7 @@ public class Util {
     }
 
     public static String replace(String s, String pattern, String replace){
-        if ( pattern == null || pattern.equals("") || s == null) {
+        if ( pattern == null || pattern.length() == 0 || s == null) {
             return s;
         }
         

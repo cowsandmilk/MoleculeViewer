@@ -334,7 +334,7 @@ public class ThinletOracle extends ThinletUI {
             colorHash = new Hashtable();
         }
 
-        if(name == null || name.equals("")){
+        if(name == null || name.length() == 0){
             return null;
         }
 
