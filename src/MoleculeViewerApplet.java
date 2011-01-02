@@ -14,7 +14,6 @@ import java.io.*;
 
 import astex.splitter.*;
 import astex.thinlet.*;
-import thinlet.*;
 
 /**
  * An applet container for the MoleculeViewer.
@@ -68,7 +67,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         getToolkit().sync();
         //print.f("thread=" + Thread.currentThread() + " " + initStep);
         try {
-            Thread.currentThread().sleep(20);
+            Thread.sleep(20);
         }catch(Exception e){
         }
     }
@@ -191,8 +190,8 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         //print.f("hello in paintSplashScreen " +initStep);
         //print.f("g " + g);
 
-        int width = size().width;
-        int height = size().height;
+        int width = getSize().width;
+        int height = getSize().height;
         int midx = width/2;
         int midy = height/2;
         int halfWidth = Math.min(barWidth/2, midx - 10);
@@ -608,18 +607,18 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         try {
 
             URL url = new URL(urlString);
-            DataInputStream dis = new DataInputStream(url.openStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;
             String lineSeparator =
                 java.lang.System.getProperty("line.separator");
 
-            while((line = dis.readLine()) != null){
+            while((line = br.readLine()) != null){
                 System.out.println("|" + line + "|");
                 contents.append(line);
                 contents.append(lineSeparator);
             }
             
-            dis.close();
+            br.close();
             
         }catch(Exception e){
             System.out.println("URLFetch - fetchNormal(): " +
@@ -677,7 +676,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 			alreadySelected = true;
 		    }
 
-		    selection.append("," + atom.getId());
+		    selection.append(",").append(atom.getId());
 		}
 	    }
 	}
@@ -696,9 +695,9 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
                 if(buf.length() > 0){
                     buf.append("|");
                 }
-                buf.append("" + atom.getX());
-                buf.append("," + atom.getY());
-                buf.append("," + atom.getZ());
+                buf.append("").append(atom.getX());
+                buf.append(",").append(atom.getY());
+                buf.append(",").append(atom.getZ());
             }
         }
 
