@@ -84,23 +84,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	panel = createModifyContainer();
 	tab_manager.addPage(new JCString("Modify"), panel);
 
-	// only put the x-ray tools in if the forcefield class
-	// is available. This is not part of the open source distribution
-	// and so will disable this interface in that version
-	try {
-		if(Class.forName("astex.xmt.Forcefield") != null){
-			panel = new astex.xmt.XMTUserInterface();
-			UserInterfacePanel xmtu = (UserInterfacePanel)panel;
-			xmtu.setMoleculeViewer(moleculeViewer);
-			String description = xmtu.getDescription();
-
-			tab_manager.addPage(new JCString(description), panel);
-		}
-	}catch(Exception e){
-	    System.out.println("exception " + e);
-	    //e.printStackTrace();
-	}
-
 	panel = createLightsContainer();
 	tab_manager.addPage(new JCString("Lights"), panel);
 
