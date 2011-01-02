@@ -4,7 +4,6 @@ package thinlet;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
 
 /**
  * <code>FrameLauncher</code> is a double buffered frame
