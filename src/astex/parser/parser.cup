@@ -26,7 +26,7 @@ parser code {:
 	public static Hashtable definitions = new Hashtable();
 :}
 
-terminal COLON, SEMI, LPAREN, RPAREN, DASH, COMMA, DOLLAR, LCURLY, RCURLY;
+terminal SEMI, LPAREN, RPAREN, LCURLY, RCURLY;
 terminal AND, OR, NOT;
 terminal ALL;
 terminal NONE;
@@ -118,7 +118,6 @@ terminal EXCLUDE;
 terminal PUSH;
 terminal POP;
 terminal PEEK;
-terminal INSTALL;
 terminal DEFINE;
 terminal TEXTURE;
 terminal LIGHT;
@@ -135,9 +134,6 @@ terminal UNDEFINE;
 terminal REPAINT;
 terminal ANIMATE;
 terminal ACTIVE_SITE;
-terminal MODELLING;
-terminal FORCEFIELD;
-terminal SKELETON;
 terminal PRINT;
 terminal ACTIVE;
 terminal ENVIRONMENT;
@@ -146,7 +142,6 @@ terminal FIXED;
 terminal HBOND;
 terminal SLIDE;
 terminal UPDATE;
-terminal RANGE;
 terminal DELETE;
 terminal EDIT;
 
@@ -201,11 +196,9 @@ non terminal remove_command;
 non terminal texture_command;
 non terminal schematic_command;
 non terminal animation_command;
-non terminal modelling_command;
 non terminal light_command;
 non terminal write_command;
 non terminal view_command;
-non terminal skeleton_command;
 non terminal hbond_command;
 non terminal active_site_command;
 
@@ -241,11 +234,9 @@ definition ::=
 	| surface_command
 	| schematic_command
 	| animation_command
-	| modelling_command
 	| light_command
 	| write_command
 	| view_command
-	| skeleton_command
 	| hbond_command
 	| active_site_command
 	;
@@ -286,7 +277,6 @@ selection_command ::=
 				a.setSelected(false);
 	    		}
 
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| INVERT selection:selectedAtoms
 		{:
@@ -300,15 +290,13 @@ selection_command ::=
 					a.setSelected(true);
 				}
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| DEFINE STRING:name selection:selectedAtoms
 		{:
 			System.out.println("storing definition " + name +
 				" atom count " + selectedAtoms.size());
 
-			Hashtable h = new Hashtable();
+			Hashtable<Atom,Atom> h = new Hashtable<Atom,Atom>();
 
 			int count = selectedAtoms.size();
 
@@ -1031,9 +1019,7 @@ miscellaneous_command ::=
 		{:
 			try {
 				URL url = new URL(urlName);
-				//System.out.println("opened url " + url);
-				DataInputStream dis = new DataInputStream(url.openStream());
-				//System.out.println("opened dis " + dis);
+				BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 				String line;
 				String contents = "";
 				String lineSeparator =
@@ -1041,7 +1027,7 @@ miscellaneous_command ::=
 
 				parser.urlContentsBuffer.setLength(0);
 
-				while((line = dis.readLine()) != null){
+				while((line = br.readLine()) != null){
 					//contents += line;
 					//contents += lineSeparator;
 					parser.urlContentsBuffer.append(line);
@@ -1049,15 +1035,10 @@ miscellaneous_command ::=
 					//System.out.println("saw line <" + line + ">");
 				}
 
-				//System.out.println("got end of file");
-
-				dis.close();
-
-				//System.out.println("closed dis");
+				br.close();
 
 				parser.urlContents = parser.urlContentsBuffer.toString();
 
-				//System.out.println("set return value");
 			}catch(Exception e){
 				System.out.println("error opening url: " + urlName);
 				System.out.println("" + e);
@@ -1128,19 +1109,6 @@ animation_command ::=
 			parser.renderer.moleculeViewer.handleAnimation(args);
 		:}
 	;
-	
-/*
-modelling_command ::=
-	  MODELLING arguments:args
-		{:
-			astex.xmt.XMT.execute(parser.renderer.moleculeViewer, args);
-		:}
-	| FORCEFIELD arguments:args
-		{:
-			astex.xmt.Forcefield.execute(parser.renderer.moleculeViewer, args);
-		:}
-	;
-*/
 
 light_command ::= LIGHT INTEGER:n arguments:args
 		{:
@@ -1161,16 +1129,6 @@ active_site_command ::= ACTIVE_SITE arguments:args
 		:}
 	;
 
-
-/*
-** This has been moved to a new style user command and is only called from proprietary astex code
-
-skeleton_command ::= SKELETON arguments:args
-		{:
-			astex.xmt.Skeleton.execute(parser.renderer.moleculeViewer, args);
-		:}
-	;
-*/
 
 schematic_command ::=
 	  SECSTRUC arguments:args selection:selectedAtoms
@@ -1497,7 +1455,7 @@ object_command ::=
 texture_command ::=
 	  TEXTURE LOAD STRING:name STRING:image
 		{:
-			Hashtable textureHash =
+			Hashtable<String,Texture> textureHash =
 				parser.renderer.renderer.textures;
 
 			if(textureHash.get(name) == null){
@@ -1745,7 +1703,7 @@ statement ::=
 
 string_list ::=
 	  STRING:s
-		{: Vector v = new Vector(); v.addElement(s); RESULT = v; :}
+		{: Vector<String> v = new Vector<String>(); v.addElement(s); RESULT = v; :}
 	| string_list:v STRING:s
 		{: v.addElement(s); RESULT = v; :}
 	;

@@ -9,14 +9,11 @@ import astex.*;
     return new Symbol(sym.EOF);
 %eofval}
 %%
-"-"		{ return new Symbol(sym.DASH); }
 ";"		{ return new Symbol(sym.SEMI); }
-":"		{ return new Symbol(sym.COLON); }
 "("		{ return new Symbol(sym.LPAREN); }
 ")"		{ return new Symbol(sym.RPAREN); }
 "{"		{ return new Symbol(sym.LCURLY); }
 "}"		{ return new Symbol(sym.RCURLY); }
-"$"		{ return new Symbol(sym.DOLLAR); }
 
 ">"		{ return new Symbol(sym.OPERATOR, new Integer(Selection.GT)); }
 ">="		{ return new Symbol(sym.OPERATOR, new Integer(Selection.GE)); }
@@ -99,13 +96,11 @@ import astex.*;
 "id"		{ return new Symbol(sym.ID); }
 "increase"	{ return new Symbol(sym.INCREASE); }
 "insertion"	{ return new Symbol(sym.INSERTION); }
-"install"	{ return new Symbol(sym.INSTALL); }
 "invert"	{ return new Symbol(sym.INVERT); }
 "ions"		{ return new Symbol(sym.IONS); }
 "false"		{ return new Symbol(sym.FALSE); }
 "fetch"		{ return new Symbol(sym.FETCH); }
 "fixed"		{ return new Symbol(sym.FIXED); }
-"forcefield"	{ return new Symbol(sym.FORCEFIELD); }
 "graph"		{ return new Symbol(sym.GRAPH); }
 "hbond"		{ return new Symbol(sym.HBOND); }
 "label"		{ return new Symbol(sym.LABEL); }
@@ -116,7 +111,6 @@ import astex.*;
 "linewidth"	{ return new Symbol(sym.LINEWIDTH); }
 "lipophilicity"	{ return new Symbol(sym.LIPOPHILICITY); }
 "load"		{ return new Symbol(sym.LOAD); }
-"modelling"	{ return new Symbol(sym.MODELLING); }
 "molecule"	{ return new Symbol(sym.MOLECULE); }
 "molexact"	{ return new Symbol(sym.MOLEXACT); }
 "map"		{ return new Symbol(sym.MAP); }
@@ -133,7 +127,6 @@ import astex.*;
 "property"	{ return new Symbol(sym.PROPERTY); }
 "push"		{ return new Symbol(sym.PUSH); }
 "radius"	{ return new Symbol(sym.RADIUS); }
-"range"		{ return new Symbol(sym.RANGE); }
 "rectangular"	{ return new Symbol(sym.RECTANGULAR); }
 "repaint"	{ return new Symbol(sym.REPAINT); }
 "residue"	{ return new Symbol(sym.RESIDUE); }
@@ -145,7 +138,6 @@ import astex.*;
 "sequential"	{ return new Symbol(sym.SEQUENTIAL); }
 "set"		{ return new Symbol(sym.SET); }
 "simple"	{ return new Symbol(sym.SIMPLE); }
-"skeleton"	{ return new Symbol(sym.SKELETON); }
 "slide"		{ return new Symbol(sym.SLIDE); }
 "solid"		{ return new Symbol(sym.SOLID); }
 "solvent"	{ return new Symbol(sym.SOLVENT); }
