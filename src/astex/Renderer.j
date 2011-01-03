@@ -121,9 +121,6 @@ public class Renderer {
     /** The integer front plane. */
     public int frontClip = 0;
 
-    /** The number of frames we have drawn. */
-    private int frameCount = 0;
-
     /** Is debugging information enabled? */
     public boolean debug = false;
 
@@ -158,7 +155,7 @@ public class Renderer {
     public DynamicArray lights = new DynamicArray(8);
 
     /** The list of textures. */
-    public Hashtable textures = new Hashtable();
+    public Hashtable<String,Texture> textures = new Hashtable<String,Texture>(11);
 
     /** The current texture. */
     public Texture texture = null;
@@ -221,11 +218,6 @@ public class Renderer {
 
     /** The background colour. */
     private int background = 0xff000000;
-
-    /** Components of the background for fast depth cueing. */
-    private int rbackground = 0;
-    private int gbackground = 0;
-    private int bbackground = 0;
 
     /** Gradient at top of screen. */
     private int gradientTop    = 0x000000;
@@ -535,8 +527,6 @@ public class Renderer {
 
 	setAmbient(Color32.pack(ar, ag, ab));
 
-	lineRadius = Settings.getDouble("config", "maplineradius", 0.02);
-
 	drawImageLogo = Settings.getBoolean("config", "draw.logo", false);
 
     }
@@ -752,7 +742,7 @@ public class Renderer {
 
 	if(texName != null && texName.equals("off") == false){
 
-	    tex = (Texture)textures.get(texName);
+	    tex = textures.get(texName);
 
 	    if(tex == null){
 		System.out.println("applyTexture: couldn't find texture " +
@@ -824,10 +814,6 @@ public class Renderer {
 
 	zbmin = backClip;
 
-	rbackground = Color32.getRed(background);
-	gbackground = Color32.getGreen(background);
-	bbackground = Color32.getBlue(background);
-
         // slightly faster even though it goes backwards
         for(i = pc; --i >= 0;){
             zb[i] = zbmin;
@@ -880,32 +866,6 @@ public class Renderer {
 	stransrgb.removeAllElements();
 	stransp.removeAllElements();
 	stransid.removeAllElements();
-    }
-
-    /** Fancy clear buffers. */
-    private void clearBuffers2(){
-	int zb[] = zbuffer;
-	int pb[] = pbuffer;
-	int zbmin = Integer.MIN_VALUE;
-	int entry = 0;
-	int i, j, blue;
-
-	backClip = (int)(back * ZFixedBits);
-	frontClip = (int)(front * ZFixedBits);
-
-	zbmin = backClip;
-
-	for(j = 0; j < pixelHeight; j++){
-	    blue = (int)(255*(double)(pixelHeight-j)/(double)pixelHeight);
-	    if(blue > 255) blue = 255;
-	    if(blue < 0) blue = 0;
-	    int color = Color32.pack(0, 0, blue);
-	    for(i = 0; i < pixelWidth; i++){
-		zb[entry] = zbmin;
-		pb[entry] = color;
-		entry++;
-	    }
-	}
     }
 
     private boolean depthMapInitialised = false;
@@ -962,7 +922,7 @@ public class Renderer {
 
 	    int range = zmax - zmin;
 	    int shade;
-	    range = range >> 8;
+	    range >>= 8;
 
 	    // background is white, fog to white
 	    if(background == Color32.white){
@@ -1062,10 +1022,9 @@ public class Renderer {
 
 	drawObjects(FinalRenderPass);
 
-	//if(drawImageLogo){
-
-	drawImage();
-	//}
+	if(drawImageLogo){
+	    drawImage();
+	}
     }
 
     /** Check sum validity stuff. */
@@ -1202,9 +1161,6 @@ public class Renderer {
 	}
     }
 
-    /** The transparent sphere we are drawing. */
-    private int transparentSphere = -1;
-
     /** Draw the tmesh objects. */
     public void drawObjects(){
 
@@ -1215,20 +1171,18 @@ public class Renderer {
 	// first pass, draw opaque objects
 	for(int i = 0; i < objects.size(); i++){
 	    Tmesh tm = (Tmesh)objects.get(i);
-	    if(tm.getRenderPass() == RenderPass){
-		if(tm.isVisible() && tm.transparency == 255){
-		    renderObject(tm);
-		}
+	    if(tm.getRenderPass() == RenderPass &&
+	       tm.isVisible() && tm.transparency == 255){
+		renderObject(tm);
 	    }
 	}
 
 	// third pass, draw transparent objects
 	for(int i = 0; i < objects.size(); i++){
 	    Tmesh tm = (Tmesh)objects.get(i);
-	    if(tm.getRenderPass() == RenderPass){
-		if(tm.isVisible() && tm.transparency != 255){
-		    renderObject(tm);
-		}
+	    if(tm.getRenderPass() == RenderPass &&
+	       tm.isVisible() && tm.transparency != 255){
+		renderObject(tm);
 	    }
 	}
 
@@ -1243,10 +1197,9 @@ public class Renderer {
     private void drawObjects(int pass){
 	for(int i = 0; i < objects.size(); i++){
 	    Tmesh tm = (Tmesh)objects.get(i);
-	    if(tm.getRenderPass() == pass){
-		if(tm.isVisible()){
-		    renderObject(tm);
-		}
+	    if(tm.getRenderPass() == pass &&
+	       tm.isVisible()){
+		renderObject(tm);
 	    }
 	}
     }
@@ -1436,7 +1389,6 @@ public class Renderer {
         double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
         double mx10 = m.x10, mx11 = m.x11, mx12 = m.x12;
         double mx20 = m.x20, mx21 = m.x21, mx22 = m.x22;
-        double mx30 = m.x30, mx31 = m.x31, mx32 = m.x32;
         double xx = x*mx00 + y*mx10 + z*mx20;
         double yy = x*mx01 + y*mx11 + z*mx21;
         double zz = x*mx02 + y*mx12 + z*mx22;
@@ -1468,13 +1420,10 @@ public class Renderer {
 	double rx00 = r.x00, rx01 = r.x01, rx02 = r.x02;
 	double rx10 = r.x10, rx11 = r.x11, rx12 = r.x12;
 	double rx20 = r.x20, rx21 = r.x21, rx22 = r.x22;
-	double rx30 = r.x30, rx31 = r.x31, rx32 = r.x32;
 
 	double x, y, z, xx, yy, zz;
 
 	boolean transformNormals = false;
-
-	double fnb = FFixedBits * NormalSamples;
 
 	int i;
 
@@ -1561,27 +1510,11 @@ public class Renderer {
 		nyt[i] =  (int)(yy * FFixedBits);
 		nzt[i] =  (int)(zz * FFixedBits);
 	    
-		if(frontFaceOnly){
-		    if(nzt[i] < 0.0){
-			clipped[i] |= NormalClip;
-		    }
+		if(frontFaceOnly && nzt[i] < 0.0){
+		    clipped[i] |= NormalClip;
 		}
 	    }
 	}
-
-        if(false){
-            for(int t = 0; t < tmesh.nt; t++){
-                drawString(xlocal[tmesh.t0[t]],
-                           ylocal[tmesh.t0[t]],
-                           zlocal[tmesh.t0[t]], 0.1, Color32.white, "" + tmesh.t0[t]);
-                drawString(xlocal[tmesh.t1[t]],
-                           ylocal[tmesh.t1[t]],
-                           zlocal[tmesh.t1[t]], 0.1, Color32.white, "" + tmesh.t1[t]);
-                drawString(xlocal[tmesh.t2[t]],
-                           ylocal[tmesh.t2[t]],
-                           zlocal[tmesh.t2[t]], 0.1, Color32.white, "" + tmesh.t2[t]);
-            }
-        }
 
 	// multiply the texture coordinates	
 	if(texture != null && ulocal != null){
@@ -1594,11 +1527,6 @@ public class Renderer {
 		// apply u,v scales and offsets
 		double utmp = (uscale * (ulocal[i] - uoffset))* 255;
 		double vtmp = (vscale * (vlocal[i] - voffset))* 255;
-
-		//if((int)utmp < 0) clipped[i] |= UMinClip;
-		//if((int)utmp >= 255) clipped[i] |= UMaxClip;
-		//if(utmp < 0.0) utmp = 0.0;
-		//if(utmp > 255.0) utmp = 255.0;
 
 		if((int)vtmp < 0) clipped[i] |= VMinClip;
 		if((int)vtmp >= 255) clipped[i] |= VMaxClip;
@@ -1625,19 +1553,8 @@ public class Renderer {
     private Vertex vB = null;
     private Vertex vC = null;
     private Vertex vD = null;
-    //private int A[] = null;
-    //private int B[] = null;
-    //private int C[] = null;
-    //private int D[] = null;
 
-    
-
-    private int totalSpans = 0;
-    private int spanLength = 0;
-    private int spans[] = new int[100];
     private int v0, v1, v2, temp;
-
-    private int components = 10;
 
     private boolean totallyOnScreen = false;
 
@@ -1785,7 +1702,6 @@ public class Renderer {
     }
 
     private int zRange     = -1;
-    private int pixelShade = -1;
 
     /** Render a tmesh that is made of triangles. */
     private void renderTriangleObject(Tmesh tmesh){
@@ -1793,8 +1709,6 @@ public class Renderer {
 	int tri0[] = tmesh.t0;
 	int tri1[] = tmesh.t1;
 	int tri2[] = tmesh.t2;
-	double shadowZscale = getOverallScale() / ZFixedBits;
-	//double shadowZscale = getOverallScale();
 	int i;
 
 	ensureDisplayList(tmesh);
@@ -1807,26 +1721,12 @@ public class Renderer {
 	    calculateLightMap();
 	}
 
-	components = 10;
-
-	if(phong != true){
-	    components = 10;
-	}
-
-	if((renderMode & ModeTexture) != 0){
-	    components = 10;
-	}
-
 	if((renderMode & ModeTriangle) != 0){
 	    colorTriangle = true;
 	    phong = false;
 	}else{
 	    colorTriangle = false;
 	    phong = true;
-	}
-
-	if((renderMode & ModeVertex) != 0){
-	    components = 10;
 	}
 
 	zRange = (frontClip - backClip) >> 8;
@@ -1866,11 +1766,10 @@ public class Renderer {
 
 	    trianglesRendered++;
 
-	    if(shadowMode == ShadowsOn && triangles > 100000){
-		if((trianglesRendered % 10000) == 0){
-		    FILE.out.print("%7d/", trianglesRendered);
-		    FILE.out.print("%d\n", triangles);
-		}
+	    if(shadowMode == ShadowsOn && triangles > 100000 &&
+	       (trianglesRendered % 10000) == 0){
+		FILE.out.print("%7d/", trianglesRendered);
+		FILE.out.print("%d\n", triangles);
 	    }
 
 	    /*
@@ -1986,20 +1885,7 @@ public class Renderer {
 		    // don't return, need to keep processing other triangles in this loop
 		    continue;
 		}else if(shadowMode == ShadowsOff){
-
-		    if(false){
-			applyTransform(tmesh.x[v0], tmesh.y[v0], tmesh.z[v0], cx0);
-			applyTransform(tmesh.x[v1], tmesh.y[v1], tmesh.z[v1], cx1);
-			applyTransform(tmesh.x[v2], tmesh.y[v2], tmesh.z[v2], cx2);
-
-			transformNormal(tmesh.nx[v0], tmesh.ny[v0], tmesh.nz[v0], nx0);
-			transformNormal(tmesh.nx[v1], tmesh.ny[v1], tmesh.nz[v1], nx1);
-			transformNormal(tmesh.nx[v2], tmesh.ny[v2], tmesh.nz[v2], nx2);
-
-			renderAccurateTriangle();
-		    }else{
-			renderTriangle();
-		    }
+		    renderTriangle();
 		}
 	    }
 	}
@@ -2021,9 +1907,6 @@ public class Renderer {
     private double eyedir[] = new double[3];
 
     private int textureMap[] = null;
-
-    private int triangleRaysCast = 0;
-    private int triangleRaysIntersected = 0;
 
     /** Analytical triangle rendering for shadow casting. */
     private void renderAccurateTriangle(){
@@ -2062,14 +1945,11 @@ public class Renderer {
 
 	    for(int x = pxmin; x <= pxmax; x++){
 		eye[0] = x;
-		triangleRaysCast++;
 		if(ShadowCache.intersect_triangle(eye, eyedir, cx0, cx1, cx2, tuv) == 1){
 		    if(tuv[0] >= 0.0){
 			int i = INDEX(x, y);
 			double z = eye[2] + tuv[0] * eyedir[2];
 			int iz = (int)(z * ZFixedBits);
-
-			triangleRaysIntersected++;
 
 			if(iz >= backClip && iz <= frontClip && iz >= zbuffer[i]){
 			    double oneuv = 1. - tuv[1] - tuv[2];
@@ -2090,10 +1970,6 @@ public class Renderer {
 	    }
 	}
     }
-
-    private int rp_drgb[]      = new int[3];
-    private int rp_srgb[]      = new int[3];
-    private int rp_shadowrgb[] = new int[3];
 
     /** Perform rendering operations on a single pixel. */
     private void renderPixel(double x, double y, double z, int iz,
@@ -2196,7 +2072,6 @@ public class Renderer {
 
 	if(shadowed == false){
 	    c = Color32.multiply(c, diffuseMap[lutID]);
-	    //c = Color32.multiply(c, rp_drgb[0], rp_drgb[1], rp_drgb[2]);
 	    int s = highlightMap[lutID];
 	    // if we need transparency put it in here
 	    // assume that render order is ok
@@ -2206,7 +2081,6 @@ public class Renderer {
 	    }
 	
 	    c = Color32.add(c, s);
-	    //c = Color32.add(c, Color32.pack(rp_srgb[0], rp_srgb[1], rp_srgb[2]));
 	} else{
 	    c = Color32.multiply(c, shadowMap[lutID]);
 	    // if we need transparency put it in here
@@ -2215,8 +2089,6 @@ public class Renderer {
 	    //System.out.println("transparency " + transparency);
 		c = Color32.blend(c, pbuffer[ipix], transparency);
 	    }
-	    
-	    //c = Color32.multiply(c, rp_shadowrgb[0], rp_shadowrgb[1], rp_shadowrgb[2]);
 	}
 	
 	// apply fogging.
@@ -2228,29 +2100,8 @@ public class Renderer {
 	pbuffer[ipix] = c;
     }
 
-    
-    /** An irregular shapped triangle. */
-    private static final int Irregular = 0;
-
-    /** A flat topped triangle. */
-    private static final int FlatTop = 1;
-
-    /** A flat bottomed triangle. */
-    private static final int FlatBottom = 2;
-
     /** Render a triangle that is a component of a tmesh. */
     private void renderTriangle(){
-	int i;
-	int triCase = Irregular;
-
-	//System.out.println("phong " + phong);
-	//System.out.println("texture " + texture);
-
-	if(vertexA.y == vertexB.y){
-	    triCase = FlatTop;
-	}else if(vertexD.y == vertexB.y){
-	    triCase = FlatBottom;
-	}
 
 #ifdef STATISTICS
 	renderTriangleCalls++;
@@ -2615,8 +2466,6 @@ public class Renderer {
     }
 #endif
 
-    private Tmesh cylinder = new Tmesh();
-
     private double cx0[] = new double[3];
     private double cx1[] = new double[3];
     private double cx2[] = new double[3];
@@ -2627,14 +2476,6 @@ public class Renderer {
 
     private double ray1[] = new double[3];
     private double ray2[] = new double[3];
-
-    private double i1[] = new double[3];
-    private double i2[] = new double[3];
-
-    private int scx1[] = new int[3];
-    private int scx2[] = new int[3];
-
-    private double afT[] = new double[2];
 
     private double cylPoint[] = new double[3];
     private double cylNormal[] = new double[3];
@@ -2746,16 +2587,10 @@ public class Renderer {
 	int pb[] = pbuffer;
 	int zb[] = zbuffer;
 
-	int zeroSpecular = 0;
-	int nonZeroSpecular = 0;
-
-	//rgb1shade = Color32.add(rgb1shade, ambient);
-
 	for(int j = pymin; j < pymax; j++){
 	    ray1[1] = ray2[1] = j;
 	    int px = INDEX(pxmin, j);
 
-	    int lastIntCount = 0;
 	    for(int i = pxmin; i < pxmax; i++){
 		ray1[0] = ray2[0] = i;
 
@@ -2801,19 +2636,9 @@ public class Renderer {
 		    }
 		}
 
-		//if(intCount == 0 && lastIntCount != 0){
-		//    break;
-		//}
-
-		lastIntCount = intCount;
 		px++;
 	    }
 	}
-
-	//System.out.println("sqrtCount "+ Geometry.sqrtCount);
-	//System.out.println("one hit " + oneHit);
-	//System.out.println("two hit " + twoHit);
-
     }
 
     /** The sphere colors. */
@@ -2843,9 +2668,7 @@ public class Renderer {
 	}
 
 	int rs = (int)rsd;
-	//Log.info("rs    %d", rs);
 
-	int r2 = rs * rs;
 	int pixel = 0;
 	int lutID;
 	int c, s;
@@ -2860,11 +2683,8 @@ public class Renderer {
 	for(int iy = -rs; iy < rs; iy++){
 	    double ny = (double)iy/rs;
 	    int iny = (int)(NormalSamples + ny * NormalSamples);
-	    int iy2 = iy * iy;
 	    for(int ix = -rs; ix < rs; ix++){
-		int ix2 = ix * ix;
 		double nx = (double)ix/rs;
-		//if(ix2 + iy2 < r2){
 		// makes spheres `rounder'
 		if(ny*ny + nx*nx < 0.97){
 		    int inx = (int)(NormalSamples + nx * NormalSamples);
@@ -2931,7 +2751,7 @@ public class Renderer {
 	    return;
 	}
 
-	int xs, ys, rs, rs2, rsrs;
+	int xs, ys, rs, rsrs;
 	double zs;
 	int zback, zfront;
 	Matrix m = overallMatrix;
@@ -2967,7 +2787,6 @@ public class Renderer {
 	    return;
 	}
 
-	rs2 = rs * rs;
 	rsrs = 2 * rs;
 	int ymin = -rs, ymax = rs;
 	int xmin = -rs, xmax = rs;
@@ -3001,8 +2820,6 @@ public class Renderer {
 	if(xs < rs) xmin = -xs;
 	if(pixelHeight - ys < rs) ymax = pixelHeight - ys;
 	if(pixelWidth - xs < rs) xmax = pixelWidth - xs;
-
-	boolean back = false;
 
 	if(zscale < frontClip){
 	    for(int iy = ymin; iy < ymax; iy++){
@@ -3123,10 +2940,6 @@ public class Renderer {
 	double overallScale = getOverallScale();
 	double overallScale1 = 1./getOverallScale();
 	double rt = overallScale * r;
-	boolean top = true;
-
-	int hit = 0;
-	int miss = 0;
 
 	applyTransform(x, y, z, cx1);
 
@@ -3143,8 +2956,6 @@ public class Renderer {
 	double ty = cx1[1];
 	double tz = cx1[2];
 
-        int ambientOcclusion = 128;
-
 	// store the transformed coordinates as
 	// we will be shadowing intersection points
 	// from the transformed spheres
@@ -3153,45 +2964,6 @@ public class Renderer {
 	    return;
 	}else if(shadowMode == ShadowsOn){
 	    ShadowCache.prepareSphereCacheList(tx, ty, tz, rt, false);
-
-            if(false){
-                int occluded = 0;
-
-                double rt22 = 4.0 * rt;
-                rt22 *= rt22;
-                
-                int ns = ShadowCache.scachex.size();
-                
-                for(int s = 0; s < ns; s++){
-                    double dx = tx - ShadowCache.scachex.get(s);
-                    double dy = ty - ShadowCache.scachey.get(s);
-                    double dz = tz - ShadowCache.scachez.get(s);
-                    
-                    double d2 = dx*dx + dy*dy + dz*dz;
-                    
-                    if(d2 < rt22){
-                        occluded++;
-                    }
-                }
-                
-                //System.out.println("occluded " + occluded);
-                
-                int maxOcclusion = 80;
-                int minOcclusion = 20;
-                
-                if(occluded > maxOcclusion) occluded = maxOcclusion;
-                if(occluded < minOcclusion) occluded = minOcclusion;
-                
-                ambientOcclusion = (127-64) +
-                    (int)((128 + 64)*
-                          ((double)(maxOcclusion - occluded)/(maxOcclusion - minOcclusion)));
-                
-                if(ambientOcclusion > 255) ambientOcclusion = 255;
-                
-                rgb = Color32.scale(rgb, ambientOcclusion);
-
-                //System.out.println("ambientOcclusion " + ambientOcclusion);
-            }
 	}
 
 	int pxmin = (int)(tx - rt - 3);
@@ -3213,7 +2985,6 @@ public class Renderer {
 
 	double r2 = rt * rt;
 	double r1 = 1./rt;
-	int clipColor = (rgb>>2)&0x3F3F3F;
 
 	int cm[] = colorMap;
 
@@ -3225,7 +2996,6 @@ public class Renderer {
 	    sn1 *= r1;
 	    int iny = (int)(NormalSamples - sn1 * NormalSamples);
 	    iny <<= NormalBits;
-	    int lastIntCount = 0;
 
 	    for(int i = pxmin; i < pxmax; i++){
 		double dx = i - tx;
@@ -3251,8 +3021,7 @@ public class Renderer {
 			if(izpos > zb[px] && izpos > backClip &&
 			   izpos < frontClip){
 			    
-			    if(true || shadowMode == ShadowsOff ||
-			       ShadowCache.pointInSphere(i, j, zp) == false){
+			    {
 				double sn0 = dx * r1;
 				int inx = (int)(NormalSamples + sn0 * NormalSamples);
 				int lutID = inx + iny;
@@ -3478,11 +3247,11 @@ public class Renderer {
 	}
 
 	if(string3d == true){
-	    drawHersheyString(x, y, z, zoff, 0.5, color, string);
+	    drawHersheyString(x, y, z, zoff, string);
 	}else{
 	    applyTransform(x, y, z, tix);
 	    drawBitmapString((int)tix[0], (int)tix[1], (int)(tix[2]*ZFixedBits),
-			     zoff, color, string);
+			     zoff, string);
 	}
     }
 
@@ -3492,7 +3261,7 @@ public class Renderer {
 
     /** Draw a string at the specified point. */
     private void drawBitmapString(int x, int y, int z, double zoff,
-				  int color, String string){
+				  String string){
 
 	// apply the z-offset
 	z += (int)(zoff * ZFixedBits);
@@ -3655,46 +3424,12 @@ public class Renderer {
 			    }
 			}
 		    }
-		    
-		    if(false){
-			if(overlay){
-			    if(samples > 1){
-				for(int ay = 0; ay < samples; ay++){
-				    for(int ax = 0; ax < samples; ax++){
-					setPixel(xOrigin + samples * x + ax,
-						 yOrigin + samples * y + ay, color);
-				    }
-			    }
-			    }else{
-				setPixel(xOrigin + x, yOrigin + y, color);
-			    }
-			}else{
-			    if(samples > 1){
-				for(int ay = 0; ay < samples; ay++){
-				    for(int ax = 0; ax < samples; ax++){
-					setPixel(xOrigin + samples * x + ax,
-						 yOrigin + samples * y + ay, zOrigin,
-						 color);
-				    }
-				}
-			    }else{
-				setPixel(xOrigin + x, yOrigin + y, zOrigin, color);
-			    }
-			}
-		    }
                 }
             }
-	    //System.out.println("");
         }
 
 	
 	return samples * (bitmapWidth + standardLeading);
-
-	//if(antialias){
-	    //return 2 * (bitmapWidth + standardLeading);
-	//}else{
-	//return bitmapWidth + standardLeading;
-	//}
     }
 
     /** Some scaling values for mapping hershey to Angstroms. */
@@ -3712,11 +3447,7 @@ public class Renderer {
     /** Draw a string using a hershey font. */
     private void drawHersheyString(double x, double y, double z,
 				   double zoff,
-				   double size,
-				   int color, String string){
-	//stringJustification = JustifyDefault;
-	//stringColor = color;
-
+				   String string){
         // Mike, can you say matrix?
 
 	// construct on screen orthogonal vector set
@@ -3830,7 +3561,7 @@ public class Renderer {
 		    }
 
 		    double xshift = drawHersheyChar3d(x, y, z, zoff,
-						      size, c, hersheyFont, shade,
+						      c, hersheyFont, shade,
 						      pass == 0 ? true : false,
 						      fontMin, fontMax);
 
@@ -3852,8 +3583,7 @@ public class Renderer {
 
     /** Draw a single hershey font char. */
     private double drawHersheyChar3d(double x, double y, double z,
-				     double zoff, 
-				     double size,
+				     double zoff,
 				     char c, DynamicArray font,
 				     int shade,
 				     boolean measure,
@@ -3934,11 +3664,11 @@ public class Renderer {
     }
 
     /** Where the character data is stored. */
-    private Hashtable hersheyHash = new Hashtable();
+    private Hashtable<String,DynamicArray> hersheyHash = new Hashtable<String,DynamicArray>();
 
     /** Make sure we got the hershey fonts loaded. */
     private DynamicArray getHersheyFont(String name){
-	DynamicArray hersheyFont = (DynamicArray)hersheyHash.get(name);
+	DynamicArray hersheyFont = hersheyHash.get(name);
 
 	if(hersheyFont == null){
 	    String hersheyFontName = Settings.getString("fonts", name);
@@ -3973,7 +3703,6 @@ public class Renderer {
 
     /** Set up the font and offsets for a string rendering. */
     private void setupString(String s, double charOffsets[]){
-	String fontname     = null;
 	charOffsets[0]      = 0.0;
 	charOffsets[1]      = 0.0;
 	charOffsets[2]      = 0.0;
@@ -4038,7 +3767,7 @@ public class Renderer {
 			    }else if(option.equals("zoff")){
 				charOffsets[2] = FILE.readDouble(bits[1]);
 			    }else if(option.equals("font")){
-				fontname = bits[1];
+				
 			    }else if(option.equals("3d")){
 				string3d = bits[1].startsWith("t");
 			    }else{
@@ -4048,17 +3777,13 @@ public class Renderer {
 		    }
 		}else{
 		    if(tokens.length == 1){
-			// just the font name.
-			fontname = tokens[0];
+			
 		    }else if(tokens.length == 2){
 			charOffsets[0] = FILE.readDouble(tokens[0]);
 			charOffsets[1] = FILE.readDouble(tokens[1]);
 		    }else if(tokens.length == 3){
 			charOffsets[0] = FILE.readDouble(tokens[0]);
 			charOffsets[1] = FILE.readDouble(tokens[1]);
-			fontname = tokens[2];
-		    }else{
-			//Log.error("must be 1, 2 or 3 comma separated tokens in format");
 		    }
 		}
 	    }
@@ -4077,7 +3802,7 @@ public class Renderer {
     }
 
     /** Hash of the bitmap fonts that we have loaded. */
-    private Hashtable bitmapFonts = new Hashtable();
+    private Hashtable<String,byte[]> bitmapFonts = new Hashtable<String,byte[]>();
 
     /** Look up a font from the bitmapfont properties. */
     private byte[] getFont(String name){
@@ -4086,7 +3811,7 @@ public class Renderer {
 	    name = Settings.getString("fonts", "default");
 	}
 	
-	byte font[] = (byte [])bitmapFonts.get(name);
+	byte font[] = bitmapFonts.get(name);
 
 	if(font == null){
 	    font = new byte[512*512];
@@ -4176,12 +3901,6 @@ public class Renderer {
         return 0;
     }
 
-    /*
-     * Draw lines in the renderer.
-     */
-
-    private double lineRadius = -1.0;
-
     // activate the code that does antialiased line drawing...
     //#define AA
 
@@ -4220,18 +3939,8 @@ public class Renderer {
 	int z2 = zt[v2];
 
 	int zc = (z1 + z2)/2;
-	int scale = 255;
 
 	if(!depthcue){
-	    if(zc > frontClip){
-		scale = 255;
-	    }else if(zc < backClip){
-		scale = 0;
-	    }else{
-		scale = (int)(255 * (double)(zc - backClip)/
-			      (frontClip - backClip));
-	    }
-
 	    rgb1shade = depthCueColor(rgb1, zc);
 	    if(rgb1 != rgb2){
 		rgb2shade = depthCueColor(rgb2, zc);
@@ -4684,16 +4393,16 @@ public class Renderer {
 	   zb[pixelIndex] = zz; pb[pixelIndex] = c;}
 
 #define SET_PIXEL(p,z,c) \
-        SET_PIXEL2(x,y,z,c); \
-        SET_PIXEL2(x+1,y,z,c); \
-        SET_PIXEL2(x,y+1,z,c); \
-        SET_PIXEL2(x-1,y,z,c); \
-        SET_PIXEL2(x,y-1,z,c); \
+        SET_PIXEL2(x,y,z,c) \
+        SET_PIXEL2(x+1,y,z,c) \
+        SET_PIXEL2(x,y+1,z,c) \
+        SET_PIXEL2(x-1,y,z,c) \
+        SET_PIXEL2(x,y-1,z,c) \
         if(width == 3){ \
-          SET_PIXEL2(x+1,y+1,z,c); \
-          SET_PIXEL2(x-1,y+1,z,c); \
-          SET_PIXEL2(x-1,y-1,z,c); \
-          SET_PIXEL2(x+1,y-1,z,c); \
+          SET_PIXEL2(x+1,y+1,z,c) \
+          SET_PIXEL2(x-1,y+1,z,c) \
+          SET_PIXEL2(x-1,y-1,z,c) \
+          SET_PIXEL2(x+1,y-1,z,c) \
         }
 
     /**
@@ -4763,23 +4472,6 @@ public class Renderer {
 	}
     }
 
-    /** Draw a tmesh object as a collection of points. */
-    private void drawPointObject(Tmesh tmesh){
-	int np = tmesh.np;
-
-	for(int i = 0; i < np; i++){
-	    int x = xt[i] >> FixedBits;
-	    int y = yt[i] >> FixedBits;
-	    int z = zt[i] >> FixedBits;
-	    
-	    if(x >= 0 && x < pixelWidth &&
-	       y >= 0 && y < pixelHeight){
-		int pos = INDEX(x, y);
-		pbuffer[pos] = Color32.white;
-	    }
-	}
-    }
-
     /** Draw object as collection of lines. */
     private void drawLineObject(Tmesh tm){
 	int nt = tm.nt;
@@ -4824,9 +4516,6 @@ public class Renderer {
     public void publicRedraw(){
     }
 
-    /** Variable for recording timing info. */
-    private long then = 0;
-
     /** The antialiasing pixel buffer. */
     private int apbuffer[] = null;
 
@@ -4841,7 +4530,6 @@ public class Renderer {
 
     private int realw = 0;
     private int realh = 0;
-    private int realPixelCount = 0;
 
     /** Initialise antialiasing. */
     private void setupAntiAlias(){
@@ -4884,10 +4572,6 @@ public class Renderer {
 
     /** Redraw the image. */
     public void redraw(){
-
-	triangleRaysIntersected = 0;
-	triangleRaysCast        = 0;
-
 	if(shadowMode == ShadowsAccumulate){
 	    ShadowCache.clearShadowCaches();
 	}else if(shadowMode == ShadowsOn){
@@ -4903,13 +4587,7 @@ public class Renderer {
 
 	privateRedraw();
 	
-	//drawObjects();
-
 	publicRedraw();
-
-	//postProcess();
-
-	frameCount++;
     }
 
     /** Draw the logo if there is one displayed. */
@@ -4928,12 +4606,8 @@ public class Renderer {
 
     /** Draw the status string if there is one displayed. */
     private void drawStatusString(){
-        if(displayStatusString){
-            if(statusString != null){
-                //g.setColor(Color.white);
-                drawDirectString(3, pixelHeight - 3, Color32.white, statusString);
-                //g.drawString(statusString, 3, height - 3);
-            }
+        if(displayStatusString && statusString != null){
+	    drawDirectString(3, pixelHeight - 3, Color32.white, statusString);
         }
     }
 
@@ -5079,7 +4753,7 @@ public class Renderer {
 	int gcomp = (color>>8) & 255;
 	int bcomp = color & 255;
 	int rint, gint, bint;
-	int pixel, overflow, c, s;
+	int pixel, c, s;
 	int dcolor;
 
 	int dmap[] = diffuseMap, smap[] = highlightMap;
@@ -5142,17 +4816,8 @@ public class Renderer {
 	}
     }
 
-    private boolean firstTime = true;
-
     /** Calculate the light map for the current lights. */
     protected void calculateLightMap(){
-	if(false){
-	    if(firstTime){
-		System.out.println("initialising light tables... " +
-				   MapEntries + " Entries");
-	    }
-	}
-
 	// clear out any sphere bit map caches.
 	for(int i = 0; i < MaxCache; i++){
 	    szCache[i] = null;
@@ -5168,7 +4833,7 @@ public class Renderer {
 
 	//calculateSphereMap();
 	
-	double dnx, dny, dnz, angle;
+	double dnx, dny, dnz;
 
 	int tableEntry = 0;
 
@@ -5214,13 +4879,6 @@ public class Renderer {
 	}
 
 	lightMapCalculated = true;
-
-	if(false){
-	    if(firstTime){
-		System.out.println("done");
-		firstTime = false;
-	    }
-	}
     }
 
     public void setPowFactor(double d){
@@ -5336,11 +4994,6 @@ public class Renderer {
 	return (xa*xb + ya*yb + za*zb)/(la*lb);
     }
 
-    /** Print out a fixed format coordinate. */
-    private void print(String label, int a[]){
-	System.out.println(label + " " + a[0] + " " + a[1] + " " + a[2]);
-    }
-
     /** Number of bits+1 in NormalSamples. */
     private static final int NormalBits = 8;
 
@@ -5375,8 +5028,6 @@ public class Renderer {
     private static int YMaxClip   =    8;
     private static int ZMinClip   =   16;
     private static int ZMaxClip   =   32;
-    private static int UMinClip   =   64;
-    private static int UMaxClip   =  128;
     private static int VMinClip   =  256;
     private static int VMaxClip   =  512;
     private static int NormalClip = 1024;

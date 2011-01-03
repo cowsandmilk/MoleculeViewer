@@ -11,8 +11,6 @@ import jclass.bwt.*;
 import jclass.util.*;
 
 import nanoxml.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class UserInterface implements MouseListener, JCOutlinerListener,
 				      JCActionListener,
@@ -31,8 +29,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	"Exclude"
     };
 
-    private Hashtable controls = new Hashtable();
-
     private static final int SelectMode = 1;
     private static final int AppendMode = 2;
     private static final int ExcludeMode = 3;
@@ -43,15 +39,12 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	ExcludeMode
     };
 
-    private static int textureValues[] = { 0, 1 };
-
     private JCCheckboxGroup selectMode = null;
     private JCCheckboxGroup textureCoordinate = null;
 
     private static final int none = GridBagConstraints.NONE;
     private static final int both = GridBagConstraints.BOTH;
     private static final int horizontal = GridBagConstraints.HORIZONTAL;
-    private static final int vertical = GridBagConstraints.VERTICAL;
 
     public Dialog userInterfaceFrame = null;
 
@@ -323,20 +316,16 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     }
 
     /** Schematic controls. */
-    private JCSpinBox ribbonPoints        = null;
     private JCSpinBox ribbonWidth         = null;
     private JCSpinBox ribbonMinWidth      = null;
     private JCSpinBox ribbonThickness     = null;
-    private JCSpinBox ribbonEllipsePoints = null;
     private JCCheckbox ribbonCylinders    = null;
     private JCCheckbox ribbonEllipse      = null;
     private JCCheckbox allTube            = null;
-    private JCSpinBox arrowPoints         = null;
     private JCSpinBox arrowWidth          = null;
     private JCSpinBox arrowHeadWidth      = null;
     private JCSpinBox arrowThickness      = null;
     private JCSpinBox arrowSmoothing      = null;
-    private JCSpinBox tubePoints          = null;
     private JCSpinBox tubeWidth           = null;
     private JCSpinBox tubeTaper           = null;
     private JCSpinBox tubeSmoothing       = null;
@@ -543,8 +532,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	// Labels.
 	labelsGB = new JCCheckboxGroup("Labels");
-
-	int column = 0;
 
 	JCLabel valueLabel = new JCLabel("Value");
 	Layout.nofill(labelsGB, valueLabel, 0, 0);
@@ -1019,10 +1006,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	outliner.setBackground(Color.white);
 
-	//String labels[] = { "Molecule", "Displayed", "Selected" };
-	//outliner.setColumnLabels(labels);
-	//outliner.setAllowMultipleSelections(true);
-
 	outliner.setPreferredSize(140, 300);
 	outliner.setRootVisible(true);
 	outliner.addItemListener(this);
@@ -1033,14 +1016,8 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	Layout.fill(panel, builtins, 1, 1, both);
 
-	JCContainer display = new JCContainer();
-
-	//Image plus = createImage(panel, plusPixels, 'g', Color32.green);
-	//Image minus = createImage(panel, minusPixels, 'r', Color32.red);
-
 	JCGroupBox displayStyle = UI.groupbox("Display as");
 
-	//JCContainer propertyBox = new JCContainer();
 	displayStyle.setLayout(new GridLayout());
 
 	String styles[] = {
@@ -1052,8 +1029,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	for(int i = 0; i < styles.length; i++){
 	    String lower = styles[i].toLowerCase();
 	    JCLabel label = new JCLabel(styles[i]);
-	    //JCButton plus = onOffButton(this, "+", lower+"+");
-	    //JCButton minus = onOffButton(this, "-", lower+"-");
 	    JCButton plus =
 		onOffButton(this, "+", "display " + lower + " on current;");
 	    JCButton minus =
@@ -1126,12 +1101,9 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    labelChoices.add(labelEntry);
 	}
 
-	//labelChoices.select(0);
 	labelChoices.setBackground(Color.white);
 	labelChoices.setSize(30, -1);
-	//labelChoices.setPreferredSize(50, 22);
 	labelChoices.addItemListener(this);
-	//labelChoices.setInsets(new Insets(1, 1, 1, 1));
 
 	solidLabels = new JCCheckbox("Solid");
 	solidLabels.setIndicator(JCCheckbox.INDICATOR_CHECK);
@@ -1147,19 +1119,9 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	return panel;
     }
 
-    private static String objectColumns[] = {
-	"Object", "Visible"
-    };
-
     private JCScrolledWindow objectList = null;
     public JCContainer objectContainer = null;
 
-    private static String[] textureCoords= {
-	"u", "v"
-    };
-
-    private JCCheckbox applyCharges = null;
-    private JCCheckbox mlpAbsolute = null;
     private JCSpinBox distanceMax = null;
     private JCSlider frontClip = null;
     private JCLabel frontValue = null;
@@ -1374,18 +1336,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	return button;
     }
 
-    private static Image createImage(Component comp, String pixels[],
-				    char c, int color){
-	JCImageCreator im = 
-	    new JCImageCreator(comp, pixels[0].length(), pixels.length);
-
-	im.setColor(c, color);
-
-	Image image = im.create(pixels);
-
-	return image;
-    }
-
     public void outlinerFolderStateChangeBegin(JCOutlinerEvent ev){
 	//System.out.println("foder state change begin ev " + ev);
 	JCOutlinerFolderNode folder = (JCOutlinerFolderNode)ev.getNode();
@@ -1538,49 +1488,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    moleculeViewer.dirtyRepaint();
 	    return;
 	}
-
-	JCOutlinerNode folder = (JCOutlinerNode)ev.getItem();
-	JCOutliner outliner = (JCOutliner)ev.getSource();
-	int selected = 0;
-
-	//System.out.println("itemStateChanged " + ev);
-
-	if(ev.getStateChange() == JCItemEvent.SELECTED){
-
-	    if(false){
-		Object userData = folder.getUserData();
-
-		int mode = selectMode.getValue();
-
-		if(userData instanceof Selectable){
-		    if(mode == SelectMode){
-			moleculeViewer.getMoleculeRenderer().
-			    removeAllSelectedAtoms();
-		    }
-		    Selectable sel = (Selectable)userData;
-		    sel.select(mode);
-		}else if(userData instanceof String){
-		    if(userData != null){
-			String command = null;
-			if(mode == SelectMode){
-			    command = "select " + userData;
-			}else if(mode == AppendMode){
-			    command = "append " + userData;
-			}else if(mode == ExcludeMode){
-			    command = "exclude " + userData;
-			}
-			
-			command += ";";
-
-			//System.out.println(command);
-			
-			moleculeViewer.getMoleculeRenderer().execute(command);
-		    }
-		}
-		
-		moleculeViewer.dirtyRepaint();
-	    }
-	}
     }
     
     public static final int undefinedColor = 0xff000000;
@@ -1613,8 +1520,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     /** Handle actions on the user interface. */
     public void actionPerformed(JCActionEvent e){
 	String command = e.getActionCommand();
-	int bit = 0;
-	boolean set = false;
 	boolean handled = true;
 	MoleculeRenderer mr =
 	    moleculeViewer.getMoleculeRenderer();
@@ -1638,20 +1543,12 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		surfaceBackgroundColor = newColor;
 	    }
 	}else if(command.equals("build_surface")){
-	    int quality = surfaceQuality.getIntValue();
 	    double r = FILE.readDouble(probeRadius.getValue());
 	    String name = surfaceName.getText();
 
 	    String colorString =
 		hexFormat.format(surfaceBackgroundColor & 0xffffff);
 
-	    //System.out.println("anasurface quality " + quality + ";");
-	    //System.out.println("anasurface probe " + r + ";");
-	    //System.out.println("anasurface " + name + " white current;");
-	    //mr.execute("anasurface quality " + quality + ";");
-	    //mr.execute("anasurface probe " + r + ";");
-	    //mr.execute("anasurface " + name + " " + 
-	    //colorString + " current;");
 	    mr.execute("surface -probe " + r + " -solid true " +
 		       name + " " + colorString + " current;");
 	}else if(command.equals("build_schematic")){
@@ -1665,78 +1562,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    //Object selectedObjects[] = objectList.getSelectedObjects();
 	    DynamicArray selectedObjects = getSelectedObjects();
 
-	    if(selectedObjects != null){
-		    
-		for(int i = 0; i < selectedObjects.size(); i++){
-		    Tmesh tm = (Tmesh)selectedObjects.get(i);
-		    String name = "'" + tm.getName() + "'";
-		    int tc = textureCoordinate.getValue();
-		    String texCoord = null;
-		    boolean needTexture = true;
-
-		    if(tc == 0){
-			texCoord = "u";
-		    }else{
-			texCoord = "v";
-		    }
-		    //System.out.println("texCoord " + texCoord);
-		    
-		    /*
-		    if(command.equals("distance")){
-			double d = FILE.readDouble(distanceMax.getValue());
-
-			//System.out.println("distance " + d);
-			mr.execute("object " + name + " texture distance " +
-				   texCoord + " default;");
-			mr.execute("object " + name + " texture " +
-				   texCoord + "div " + d +";");
-
-			mr.execute("texture load white 'white.jpg';");
-			mr.execute("object " + name + " texture white;");
-			needTexture = false;
-
-		    }else if(command.equals("electrostatic")){
-			if(applyCharges.getState() == 1){
-			    mr.executeScript("charge.properties");
-			}
-
-			mr.execute("object " + name + 
-				   " texture electrostatic " +
-				   texCoord + " 12.0 default;");
-			mr.execute("texture load rwb 'images/textures/rwb.jpg';");
-			mr.execute("object " + name + " texture rwb;");
-			needTexture = false;
-		    }else if(command.equals("lipophilicity")){
-			mr.executeScript("lipophilicity.properties");
-
-			mr.execute("object " + name + 
-				   " texture lipophilicity " +
-				   texCoord + " 7.0 default;");
-
-			//mr.execute("texture load molcad 'lipo.jpg';");
-			mr.execute("texture load molcad 'images/textures/red2blue16x16.jpg';");
-			mr.execute("object " + name + " texture molcad;");
-			needTexture = false;
-			//mr.execute("object " + name + " texture " +
-			//	   texCoord + "offset -0.44;");
-			//mr.execute("object " + name + " texture " +
-			//	   texCoord + "div 0.6;");
-		    }else if(command.equals("curvature")){
-			mr.execute("object " + name + " texture curvature " +
-				   texCoord + " 6 default;");
-			mr.execute("object " + name + " texture " +
-				   texCoord + "div 1.0;");
-		    }else if(command.equals("atom_colors")){
-			mr.execute("object " + name + " -map { current };");
-		    }
-		    //mr.execute("texture load close 'blue2red.jpg';");
-		    if(needTexture){
-			mr.execute("texture close simple;");
-			mr.execute("object " + name + " texture close;");
-		    }
-		    */
-		}
-	    }else{
+	    if(selectedObjects == null){
 		handled = false;
 	    }
 	}else{
@@ -1889,8 +1715,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		for(int i = 0; i < selectedObjects.size(); i++){
 		    Tmesh tm = (Tmesh)selectedObjects.get(i);
 		    String name = "'" + tm.getName() + "'";
-		    //JCVector item = (JCVector)selectedObjects[i];
-		    //String name = "'" + (String)item.at(0) + "'";
 		    int tc = textureCoordinate.getValue();
 		    String texCoord = null;
 		    if(tc == 0){
@@ -2098,31 +1922,23 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 		}else{
 		    if(userData instanceof Selectable){
-			//if(mode == SelectMode){
-			//	moleculeViewer.getMoleculeRenderer().removeAllSelectedAtoms();
-			//}
 			Selectable sel = (Selectable)userData;
 			String command = buildSelectionCommand(sel, mode);
 			moleculeViewer.getMoleculeRenderer().execute(command);
-		    
-			//sel.select(mode);
-		    }else if(userData instanceof String){
-			if(userData != null){
-			    String command = null;
-			    if(mode == SelectMode){
-				command = "select " + userData;
-			    }else if(mode == AppendMode){
-				command = "append " + userData;
-			    }else if(mode == ExcludeMode){
-				command = "exclude " + userData;
-			    }
-			    
-			    command += ";";
-			    
-			    //System.out.println(command);
-			    
-			    moleculeViewer.getMoleculeRenderer().execute(command);
+		    }else if(userData instanceof String &&
+			     userData != null){
+			String command = null;
+			if(mode == SelectMode){
+			    command = "select " + userData;
+			}else if(mode == AppendMode){
+			    command = "append " + userData;
+			}else if(mode == ExcludeMode){
+			    command = "exclude " + userData;
 			}
+
+			command += ";";
+
+			moleculeViewer.getMoleculeRenderer().execute(command);
 		    }
 		}
 		moleculeViewer.dirtyRepaint();

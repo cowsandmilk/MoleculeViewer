@@ -23,14 +23,12 @@ import java.awt.event.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
-import java.util.Locale;
 
 import nanoxml.*;
 
 #ifdef XRAYTOOLS
 import astex.xmt.Manipulator;
 #endif
-import astex.splitter.*;
 import astex.generic.*;
 
 #ifndef VIEWER_BASE
@@ -77,7 +75,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     public boolean announce = false;
 
     /** Definition of key bindings. */
-    public Hashtable keyDefinitions = new Hashtable();
+    public Hashtable<String,String> keyDefinitions = new Hashtable<String,String>();
 
     /** The animation thread. */
     private Animate animationThread = null;
@@ -86,7 +84,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private boolean animationThreadActive = false;
 
     /** The animation stages. */
-    private Vector stages = new Vector();
+    private Vector<AnimationObject> stages = new Vector<AnimationObject>();
 
     /** Is this MoleculeViewer running in an application. */
     private boolean application = false;
@@ -129,7 +127,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	String command = args.getString("-command", null);
 	int d          = args.getInteger("-delay", 50);
 	int steps      = args.getInteger("-steps", 10);
-	boolean sawInteractive = false;
 
 	if(ViewCommand.stepMultiple != 1){
 	    System.out.println("step multiple is " + ViewCommand.stepMultiple);
@@ -342,14 +339,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	System.out.println("Copyright (C) 1999-2005 Astex Therapeutics Ltd.");
 	System.out.println("http://www.astex-therapeutics.com/AstexViewer");
 
-        if(false){
-            System.out.println("Locale forced to en_us");
-
-            Locale locale = new Locale("en", "us");
-
-            Locale.setDefault(locale);
-        }
-
 	moleculeRenderer = new MoleculeRenderer();
 	moleculeRenderer.moleculeViewer = this;
 	moleculeRenderer.addMoleculeRendererListener(this);
@@ -394,37 +383,15 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	Enumeration objects = xml.enumerateChildren();
 
-	if(xml.getName().equals("keymap") == false){
+	if("keymap".equals(xml.getName()) == false){
 	    System.out.println("keymap.properties has invalid format");
 	    return;
 	}
 
 	while(objects.hasMoreElements()){
 	    XMLElement child = (XMLElement)objects.nextElement();
-	    if(child.getName().equals("key")){
-		String key = null;
-		String modifiers = child.getStringAttribute("MODIFIERS");
+	    if("key".equals(child.getName())){
 		String code = child.getStringAttribute("CODE");
-
-		/*
-		if(code.length() > 1){
-		    System.out.println("readKeyDefinitions: key code can only be single character "+ code);
-		}
-
-		char c = code.charAt(0);
-
-		if(Character.isLowerCase(c)){
-		    c = Character.toUpperCase(c);
-		}
-
-		if(modifiers == null){
-		    key = "" + c;
-		}else{
-		    key = modifiers + "+" + c;
-		}
-		*/
-		//System.out.println("key is |" + key + "|");
-
 		String content = child.getContent();
 
 		keyDefinitions.put(code, content);
@@ -778,12 +745,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	frame.addWindowListener(moleculeViewer);
 
-	if(false){
-	    moleculeViewer.setUsePopupMenu(true);
-	    moleculeViewer.createMenuBar();
-	}else{
-	    frame.setMenuBar(moleculeViewer.createMenuBar());
-	}
+	frame.setMenuBar(moleculeViewer.createMenuBar());
 
 	// if the system property arraycopy is set to true
 	// then the renderer should use arraycopy to clear
@@ -835,7 +797,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
             }
 	}
 
-        if(true){
+        {
             Panel mvp = new Panel();
             mvp.setLayout(new BorderLayout());
             mvp.add(moleculeViewer, BorderLayout.CENTER);
@@ -852,15 +814,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
             moleculeViewer.moleculeRenderer.renderer.setColor(0x00ff00);
             
             frame.add(p, BorderLayout.SOUTH);
-        }else{
-            frame.setLayout(new SplitterLayout(SplitterLayout.HORIZONTAL));
-
-            frame.add("3", moleculeViewer);
-            SplitterBar sb = new SplitterBar();
-            
-            frame.add(sb);
-
-            frame.add("1", new Panel());
         }
 	frame.pack();
 	frame.setVisible(true);
@@ -911,10 +864,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 			
 	    pickedAtom =
 		moleculeRenderer.getNearestAtom(e.getX(), e.getY());
-	    
-	    if(pickedAtom != null){
-	       //System.out.println("mouse pressed over atom");
-	    }
 	}
 
 #ifdef XRAYTOOLS
@@ -1089,15 +1038,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		Point3d center = moleculeRenderer.renderer.getCenter();
 		moleculeRenderer.setCenter(center, false);
 		centerMoved = false;
-	    }else if(e.isShiftDown()){
-	    }else{
-		if(dragged == false){
-		    //if(e.isControlDown()){
-		    //moleculeRenderer.removeAllSelectedAtoms();
-		    // fix
-		    //moleculeRenderer.renderer.setStatusString(null);
-		    //}
-		}
 	    }
 	}
 
@@ -1134,21 +1074,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    dy = e.getY() - lastMouseEvent.getY();
 
 	    if(pickedAtom != null && moveAtomsAllowed == true){
-		if(dragged == false){
-		    //System.out.println("setting up optimizer");
-		    //		if(moveAtomsAllowed){
-		    //   moleculeRenderer.setupOptimization(pickedAtom);
-		    //}
-		}
-
-		//System.out.println("drag moving atom");
-		//System.out.println("running optimizer");
-
-		//	    if(moveAtomsAllowed){
-		//	moleculeRenderer.moveAtom(pickedAtom, dx, dy);
-		//			
-		//	moleculeRenderer.runOptimization(pickedAtom);
-		//}
+		
 	    }else if(e.isControlDown()){
 		//System.out.println("translate by " + dx + " " + dy);
 		moleculeRenderer.translateCenter(dx, dy);
@@ -1215,9 +1141,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
         if(nearestAtom == trackedAtom){
             return;
         }
-            
-        if(trackedAtom != null){
-        }
 
         if(nearestAtom != null){
             trackedAtom = nearestAtom;
@@ -1268,8 +1191,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	boolean redraw = true;
 	int c = e.getKeyChar();
 
-	int code = e.getKeyCode();
-
 	String key = "";
 
 	if(e.isControlDown()){
@@ -1308,7 +1229,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	//Log.info("key <" + key +">");
 
-	String command = (String)keyDefinitions.get(key);
+	String command = keyDefinitions.get(key);
 
 	if(command != null){
 	    moleculeRenderer.execute(command);
@@ -1443,9 +1364,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     public void keyTyped(KeyEvent e){
     }
 
-    /** The list of atoms that are picked. */
-    private DynamicArray pickedAtoms = new DynamicArray();
-
     /* Tokens for the menu items. */
 	
     private static String FileString = "File";
@@ -1560,9 +1478,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	return fileMenu;
     }
 
-    private static final String bitmapPrefix = "Current size";
-
-    private Hashtable writeBMPHash= new Hashtable();
+    private Hashtable<String,String> writeBMPHash= new Hashtable<String,String>();
 
     public Menu createBMPMenu(){
 	Menu menu = new Menu(WriteBMPString);
@@ -1756,10 +1672,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	if(source instanceof ColorButton){
 	    ColorButton button = (ColorButton)source;
 
-	    Map map = (Map)mapHashtable.get(button);
-	    Integer contour = (Integer)contourLevelHashtable.get(button);
-
-	    Point p = button.getLocationOnScreen();
+	    Map map = mapHashtable.get(button);
+	    Integer contour = contourLevelHashtable.get(button);
 	    
 	    //String color = getColor(p.x, p.y);
 	    String color = button.getValue();
@@ -1889,7 +1803,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 		System.out.println("starting offscreen render");
 
-		String s = (String)writeBMPHash.get(command);
+		String s = writeBMPHash.get(command);
 		
 		s += " -writeimage '" + bitmapFileName + "';";
 		
@@ -1922,13 +1836,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private transient Dialog contourLevelDialog = null;
 
     /** The hashtable to map from sliders to checkboxes. */
-    private Hashtable checkboxHashtable = new Hashtable();
+    private Hashtable<Scrollbar,Checkbox> checkboxHashtable = new Hashtable<Scrollbar,Checkbox>();
 
     /** The hashtable to map from sliders to maps. */
-    private Hashtable mapHashtable = new Hashtable();
+    private Hashtable<Object,Map> mapHashtable = new Hashtable<Object,Map>();
 
     /** The hashtable to map from sliders to contourlevels. */
-    private Hashtable contourLevelHashtable = new Hashtable();
+    private Hashtable<Object,Integer> contourLevelHashtable = new Hashtable<Object,Integer>();
 
     /** Actually build the contour level. */
     public void buildContourLevelDialog(){
@@ -2075,8 +1989,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	Adjustable slider = e.getAdjustable();
 	int value = e.getValue();
 
-	Map map = (Map)mapHashtable.get(slider);
-	Integer contour = (Integer)contourLevelHashtable.get(slider);
+	Map map = mapHashtable.get(slider);
+	Integer contour = contourLevelHashtable.get(slider);
 	double level = 0.01 * value;
 			
 	map.setContourLevel(contour.intValue(), level);
@@ -2087,7 +2001,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	int tidyValue = 5 * (value/5);
 	double tidyLevel = 0.01 * tidyValue;
 
-	Checkbox checkbox = (Checkbox)checkboxHashtable.get(slider);
+	Checkbox checkbox = checkboxHashtable.get(slider);
 	checkbox.setLabel(contourFormat.format(tidyLevel));
 		
 	dirtyRepaint();
@@ -2201,11 +2115,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     public String checkExtension(Molecule mol, String f){
 	String file = null;
 	String extension = null;
-	boolean validExtension = true;
 	int dot = f.lastIndexOf('.');
 
 	if(dot == -1){
-	    validExtension = false;
 	    file = f;
 	}else{
 	    file = f.substring(0, dot);
@@ -2318,8 +2230,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(source instanceof Checkbox){
 	    Checkbox checkbox = (Checkbox)source;
 	    boolean state = checkbox.getState();
-	    Map map = (Map)mapHashtable.get(checkbox);
-	    Integer contour = (Integer)contourLevelHashtable.get(checkbox);
+	    Map map = mapHashtable.get(checkbox);
+	    Integer contour = contourLevelHashtable.get(checkbox);
 	    
 	    map.setContourDisplayed(contour.intValue(), state);
 
@@ -2377,22 +2289,11 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
         }
     }
 
-    /** The pdb file extensions. */
-    private static String pdbExtensions[] = {
-	"pdb"
-    };
-
     /** Convenience method for loading a file. */
     public String loadFile(String title){
 	Frame frame = Util.getFrame(this);
 
 	FileDialog dialog = new FileDialog(frame, title, FileDialog.LOAD);
-	UniversalFilenameFilter pdbFilter =
-	    new UniversalFilenameFilter(pdbExtensions);
-
-	// don't work...
-	//dialog.setFilenameFilter(pdbFilter);
-	//dialog.setDirectory("C:\\htx");
 
 	//  wait here for the dialog to be answered
 	dialog.setVisible(true);
@@ -2708,37 +2609,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}
 
 	showAt(colorChooserDialog, x, y);
-	
-	if(false){
-	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    
-	    // change the screen height to reflect possible toolbar
-	    screenSize.height -= 54;
-	    
-	    colorChooserDialog.pack();
-	    Dimension chooserSize = colorChooserDialog.getSize();
-	    
-	    // center chooser on the passed location
-	    x -= (int)(chooserSize.width * 0.5);
-	    y -= (int)(chooserSize.height * 0.5);
-	    
-	    // shuffle coords to stop dialog being off screen.
-	    
-	    if(x + chooserSize.width > screenSize.width){
-		x = screenSize.width - chooserSize.width;
-	    }else if(x < 0){
-		x = 0;
-	    }
-	    
-	    if(y + chooserSize.height > screenSize.height){
-		y = screenSize.height - chooserSize.height;
-	    }else if(y < 0){
-	    y = 0;
-	    }
-	    
-	    colorChooserDialog.setLocation(x, y);
-	    colorChooserDialog.setVisible(true);
-	}
 
 	if(colorChooser.accept){
 	    String s = hexFormat.format(colorChooser.rgb & 0xffffff);

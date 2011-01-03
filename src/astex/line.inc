@@ -32,7 +32,7 @@ if(dy == 0 && dx == 0){
     y = y1;
     pixelIndex = y * pixelWidth + x;
     z = z1 > z2 ? z1 : z2;
-    SET_PIXEL(pixelIndex, z, rgb);
+    SET_PIXEL(pixelIndex, z, rgb)
     return;
 }
 
@@ -58,7 +58,7 @@ if (dy <= dx) {
     
     pixelIndex = y * pixelWidth + x;
     
-    SET_PIXEL(pixelIndex, z, rgb);
+    SET_PIXEL(pixelIndex, z, rgb)
     
     if (((y2 - y1) * ydirflag) > 0) {
 	while (x < xend) {
@@ -74,7 +74,7 @@ if (dy <= dx) {
 	    
 	    pixelIndex++;
 	    
-	    SET_PIXEL(pixelIndex, z, rgb);
+	    SET_PIXEL(pixelIndex, z, rgb)
 	}
     } else {
 	while (x < xend) {
@@ -90,7 +90,7 @@ if (dy <= dx) {
 	    
 	    pixelIndex++;
 	    
-	    SET_PIXEL(pixelIndex, z, rgb);
+	    SET_PIXEL(pixelIndex, z, rgb)
 	}
     }		
 } else {
@@ -114,7 +114,7 @@ if (dy <= dx) {
     }
     
     pixelIndex = y * pixelWidth + x;
-    SET_PIXEL(pixelIndex, z, rgb);
+    SET_PIXEL(pixelIndex, z, rgb)
     
     if (((x2 - x1) * xdirflag) > 0) {
 	while (y < yend) {
@@ -129,7 +129,7 @@ if (dy <= dx) {
 	    }
 	    
 	    pixelIndex += pixelWidth;
-	    SET_PIXEL(pixelIndex, z, rgb);
+	    SET_PIXEL(pixelIndex, z, rgb)
 	}
     } else {
 	while (y < yend) {
@@ -146,7 +146,7 @@ if (dy <= dx) {
 	    
 	    pixelIndex += pixelWidth;
 	    
-	    SET_PIXEL(pixelIndex, z, rgb);
+	    SET_PIXEL(pixelIndex, z, rgb)
 	}
     }
 }
