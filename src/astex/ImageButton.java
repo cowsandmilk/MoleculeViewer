@@ -21,7 +21,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ImageButton extends Canvas {
+public class ImageButton extends Canvas implements MouseListener {
     private Image image;
     private String command;
     private boolean selected = false;
@@ -41,6 +41,7 @@ public class ImageButton extends Canvas {
 	    size = new Dimension(image.getWidth(this) + 2*shadowWidth,
 				 image.getHeight(this) + 2*shadowWidth);
 	}
+	addMouseListener(this);
     }
 
     Vector actionListeners = new Vector();
@@ -63,35 +64,31 @@ public class ImageButton extends Canvas {
 	}
     }
 
-    public boolean handleEvent(Event e) {
-	if (e.id == Event.MOUSE_DOWN) {
-	    armed = true;
-	    repaint();
-	    return true;
-	}
+    public void mousePressed(MouseEvent e) {
+	armed = true;
+	repaint();
+    }
 
-	if (e.id == Event.MOUSE_UP) {
-	    if (selected) {
-		e.id = Event.ACTION_EVENT;
-		e.arg = command;
-		armed = false;
-		repaint();
-		fireActionEvent();
-	    }
-	}
-	if (e.id == Event.MOUSE_ENTER) {
-	    selected = true;
-	    repaint();
-	    return true;
-	}
-	if (e.id == Event.MOUSE_EXIT) {
-	    selected = false;
+    public void mouseReleased(MouseEvent e) {
+	if (selected) {
 	    armed = false;
 	    repaint();
-	    return true;
+	    fireActionEvent();
 	}
-	return super.handleEvent(e);
     }
+
+    public void mouseEntered(MouseEvent e) {
+	selected = true;
+	repaint();
+    }
+
+    public void mouseExited(MouseEvent e) {
+	selected = false;
+	armed = false;
+	repaint();
+    }
+
+    public void mouseClicked(MouseEvent e) { }
 
     public Dimension getMinimumSize() {
 	return size;
