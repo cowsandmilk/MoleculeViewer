@@ -20,8 +20,6 @@ package astex;
 import java.awt.*;
 import jclass.bwt.*;
 import java.awt.event.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class ColorChooser extends Panel
     implements JCActionListener,  MouseMotionListener,  MouseListener,

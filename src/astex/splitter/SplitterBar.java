@@ -72,7 +72,6 @@ public class SplitterBar extends Panel {
 	private boolean alreadyDrawn = false;
 	private Rectangle originalBounds=null;
 	private Window wBar;
-	private boolean mouseInside=false;
 	
     public Dimension getPreferredSize(){
         return new Dimension(6, 6);
@@ -328,7 +327,6 @@ public class SplitterBar extends Panel {
 	void mouseEnter(MouseEvent e) {
 		if (SplitterLayout.dragee != null) return;
 		setCursor((orientation == SplitterLayout.VERTICAL)?VERT_CURSOR:HORIZ_CURSOR);
-		mouseInside = true;
 		invalidate();
 		validate();
 		repaint();
@@ -336,7 +334,6 @@ public class SplitterBar extends Panel {
 	void mouseExit(MouseEvent e) {
 		if (SplitterLayout.dragee != null) return;
 		setCursor(DEF_CURSOR);
-		mouseInside = false;
 		invalidate();
 		validate();
 		repaint();
@@ -357,7 +354,6 @@ public class SplitterBar extends Panel {
 			// First -- find what component this one is
 
 			checkOtherComponents();
-			mouseInside = false;
 			invalidate();
 			getParent().validate();
 			SplitterLayout.dragee = null;

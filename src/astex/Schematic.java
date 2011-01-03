@@ -73,9 +73,7 @@ public class Schematic {
     private static Point3d tmp[] = null;
     private static Point3d t[] = null;
     private static Point3d tout[] = null;
-    private static Point3d c[] = null;
     private static Point3d h[] = null;
-    private static Point3d rv[] = null;
     private static int type[] = null;
     private static int colors[] = null;
     private static int resids[] = null;
@@ -93,11 +91,9 @@ public class Schematic {
 	    width = new Point3d[resCount];
 	    thick = new Point3d[resCount];
 	    tmp = new Point3d[resCount];
-	    c = new Point3d[resCount];
 	    h = new Point3d[resCount];
 	    t = new Point3d[resCount];
 	    tout = new Point3d[resCount];
-	    rv = new Point3d[resCount];
 	    type = new int[resCount];
 	    colors = new int[resCount];
 	    resids = new int[resCount];
@@ -111,11 +107,9 @@ public class Schematic {
 		width[i] = new Point3d();
 		thick[i] = new Point3d();
 		tmp[i] = new Point3d();
-		c[i] = new Point3d();
 		t[i] = new Point3d();
 		tout[i] = new Point3d();
 		h[i] = new Point3d();
-		rv[i] = new Point3d();
 	    }
 	}
     }
@@ -214,15 +208,6 @@ public class Schematic {
 	    }
 	    if(widthInitialised[guideCount - 1] == false){
 		width[guideCount-1].set(width[guideCount-2]);
-	    }
-	}
-
-	if(false){
-	    // Correct direction swaps.
-	    for(int r = 1; r < guideCount; r++){
-		if(width[r].dot(width[r-1]) < 0.0){
-		    width[r].negate();
-		}
 	    }
 	}
 
@@ -351,10 +336,6 @@ public class Schematic {
     private static Point3d p     = new Point3d();
     private static Point3d wint  = new Point3d();
     private static Point3d tint  = new Point3d();
-    private static Point3d tnext = new Point3d();
-
-    private static Point3d v1 = new Point3d();
-    private static Point3d v2 = new Point3d();
     
     private static int lastv[] = new int[8];
     private static int v[] = new int[8];
@@ -386,8 +367,6 @@ public class Schematic {
 	splinePoints *= quality;
 	ellipsePoints *= quality;
 
-	int helixColor = Color32.red;
-	
 	int rfirst = resids[0];
 	int rlast = resids[residCount - 1];
 
@@ -468,7 +447,6 @@ public class Schematic {
 
 	boolean first = true;
 	boolean firstVertices = true;
-	int backColor = Color32.cyan;
 
 	for(int i = 0; i < residCount - 1; i++){
 	    int r = resids[i];
@@ -802,10 +780,9 @@ public class Schematic {
 			if(t < 0.5){
 			    rr = rTaper + 2.*t * (radius - rTaper);
 			}
-		    }else if(i == residCount - 2){
-			if(t > 0.5){
-			    rr = rTaper + 2.*(1.0 - t) * (radius - rTaper);
-			}
+		    }else if((i == residCount - 2) &&
+			      t > 0.5){
+			rr = rTaper + 2.*(1.0 - t) * (radius - rTaper);
 		    }
 
 		    radii.add(rr);
@@ -969,17 +946,6 @@ public class Schematic {
 	splinePoints *= quality;
 
 	if(residCount <= 1) return;
-	
-	if(false){
-	    for(int i = 0; i < residCount-1; i++){
-
-		Point3d p1 = guides[resids[i]];
-		Point3d p2 = guides[resids[i+1]];
-		tm.addCylinder(p1.x, p1.y, p1.z,
-			       p2.x, p2.y, p2.z,
-			       0.2, Color32.white, Color32.white);
-	    }
-	}
 
 	/*
 	for(int i = 1; i < residCount - 1; i++){

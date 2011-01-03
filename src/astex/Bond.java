@@ -76,15 +76,11 @@ public class Bond extends Generic {
     }
 
     public Object get(Object key, Object def){
-        String name = (String)key;
-
         if(key.equals(BondOrder)){
             return new Integer(getBondOrder());
         }else{
             return super.get(key, def);
         }
-
-        //return def;
     }
 
     public Enumeration getProperties(){

@@ -23,20 +23,16 @@ import java.awt.event.*;
 
 public class ImageButton extends Canvas implements MouseListener {
     private Image image;
-    private String command;
     private boolean selected = false;
     private Dimension size;
-    private int buttonSize = 0;
     private int shadowWidth = 2;
     private boolean armed = false;
 
-    public ImageButton(Image img, int s, String command) {
+    public ImageButton(Image img, int s) {
 	super();
 	this.image = img;
-	this.command = command;
 	if (image == null) {
 	    size = new Dimension(2*shadowWidth + s, 2*shadowWidth + s);
-	    buttonSize = s;
 	} else {
 	    size = new Dimension(image.getWidth(this) + 2*shadowWidth,
 				 image.getHeight(this) + 2*shadowWidth);

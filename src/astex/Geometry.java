@@ -31,8 +31,6 @@ public class Geometry {
 	private static double kDiff[] = new double[3];
 	private static double kP[] = new double[3];
 
-	private static double capDir[] = new double[3];
-	private static double rayDir[] = new double[3];
 	private static double nOrigin[] = new double[3];
 
 	private static double cap0[] = new double[3];
@@ -58,7 +56,7 @@ public class Geometry {
 		for(int i = 0; i < 3; i++){
 			cap0[i] = c0[i];
 			cap1[i] = c1[i];
-			kW[i] = capDir[i] = cap1[i] - cap0[i];
+			kW[i] = cap1[i] - cap0[i];
 		}
 
 		fWLength = normalise(kW);
@@ -78,10 +76,7 @@ public class Geometry {
 		fRadiusSqr = capRadius * capRadius;
 	}
 
-	private static final double fEpsilon = 1.0e-6;
-	private static final double f1Epsilon = 1.0 - fEpsilon;
-
-	/** Peform ray-sphere intersection and normal generation. */
+	/** Perform ray-sphere intersection and normal generation. */
 	public static int raySphereInt(double ray0[], double ray1[],
 			double x, double y, double z, double r,
 			double pint[], double nint[], boolean top){
@@ -316,10 +311,5 @@ public class Geometry {
 	/** Generate the dot product. */
 	public static double dot(double a[], double b[]){
 		return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
-	}
-
-	/** Length of vector. */
-	private static double length(double v[]){
-		return Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 	}
 }

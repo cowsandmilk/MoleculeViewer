@@ -370,7 +370,7 @@ public class Molecule extends Generic implements Selectable {
 		for(int b2 = b1 + 1; b2 < bondCount; b2++){
 		    Atom atom2 = atom.getBondedAtom(b2);
 
-		    Angle angle = Angle.create();
+		    Angle angle = new Angle();
 		    angle.setFirstAtom(atom1);
 		    angle.setSecondAtom(atom);
 		    angle.setThirdAtom(atom2);
@@ -549,8 +549,6 @@ public class Molecule extends Generic implements Selectable {
 
 	atoms.add(newAtom);
 
-	Chain chain = getCurrentChain();
-
 	Residue currentResidue = currentChain.getCurrentResidue();
 
 	currentResidue.addAtom(newAtom);
@@ -624,36 +622,28 @@ public class Molecule extends Generic implements Selectable {
 
 	Bond newBond = null;
 
-	if(!explicit){
-	    if((firstAtom.hasExplicitBond() && secondAtom.hasExplicitBond())){
-		return null;
-	    }
+	if((!explicit) && (firstAtom.hasExplicitBond() && secondAtom.hasExplicitBond())){
+	    return null;
 	}
 
-	if((firstInsertion == ' ' || secondInsertion == ' ') ||
-	   firstInsertion == secondInsertion){
-	    if(firstAtom.isSolvent() || secondAtom.isSolvent()){
-		//Log.warn("ignoring bond to solvent");
-		//Log.warn(firstAtom.toString());
-		//Log.warn(secondAtom.toString());
-	    }else{
-		newBond = Bond.create();
+	if(((firstInsertion == ' ' || secondInsertion == ' ') ||
+	   firstInsertion == secondInsertion)&& !(firstAtom.isSolvent() || secondAtom.isSolvent())){
+	    newBond = Bond.create();
 
-		newBond.setFirstAtom(firstAtom);
-		newBond.setSecondAtom(secondAtom);
-	
-		newBond.setBondOrder(bondOrder);
-		
-		if(explicit){
-		    newBond.setExplicitBond(true);
-		}
+	    newBond.setFirstAtom(firstAtom);
+	    newBond.setSecondAtom(secondAtom);
 
-		bonds.add(newBond);
+	    newBond.setBondOrder(bondOrder);
 
-		// and add the bond to the atoms
-		firstAtom.addBond(newBond);
-		secondAtom.addBond(newBond);
+	    if(explicit){
+		newBond.setExplicitBond(true);
 	    }
+
+	    bonds.add(newBond);
+
+	    // and add the bond to the atoms
+	    firstAtom.addBond(newBond);
+	    secondAtom.addBond(newBond);
 	}
 
 	return newBond;
@@ -745,7 +735,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Generate a cell index for the given grid. */
     private int cellIndex(int ix, int iy, int iz,
-			  int nx, int ny, int nz){
+			  int nx, int ny){
 	return ix + iy * nx + iz * nx * ny;
     }
 
@@ -848,7 +838,7 @@ public class Molecule extends Generic implements Selectable {
 	    int ix = (int)((atom.x - xmin)/spacing);
 	    int iy = (int)((atom.y - ymin)/spacing);
 	    int iz = (int)((atom.z - zmin)/spacing);
-	    int icell = cellIndex(ix, iy, iz, nx, ny, nz);
+	    int icell = cellIndex(ix, iy, iz, nx, ny);
 
 	    if(icell < 0 || icell >= ncell){
 		System.out.println("invalid cell " + icell);
@@ -879,7 +869,7 @@ public class Molecule extends Generic implements Selectable {
 			       iy2 >= 0 && iy2 < ny &&
 			       iz2 >= 0 && iz2 < nz){
 				int icell2 = cellIndex(ix2, iy2, iz2,
-						       nx, ny, nz);
+						       nx, ny);
 				connectTwoCells(icell2);
 			    }
 			}
@@ -1007,7 +997,6 @@ public class Molecule extends Generic implements Selectable {
 	    //Atom firstAtom = getAtom(a1);
 	    Atom firstAtom = (Atom)atomArray[a1];
 	    double firstRadius = bondingRadii[a1];
-	    double firstx = firstAtom.x;
 	    int startAtom = 0;
 	    int endAtom = atomCount;
 
@@ -1141,6 +1130,7 @@ public class Molecule extends Generic implements Selectable {
 		findRings(ringSize);
 	    }
 	}catch(Exception e){
+	    e.printStackTrace();
 	}finally{
 	    for(int i = 0; i < atomCount; i++){
 		Atom atom = getAtom(i);
@@ -1190,18 +1180,16 @@ public class Molecule extends Generic implements Selectable {
 					
 		    Bond bondij = atomi.getBond(atomj);
 
-		    if(bondij != null){
-			if(atom.getId() < atomi.getId() &&
-			   atomi.getId() < atomj.getId()){
-			    // its a three membered ring.
-			    Ring newRing = addRing();
-			    newRing.addAtom(atom);
-			    newRing.addAtom(atomi);
-			    newRing.addAtom(atomj);
-			    newRing.addBond(bondi);
-			    newRing.addBond(bondij);
-			    newRing.addBond(bondj);
-			}
+		    if((bondij != null)&& (atom.getId() < atomi.getId() &&
+			   atomi.getId() < atomj.getId())){
+			// its a three membered ring.
+			Ring newRing = addRing();
+			newRing.addAtom(atom);
+			newRing.addAtom(atomi);
+			newRing.addAtom(atomj);
+			newRing.addBond(bondi);
+			newRing.addBond(bondij);
+			newRing.addBond(bondj);
 		    }
 		}
 	    }
@@ -1458,17 +1446,15 @@ public class Molecule extends Generic implements Selectable {
 
 	// currently restrice single bond planarity to
 	// bonds that have just carbon and nitrogen.
-	if((firstAtomElement == PeriodicTable.CARBON ||
+	if(((firstAtomElement == PeriodicTable.CARBON ||
 	    firstAtomElement == PeriodicTable.NITROGEN) &&
 	   (secondAtomElement == PeriodicTable.CARBON ||
-	    secondAtomElement == PeriodicTable.NITROGEN)){
-
-	    if((firstAtom.hasBondWithOrder(Bond.DoubleBond) ||
+	    secondAtomElement == PeriodicTable.NITROGEN)) &&
+	    ((firstAtom.hasBondWithOrder(Bond.DoubleBond) ||
 		firstAtom.hasBondWithOrder(Bond.AromaticBond)) &&
 	       (secondAtom.hasBondWithOrder(Bond.DoubleBond) ||
-		secondAtom.hasBondWithOrder(Bond.AromaticBond))){
-		return true;
-	    }
+		secondAtom.hasBondWithOrder(Bond.AromaticBond)))){
+	    return true;
 	}
 		
 	return false;
@@ -1550,7 +1536,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Create a improper for the 4 specified atoms. */
     public void addImproper(Atom a1, Atom a2, Atom a3, Atom a4){
-	Improper improper = Improper.create();
+	Improper improper = new Improper();
 
 	improper.setFirstAtom(a1);
 	improper.setSecondAtom(a2);
@@ -1572,10 +1558,8 @@ public class Molecule extends Generic implements Selectable {
 		   atom.hasBondWithOrder(Bond.AromaticBond)){
 		    return true;
 		}
-	    }else if(element == PeriodicTable.NITROGEN){
-		if(nitrogenNeedsImproper(atom)){
-		    return true;
-		}
+	    }else if(element == PeriodicTable.NITROGEN &&nitrogenNeedsImproper(atom)){
+		return true;
 	    }
 	}
 
@@ -1802,10 +1786,8 @@ public class Molecule extends Generic implements Selectable {
     }
 
     public Object get(Object key, Object def){
-        String name = (String)key;
-
         if(key.equals(Displayed)){
-            return new Boolean(getDisplayed());
+            return Boolean.valueOf(getDisplayed());
         }
 
         return super.get(key, def);

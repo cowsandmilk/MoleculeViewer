@@ -158,15 +158,9 @@ public class SecondaryStructure {
 			    hbond_on[oid].add(r1);
 			    
 			    if(debug){
-				int rid1 = residues[r1].getNumber();
-				int rid2 = residues[oid].getNumber();
 				System.out.println("adding NH..O " +
 						   residues[r1] + " to " +
 						   residues[oid] + " d=" + o.distance(h));
-				
-				//tm.addCylinder(h.x, h.y, h.z,
-				//	       opos[oid].x, opos[oid].y, opos[oid].z,
-				//	       0.1, Color32.white, Color32.white);
 			    }
 			}
 		    }else{
@@ -267,49 +261,22 @@ public class SecondaryStructure {
 		    int rrj = hbond_no[ri].get(hb);
 		    //System.out.println("hydrogen bonded to " + (rrj+1));
 		    for(int rj = rrj - 1; rj < rrj + 2; rj++){
-			if(rj >= 0 && rj < nres){
-			    //if(types[rj] == Residue.Coil){
-				//System.out.println("target not helix");
-				//if((hbonded(ri-1, rj) && hbonded(rj,ri+1)) ||
-				//   (hbonded(rj-1, ri) && hbonded(ri,rj+1))){
-				if((hbonded(ri, rj-1) && hbonded(rj+1,ri)) ||
-				   (hbonded(rj-1, ri) && hbonded(ri,rj+1))){
-				    // parallel
-				    //types[ri] = types[rj] = Residue.Sheet;
-				    assignSheetType(ri);
-				    assignSheetType(rj);
-				    if(Math.abs(ri - rj) >= 5){
-					assignSheetType(rj+1);
-					//types[rj+1] = Residue.Sheet;
-				    }
-				    assignSheetType(rj-1);
-				    //types[rj-1] = Residue.Sheet;
-				    //System.out.println("parallel bridge");
-				}
-				//}
+			if((rj >= 0 && rj < nres) &&
+			    ((hbonded(ri, rj-1) && hbonded(rj+1,ri)) ||
+			     (hbonded(rj-1, ri) && hbonded(ri,rj+1)))){
+			    // parallel
+			    //types[ri] = types[rj] = Residue.Sheet;
+			    assignSheetType(ri);
+			    assignSheetType(rj);
+			    if(Math.abs(ri - rj) >= 5){
+				assignSheetType(rj+1);
+				//types[rj+1] = Residue.Sheet;
+			    }
+			    assignSheetType(rj-1);
 			}
 		    }
 		}
 	    }
-	}
-
-	// pick up some bulge structures
-	if(false){
-	for(int ri = 0; ri < nres; ri++){
-	    if(types[ri] != Residue.Helix){
-		for(int rj = 0; rj < nres - 1; rj++){
-		    if(types[ri] != Residue.Helix){
-			if(Math.abs(rj - ri) > 3 &&
-			   hbond_on[ri].contains(rj) &&
-			   hbond_on[ri].contains(rj+1)){
-			    System.out.println("bulge ri " + ri + " res " + residues[ri]);
-			    System.out.println("bulge rj " + rj + " res " + residues[rj]);
-			    types[ri] = types[rj] = types[rj+1] = Residue.Sheet;
-			}
-		    }
-		}
-	    }
-	}
 	}
 
 	// regularise the assignments
@@ -350,13 +317,6 @@ public class SecondaryStructure {
 	}
 	
 	return false;
-    }
-
-    /** Is there an hbond to rtarget in the list. */
-    private static boolean hasHBond(IntArray hbond, int rtarget){
-	if(hbond == null) return false;
-
-	return hbond.contains(rtarget);
     }
 
     private static Point3d getAmideHydrogen(Residue r){
@@ -497,30 +457,11 @@ public class SecondaryStructure {
 		int ssType = Residue.Coil;
 
 		if(phi < -45 && phi > -160 &&
-		   (psi < -170 || psi > 10)){
-		    //ssType = Residue.Sheet;
-		}else if(phi < -45 && phi > -160 &&
-			 psi > -80 && psi < -25){
+		   psi > -80 && psi < -25){
 		    ssType = Residue.Helix;
 		}
 
 		res.setSecondaryStructure(ssType);
-	    }
-
-	    int ssType = res.getSecondaryStructure();
-	    String label = null;
-	    
-	    if(ssType == Residue.Coil){
-		label = "C";
-	    }else if(ssType == Residue.Sheet){
-		label = "S";
-	    }else if(ssType == Residue.Helix){
-		label = "H";
-	    }else{
-	    }
-
-	    if(CAi != null){
-		//System.out.println(res.getNumber() + " " + label);
 	    }
 	}
     }

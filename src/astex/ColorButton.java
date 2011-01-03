@@ -104,7 +104,7 @@ public class ColorButton extends ImageButton {
      * @param size  The size of the button in pixels (always square).
      */
     public ColorButton(Color color, int size){
-	super(null, size, null);
+	super(null, size);
 	setBackground(color);
 
 	ActionListener cbal = new ActionListener(){

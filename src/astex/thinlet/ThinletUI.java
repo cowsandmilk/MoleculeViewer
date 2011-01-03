@@ -851,10 +851,8 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
                 //print.f("property " + property);
 
-                if(property.startsWith("__") &&
-                   property.endsWith("__")){
-                    //its private
-                }else{
+                if( !(property.startsWith("__") &&
+                    property.endsWith("__")) ){ //add editor if not private
                     addPropertyEditor(propertyPanel, generic, property);
                 }
             }
@@ -1037,9 +1035,9 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 newValue = (Object)new Integer(value);
             }else if(o instanceof Boolean){
                 if(checkbox){
-                    newValue = (Object)new Boolean(boolValue);
+                    newValue = (Object) Boolean.valueOf(boolValue);
                 }else{
-                    newValue = (Object)new Boolean(value);
+                    newValue = (Object) Boolean.valueOf(value);
                 }
             }else if(o instanceof String){
                 newValue = (Object)value;
@@ -1085,8 +1083,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     private void addMap(Object component, astex.Map map){
-        Object panel = create("panel");
-
         String mapTemplate = readTemplate("/astex/thinlet/maptemplate.xml.properties");
 
         for(int i = 0; i < astex.Map.MaximumContourLevels; i++){
@@ -1176,7 +1172,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
                     setString(clip, "text", FILE.sprint("%.1f", val));
                 }
             }
-        }else{
         }
 
         return true;
@@ -1267,6 +1262,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
             }
             moleculeViewer.dirtyRepaint();
         }catch(Exception e){
+	    e.printStackTrace();
         }finally{
             moleculeRenderer.setSelectCount(true);
         }

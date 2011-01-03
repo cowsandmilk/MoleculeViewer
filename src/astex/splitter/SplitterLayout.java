@@ -23,8 +23,6 @@ package astex.splitter;
 
 import java.awt.*;
 import java.util.Hashtable;
-import java.util.Vector;
-import java.awt.event.*;
 
 /** SplitterLayout is a layout manager that will layout a container holding
 	other components and SplitterBars.
@@ -253,9 +251,7 @@ public int getOrientation() {
 		dim.height = bottom - top;
 
 		// find out the totals we need to deal with...
-		int splitterSize = 0;
 		int relativeSize = 0;
-		int numRelatives = 0;
 
 		Component c[] = target.getComponents();
 		Object pSize[] = new Object[c.length];
@@ -283,7 +279,6 @@ public int getOrientation() {
 				else {
 					pSize[i] = relations.get(c[i]);
 					relativeSize += ((Integer)pSize[i]).intValue();
-					numRelatives++;
 					}
 			}
 		
@@ -385,7 +380,6 @@ public int getOrientation() {
  */
 public void setOrientation(int orientation) {
 	fieldOrientation = orientation;
-	return;
 }
 	public void swapOrientation(Container container) {
 		setOrientation((getOrientation() == HORIZONTAL)?VERTICAL:HORIZONTAL);

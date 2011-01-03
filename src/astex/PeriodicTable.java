@@ -300,9 +300,6 @@ public class PeriodicTable {
      * Find the atomic number (atom type) given a symbol.
      */
     public static int getElementFromSymbol( String symbol ) {
-	int elementType = UNKNOWN;
-
-
 	// ok, based on length of label let's look it up...
 
 	if( symbol.length() == 1 ) {
@@ -339,9 +336,6 @@ public class PeriodicTable {
 
     /** Get element from characters from pdb file. */
     public static int getElementFromSymbol(char e0, char e1){
-	int elementType = UNKNOWN;
-
-
 	// ok, based on length of label let's look it up...
 
 	if(e0 == ' '){

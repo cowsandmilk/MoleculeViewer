@@ -29,19 +29,7 @@ package astex;
  */
 public class Angle {
 	/** Default constructor. */
-	private Angle(){
-		initialise();
-	}
-
-	/**
-	 * Initialise a angle.
-	 *
-	 * This method is called to reset a angle that is reused,
-	 * so all fields must get initialised here.
-	 */
-	private void initialise(){
-		attributes = 0;
-	}
+	public Angle(){}
 
 	/** The first atom in the angle. */
 	private Atom firstAtom;
@@ -54,21 +42,6 @@ public class Angle {
 
 	/** The ideal bond angle. */
 	private float idealBondAngle = -1.0f;
-
-	/* Various attributes of the bond. */
-	
-	/** The integer that stores the attributes. */
-	private int attributes = 0;
-
-	/**
-	 * A method that will create a new Bond.
-	 *
-	 * This may in the future reuse angles from a list of those
-	 * that are no longer in use.
-	 */
-	public static Angle create(){
-		return new Angle();
-	}
 
 	/** Set the first atom in the angle. */
 	public void setFirstAtom(Atom newFirstAtom){

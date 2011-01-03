@@ -26,7 +26,6 @@ public class ActiveSite {
      */
     public static void handleCommand(MoleculeViewer mv, Arguments args){
 	DynamicArray superstar  = (DynamicArray)args.get("-superstar");
-	DynamicArray lipophiles = (DynamicArray)args.get("-lipophile");
 	DynamicArray asp        = (DynamicArray)args.get("-asp");
 	DynamicArray spheres    = (DynamicArray)args.get("-spheres");
 	DynamicArray pass       = (DynamicArray)args.get("-pass");
@@ -41,8 +40,6 @@ public class ActiveSite {
 	    generateSuperstarMap(mv, args, superstar);
 	}else if(asp != null){
 	    generateAspMap(mv, args, asp);
-	}else if(lipophiles != null){
-	    //generateLipophileMap(mv, args, superstar);
 	}else if(spheres != null){
 	    generateTangentSpheres(mv, args, spheres);
 	}else if(pass != null){
@@ -114,8 +111,6 @@ public class ActiveSite {
 
 	Log.info("dtol is %.1f", dtol);
     }
-    
-    private static Hashtable mappings = null;
 
     /**
      * Generate a simplified superstar map.
@@ -171,7 +166,7 @@ public class ActiveSite {
 
 
 	// initialise the map
-	initialiseMap(mv, args, mapName, map, superstar);
+	initialiseMap(args, map, superstar);
 
 	scatterPlotCount = 0;
 
@@ -196,7 +191,7 @@ public class ActiveSite {
 	    }
 	}
 
-	finaliseMap(mv, args, mapName, map);
+	finaliseMap(mapName, map);
 
         if(newMap){
             mr.addMap(map);
@@ -204,7 +199,6 @@ public class ActiveSite {
 
 	probeMolecules = null;
 	exclusion      = null;
-	mappings       = null;
 	lattice        = null;
     }
 
@@ -214,12 +208,9 @@ public class ActiveSite {
     //private static final double gridBorder = 5.0;
 
     /** Set up the map. */
-    private static astex.Map initialiseMap(MoleculeViewer mv,
-					   Arguments args, 
-					   String mapName,
+    private static astex.Map initialiseMap(Arguments args,
                                            astex.Map map,
 					   DynamicArray superstarAtoms){
-	MoleculeRenderer mr = mv.getMoleculeRenderer();
 	int atomCount       = superstarAtoms.size();
 
 	if(atomCount == 0){
@@ -237,28 +228,15 @@ public class ActiveSite {
 	// spacing for the map
 	double spacing    = args.getDouble("-mapspacing", 0.5);
 	double gridBorder = args.getDouble("-border", 5.0);
-	double volume     = spacing * spacing * spacing;
 
 	double xmin =  1.e10, ymin =  1.e10, zmin =  1.e10;
 	double xmax = -1.e10, ymax = -1.e10, zmax = -1.e10;
-	
-	int contourColour = Color32.white;
 
         int boxAtomCount = boxAtoms.size();
 
 	for(int a = 0; a < boxAtomCount; a++){
 	    Atom atom = (Atom)boxAtoms.get(a);
 
-	    if(a == 0){
-		int element = atom.getElement();
-		if(element == PeriodicTable.NITROGEN){
-		    contourColour = Color32.blue;
-		}else if(element == PeriodicTable.OXYGEN){
-		    contourColour = Color32.red;
-		}else if(element == PeriodicTable.CARBON){
-		    contourColour = Color32.gray;
-		}
-	    }
 	    if(atom.x > xmax) xmax = atom.x;
 	    if(atom.x < xmin) xmin = atom.x;
 	    if(atom.y > ymax) ymax = atom.y;
@@ -307,19 +285,14 @@ public class ActiveSite {
     }
 
     /** Set up the contour levels etc. */
-    private static void finaliseMap(MoleculeViewer mv,
-				    Arguments args,
-				    String mapName,
+    private static void finaliseMap(String mapName,
 				    astex.Map map){
-	MoleculeRenderer mr = mv.getMoleculeRenderer();
 	int gridPoints      = map.ngrid[0] * map.ngrid[1] * map.ngrid[2];
 
 	double fmin    =  1.e10;
 	double fmax    = -1.e10;
 	double logfmin =  1.e10;
 	double logfmax = -1.e10;
-
-	int oneCount = 0;
 
 	for(int i = 0; i < gridPoints; i++){
 	    double v = map.data[i];
@@ -329,7 +302,6 @@ public class ActiveSite {
 
 	    // clear out the remaining 1.0's
 	    if(map.data[i] == 1.0f){
-		oneCount++;
 		map.data[i] = 0.0f;
 	    }else if(map.data[i] != 0.0f){
 		map.data[i] = (float)Math.log(map.data[i]);
@@ -389,9 +361,6 @@ public class ActiveSite {
 	    colors[2] = "0xd24b00";
 	}
 
-	String command = null;
-	String commandPrefix = null;
-
 	for(int i = 0; i < astex.Map.MaximumContourLevels; i++){
             map.setContourLevel(i, startLevel + i);
             map.setContourDisplayed(i, true);
@@ -450,44 +419,6 @@ public class ActiveSite {
     /** Calculate the grid index for the grid point. */
     private static int gridIndex(astex.Map map, int i, int j, int k){
 	return i + j * map.ngrid[0] + k * map.ngrid[0] * map.ngrid[1];
-    }
-
-
-    /** Clear the values within non central group atoms to zero. */
-    private static void initialiseNonCentralGroupValues(astex.Map map,
-							Molecule mol){
-	int gmin[] = new int[3];
-	int gmax[] = new int[3];
-
-	int atomCount = mol.getAtomCount();
-	Point3d gp    = new Point3d();
-	int zeroCount = 0;
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = mol.getAtom(a);
-
-	    if(atom.isTemporarilySelected() == false){
-		// it was never in a central group.
-		double r = vdwRadii[atom.getElement()] - dtol;
-		double r2 = r * r;
-		gridBoundary(map, atom, r, gmin, gmax);
-
-		for(int i = gmin[0]; i < gmax[0]; i++){
-		    for(int j = gmin[1]; j < gmax[1]; j++){
-			for(int k = gmin[2]; k < gmax[2]; k++){
-			    gridPoint(map, i, j, k, gp);
-
-			    if(atom.distanceSq(gp) < r2){
-				int index = gridIndex(map, i, j, k);
-				map.data[index] = 0.0f;
-				zeroCount++;
-			    }
-			}
-		    }
-		}
-	    }
-	}
-
-	//Log.info("zeroCount %d", zeroCount);
     }
 
     /** Prepare the current scatter plot mask. */
@@ -569,22 +500,6 @@ public class ActiveSite {
 	double spmax = -1.e10;
 	double mmin =  1.e10;
 	double mmax = -1.e10;
-	
-	if(false){
-	    for(int i = gmin[0]; i < gmax[0]; i++){
-		for(int j = gmin[1]; j < gmax[1]; j++){
-		    for(int k = gmin[2]; k < gmax[2]; k++){
-			int index = gridIndex(map, i, j, k);
-			double v = scatterPlot[index];
-			
-			FILE.out.print("%4.1f ", v);
-		    }
-		    FILE.out.print("\n");
-		}
-		FILE.out.print("\n");
-		FILE.out.print("\n");
-	    }
-	}
 
 	for(int i = gmin[0]; i < gmax[0]; i++){
 	    for(int j = gmin[1]; j < gmax[1]; j++){
@@ -620,9 +535,7 @@ public class ActiveSite {
     private static double contrib[]  = new double[1000];
 
     /** Trim the atoms that are in the superstar molecule. */
-    private static void mapSuperstarMolecule(MoleculeViewer mv,
-					     Arguments args,
-					     DynamicArray centralAtoms,
+    private static void mapSuperstarMolecule(DynamicArray centralAtoms,
 					     DynamicArray scatterPlotAtoms,
 					     double probeRadius,
 					     astex.Map map){
@@ -659,9 +572,7 @@ public class ActiveSite {
                 continue;
 	    }
 
-	    int slot = gridIndex(map, xp, yp, zp);
-
-	    if(true){
+	    {
 		int bxmin = Math.max(xp - gridOffset, 0);
 		int bxmax = Math.min(xp + gridOffset, map.ngrid[0]);
 		int bymin = Math.max(yp - gridOffset, 0);
@@ -703,11 +614,6 @@ public class ActiveSite {
 			scatterPlot[index] += d * contrib[i] / norm;
 			//}
 		}
-	    }else{
-		//Log.info("contribution %5.3f", d);
-		
-		//map.data[slot] += d;
-		scatterPlot[slot] += d;
 	    }
 	}
 	
@@ -742,17 +648,15 @@ public class ActiveSite {
 
 	Molecule superstarMol = null;
 
-	if(keepScatterPlots){
-	    if(superstarMol == null){
-		// remove any old ones of that name...
-		mr.removeMoleculeByName(moleculeName);
-		
-		superstarMol = new Molecule();
-		superstarMol.setName(moleculeName);
-		superstarMol.setMoleculeType(Molecule.SkeletonMolecule);
-		mv.addMolecule(superstarMol);
-		Log.info("creating " + moleculeName);
-	    }
+	if(keepScatterPlots && superstarMol == null){
+	    // remove any old ones of that name...
+	    mr.removeMoleculeByName(moleculeName);
+
+	    superstarMol = new Molecule();
+	    superstarMol.setName(moleculeName);
+	    superstarMol.setMoleculeType(Molecule.SkeletonMolecule);
+	    mv.addMolecule(superstarMol);
+	    Log.info("creating " + moleculeName);
 	}
 	
 	// look for the istr molecule 
@@ -860,7 +764,7 @@ public class ActiveSite {
 		}
 
 		if(pdbAtoms.size() == pdbMap.size()){
-		    fitSuperstarGroup(mv, args, pdbAtoms, istrAtoms,
+		    fitSuperstarGroup(pdbAtoms, istrAtoms,
 				      superstarMol, istrMol, plotScale, map);
 		}
 	    }
@@ -871,8 +775,6 @@ public class ActiveSite {
     private static void markUnwantedAtoms(Molecule mol, boolean keepCarbons){
 	int centralAtomCount = mol.getCentralAtomCount();
 	int istrCount        = mol.getAtomCount();
-
-	int kept = 0;
 
 	// skip the central group atoms
 	for(int i = centralAtomCount; i < istrCount; i++){
@@ -894,7 +796,6 @@ public class ActiveSite {
 		    if(a.distanceSq(catom) < rcheck*rcheck){
 			// record that this was an active atom
 			a.setOccupancy(1.0);
-			kept++;
 			break;
 		    }
 		}
@@ -913,11 +814,7 @@ public class ActiveSite {
 
     private static IntArray neighbours  = new IntArray();
 
-    private static DynamicArray atomCache = new DynamicArray();
-
-    private static void fitSuperstarGroup(MoleculeViewer mv,
-					  Arguments args,
-					  DynamicArray pdbAtoms,
+    private static void fitSuperstarGroup(DynamicArray pdbAtoms,
 					  DynamicArray istrAtoms,
 					  Molecule superstarMol,
 					  Molecule istrMol,
@@ -985,11 +882,6 @@ public class ActiveSite {
 	boolean addit        = true;
 	Atom cacheHit        = null;
 
-	int cacheHits        = 0;
-
-	int latticeCache     = 0;
-	int latticeMiss      = 0;
-
 	int boxx             = Integer.MIN_VALUE;
 	int boxy             = Integer.MIN_VALUE;
 	int boxz             = Integer.MIN_VALUE;
@@ -1022,7 +914,6 @@ public class ActiveSite {
 
 			if(cacheHit.distanceSq(p) < rvdw*rvdw){
 			    addit = false;
-			    cacheHits++;
 			}else{
 			    cacheHit = null;
 			}
@@ -1045,9 +936,6 @@ public class ActiveSite {
 			    boxx = pboxx;
 			    boxy = pboxy;
 			    boxz = pboxz;
-			    latticeCache++;
-			}else{
-			    latticeMiss++;
 			}
 
 			int ncount = neighbours.size();
@@ -1128,7 +1016,7 @@ public class ActiveSite {
 
 	//Log.info("atoms in scatterplot %d", scatterPlotAtoms.size());
 
-	mapSuperstarMolecule(mv, args, pdbAtoms,
+	mapSuperstarMolecule(pdbAtoms,
 			     scatterPlotAtoms, probeRadius, map);
 
 	// push the atoms from the scatter plot back
@@ -1330,7 +1218,7 @@ public class ActiveSite {
 	map.setFile(mapName);
 
 
-	initialiseMap(mv, args, mapName, map, aspAtoms);
+	initialiseMap(args, map, aspAtoms);
 
 	// build the lattice datastructure
 	// but actually put the exclusion set into it
@@ -1404,9 +1292,6 @@ public class ActiveSite {
 
 	Log.info("round min %f", min);
 
-
-	String command = null;
-	String commandPrefix = null;
 	double startLevel = max - 3.0;
 
 	String colors[] = new String[3];
@@ -1437,8 +1322,6 @@ public class ActiveSite {
             mr.addMap(map);
         }
     }
-
-    private static Point3d p = new Point3d();
 
     /** Add in the potential of an atom. */
     public static void incorporatePotential(astex.Map map, int iatom,
@@ -1539,8 +1422,6 @@ public class ActiveSite {
 
 		if(bin < pmf.size()){
 		    aspScore += pmf.get(bin);
-		}else{
-		    //System.out.println("bin " + bin + " max " + pmf.size() + " d " + d);
 		}
 	    }
 

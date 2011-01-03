@@ -19,8 +19,6 @@ package astex;
 
 /* Copyright Astex Technology Ltd. 2003 */
 
-import java.lang.*;
-
 /**
  * A class for (hopefully) implementing marching 
  * cubes algorithm for isosurfaces.
@@ -75,24 +73,20 @@ public class March {
     private static final int V3 =   8;
     private static final int V4 =  16;
     private static final int V5 =  32;
-    private static final int V6 =  64;
     private static final int V7 = 128;
 
     /** Face masks. */
     private static final int Face0123 = V0|V1|V2|V3;
     private static final int Face0154 = V0|V1|V5|V4;
     private static final int Face0374 = V0|V3|V7|V4;
-    private static final int Face4567 = V4|V5|V6|V7;
-    private static final int Face1265 = V1|V2|V6|V5;
-    private static final int Face2376 = V2|V3|V7|V6;
 
     /** Constructor. */
     public static synchronized
 	Tmesh surface(float data[], int nx, int ny, int nz,
 		      float threshold, boolean invert, Tmesh tm){
 	
-	int i, j, k, e;
-	int off1, off2;
+	int i, j, k;
+	int off1;
 
 	//long then = System.currentTimeMillis();
 
@@ -131,7 +125,7 @@ public class March {
 			       " y " + jDim + " z " + kDim);
 	}
 
-	marchLayer(data, nx, ny, nz, 0, layerEdges, threshold);
+	marchLayer(data, 0, layerEdges, threshold);
 
 	/* Now do the remaining layers. */
 	for (k = 1; k < kDim1; k++) {
@@ -163,7 +157,7 @@ public class March {
 		}
 	    }
 
-	    marchLayer(data, nx, ny, nz, k, layerEdges, threshold);
+	    marchLayer(data, k, layerEdges, threshold);
 	   
 	}
 
@@ -196,7 +190,7 @@ public class March {
     private static int cellVerts[] = new int[12]; 
 
     /** This is the main marching cubes algorithm function. */
-    private static void marchLayer(float data[], int nx, int ny, int nz,
+    private static void marchLayer(float data[],
 				   int layer, int layerEdges[],
 				   float threshold){
 	
@@ -443,7 +437,6 @@ public class March {
 	
 	float d;
 	float len;
-	int    ii;
 	float localData[] = data;
 
 	switch(edgeNum){
@@ -628,10 +621,6 @@ public class March {
 
 	/* Return the array reference of the vertex. */
 	return (tmesh.getnPoints() - 1);
-    }
-
-    private static float length(float x[]){
-	return (float)Math.sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
     }
 
     /** Edge table lookup.
@@ -966,49 +955,4 @@ public class March {
 	{0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
     };
-
-    /** main. */
-    public static void main(String argv[]){
-	
-
-	/* Default contour level. */
-	float contour = 2.0f;
-	
-	/* Default filename for tmesh. */
-	String tmeshFilename = null;
-	
-	/* Filename for contour file. */
-	String cntFilename = argv[0];
-	
-	if(cntFilename != ""){
-	    
-	    /* Sort out command line params. */
-	    if(argv.length > 1){
-		contour = (float)FILE.readDouble(argv[1]);
-	    }
-	    
-	    if(argv.length > 2){
-		tmeshFilename = argv[2];
-	    }
-	    
-	    /* Create grid object. */
-	    //Grid grid = new Grid(cntFilename);
-	    
-
-	    //long then = System.currentTimeMillis();
-	    /** Create March object. */
-	    //March march = new March(grid, contour);
-	    //System.out.println("Time: " + (int)(System.currentTimeMillis() - then));
-	    
-	    /* Smooth tmesh */
-	    //march.tmesh.smooth(0.2f);
-	    
-
-	    /** Output tmesh. */
-	    //if(tmeshFilename != null){
-	    //	march.tmesh.output(tmeshFilename);
-	    //}
-	}	
-	
-    }
 }

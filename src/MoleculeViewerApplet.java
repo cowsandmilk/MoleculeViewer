@@ -25,9 +25,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     /** Should we output debugging info. */
     private boolean debug = false;
 
-    /** Have we been initialised. */
-    private boolean initialised = false;
-
     /** What stage of initialisation are we at. */
     private int initStep = 0;
 
@@ -68,7 +65,8 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         //print.f("thread=" + Thread.currentThread() + " " + initStep);
         try {
             Thread.sleep(20);
-        }catch(Exception e){
+        }catch(InterruptedException e){
+	    print.f("Interrupted thread=" + Thread.currentThread() + " " + initStep);
         }
     }
 
@@ -128,7 +126,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	
 	FILE.setDocumentBase(getDocumentBase());
 	FILE.setCodeBase(getCodeBase());
-	Texture.setDocumentBase(getDocumentBase());
 	
         if(getDocumentBase().toString().startsWith("file")){
             // we seem to be running off a file system
@@ -180,8 +177,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     private static final int barWidth       = 280;
     private static final int maxProgress    = 15;
 
-    private int fontHeight = 0;
-
     private Image splashImage = null;
     private int splashWidth   = -1;
     private int splashHeight  = -1;
@@ -226,12 +221,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
                         this);
         }
 
-        //print.f("moleculeViewer.ready " + moleculeViewer.ready);
-
-        //fontHeight = getFontMetrics(getFont()).getHeight();
-        
-        //int fontHeight2 = (int)(fontHeight * 1.5);
-        int spacing = 4;
             
         int frac = Math.min(maxProgress, initStep);
             
@@ -249,29 +238,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
                    midy - progressHeight/2,
                    2 * halfWidth,
                    progressHeight);
-        
-        /*
-          if(false){
-            drawCenteredString(g, "Powered by AstexViewer",
-                               Color.black, midx, midy - (fontHeight2 + spacing));
-            drawCenteredString(g, "Version " + Version.getVersion(),
-                               Color.black, midx, midy - spacing);
-            drawCenteredString(g, "Copyright (C) Astex Therapeutics Ltd., 1999-2005",
-                               Color.black, midx,
-                               midy + progressHeight + (fontHeight2 + spacing));
-            drawCenteredString(g, "http://www.astex-therapeutics.com/AstexViewer",
-                               Color.black, midx,
-                               midy + progressHeight + (2* fontHeight2 + spacing));
-        }
-        */
-    }
-
-    private void drawCenteredString(Graphics g, String s, Color c, int x, int y){
-        Font f = getFont();
-        int width = getFontMetrics(f).stringWidth(s);
-
-        g.setColor(c);
-        g.drawString(s, x - width/2, y - fontHeight/2);
     }
 
     /** Initialise the applet. */
@@ -432,11 +398,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         moleculeViewer = null;
     }
 
-    public void start(){
-	super.start();
-	//System.out.println("MoleculeViewerApplet.start()");
-    }
-
     /** Return a DynamicArray of parameters that begin with the String. */
     private DynamicArray getParameterList(String prefix){
 	DynamicArray parameters = new DynamicArray();
@@ -477,8 +438,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
     /** Open a file and execute the script in it. */
     public void executeFile(String scriptFile){
-	MoleculeRenderer renderer = moleculeViewer.getMoleculeRenderer();
-
 	FILE f = FILE.open(scriptFile);
 	
 	StringBuffer sb = new StringBuffer(128);
@@ -744,10 +703,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
 
     Format hexFormat = new Format("0x%06x");
-
-    private Frame colorChooserFrame = null;
-    private Dialog colorChooserDialog = null;
-    private astex.ColorChooser colorChooser = null;
 
     /**
      * Instruct AstexViewer to display its color gadget

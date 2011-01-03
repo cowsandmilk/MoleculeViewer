@@ -180,11 +180,10 @@ public class PASS {
 
                                             for(int op = 0; op < np; op++){
                                                 Probe old = (Probe)newProbes.get(op);
-                                                if(AnaSurface.distance2(old.x, ppp) < 1.0){
-                                                    if(weedProbe == null ||
-                                                       old.bc < weedProbe.bc){
-                                                        weedProbe = old;
-                                                    }
+                                                if(AnaSurface.distance2(old.x, ppp) < 1.0 &&
+                                                   (weedProbe == null ||
+                                                   old.bc < weedProbe.bc)) {
+						    weedProbe = old;
                                                 }
                                             }
 
@@ -272,13 +271,11 @@ public class PASS {
                                                     for(int l = 0; l < n; l++){
                                                         Probe pl = (Probe)newProbes.get(l);
                                                         dsq = AnaSurface.distance2(pl.x, ppp);
-                                                        //r = pl.r + Raccretion;
                                                         r = 2.0 * Raccretion;
-                                                        if(dsq < r * r){
-                                                            if(l != i && l != j && l != k){
-                                                                probeClashed = true;
-                                                                break;
-                                                            }
+                                                        if(dsq < r * r &&
+                                                           l != i && l != j && l != k){
+							    probeClashed = true;
+							    break;
                                                         }
                                                     }
 						
@@ -288,11 +285,10 @@ public class PASS {
 
                                                         for(int op = n; op < np; op++){
                                                             Probe old = (Probe)newProbes.get(op);
-                                                            if(AnaSurface.distance2(old.x, ppp) < 1.0){
-                                                                if(weedProbe == null ||
-                                                                   old.bc < weedProbe.bc){
-                                                                    weedProbe = old;
-                                                                }
+                                                            if(AnaSurface.distance2(old.x, ppp) < 1.0 &&
+                                                               (weedProbe == null ||
+                                                                old.bc < weedProbe.bc)){
+								weedProbe = old;
                                                             }
                                                         }
 
@@ -412,7 +408,6 @@ public class PASS {
 		// measurably faster to check after
 		// satisfying the distance
 		if(neighbour != j && neighbour != k){
-
 		    return true;
 		}
 	    }
@@ -479,8 +474,6 @@ public class PASS {
 
     private static int commonNeighbours[] = null;
     private static int commonCount = 0;
-    private static int mergeNeighbours[] = null;
-    private static int mergeCount = 0;
 
     /**
      * Build a list of each spheres neighbours.
@@ -507,13 +500,10 @@ public class PASS {
 		Probe pj = (Probe)probes.get(j);
 		double dij2 = AnaSurface.distance2(pi.x, pj.x);
 		double rirj = ri + pj.r;
-		if(dij2 < rirj*rirj){
-		    if(i != j){
-			count[i]++;
-			nList.add(j);
-			//nn[neighbourCount] = j;
-			neighbourCount++;
-		    }
+		if(dij2 < rirj*rirj && i != j){
+		    count[i]++;
+		    nList.add(j);
+		    neighbourCount++;
 		}
 	    }
 
@@ -531,28 +521,7 @@ public class PASS {
 
 	// allocate space for common neighbours.
 	commonNeighbours = new int[maxNeighbours];
-
-	// allocate space for merged neighbours.
-	mergeNeighbours = new int[maxNeighbours * 3];
     }
-
-    /* Vectors for the atom positions. */
-    private double uij[] =  new double[3];
-    private double uik[] =  new double[3];
-    private double tij[] =  new double[3];
-    private double tji[] =  new double[3];
-    private double tik[] =  new double[3];
-    private double uijk[] = new double[3];
-    private double utb[] =  new double[3];
-    private double bijk[] = new double[3];
-    private double pijk[] = new double[3];
-
-    private double cij[] =  new double[3];
-    private double cji[] =  new double[3];
-
-    private double api[] =  new double[3];
-    private double apj[] =  new double[3];
-    private double apk[] =  new double[3];
 
     /** Setup the parameters for the pass calculation. */
     private static void setup(Arguments args){

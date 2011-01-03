@@ -62,11 +62,6 @@ package astex;
  *  @author Oskar Liljeblad (everything else)
  */
 public class match {
-    /** The wildcard pattern this object uses. */
-    private static String matchPattern;
-    /** The allowed matching features. */
-    private static int matchTypes;
-
     /** This flag represents the asterisk (`*') wildcard character. */
     public static final int ASTERISK = 1 << 0;
     /** This flag represents the question mark (`?') wildcard
@@ -235,10 +230,9 @@ public class match {
                     return false;
             }
 
-            if (pIdx < pLen && sIdx < sLen) {
-                if (pattern.charAt(pIdx) != string.charAt(sIdx))
-                    return false;
-            }
+            if(pIdx < pLen && sIdx < sLen &&
+               pattern.charAt(pIdx) != string.charAt(sIdx))
+                return false;
 
             pIdx++;
             sIdx++;

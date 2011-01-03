@@ -158,7 +158,6 @@ public class FILE extends InputStream {
     private OutputStream outputStream = null;
 
     /** eol identifier. */
-    private int  eolIdentifier = UNIX;
     private byte eol0 = (byte)'\n';
     private byte eol1 = 0;
     private int  eolLength = 1;
@@ -212,8 +211,6 @@ public class FILE extends InputStream {
     private static final byte based[] = {(byte)'0', (byte)'1', (byte)'2', (byte)'3', 
 					 (byte)'4', (byte)'5', (byte)'6', (byte)'7',
 					 (byte)'8', (byte)'9'};
-
-    private static final byte baseb[]  = {(byte)'0', (byte)'1'};
    
     /** Load of constants for character bytes. */
     private static final byte bSpace = (byte)' ';
@@ -276,8 +273,6 @@ public class FILE extends InputStream {
         byte localtb[] = tb;
 
         int nc = 0;
-        int n = preCount + postCount + width + (ntb - ntbStart - ntbE); 
-        String s = null;
 
         // Do preformatting.
         for(int i = 0; i < preCount; i++){
@@ -582,7 +577,7 @@ public class FILE extends InputStream {
 
 	/* Set default precision and sign. */
 	if(precision < 0) precision = 6;
-	if(x < 0){ x = -x; s = -1; };
+	if(x < 0){ x = -x; s = -1; }
 
 	if(fmt == 'f'){
 	    fixedFormat(x);
@@ -743,11 +738,9 @@ public class FILE extends InputStream {
 	if(fr >= 1 || fr < 0){ expFormat(d); return; }
 	
 	double factor = 1;
-	int    leading_zeroes = 0;
 	
 	for (int i = 1; i <= precision && factor <= 0x7FFFFFFFFFFFFFFFL; i++)  {
 	    factor *= 10;
-	    leading_zeroes++; 
 	}
 	
 	long l = (long) (factor * fr + 0.5);
@@ -918,8 +911,7 @@ public class FILE extends InputStream {
 	preCount = 0;
 	postCount = 0;
 
-	/* sets the format of the output. */
-	int state = 0; 
+	/* sets the format of the output. */ 
 	int length = s.length();
 	int parse_state = 0; 
 	
@@ -1000,32 +992,13 @@ public class FILE extends InputStream {
 	}
     }
 
-    /** Sets the default end of line character. */
-    private void setDefaultEolIdentifier(){
-
-	String eolString = System.getProperty("line.separator");
-	
-	if(eolString.equals("\n")){
-	    setEolIdentifier(UNIX);
-	} else if (eolString.equals("\r\n")){
-	    setEolIdentifier(PC);
-	} else if (eolString.equals("\r")){
-	    setEolIdentifier(MAC);
-	} else {
-	    setEolIdentifier(UNIX);
-	}
-    }
-
     /** Set the output stream. */
     public void setOutputStream(OutputStream os){
 	outputStream = os;
     }
 
-    /** Set the eond of line characters explicitily. */
+    /** Set the end of line characters explicitly. */
     public void setEolIdentifier(int opsys){
-
-	eolIdentifier = opsys;
-
 	switch(opsys){
 	case UNIX:	    
 	    eolLength = 1;
@@ -1042,7 +1015,6 @@ public class FILE extends InputStream {
 	    break;
 	default:
 	    eolLength = 1;
-	    eolIdentifier = UNIX;
 	    eol0 = (byte)'\n';
 	    break;
 	}
@@ -1356,8 +1328,6 @@ public class FILE extends InputStream {
 
 		    if( ch != '\n' && ch != EOF){
 			ungetc(ch);
-		    }else{
-			//System.out.println("\\n after \\r");
 		    }
 
 		    return true;
@@ -1867,10 +1837,8 @@ public class FILE extends InputStream {
 	    }
 	}
 		
-	if(input != null){
-	    if(debug){
-		System.out.println("opened as resource");
-	    }
+	if(input != null && debug){
+	    System.out.println("opened as resource");
 	}
 
 	if(resource.endsWith(".gz")){
@@ -1913,13 +1881,7 @@ public class FILE extends InputStream {
 	// list... in a word - ridiculous.
 	FILE dummy = new FILE();
 
-	InputStream inputStream = null;
-
-	try {
-	    inputStream = 
-		dummy.getClass().getResourceAsStream(resource);
-	}catch(Exception e){
-	}
+	InputStream inputStream = dummy.getClass().getResourceAsStream(resource);
 
 	return inputStream;
     }
@@ -2029,14 +1991,6 @@ public class FILE extends InputStream {
      */
     public static FILE open(URL url){
 	try {
-	    // open the url via a URLConnection object
-	    if(false){
-		URLConnection urlConnection = url.openConnection();
-		System.out.println("open(URL) URLConnection " + urlConnection);
-		// this allows us to use cached copies of the data
-		urlConnection.setUseCaches(true);
-	    }
-
 	    InputStream urlInputStream = url.openStream();
 	    //urlConnection.getInputStream();
 
@@ -2102,7 +2056,8 @@ public class FILE extends InputStream {
 	if(propertyStream != null){
 	    try {
 		properties.load(propertyStream);
-	    }catch(Exception e){
+	    }catch(IOException e){
+		e.printStackTrace();
 	    }finally{
                 propertyStream.close();
             }
@@ -2237,55 +2192,6 @@ public class FILE extends InputStream {
 		f.close();
 	    }else{
 		System.out.println("couldn't open " + args[0]);
-	    }
-	}
-
-	
-	if(false){
-	    if(args.length > 0){
-		if(true){
-		    FILE file = FILE.open(args[0]);
-		    
-		    while(file.nextLine()){
-			String line = file.getCurrentLineAsString();
-			System.out.println(line + "|");
-			int nf = file.getFieldCount();
-			System.out.println("field count "+ nf);
-			for(int i = 0; i < nf; i++){
-			    String f = file.getField(i);
-			    
-			    System.out.print(i + "|" + f + "| ");
-			    System.out.print(" = " +
-					     file.readDoubleFromField(i) + " ");
-			}
-
-			System.out.println("");
-		    
-		    }
-
-		    file.close();
-		}else{
-		    int iterations = 10;
-		    long totalTime = 0;
-		    
-		    for(int i = 0; i < iterations; i++){
-			FILE file = FILE.openFile(args[0]);
-			
-			long startTime = System.currentTimeMillis();
-			
-			System.out.println("read " + readFrom(file) +
-					   " bytes from " + args[0]);
-
-			long stopTime = System.currentTimeMillis();
-			
-			totalTime += (stopTime - startTime);
-		    }
-
-		    System.out.println("average read time = " +
-				       (double)totalTime/(double)iterations +"ms");
-		}
-	    }else{
-		System.out.println("usage: java FILE file.name");
 	    }
 	}
     }

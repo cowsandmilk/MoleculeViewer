@@ -78,25 +78,6 @@ public class Selection {
     private static byte[] generateSelectionMask(MoleculeRenderer r){
 	int atomCount = r.getAtomCount();
 
-	int cacheCount = selectionMaskCache.size();
-
-	//System.out.println("selectionMaskCache size " + cacheCount);
-
-	if(false){
-	    if(cacheCount > 0){
-		byte mask[] = (byte [])selectionMaskCache.get(cacheCount - 1);
-		selectionMaskCache.removeElement(cacheCount - 1);
-		
-		if(mask.length >= atomCount){
-		    System.out.println("reusing cached mask");
-		    for(int i = 0; i < atomCount; i++){
-			mask[i] = 0;
-		    }
-		    return mask;
-		}
-	    }
-	}
-
 	// otherwise allocate one that is big enough
 	// for a molecule twice as big.
 	//return new byte[atomCount * 2];
@@ -166,37 +147,10 @@ public class Selection {
 	    System.out.println("Selection.maskToArray() count != atomCount");
 	}
 
-	int arrayCacheCount = dynamicArrayCache.size();
-
 	DynamicArray selected = null;
-
-	//System.out.println("dynamicArrayCache.size() " + arrayCacheCount);
-
-	//System.out.println("searching for array of size " + atomArrayCount);
-
-	if(false){
-	    //for(int i = arrayCacheCount - 1; i >= 0; i--){
-	    for(int i = 0; i < arrayCacheCount; i++){
-		DynamicArray da = (DynamicArray)dynamicArrayCache.get(i);
-		Object daArray[] = da.getArray();
-	    
-		//if(daArray != null){
-		//System.out.println(i + " daArray.length " + daArray.length);
-		//}
-
-		if(daArray != null && daArray.length >= atomArrayCount){
-		    da.removeAllElements();
-		    dynamicArrayCache.removeElement(i);
-		    selected = da;
-		    //System.out.println("reusing dynamicArrayCache " + i);
-		    break;
-		}
-	    }
-	}
 
 	if(selected == null){
 	    selected = new DynamicArray(atomArrayCount*2);
-	    //dynamicArrayCache.add(selected);
 	}
 
 	if(selected.size() != 0){
@@ -484,9 +438,6 @@ public class Selection {
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
-	int count = 0;
-
-	Stack selectionStack = new Stack();
 
 	for(int i = 0; i < idCount; i++){
 	    StringBuffer chainBuffer = new StringBuffer();
@@ -788,7 +739,6 @@ public class Selection {
 		    }
 
 		    for(int a = 0; a < atomCount; a++){
-			Atom atom = residue.getAtom(a);
 			mask[count++] = (byte)residueSelected;
 		    }
 		}
@@ -850,7 +800,6 @@ public class Selection {
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
-	AtomIterator iterator = r.getAtomIterator();
 	int count = 0;
 
 	// this can be done much more efficiently
@@ -1125,7 +1074,6 @@ public class Selection {
 	// by going through residues and setting blocks
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
-	    Molecule mol = atom.getMolecule();
 
 	    //if(mol.getDisplayed()){
 		if(atom.isDisplayed()){

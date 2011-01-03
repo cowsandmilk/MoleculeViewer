@@ -110,19 +110,6 @@ public class ImageIO {
 	    fs.read(bi,0,bilen);
 
 	    // Interperet data.
-	    int nsize = (((int)bf[5]&0xff)<<24) 
-		| (((int)bf[4]&0xff)<<16)
-		| (((int)bf[3]&0xff)<<8)
-		| (int)bf[2]&0xff;
-	    //System.out.println("File type is :"+(char)bf[0]+(char)bf[1]);
-	    //System.out.println("Size of file is :"+nsize);
-
-	    int nbisize = (((int)bi[3]&0xff)<<24)
-		| (((int)bi[2]&0xff)<<16)
-		| (((int)bi[1]&0xff)<<8)
-		| (int)bi[0]&0xff;
-	    //System.out.println("Size of bitmapinfoheader is :"+nbisize);
-
 	    int nwidth = (((int)bi[7]&0xff)<<24)
 		| (((int)bi[6]&0xff)<<16)
 		| (((int)bi[5]&0xff)<<8)
@@ -135,48 +122,14 @@ public class ImageIO {
 		| (int)bi[8]&0xff;
 	    //System.out.println("Height is :"+nheight);
 
-	    int nplanes = (((int)bi[13]&0xff)<<8) | (int)bi[12]&0xff;
-	    //System.out.println("Planes is :"+nplanes);
-
 	    int nbitcount = (((int)bi[15]&0xff)<<8) | (int)bi[14]&0xff;
 	    //System.out.println("BitCount is :"+nbitcount);
-
-	    // Look for non-zero values to indicate compression
-	    int ncompression = (((int)bi[19])<<24)
-		| (((int)bi[18])<<16)
-		| (((int)bi[17])<<8)
-		| (int)bi[16];
-	    //System.out.println("Compression is :"+ncompression);
 
 	    int nsizeimage = (((int)bi[23]&0xff)<<24)
 		| (((int)bi[22]&0xff)<<16)
 		| (((int)bi[21]&0xff)<<8)
 		| (int)bi[20]&0xff;
 	    //System.out.println("SizeImage is :"+nsizeimage);
-
-	    int nxpm = (((int)bi[27]&0xff)<<24)
-		| (((int)bi[26]&0xff)<<16)
-		| (((int)bi[25]&0xff)<<8)
-		| (int)bi[24]&0xff;
-	    //System.out.println("X-Pixels per meter is :"+nxpm);
-
-	    int nypm = (((int)bi[31]&0xff)<<24)
-		| (((int)bi[30]&0xff)<<16)
-		| (((int)bi[29]&0xff)<<8)
-		| (int)bi[28]&0xff;
-	    //System.out.println("Y-Pixels per meter is :"+nypm);
-
-	    int nclrused = (((int)bi[35]&0xff)<<24)
-		| (((int)bi[34]&0xff)<<16)
-		| (((int)bi[33]&0xff)<<8)
-		| (int)bi[32]&0xff;
-	    //System.out.println("Colors used are :"+nclrused);
-
-	    int nclrimp = (((int)bi[39]&0xff)<<24)
-		| (((int)bi[38]&0xff)<<16)
-		| (((int)bi[37]&0xff)<<8)
-		| (int)bi[36]&0xff;
-	    //System.out.println("Colors important are :"+nclrimp);
 
 	    int ndata[] = null;
 	    
@@ -330,14 +283,12 @@ public class ImageIO {
     private final static int BITMAPINFOHEADER_SIZE = 40;
     //--- Private variable declaration
     //--- Bitmap file header
-    private static byte bitmapFileHeader [] = new byte [14];
     private static byte bfType [] = {(byte)'B', (byte)'M'};
     private static int bfSize = 0;
     private static int bfReserved1 = 0;
     private static int bfReserved2 = 0;
     private static int bfOffBits = BITMAPFILEHEADER_SIZE + BITMAPINFOHEADER_SIZE;
   //--- Bitmap info header
-    private static byte bitmapInfoHeader [] = new byte [40];
     private static int biSize = BITMAPINFOHEADER_SIZE;
     private static int biWidth = 0;
     private static int biHeight = 0;

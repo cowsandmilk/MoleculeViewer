@@ -37,7 +37,6 @@ public class GoogleFont {
     }
 
     private static Font imageFont = null;
-    private static Image image = null;
     private static PixelGrabber pg = null;
 
     private static int maxWidth  = 200;
@@ -70,18 +69,17 @@ public class GoogleFont {
 
         Graphics gr = image.getGraphics();
 
-        if(true){
-            // there are approximately 128,345 different
-            // bugs associated with offscreen images.
-            // do not under any circumstances attempt to 
-            // change the current color, or specify the background
-            // or foreground color for the parent component.
-            // this silently does absolutely nothing under jdk1.1.8.
-            // you will use the colors that you are given and you
-            // will not moan about it
-            gr.setFont(imageFont);
-            gr.drawString(s, 10, maxHeight - 10);
-        }
+
+	// there are approximately 128,345 different
+	// bugs associated with offscreen images.
+	// do not under any circumstances attempt to
+	// change the current color, or specify the background
+	// or foreground color for the parent component.
+	// this silently does absolutely nothing under jdk1.1.8.
+	// you will use the colors that you are given and you
+	// will not moan about it
+	gr.setFont(imageFont);
+	gr.drawString(s, 10, maxHeight - 10);
 
         if(pix == null){
             pix = new int[maxWidth * maxHeight];
@@ -140,17 +138,6 @@ public class GoogleFont {
             impix[p] = matteColor;
         }
 
-        if(false){
-            print.f("w " + w);
-            print.f("h " + h);
-            print.f("pixelCount " +pixelCount);
-            
-            print.f("xmin %3d ", xmin);
-            print.f("xmax %3d ", xmax);
-            print.f("ymin %3d ", ymin);
-            print.f("ymax %3d\n", ymax);
-        }
-
         // copy text into centered new image
         for(int y = ymin; y <= ymax; y++){
             for(int x = xmin; x <= xmax; x++){
@@ -168,7 +155,6 @@ public class GoogleFont {
         int region = actualBorder + 2;
 
         // fill in the background border around the lettering
-        if(true){
         for(int y = 0; y < h; y++){
             for(int x = 0; x < w; x++){
                 int newp = x + y * w;
@@ -193,7 +179,6 @@ public class GoogleFont {
                     }
                 }
             }
-        }
         }
 
         if(finalpix == null){

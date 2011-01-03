@@ -150,10 +150,6 @@ public class Chain implements Selectable {
     /** Remove a residue from the chain. */
     public void removeResidue(Residue res){
 	residues.remove(res);
-
-	Molecule mol = getParent();
-
-	
     }
 
     /** Return the current residue. */

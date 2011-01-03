@@ -230,7 +230,6 @@ public class Log {
 
     /** Set the logging level for this class. */
     public static void setLoggingLevel(int l){
-	String methodName = getMethodName(1);
 	Integer newLevel = new Integer(l);
 
 	methodLevels.put(methodLevels, newLevel);

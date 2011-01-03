@@ -122,7 +122,6 @@ public class Lattice {
 	    return 0;
 	}
 
-	int nc = 0;
 	int j = head.get(icell);
 
 	if(j == -1){
@@ -383,9 +382,6 @@ public class Lattice {
     //private DoubleArray objx = new DoubleArray();
     //private DoubleArray objy = new DoubleArray();
     //private DoubleArray objz = new DoubleArray();
-
-    /** Number of objects we have in the Lattice. */
-    private int objectCount = 0;
 
     /**
      * Test harness for the lattice construction.

@@ -29,9 +29,7 @@ package astex;
  */
 public class Improper {
 	/** Default constructor. */
-	private Improper(){
-		initialise();
-	}
+	public Improper(){ }
 
 	/**
 	 * Initialise an improper.
@@ -39,9 +37,6 @@ public class Improper {
 	 * This method is called to reset a improper that is reused,
 	 * so all fields must get initialised here.
 	 */
-	private void initialise(){
-		attributes = 0;
-	}
 
 	/** The first atom in the improper. */
 	private Atom firstAtom;
@@ -60,21 +55,6 @@ public class Improper {
 
 	/** Has the ideal improper been assigned. */
 	private boolean idealImproperAngleAssigned = false;
-
-	/* Various attributes of the bond. */
-	
-	/** The integer that stores the attributes. */
-	private int attributes = 0;
-
-	/**
-	 * A method that will create a new Improper.
-	 *
-	 * This may in the future reuse impropers from a list of those
-	 * that are no longer in use.
-	 */
-	public static Improper create(){
-		return new Improper();
-	}
 
 	/** Set the first atom in the improper. */
 	public void setFirstAtom(Atom atom){

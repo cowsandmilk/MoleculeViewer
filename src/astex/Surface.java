@@ -130,9 +130,6 @@ public class Surface {
     /** The list of neighbour atoms. */
     private static int neighbours[] = null;
 
-    /** The total number of torus points that were used. */
-    private static int torusPoints = 0;
-
     /** The lattice object for neighbour calculations. */
     private static Lattice l = null;
 
@@ -216,7 +213,7 @@ public class Surface {
 
 	initialiseGrid(solid ? minimumSpacing : minimumSpacing * 2.5);
 
-	long then, now;
+	long then;
 
 	then = System.currentTimeMillis();
 
@@ -805,7 +802,6 @@ public class Surface {
     public static int obscured(double x, double y, double z,
 			       int a, int b){
 	if(lastClip != -1){
-	    double r = ar[lastClip];
 	    double dx = ax[lastClip] - x;
 	    double dy = ay[lastClip] - y;
 	    double dz = az[lastClip] - z;
@@ -820,7 +816,6 @@ public class Surface {
 
 	for(int ia = 0; ia < neighbourCount; ia++){
 	    int i = neighbours[ia];
-	    double r = ar[i];
 	    double dx = ax[i] - x;
 	    double dy = ay[i] - y;
 	    double dz = az[i] - z;

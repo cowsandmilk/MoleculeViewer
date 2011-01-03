@@ -730,11 +730,7 @@ public class Tmesh {
 	for(int i = 0; i < vcount; i++){
 	    f.nextLine();
 	    int fieldCount = f.getFieldCount();
-	    float x, y, z;
 	    float u = 0.0f, v = 0.0f;
-	    x = f.getFloat(0);
-	    y = f.getFloat(1);
-	    z = f.getFloat(2);
 
 	    if(fieldCount == 5){
 		u = v = f.getFloat(4);
@@ -822,8 +818,6 @@ public class Tmesh {
 
 	if(file.indexOf(".ply") != -1){
 	    return readPly(f);
-	}else if(file.indexOf(".gro") != -1){
-	    //return GraphicalObject.readGraphicalObject(f);
 	}
 
 	f.nextLine();
@@ -1558,7 +1552,6 @@ public class Tmesh {
 	/* Copy up all the vertices and relabel
 	   the triangle references. */
 	int count = 0;
-	int countTriangles = 0;
 	for(int i = 0; i < np; i++){
 	    if(keepPoints[i]){
 		count = copyUp(count, i);

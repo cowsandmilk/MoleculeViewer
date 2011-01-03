@@ -86,12 +86,8 @@ public class Face extends DynamicArray {
     public void add(Edge e){
 	super.add(e);
 
-	if(this.type == Face.Concave){
-	    if(e.probeFace == null){
-		e.probeFace = this;
-	    }else{
-		//System.out.println("adding edge to probe face again!!!");
-	    }
+	if(this.type == Face.Concave && e.probeFace == null){
+	    e.probeFace = this;
 	}
     }
 

@@ -138,7 +138,6 @@ public class LightCanvas extends Canvas implements MouseListener, MouseMotionLis
 
     public void mouseDragged(MouseEvent e) {
 	if(activeLight != -1){
-	    Light light = (Light)renderer.lights.get(activeLight);
 	    
 	    double lx = c2lx(e.getX());
 	    double ly = c2ly(e.getY());

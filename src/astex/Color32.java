@@ -514,7 +514,5 @@ public class Color32 {
 
 	    f.close();
 	}
-
-	return;
     }
 }

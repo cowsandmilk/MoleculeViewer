@@ -21,18 +21,13 @@ public class NeighbourGrid2D {
     /** The maximum number of cells along an edge. */
     private static final int MaxDim = 64;
 
-    /** The default expected number of objects. */
-    private static final int DefaultObjectCount = 512;
-
     /** The minimum coordinate of the box.. */
     private double xmin = 0.0;
     private double ymin = 0.0;
-    private double zmin = 0.0;
 
     /** The maximum coordinate of the box. */
     private double xmax = 0.0;
     private double ymax = 0.0;
-    private double zmax = 0.0;
 
     /** The minimum distance we wish to search. */
     private double spacing = 0.0;
@@ -40,7 +35,6 @@ public class NeighbourGrid2D {
     /** The number of boxes along each edge. */
     private int nx = 0;
     private int ny = 0;
-    private int nz = 0;
 
     /** The total number of grid boxes. */
     private int ncell = 0;
@@ -50,26 +44,6 @@ public class NeighbourGrid2D {
 
     /** The head pointers for each cell. */
     private int head[] = null;
-
-    /**
-     * The cell offsets for the half space that generates
-     * icell2 > icell1.
-     */
-    private int offsets[][] = {
-	{-1, -1, -1},
-	{ 0, -1, -1},
-	{ 1, -1, -1},
-	{-1,  0, -1},
-	{ 0,  0, -1},
-	{ 1,  0, -1},
-	{-1,  1, -1},
-	{ 0,  1, -1},
-	{ 1,  1, -1},
-	{-1, -1,  0},
-	{ 0, -1,  0},
-	{ 1, -1,  0},
-	{-1,  0,  0},
-    };
 
     /**
      * Construct a neighbour grid with the following specification.

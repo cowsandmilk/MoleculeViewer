@@ -54,14 +54,6 @@ public class AnimationObject {
     /** The MoleculeViewer we are animating. */
     private MoleculeViewer moleculeViewer = null;
 
-    /** The animation thread that is in charge of us. */
-    private Animate thread = null;
-
-    /** Set the animate thread. */
-    public void setAnimateThread(Thread t){
-	thread = (Animate)t;
-    }
-
     /** The MoleculeViewer. */
     public void setMoleculeViewer(MoleculeViewer mv){
 	moleculeViewer = mv;
@@ -148,8 +140,6 @@ public class AnimationObject {
 
     private double lastRock = 0.0;
 
-    private int lastMolecule = -1;
-
     /** Initialise the animation object. */
     public void initialise(){
 	step = 0;
@@ -211,10 +201,6 @@ public class AnimationObject {
 
 	    lastRock = disp;
 	}else if(animationMode == MoleculeAnimation){
-
-	    if(lastMolecule != -1){
-		
-	    }
 
 	}else if(animationMode == Command){
 

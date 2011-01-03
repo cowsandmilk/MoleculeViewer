@@ -47,15 +47,6 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 	delete.addActionListener(this);
 	add(delete);
 
-	if(false){
-	    selected = new JCCheckbox(null);
-	    selected.setIndicator(JCCheckbox.INDICATOR_FILL);
-	    selected.addItemListener(this);
-	    selected.setSelectColor(Color.yellow);
-	    selected.setUnselectColor(Color.lightGray);
-	    add(selected);
-	}
-
 	transparency = new JCSlider(JCSlider.HORIZONTAL, 255, 0, 255);
 	transparency.setPreferredSize(60, BWTEnum.NOVALUE);
 	transparency.setNumTicks(5);
@@ -199,17 +190,10 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 	container.setLayout(new JCGridLayout(0, 1));
 
 	for(int i = 0; i < args.length; i++){
-	    if(true){
-		Tmesh tm = new Tmesh();
-		tm.setName(args[i]);
-		ObjectControl oc = new ObjectControl(null, tm);
-		container.add(oc);
-	    }else{
-		JCContainer c = new JCContainer();
-		JCCheckbox oc = new JCCheckbox(args[i]);
-		c.add(oc);
-		container.add(c);
-	    }
+	    Tmesh tm = new Tmesh();
+	    tm.setName(args[i]);
+	    ObjectControl oc = new ObjectControl(null, tm);
+	    container.add(oc);
 	}
 
 	window.add(container);

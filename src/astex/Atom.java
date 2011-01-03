@@ -290,8 +290,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public synchronized void release(){
 	if(atomCache.size() < MaxAtomCacheSize){
 	    atomCache.add(this);
-	}else{
-	    //Log.info("atom cache size exceeded");
 	}
     }
 
@@ -530,10 +528,8 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 			Residue res = getResidue();
 			if(res != null){
 			    Chain chain = res.getParent();
-			    if(chain != null){
-				if(!chain.getName().equals(" ")){
-				    s += chain.getName();
-				}
+			    if(chain != null && !" ".equals(chain.getName())){
+				s += chain.getName();
 			    }
 			}
 		    }else if(nc == 'm'){

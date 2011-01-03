@@ -35,14 +35,6 @@ public class Texture {
     /** Data for the texture maps. */
     int pixels[] = null;
 
-    /** The document base for getting textures. */
-    private static URL documentBase = null;
-
-    /** Set the document base. */
-    public static void setDocumentBase(URL db){
-	documentBase = db;
-    }
-
     public Texture(int w, int h){
 	width = w;
 	height = h;
@@ -56,14 +48,6 @@ public class Texture {
 
     public static Texture lipophilicityTexture(){
 	Texture t = new Texture(256, 256);
-	int entry = 0;
-
-	int colorRanges[][] = {
-	    { Color32.red,     28 },
-	    { Color32.magenta, 28 },
-	    { Color32.orange,  28 },
-	    { Color32.yellow,  28 },
-	};
 
 	return t;
     }
@@ -112,27 +96,12 @@ public class Texture {
 	    Color32.pack(  0,   0, 255),
 	};
 
-	if(false){
-	    for(int k = 0; k < 256; k++){
-		//for(int j = 0; j < colors.length; j++){
-		for(int j = 0; j < 256; j++){
-		    if(j %32 == 0){
-			t.pixels[entry] = Color32.blue;
-		    }else{
-			t.pixels[entry] = Color32.white;
-		    }
-		    entry++;
+	for(int k = 0; k < 256; k++){
+	    for(int j = 0; j < 16; j++){
+		for(int i = 0; i < 16; i++){
+		    t.pixels[entry++] = colors[j];
 		}
 	    }
-	}else{
-	    for(int k = 0; k < 256; k++){
-		for(int j = 0; j < 16; j++){
-		    for(int i = 0; i < 16; i++){
-			t.pixels[entry++] = colors[j];
-		    }
-		}
-	    }
-		    
 	}
 
 	return t;
@@ -145,10 +114,6 @@ public class Texture {
 	for(int i = 0; i < colors.length; i++){
 	    rgb[i] = Color32.getColorFromName(colors[i]);
 	}
-	
-	int pixelsPerValue = 1 + (int)((double)width / (double)rgb.length);
-
-	int pixelCount = 0;
 
 	for(int i = 0; i < width; i++){
 	    int pixel = i;
@@ -200,11 +165,9 @@ public class Texture {
         }
 
         byte b[] = new byte[100000];
-        
-        int count = 0;
-        
+
         try {
-            count = input.read(b);
+            input.read(b);
         } catch(Exception e){
             System.out.println("Image was bigger than byte array buffer " + e);
         }
@@ -229,10 +192,8 @@ public class Texture {
         InputStream input = file.getInputStream();
         byte b[] = new byte[100000];
         
-        int count = 0;
-        
         try {
-            count = input.read(b);
+            input.read(b);
         } catch(Exception e){
             System.out.println("Image was bigger than byte array buffer " + e);
         }
@@ -244,31 +205,6 @@ public class Texture {
 	tex.loadPixels(image);
 
 	return tex;
-	/*
-        return JCImageCreator.getImage(b, this);
-
-	try{
-	    if(documentBase != null){
-		System.out.println("documentBase " + documentBase);
-		System.out.println("resource     " + resource);
-		return new Texture(documentBase, resource);
-	    }else{
-		tex.loadPixels(tk.getImage(new URL(resource)));
-	    }
-	} catch (Exception e){
-	    System.err.println("couldn't load image from url " + e);
-
-	    try {
-		tex.loadPixels(Toolkit.getDefaultToolkit().getImage(resource));
-	    } catch (Exception e2){
-		System.err.println("couldn't load image from file " + e2);
-
-		return null;
-	    }
-	}
-
-	return tex;
-	*/
     }
 
     /** Get the pixel values from the image. */
@@ -278,7 +214,8 @@ public class Texture {
 		   ((height = img.getHeight(null)) < 0)){
 		try{
 		    Thread.sleep(10);
-		}catch(Exception e){
+		}catch(InterruptedException e){
+		    e.printStackTrace();
 		}
 	    }
 	    

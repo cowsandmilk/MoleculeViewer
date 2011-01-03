@@ -202,18 +202,14 @@ public class ShadowCache {
 		    double projx = lightx.x * s2px + lightx.y * s2py + lightx.z * s2pz;
 		    double projy = lighty.x * s2px + lighty.y * s2py + lighty.z * s2pz;
 		    
-		    if(projx < r && projy < r){
-			if(projx * projx + projy * projy < r * r){
-			    // ok, it was between us and the light
-			    // and the sphere perimeters overlap
-			    sphereShadowCacheList.add(i);
-			}
+		    if(projx < r && projy < r &&
+		       projx * projx + projy * projy < r * r){
+			// ok, it was between us and the light
+			// and the sphere perimeters overlap
+			sphereShadowCacheList.add(i);
 		    }
 		}
 	    }
-
-	    //FILE.out.print("initial %5d ", initialSize);
-	    //FILE.out.print("final %5d\n", sphereShadowCacheList.size());
 	}
 
 	// prepare the cylinder overlap
@@ -251,12 +247,11 @@ public class ShadowCache {
 		    double projx = lightx.x * s2px + lightx.y * s2py + lightx.z * s2pz;
 		    double projy = lighty.x * s2px + lighty.y * s2py + lighty.z * s2pz;
 
-		    if(projx < r && projy < r){
-			if(projx * projx + projy * projy < r2){
-			    // ok, it was between us and the light
-			    // and the sphere perimeters overlap
-			    cylinderShadowCacheList.add(i);
-			}
+		    if(projx < r && projy < r &&
+		       projx * projx + projy * projy < r2){
+			// ok, it was between us and the light
+			// and the sphere perimeters overlap
+			cylinderShadowCacheList.add(i);
 		    }
 		}
 	    }
@@ -296,30 +291,15 @@ public class ShadowCache {
 		    double projx = lightx.x * s2px + lightx.y * s2py + lightx.z * s2pz;
 		    double projy = lighty.x * s2px + lighty.y * s2py + lighty.z * s2pz;
 		    
-		    if(projx < r && projy < r){
-			if(projx * projx + projy * projy < r * r){
+		    if(projx < r && projy < r &&
+		       projx * projx + projy * projy < r * r){
 			    // ok, it was between us and the light
 			    // and the sphere perimeters overlap
-			    //int t = ttransp.get(i);
-			    //if((transparent == true) ||
-			    //   (transparent == false && t == 255)){
-				triangleShadowCacheList.add(i);
-				//}
-			}
+			    triangleShadowCacheList.add(i);
 		    }
 		}
 	    }
-
-	    //FILE.out.print("initial %5d ", initialSize);
-	    //FILE.out.print("final %5d\n", triangleShadowCacheList.size());
 	}
-
-	//FILE.out.print("triangle cache %d", triangleShadowCacheList.size());
-	//FILE.out.print("[%d]\n", tcachex0.size());
-
-	//FILE.out.print("cylinder shadow cache    %5d\n", cylinderShadowCacheList.size());
-	//FILE.out.print("shadow cache    %5d\n", sphereShadowCacheList.size());
-	//FILE.out.print("occlusion cache %5d\n", sphereOcclusionCacheList.size());
     }
 
     /** Add a sphere to the cache list. */
@@ -388,11 +368,6 @@ public class ShadowCache {
 
     /** Intersection parameters for triangle. */
     private static double tuv[] = new double[3];
-
-    private static double eye[] = new double[3];
-    private static double eyedir[]  = new double[3];
-
-    private static double cent[] = new double[3];
 
     /**
      * Is the surface at this point self shadowing.
@@ -745,14 +720,6 @@ public class ShadowCache {
 	    if(cbs[3] > rmax) rmax = cbs[3];
 	}
 
-	if(false){
-	    FILE.out.print("xmin %6.1f ", xmin);
-	    FILE.out.print("xmax %6.1f\n", xmax);
-	    FILE.out.print("ymin %6.1f ", ymin);
-	    FILE.out.print("ymax %6.1f\n", ymax);
-	    FILE.out.print("rmax %6.1f\n", rmax);
-	}
-
 	// make the bounding box for the grid.
 	triangleGrid.reset(xmin - 0.1, ymin - 0.1,
 			   xmax + 0.1, ymax + 0.1, 1.01 * rmax);
@@ -794,14 +761,6 @@ public class ShadowCache {
 	    if(y < ymin) ymin = y;
 	    if(y > ymax) ymax = y;
 	    if(scr[i] > rmax) rmax = scr[i];
-	}
-
-	if(false){
-	    FILE.out.print("xmin %6.1f ", xmin);
-	    FILE.out.print("xmax %6.1f\n", xmax);
-	    FILE.out.print("ymin %6.1f ", ymin);
-	    FILE.out.print("ymax %6.1f\n", ymax);
-	    FILE.out.print("rmax %6.1f\n", rmax);
 	}
 
 	// make the bounding box for the grid.
@@ -867,7 +826,7 @@ public class ShadowCache {
     }
 
     // Ray-triangle intersection
-    // Tomas Möller and Ben Trumbore.
+    // Tomas Mï¿½ller and Ben Trumbore.
     // Fast, minimum storage ray-triangle intersection.
     // Journal of graphics tools, 2(1):21-28, 1997
     // Source code from
@@ -911,57 +870,29 @@ public class ShadowCache {
 	
 	// if determinant is near zero, ray lies in plane of triangle
 	det = DOT(edge1, pvec);
-	
-	if(false){
-	    if (det < EPSILON)
-		return 0;
 
-	    // calculate distance from vert0 to ray origin
-	    SUB(tvec, orig, vert0);
-	    
-	    // calculate U parameter and test bounds
-	    tuv[1] = DOT(tvec, pvec);
-	    if (tuv[1] < 0.0 || tuv[1] > det)
-		return 0;
-	    
-	    // prepare to test V parameter
-	    CROSS(qvec, tvec, edge1);
-	    
-	    // calculate V parameter and test bounds
-	    tuv[2] = DOT(dir, qvec);
-	    if (tuv[2] < 0.0 || tuv[1] + tuv[2] > det)
-		return 0;
-	    
-	    // calculate t, scale parameters, ray intersects triangle
-	    tuv[0] = DOT(edge2, qvec);
-	    inv_det = 1.0 / det;
-	    tuv[0] *= inv_det;
-	    tuv[1] *= inv_det;
-	    tuv[2] *= inv_det;
-	}else{                    // the non-culling branch
-	    if (det > -EPSILON && det < EPSILON)
-		return 0;
-	    inv_det = 1.0 / det;
-	    
-	    // calculate distance from vert0 to ray origin
-	    SUB(tvec, orig, vert0);
-	    
-	    // calculate U parameter and test bounds
-	    tuv[1] = DOT(tvec, pvec) * inv_det;
-	    if (tuv[1] < 0.0 || tuv[1] > 1.0)
-		return 0;
-	    
-	    // prepare to test V parameter
-	    CROSS(qvec, tvec, edge1);
+	if (det > -EPSILON && det < EPSILON)
+	    return 0;
+	inv_det = 1.0 / det;
 
-	    // calculate V parameter and test bounds
-	    tuv[2] = DOT(dir, qvec) * inv_det;
-	    if (tuv[2] < 0.0 || tuv[1] + tuv[2] > 1.0)
-		return 0;
-	    
-	    // calculate t, ray intersects triangle
-	    tuv[0] = DOT(edge2, qvec) * inv_det;
-	}
+	// calculate distance from vert0 to ray origin
+	SUB(tvec, orig, vert0);
+
+	// calculate U parameter and test bounds
+	tuv[1] = DOT(tvec, pvec) * inv_det;
+	if (tuv[1] < 0.0 || tuv[1] > 1.0)
+	    return 0;
+
+	// prepare to test V parameter
+	CROSS(qvec, tvec, edge1);
+
+	// calculate V parameter and test bounds
+	tuv[2] = DOT(dir, qvec) * inv_det;
+	if (tuv[2] < 0.0 || tuv[1] + tuv[2] > 1.0)
+	    return 0;
+
+	// calculate t, ray intersects triangle
+	tuv[0] = DOT(edge2, qvec) * inv_det;
 	return 1;
     }
 

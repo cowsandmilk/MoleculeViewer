@@ -164,7 +164,6 @@ public class Texgen {
     private static double x[] = null;
     private static double y[] = null;
     private static double z[] = null;
-    private static double r[] = null;
     private static double q[] = null;
 
     public static final int Electrostatic = 1;
@@ -199,7 +198,6 @@ public class Texgen {
 	    x = new double[arraySize];
 	    y = new double[arraySize];
 	    z = new double[arraySize];
-	    r = new double[arraySize];
 	    q = new double[arraySize];
 	}
 
@@ -210,23 +208,20 @@ public class Texgen {
 	    Atom a = (Atom)atoms.get(i);
 	    String name = a.getAtomLabel();
 
-	    if(func == Electrostatic){
-		// if it is an amide nitrogen add a
-		// proton if necessary.
-		if(name != null && name.equals("N")){
-		    Point3d nh = getAmideHydrogen(a);
-		    // nh will be null if we already had an nh
-		    if(nh != null){
-			x[na] = nh.getX();
-			y[na] = nh.getY();
-			z[na] = nh.getZ();
-			// this is the charmm19 value of
-			// the amide proton charge.
-			// should be customisable somehow...
-			q[na] = +0.25;
-			na++;
-			amideProtons++;
-		    }
+	    if(func == Electrostatic &&
+	       name != null && name.equals("N")){
+		Point3d nh = getAmideHydrogen(a);
+		// nh will be null if we already had an nh
+		if(nh != null){
+		    x[na] = nh.getX();
+		    y[na] = nh.getY();
+		    z[na] = nh.getZ();
+		    // this is the charmm19 value of
+		    // the amide proton charge.
+		    // should be customisable somehow...
+		    q[na] = +0.25;
+		    na++;
+		    amideProtons++;
 		}
 	    }
 
@@ -244,7 +239,6 @@ public class Texgen {
 		x[na] = a.getX();
 		y[na] = a.getY();
 		z[na] = a.getZ();
-		r[na] = a.getVDWRadius();
 		q[na] = qa;
 		na++;
 	    }
@@ -269,8 +263,6 @@ public class Texgen {
 	
 	int tnp = tm.np;
 
-	IntArray neighbours = new IntArray();
-
 	for(int i = 0; i < tnp; i++){
 	    double tx = tm.x[i];
 	    double ty = tm.y[i];
@@ -278,14 +270,6 @@ public class Texgen {
 	    double dtotal = 0.0;
 	    double norm = 0.0;
 
-	    //neighbours.removeAllElements();
-
-	    //l.getPossibleNeighbours(-1, tx, ty, tz, neighbours, true);
-
-	    //int count = neighbours.size();
-
-	    //for(int ia = 0; ia < count; ia++){
-	    //int j = neighbours.get(ia);
 	    for(int j = 0; j < na; j++){
 		double dx = tx - x[j];
 		double dy = ty - y[j];
@@ -294,19 +278,15 @@ public class Texgen {
 
 		if(d2 < maxd2){
 		    if(func == Electrostatic){
-			//d2 = Math.sqrt(d2);
 			dtotal += q[j]/d2;
 		    }else if(func == Lipophilicity){
 			double d = Math.sqrt(d2);
 			double gd = topPart /
 			    (Math.exp(halfWidth * (d - dCutoff)) + 1.0);
 
-			//double d = Math.sqrt(d2)-r[j];
-			//double gd = 1./((d + 1.0)*(d+1.));
 
 			dtotal += q[j] * gd;
 			norm += gd;
-			//dtotal += q[j] * (1./(1. + d2));
 		    }
 		}
 	    }
@@ -329,7 +309,6 @@ public class Texgen {
 	FILE.out.print("max %.3f\n", max);
 
 	if(uv == Tmesh.UTexture){
-	    //tm.uscale = (float)(1.0/0.6);
 	    if(func == Lipophilicity){
 		tm.setUOffset(min);
 		tm.setUScale(1.0/(max - min));

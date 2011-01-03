@@ -408,10 +408,7 @@ public class Map extends Symmetry {
 	int iplus = oheader[16];
 	int iscale1 = oheader[17];
 	int iscale2 = oheader[18];
-	int imin = oheader[19];
-	int imax = oheader[20];
 	int isigma = oheader[21];
-	int imean = oheader[22];
 
 	extent[0] = oheader[3];
 	extent[1] = oheader[4];
@@ -441,10 +438,7 @@ public class Map extends Symmetry {
 	prod = (double)iprod/(double)iscale2;
 	plus = iplus;
 
-	double min = ((double)imin-plus)/prod;
-	double max = ((double)imax-plus)/prod;
 	double sigma = ((double)isigma-plus)/prod;
-	double mean = ((double)imean-plus)/prod;
 
 	rms = sigma;
 
@@ -474,14 +468,9 @@ public class Map extends Symmetry {
 	//odata = new byte[inx*8 * iny*8 * inz*8];
 	odata = new byte[inx*8][iny*8][inz*8];
 
-	int pt, ct = 1;
-
 	for (int k=0; k < inz; k++) {
 	    for (int j=0;  j < iny; j++) {
 		for (int i=0; i < inx; i++) {
-		    pt = ct;
-		    ct++;
-
 		    for(int d = 0; d < 512; d++){
 			data[d] = (byte)file.read();
 		    }
@@ -505,9 +494,9 @@ public class Map extends Symmetry {
 		    int cubieSizeZ = 8;
 
 		    // For partial cubies
-		    if (xtraX > 0) if (i == inx-1) cubieSizeX = xtraX;
-		    if (xtraY > 0) if (j == iny-1) cubieSizeY = xtraY;
-		    if (xtraZ > 0) if (k == inz-1) cubieSizeZ = xtraZ;
+		    if (xtraX > 0 && i == inx-1) cubieSizeX = xtraX;
+		    if (xtraY > 0 && j == iny-1) cubieSizeY = xtraY;
+		    if (xtraZ > 0 && k == inz-1) cubieSizeZ = xtraZ;
 
 		    for (int n = 0; n < cubieSizeZ; n++) {
 			for (int m = 0;  m < cubieSizeY; m++) {
@@ -751,20 +740,6 @@ public class Map extends Symmetry {
 	int dx = maximumGrid[0] - minimumGrid[0];
 	int dy = maximumGrid[1] - minimumGrid[1];
 	int dz = maximumGrid[2] - minimumGrid[2];
-
-	if(false){
-	    System.out.println("dx " + dx);
-	    System.out.println("dy " + dy);
-	    System.out.println("dz " + dz);
-			
-	    System.out.println("minimumGrid[0] " + minimumGrid[0]);
-	    System.out.println("minimumGrid[1] " + minimumGrid[1]);
-	    System.out.println("minimumGrid[2] " + minimumGrid[2]);
-			
-	    System.out.println("maximumGrid[0] " + maximumGrid[0]);
-	    System.out.println("maximumGrid[1] " + maximumGrid[1]);
-	    System.out.println("maximumGrid[2] " + maximumGrid[2]);
-	}
 
 	int dataPoints = dx * dy * dz;
 	ensureMapCapacity(dataPoints);

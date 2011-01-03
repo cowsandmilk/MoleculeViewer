@@ -107,7 +107,7 @@ public class Symmetry {
 	    StringTokenizer tokenizer = new StringTokenizer(line);
 	    String numberToken = tokenizer.nextToken();
 	    String operatorCountToken = tokenizer.nextToken();
-	    String thirdToken = tokenizer.nextToken();
+	    tokenizer.nextToken();
 	    String shortName = tokenizer.nextToken();
 	    String name = getSpaceGroupName(line);
 
@@ -268,14 +268,7 @@ public class Symmetry {
 
 	Matrix c2f = getCartesianToFractionalMatrix();
 
-	//c2f.print("c2f");
-	//scale.print("scale");
-
-	if(s.equals(c2f)){
-	    // this should be the standard case
-	    // no more action to take.
-	    //System.out.println("scale and c2f are equal");
-	}else{
+	if(!s.equals(c2f)){
 	    System.err.println("prepareSymmetry: SCALE does not match " +
 			       "calculated cartesian->fractional matrix");
 	    System.err.println("prepareSymmetry: fixing symmetry");

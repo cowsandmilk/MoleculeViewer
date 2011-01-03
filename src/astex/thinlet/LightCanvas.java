@@ -119,13 +119,6 @@ public class LightCanvas extends CustomComponent implements MouseListener, Mouse
 	}
 
 	repaint();
-
-	if(activeLight != -1){
-	    Light light = (Light)renderer.lights.get(activeLight);
-            //if(moleculeViewer.ui != null){
-            //    moleculeViewer.ui.setActiveLight(activeLight, light);
-            //}
-	}
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -138,9 +131,7 @@ public class LightCanvas extends CustomComponent implements MouseListener, Mouse
     }
 
     public void mouseDragged(MouseEvent e) {
-	if(activeLight != -1){
-	    Light light = (Light)renderer.lights.get(activeLight);
-	    
+	if(activeLight != -1){	    
 	    double lx = c2lx(e.getX());
 	    double ly = c2ly(e.getY());
 

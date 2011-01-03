@@ -162,7 +162,6 @@ public class MoleculeIO {
 	type = getTypeFromExtension(filename);
 
 	if(type != null){
-	    //FILE file = FILE.openFile(filename);
 	    FILE file = FILE.open(filename);
 
 	    if(file == null){
@@ -172,18 +171,10 @@ public class MoleculeIO {
 		return null;
 	    }
 
-	    long before = System.currentTimeMillis();
-
 	    Molecule molecule = read(type, file);
 
 	    molecule.setName(filename);
 	    molecule.setFilename(filename);
-
-	    long after = System.currentTimeMillis();
-			
-	    //System.out.println("read time " + (after - before));
-
-	    //summariseMolecule(molecule);
 			
 	    file.close();
 	    
@@ -279,13 +270,11 @@ public class MoleculeIO {
 		Atom a1 = molecule.getAtom(firstAtom - 1);
 		Atom a2 = molecule.getAtom(secondAtom - 1);
 		
-		Bond newBond =
-		    molecule.addBond(a1, a2, bondOrder);
+		molecule.addBond(a1, a2, bondOrder);
 	    }else{
 		// we have to search for the specific ids
 		// this is much slower
-		Bond newBond =
-		    molecule.addBondFromIds(firstAtom, secondAtom, bondOrder);
+		molecule.addBondFromIds(firstAtom, secondAtom, bondOrder);
 	    }
 	}
     }
@@ -405,7 +394,7 @@ public class MoleculeIO {
      */
     public static Molecule readMol2(FILE file){
 	Molecule molecule = new Molecule();
-	int atomCount = 0, bondCount = 0, subCount = 0;
+	int atomCount = 0, bondCount = 0;
 	double averageDenstiy = -1.0;
 	int symmetryElements  = 1;
 	boolean atomsInOrder = false;
@@ -674,7 +663,7 @@ public class MoleculeIO {
 
 	    //System.out.println("firstAtom " + firstAtom);
 	    //System.out.println("secondAtom " + secondAtom);
-	    Bond bond = molecule.addBond(firstAtom - 1, secondAtom - 1,
+	    molecule.addBond(firstAtom - 1, secondAtom - 1,
 					 bondOrder);
 	}
 
@@ -746,9 +735,7 @@ public class MoleculeIO {
 	    int secondAtom = file.readInteger(3, 3);
 	    int bondOrder = file.readInteger(6, 3);
 
-	    //System.out.println("firstAtom " + firstAtom);
-	    //System.out.println("secondAtom " + secondAtom);
-	    Bond bond = molecule.addBond(firstAtom - 1, secondAtom - 1,
+	    molecule.addBond(firstAtom - 1, secondAtom - 1,
 					 bondOrder);
 	}
 
@@ -777,10 +764,6 @@ public class MoleculeIO {
     private static char lastResidueA;
     private static char lastResidueB;
     private static char lastResidueC;
-    private static char lastXplorChainId1;
-    private static char lastXplorChainId2;
-    private static char lastXplorChainId3;
-    private static char lastXplorChainId4;
 	
     /** Initialise the values for chain ids. */
     private static void initialiseReader(){
@@ -789,10 +772,6 @@ public class MoleculeIO {
 	lastResidueA = 0;
 	lastResidueB = 0;
 	lastResidueC = 0;
-	lastXplorChainId1 = 0;
-	lastXplorChainId2 = 0;
-	lastXplorChainId3 = 0;
-	lastXplorChainId4 = 0;
 	lastChainId = 0;
     }
 
@@ -800,11 +779,7 @@ public class MoleculeIO {
      * Do we need a new chain.
      * Simplified case. Ignore the contents of columns 73-76.
      */
-    private static boolean needNewChain(char currentChainId,
-					char xplorChainId1,
-					char xplorChainId2,
-					char xplorChainId3,
-					char xplorChainId4){
+    private static boolean needNewChain(char currentChainId){
 	if(currentChainId != lastChainId){
 	    initialiseReader();
 
@@ -813,36 +788,6 @@ public class MoleculeIO {
 	}
 
 	return false;
-    }
-
-    /** Do we need a new chain. */
-    private static boolean needNewChain2(char currentChainId,
-					char xplorChainId1,
-					char xplorChainId2,
-					char xplorChainId3,
-					char xplorChainId4){
-	if(currentChainId != ' ' &&
-	   lastChainId != currentChainId){
-	    initialiseReader();
-
-	    lastChainId = currentChainId;
-	    return true;
-	}else if(currentChainId == ' '&&
-		 (lastXplorChainId1 != xplorChainId1 ||
-		  lastXplorChainId2 != xplorChainId2 ||
-		  lastXplorChainId3 != xplorChainId3 ||
-		  lastXplorChainId4 != xplorChainId4)){
-	    initialiseReader();
-
-	    lastXplorChainId1 = xplorChainId1;
-	    lastXplorChainId2 = xplorChainId2;
-	    lastXplorChainId3 = xplorChainId3;
-	    lastXplorChainId4 = xplorChainId4;
-
-	    return true;
-	}else{
-	    return false;
-	}
     }
 
     /** Do we need a new residue? */
@@ -906,17 +851,11 @@ public class MoleculeIO {
 				// where is the insertion code exactly???
 		char insertionCode = file.getChar(26);
 		char chainId = file.getChar(21);
-		char xplorChainId1 = file.getChar(72);
-		char xplorChainId2 = file.getChar(73);
-		char xplorChainId3 = file.getChar(74);
-		char xplorChainId4 = file.getChar(75);
 		char ca = file.getChar(17);
 		char cb = file.getChar(18);
 		char cc = file.getChar(19);
 
-		if(needNewChain(chainId,
-				xplorChainId1, xplorChainId2,
-				xplorChainId3, xplorChainId4)){
+		if(needNewChain(chainId)){
 		    Chain chain = molecule.addChain();
 		    //if(chainId != ' '){
 		    //		    if(chainId != ' ' ||
@@ -946,17 +885,8 @@ public class MoleculeIO {
 		// its a connect record.
 		int firstId = file.readInteger(6, 5);
 		Atom firstAtom = null;
-		
-		//if(firstAtom == null){
-		//    System.out.println("first atom in conect is null");
-		//}
-
-		//firstAtom.attributes |= Atom.ConectRecords;
-
-		int lineLength = file.getLineLength();
 
 		for(int i = 0; i < 6; i++){
-		    int start = 11 + i * 5;
 		    int secondId = file.readInteger(11 + i * 5, 5);
 
 		    if(secondId == 0){
@@ -995,10 +925,6 @@ public class MoleculeIO {
 		}
 	    }else if(c0 == 'C' && c1 == 'R' && c2 == 'Y' && c3 == 'S'){
 		readUnitCell(molecule, file);
-
-		//System.out.println("finished in unit cell");
-	    }else if(c0 == 'R' && c1 == 'E' && c2 == 'M' ){
-		//readCNXUnitCell(molecule, file);
 	    }else if(c0 == 'S' && c1 == 'C' && c2 == 'A' && c3 == 'L'){
 		readScaleRecord(molecule, file);
 	    }
@@ -1099,12 +1025,10 @@ public class MoleculeIO {
 	    // if the first char is H
 	    // turn it to R to fix problems with Hexagonally
 	    // classified spacegroups
-	    if(i == 55){
-		if(c == 'R' && Math.abs(cell[3] - cell[5]) > 0.001){
-		    System.err.println("Spacegroup changed from R to H " +
-				       "classification as alpha != gamma");
-		    c ='H';
-		}
+	    if(i == 55 &&c == 'R' && Math.abs(cell[3] - cell[5]) > 0.001){
+		System.err.println("Spacegroup changed from R to H " +
+				   "classification as alpha != gamma");
+		c ='H';
 	    }
 	    if(c != ' '){
 		spaceGroupName.append(c);
@@ -1684,7 +1608,6 @@ public class MoleculeIO {
 		output.print("  ");
 	    }else if(symbol.length() == 2){
 		output.print(" ");
-	    }else if(symbol.length() == 3){
 	    }
 
 	    // isotope

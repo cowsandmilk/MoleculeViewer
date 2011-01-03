@@ -77,8 +77,6 @@ public class Animate extends Thread {
 
 			AnimationObject stage = (AnimationObject)stages.elementAt(s);
 
-			stage.setAnimateThread(this);
-
 			stage.initialise();
 
 			Log.info("stage %3d", s);
@@ -98,7 +96,8 @@ public class Animate extends Thread {
 					int sleepDuration = stage.getSleepDuration();
 					//System.out.println("sleepDuration " + sleepDuration);
 					sleep(sleepDuration);
-				}catch(Exception e){
+				}catch(InterruptedException e){
+				    print.f("Interrupted thread=" + Thread.currentThread());
 				}
 			}
 		}

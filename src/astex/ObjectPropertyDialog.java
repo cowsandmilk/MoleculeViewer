@@ -271,8 +271,6 @@ public class ObjectPropertyDialog extends Dialog
 		    }catch(InterruptedException e){
 			Log.error("interrupted loading " + smallImageName);
 		    }
-
-		    int width = smallImage.getWidth(null);
 		    
 		    JCButton ib = new JCButton(smallImage);
 

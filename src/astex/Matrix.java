@@ -119,8 +119,6 @@ public class Matrix {
 	x30 += x33*tx; x31 += x33*ty; x32 += x33*tz;
     }
 
-    private static Matrix workMatrix = new Matrix();
-
     /** Translate the transformation matrix the other way. */
     public void pretranslate(double tx, double ty, double tz){
 	x30 = tx*x00 + ty*x10 + tz*x20;
@@ -157,8 +155,6 @@ public class Matrix {
     /** Rotate around Z in degrees. */
     public void rotateZdegrees(double d){
 	double r = d*Math.PI / 180.0;
-	double c = Math.cos(r);
-	double s = Math.sin(r);
 
 	Matrix m = new Matrix();
 	m.rotateAroundVector(0., 0., 1., r);
