@@ -258,7 +258,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] residue2(MoleculeRenderer r, Vector ids){
+    public static byte[] residue2(MoleculeRenderer r, Vector<?> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -302,7 +302,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] residue(MoleculeRenderer r, Vector ids){
+    public static byte[] residue(MoleculeRenderer r, Vector<?> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -434,7 +434,7 @@ public class Selection {
     */
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] composite(MoleculeRenderer r, Vector ids){
+    public static byte[] composite(MoleculeRenderer r, Vector<?> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -481,7 +481,7 @@ public class Selection {
 	    byte chainMask[] = null;
 	    byte residueMask[] = null;
 	    byte insertionMask[] = null;
-	    Vector v = new Vector();
+	    Vector<Object> v = new Vector<Object>(1);
 
 	    if(chainBuffer.length() > 0){
 		v.removeAllElements();
@@ -523,7 +523,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] sequential(MoleculeRenderer r, Vector ids){
+    public static byte[] sequential(MoleculeRenderer r, Vector<?> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -624,7 +624,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of molecule name. */
-    public static byte[] molecule(MoleculeRenderer r, Vector ids){
+    public static byte[] molecule(MoleculeRenderer r, Vector<?> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -665,7 +665,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of molecule name. */
-    public static byte[] moleculeExact(MoleculeRenderer r, Vector ids){
+    public static byte[] moleculeExact(MoleculeRenderer r, Vector<?> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -796,7 +796,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of residue names. */
-    public static byte[] name(MoleculeRenderer r, Vector ids){
+    public static byte[] name(MoleculeRenderer r, Vector<?> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -840,7 +840,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of residue names. */
-    public static byte[] chain(MoleculeRenderer r, Vector ids){
+    public static byte[] chain(MoleculeRenderer r, Vector<?> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -871,7 +871,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of atom ids. */
-    public static byte[] atom(MoleculeRenderer r, Vector ids){
+    public static byte[] atom(MoleculeRenderer r, Vector<?> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -896,7 +896,7 @@ public class Selection {
     }
 
     /** Select a set of atoms in a group. */
-    public static byte[] group(MoleculeRenderer r, Hashtable group){
+    public static byte[] group(MoleculeRenderer r, Hashtable<Atom, Atom> group){
 	byte[] mask = generateSelectionMask(r);
 
 	AtomIterator iterator = r.getAtomIterator();
@@ -906,10 +906,10 @@ public class Selection {
             atom.setTemporarilySelected(false);
         }
 
-        Enumeration groupEnum = group.keys();
+        Enumeration<Atom> groupEnum = group.keys();
 
         while(groupEnum.hasMoreElements()){
-            Atom atom = (Atom)groupEnum.nextElement();
+            Atom atom = groupEnum.nextElement();
             atom.setTemporarilySelected(true);
         }
 
@@ -933,7 +933,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] id(MoleculeRenderer r, Vector ids){
+    public static byte[] id(MoleculeRenderer r, Vector<?> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -974,7 +974,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of elements. */
-    public static byte[] element(MoleculeRenderer r, Vector ids){
+    public static byte[] element(MoleculeRenderer r, Vector<?> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -1319,8 +1319,8 @@ public class Selection {
 
     /** Composite specification. */
     public static byte[]
-	compositeSelection(MoleculeRenderer r, Vector molecules,
-			   Vector chains, Vector residues, Vector atoms){
+	compositeSelection(MoleculeRenderer r, Vector<?> molecules,
+			   Vector<?> chains, Vector<?> residues, Vector<?> atoms){
 	byte mask1[] = molecule(r, molecules);
 	byte mask2[] = chain(r, molecules);
 	mask1 = and(mask1, mask2);
@@ -1385,7 +1385,7 @@ public class Selection {
 
     /** Evaluate a builtin expression against residue names. */
     public static byte[] builtin(MoleculeRenderer r, DynamicArray names){
-	Vector ids = new Vector(names.size());
+	Vector<Object> ids = new Vector<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
 	    ids.addElement(names.get(i));
 	}
@@ -1395,7 +1395,7 @@ public class Selection {
 
     /** Evaluate a builtin expression atom names. */
     public static byte[] builtin2(MoleculeRenderer r, DynamicArray names){
-	Vector ids = new Vector(names.size());
+	Vector<Object> ids = new Vector<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
 	    ids.addElement(names.get(i));
 	}
@@ -1405,7 +1405,7 @@ public class Selection {
 
     /** Evaluate a builtin expression atom names. */
     public static byte[] builtin3(MoleculeRenderer r, DynamicArray names){
-	Vector ids = new Vector(names.size());
+	Vector<Object> ids = new Vector<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
 	    ids.addElement(names.get(i));
 	}

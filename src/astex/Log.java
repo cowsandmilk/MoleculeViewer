@@ -52,7 +52,7 @@ public class Log {
     };
 
     /** The maps of logging levels for the classes. */
-    private static Hashtable methodLevels = new Hashtable();
+    private static Hashtable<String,Integer> methodLevels = new Hashtable<String,Integer>();
 
     /** The current global log level. */
     private static int         level    = INFO;
@@ -228,18 +228,11 @@ public class Log {
 	FILE.out.println(s);
     }
 
-    /** Set the logging level for this class. */
-    public static void setLoggingLevel(int l){
-	Integer newLevel = new Integer(l);
-
-	methodLevels.put(methodLevels, newLevel);
-    }
-
     /** Get the logging level. */
     public static int getLoggingLevel(int l){
 	String methodName = getMethodName(l);
 
-	Integer il = (Integer)methodLevels.get(methodName);
+	Integer il = methodLevels.get(methodName);
 
 	if(il != null){
 	    return il.intValue();
@@ -247,7 +240,7 @@ public class Log {
 
 	String className = getClassName(methodName);
 
-	il = (Integer)methodLevels.get(className);
+	il = methodLevels.get(className);
 
 	if(il != null){
 	    return il.intValue();
@@ -351,7 +344,7 @@ public class Log {
 	    return;
 	}
 
-	Enumeration names = logProperties.propertyNames();
+	Enumeration<?> names = logProperties.propertyNames();
 
 	while(names.hasMoreElements()){
 	    String property = (String)names.nextElement();

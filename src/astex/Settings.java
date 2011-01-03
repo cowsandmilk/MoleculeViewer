@@ -21,12 +21,12 @@ import java.util.*;
 
 public class Settings {
 	/** Hashtable of property objects. */
-	private static Hashtable propertyObjects = new Hashtable();
+	private static Hashtable<String,Properties> propertyObjects = new Hashtable<String,Properties>(11);
 
 	/** The main get method. */
 	public static Object get(String table, String property){
 		//Log.info("looking for table " + table);
-		Properties properties = (Properties)propertyObjects.get(table);
+		Properties properties = propertyObjects.get(table);
 
 		if(properties == null){
 			//Log.info("couldn't find " + table);

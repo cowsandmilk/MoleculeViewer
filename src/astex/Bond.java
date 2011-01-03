@@ -83,8 +83,8 @@ public class Bond extends Generic {
         }
     }
 
-    public Enumeration getProperties(){
-        Vector v = new Vector();
+    public Enumeration<String> getProperties(){
+        Vector<String> v = new Vector<String>(1);
 
         v.addElement(BondOrder);
 

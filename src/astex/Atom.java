@@ -480,7 +480,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 			s += getInsertionCode();
 		    }else if(nc == 'A'){
 			Residue res = getResidue();
-			String label = getAtomLabel();
+			label = getAtomLabel();
 			if(res != null && res.isStandardAminoAcid()){
 			    int labelLength = label.length();
 			    for(int l = 0; l < labelLength; l++){
@@ -1343,8 +1343,8 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public static final String Element = "element";
 
     /** Return an enumeration of our properties. */
-    public Enumeration getProperties(){
-        Vector v = new Vector();
+    public Enumeration<String> getProperties(){
+        Vector<String> v = new Vector<String>(10);
 
         v.addElement(XAttribute);
         v.addElement(YAttribute);
@@ -1361,7 +1361,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     }
 
     /** Arbitrary properties. */
-    Hashtable properties = null;
+    Hashtable<Object,Object> properties = null;
 
     /** Get Object representing key. */
     public Object get(Object key, Object def){
@@ -1408,7 +1408,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
         else if(key.equals(Opacity)) transparency = ((Integer)value).intValue();
         else{
             if(properties == null){
-                properties = new Hashtable();
+                properties = new Hashtable<Object,Object>();
             }
             if(value == null){
                 properties.remove(key);
@@ -1430,7 +1430,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     }
 
     /** Get an Enumeration of our parents. */
-    public Enumeration getParents(Object type){
+    public Enumeration<GenericInterface> getParents(Object type){
         return null;
     }
 
@@ -1443,7 +1443,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     }
 
     /** Get an enumeration of our children. */
-    public Enumeration getChildren(Object type){
+    public Enumeration<GenericInterface> getChildren(Object type){
         return null;
     }
 

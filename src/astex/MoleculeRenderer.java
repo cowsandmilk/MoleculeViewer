@@ -118,7 +118,7 @@ public class MoleculeRenderer {
     private transient DynamicArray moleculeRendererListeners = new DynamicArray();
 
     /** The set of defined groups. */
-    public Hashtable groups = new Hashtable();
+    public Hashtable<String,Hashtable<Atom, Atom>> groups = new Hashtable<String,Hashtable<Atom, Atom>>(11);
 
     /** The symmetry we will use. */
     private Symmetry symmetry = null;
@@ -973,7 +973,7 @@ public class MoleculeRenderer {
 	Texture t = null;
 
 	if(name != null){
-	    t = (Texture)renderer.textures.get(name);
+	    t = renderer.textures.get(name);
 
 	    if(t == null){
 		t = new Texture();

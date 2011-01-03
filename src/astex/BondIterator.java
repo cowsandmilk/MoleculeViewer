@@ -25,7 +25,7 @@ package astex;
  */
 import java.util.*;
 
-public class BondIterator implements Enumeration {
+public class BondIterator implements Enumeration<Bond> {
 	/** The scene that we will enumerate the bonds of. */
 	private MoleculeRenderer renderer = null;
 
@@ -99,7 +99,7 @@ public class BondIterator implements Enumeration {
 	}
 
 	/** Get the next element. */
-	public Object nextElement(){
+	public Bond nextElement(){
 		if(hasMoreElements()){
 			return currentMolecule.getBond(currentBondIndex++);
 		}else{
@@ -109,6 +109,6 @@ public class BondIterator implements Enumeration {
 
 	/** Get the next bond. */
 	public Bond getNextBond(){
-		return (Bond)nextElement();
+		return nextElement();
 	}
 }

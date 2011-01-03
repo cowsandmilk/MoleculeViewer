@@ -994,7 +994,7 @@ public class Tmesh {
 	}
     }
 
-    private Hashtable clipHash = null;
+    private Hashtable<Integer, Integer> clipHash = null;
 
     /** 
      * Clip Tmesh to those triangles and points that have
@@ -1005,7 +1005,7 @@ public class Tmesh {
 	int used[] = new int[np];
 	int remainingPoints = 0;
 
-	clipHash = new Hashtable();
+	clipHash = new Hashtable<Integer,Integer>(2*nt);
 
 	System.out.println("Tmesh.clip: clipping " + getName());
 
@@ -1183,7 +1183,7 @@ public class Tmesh {
 	    hashVal = new Integer(v1 + 1000000*v0);
 	}
 
-	Integer newVertex = (Integer)clipHash.get(hashVal);
+	Integer newVertex = clipHash.get(hashVal);
 
 	if(newVertex != null){
 	    return newVertex.intValue();

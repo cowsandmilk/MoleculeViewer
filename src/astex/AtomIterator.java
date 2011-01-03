@@ -25,7 +25,7 @@ package astex;
  */
 import java.util.*;
 
-public class AtomIterator implements Enumeration {
+public class AtomIterator implements Enumeration<Atom> {
 	/** The scene that we will enumerate the atoms of. */
 	private MoleculeRenderer renderer = null;
 
@@ -99,7 +99,7 @@ public class AtomIterator implements Enumeration {
 	}
 
 	/** Get the next element. */
-	public Object nextElement(){
+	public Atom nextElement(){
 		if(hasMoreElements()){
 			return currentMolecule.getAtom(currentAtomIndex++);
 		}else{
@@ -109,6 +109,6 @@ public class AtomIterator implements Enumeration {
 
 	/** Get the next atom. */
 	public Atom getNextAtom(){
-		return (Atom)nextElement();
+		return nextElement();
 	}
 }

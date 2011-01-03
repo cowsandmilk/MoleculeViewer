@@ -1508,7 +1508,7 @@ public class MoleculeIO {
         Residue prevRes = null;
         int resNumber = 0;
 
-        Hashtable atomNumberHash = new Hashtable();
+        Hashtable<Atom, Integer> atomNumberHash = new Hashtable<Atom, Integer>(500);
 
         output.println("@<TRIPOS>ATOM");
         for(int a = 0; a < atomCount; a++){
@@ -1547,8 +1547,8 @@ public class MoleculeIO {
         for(int b = 0; b < bondCount; b++){
             Bond bond = molecule.getBond(b);
             output.print("%5d", b + 1);
-            int i = ((Integer)atomNumberHash.get(bond.getFirstAtom())).intValue();
-            int j = ((Integer)atomNumberHash.get(bond.getSecondAtom())).intValue();
+            int i = (atomNumberHash.get(bond.getFirstAtom())).intValue();
+            int j = (atomNumberHash.get(bond.getSecondAtom())).intValue();
             output.print(" %5d", i);
             output.print(" %5d", j);
 

@@ -30,14 +30,14 @@ public class ThinletUI extends Thinlet implements WindowListener,
                                                   MoleculeRendererListener,
                                                   RendererEventListener {
 
-    public static Hashtable userinterfaces = new Hashtable();
+    public static Hashtable<String, DialogLauncher> userinterfaces = new Hashtable<String, DialogLauncher>(11);
 
     public static void handleCommand(MoleculeViewer mv,
                                      MoleculeRenderer mr,
                                      Arguments args){
         String xml = args.getString("-xml", null);
 
-        DialogLauncher dialogLauncher = (DialogLauncher)userinterfaces.get(xml);
+        DialogLauncher dialogLauncher = userinterfaces.get(xml);
 
         if(dialogLauncher == null){
             ThinletUI tui = new ThinletUI(mv, xml);
@@ -53,10 +53,10 @@ public class ThinletUI extends Thinlet implements WindowListener,
     public MoleculeViewer moleculeViewer     = null;
     public MoleculeRenderer moleculeRenderer = null;
 
-    Hashtable initialised = new Hashtable();
+    Hashtable<String, String> initialised = new Hashtable<String,String>(11);
 
     /** Main entry point for scripting execution via thinlet. */
-    public void execute(Object init, Object component){
+    public void execute(String init, Object component){
 
         if(initialised.get(init) == null){
             initialised.put(init, init);
@@ -679,8 +679,8 @@ public class ThinletUI extends Thinlet implements WindowListener,
     private void populateResidues(Object resnode, Object atomnode){
         removeAll(resnode);
         removeAll(atomnode);
-        Hashtable resnames = new Hashtable();
-        Hashtable atomnames = new Hashtable();
+        Hashtable<String,String> resnames = new Hashtable<String,String>(100);
+        Hashtable<String,String> atomnames = new Hashtable<String, String>(100);
 
         for(int m = 0; m < moleculeRenderer.getMoleculeCount(); m++){
             Molecule mol = moleculeRenderer.getMolecule(m);
@@ -707,10 +707,10 @@ public class ThinletUI extends Thinlet implements WindowListener,
         String names[] = new String[resnames.size()];
         int count = 0;
 
-        Enumeration k = resnames.elements();
+        Enumeration<String> k = resnames.elements();
 
         while(k.hasMoreElements()){
-            String name = (String)k.nextElement();
+            String name = k.nextElement();
             names[count++] = name;
         }
 
@@ -746,7 +746,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         k = atomnames.elements();
 
         while(k.hasMoreElements()){
-            String name = (String)k.nextElement();
+            String name = k.nextElement();
             names[count++] = name;
         }
 
@@ -844,10 +844,10 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
             //print.f("generic " + generic);
             
-            Enumeration properties = generic.getProperties();
+            Enumeration<String> properties = generic.getProperties();
             
             while(properties.hasMoreElements()){
-                String property = (String)properties.nextElement();
+                String property = properties.nextElement();
 
                 //print.f("property " + property);
 
@@ -1438,7 +1438,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     /** Hashtable of component names to objects. */
-    private Hashtable components = null;
+    private Hashtable<String, Object> components = null;
 
     /**
      * Look up a cached object name.
@@ -1446,7 +1446,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
      */
     public Object findComponent(String name){
         if(components == null){
-            components = new Hashtable();
+            components = new Hashtable<String, Object>(11);
         }
 
         Object component = components.get(name);

@@ -302,7 +302,7 @@ public class SplitterBar extends Panel {
 		Container cp = getParent();
 		Dimension parentDim = cp.getSize();
 		Point l = getLocationOnScreen();
-		Insets insets = ((Container)cp).getInsets();
+		Insets insets = (cp).getInsets();
 		if (orientation == SplitterLayout.VERTICAL)
 			parentDim.width -= insets.right + insets.left;
 		else

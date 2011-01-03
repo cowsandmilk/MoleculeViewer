@@ -23,8 +23,8 @@ public class Generic implements GenericInterface {
     
     public static final String ClassName   = "__class__";
 
-    private static final Hashtable emptyHashtable = new Hashtable();
-    private static final Vector    emptyVector    = new Vector();
+    private static final Hashtable<String,Object> emptyHashtable = new Hashtable<String,Object>(0);
+    private static final Vector<GenericInterface> emptyVector = new Vector<GenericInterface>(0);
 
     public Generic(String cl){
         setClassname(cl);
@@ -34,7 +34,7 @@ public class Generic implements GenericInterface {
         setClassname(getClass().getName());
     }
 
-    private Hashtable properties = null;
+    private Hashtable<String,Object> properties = null;
 
     public Object get(Object key, Object def){
         if(properties == null){
@@ -51,7 +51,7 @@ public class Generic implements GenericInterface {
         Object oldValue = null;
 
         if(properties == null){
-            properties = new Hashtable();
+            properties = new Hashtable<String,Object>();
         }else{
             oldValue = properties.get(name);
         }
@@ -59,7 +59,7 @@ public class Generic implements GenericInterface {
         if(value == null){
             properties.remove(name);
         }else{
-            properties.put(name, value);
+            properties.put((String) name,value);
         }
 
         if(listeners != null){
@@ -72,7 +72,7 @@ public class Generic implements GenericInterface {
         return oldValue;
     }
 
-    public Enumeration getProperties(){
+    public Enumeration<String> getProperties(){
         if(properties == null){
             return emptyHashtable.keys();
         }else{
@@ -88,11 +88,11 @@ public class Generic implements GenericInterface {
         return get(ClassName, null);
     }
 
-    Vector children = null;
+    Vector<GenericInterface> children = null;
 
     public void addChild(GenericInterface child){
         if(children == null){
-            children = new Vector();
+            children = new Vector<GenericInterface>(2);
         }
 
         children.addElement(child);
@@ -118,7 +118,7 @@ public class Generic implements GenericInterface {
         }
     }
 
-    public Enumeration getChildren(Object type){
+    public Enumeration<GenericInterface> getChildren(Object type){
         if(children == null){
             return emptyVector.elements();
         }else{
@@ -126,11 +126,11 @@ public class Generic implements GenericInterface {
         }
     }
 
-    Vector parents = null;
+    Vector<GenericInterface> parents = null;
 
     public void addParent(GenericInterface parent){
         if(parents == null){
-            parents = new Vector();
+            parents = new Vector<GenericInterface>(2);
         }
 
         parents.addElement(parent);
@@ -156,7 +156,7 @@ public class Generic implements GenericInterface {
         }
     }
 
-    public Enumeration getParents(Object type){
+    public Enumeration<GenericInterface> getParents(Object type){
         if(parents == null){
             return emptyVector.elements();
         }else{
@@ -164,11 +164,11 @@ public class Generic implements GenericInterface {
         }
     }
 
-    Vector listeners = null;
+    Vector<GenericEventInterface> listeners = null;
 
     public void addListener(GenericEventInterface gei){
         if(listeners == null){
-            listeners = new Vector();
+            listeners = new Vector<GenericEventInterface>(2);
         }
 
         listeners.addElement(gei);
@@ -186,7 +186,7 @@ public class Generic implements GenericInterface {
             
             for(int i = 0; i < listenersCount; i++){
                 GenericEventInterface listener =
-                    (GenericEventInterface)listeners.elementAt(i);
+                    listeners.elementAt(i);
                 
                 listener.handleEvent(ge);
             }

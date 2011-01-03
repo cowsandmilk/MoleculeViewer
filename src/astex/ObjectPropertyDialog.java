@@ -90,7 +90,7 @@ public class ObjectPropertyDialog extends Dialog
     JCSpinBox umaxSB        = null;
     JCSpinBox vmaxSB        = null;
 
-    Hashtable imageHash = new Hashtable();
+    Hashtable<JCButton, String> imageHash = new Hashtable<JCButton, String>(11);
 
     /** Create the controls for this property editor. */
     public void createControls(){
@@ -229,7 +229,7 @@ public class ObjectPropertyDialog extends Dialog
 
 	JCActionListener tal = new JCActionListener(){
 		public void actionPerformed(JCActionEvent e){
-		    String texture = (String)imageHash.get(e.getSource());
+		    String texture = imageHash.get(e.getSource());
 		    String textureName = Settings.getString("config", texture);
 		    String textureImage = Settings.getString("config", texture + ".image");
 		    String command =

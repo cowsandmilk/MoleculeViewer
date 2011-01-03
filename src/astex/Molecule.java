@@ -1793,8 +1793,8 @@ public class Molecule extends Generic implements Selectable {
         return super.get(key, def);
     }
 
-    public Enumeration getProperties(){
-        Vector v = new Vector();
+    public Enumeration<String> getProperties(){
+        Vector<String> v = new Vector<String>(3);
 
         v.addElement(Displayed);
         v.addElement(DisplayHydrogens);

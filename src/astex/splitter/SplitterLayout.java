@@ -128,7 +128,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 
 	private int lastW=-1, lastH=-1;
 	private boolean newComponentAdded=false;
-	private Hashtable relations=null;
+	private Hashtable<Component,Integer> relations=null;
 	
 	private static final long serialVersionUID = -8658291919501921765L;
 	private int fieldOrientation = VERTICAL;
@@ -141,7 +141,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 	*/
 	public SplitterLayout(int orientation) {
 		setOrientation(orientation);
-		relations = new Hashtable();
+		relations = new Hashtable<Component,Integer>(11);
 		}
 	/** Adds a component w/ constraints to the layout.  This should only
 		be called by java.awt.Container's add method.
@@ -149,7 +149,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 	public final void addLayoutComponent(Component comp, Object constraints) {
 		if (constraints == null) constraints = "1";
 		if (constraints instanceof Integer) {
-			relations.put(comp, constraints);
+			relations.put(comp, (Integer) constraints);
 			newComponentAdded = true;
 		}
 		else

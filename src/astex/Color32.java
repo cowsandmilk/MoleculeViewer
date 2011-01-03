@@ -378,7 +378,7 @@ public class Color32 {
     public static final int undefinedColor = white;
 
     /** Hashtable for storing color name -> rgb values. */
-    private static Hashtable colorHash = null;
+    private static Hashtable<String,Integer> colorHash = null;
 
     /** Valid digits for a hex format number. */
     private static String hexDigits = "0123456789abcdefABCDEFx";
@@ -463,7 +463,7 @@ public class Color32 {
 	    ensureColorHashDefined();
 	    colorName = colorName.toLowerCase();
 
-	    Integer colorValue = (Integer)colorHash.get(colorName);
+	    Integer colorValue = colorHash.get(colorName);
 
 	    if(colorValue != null){
 		color = colorValue.intValue();
@@ -488,7 +488,7 @@ public class Color32 {
     /** Make sure the color hash is defined and initialised. */
     private static void ensureColorHashDefined(){
 	if(colorHash == null){
-	    colorHash = new Hashtable();
+	    colorHash = new Hashtable<String,Integer>();
 
 	    FILE f = FILE.open("color.properties");
 

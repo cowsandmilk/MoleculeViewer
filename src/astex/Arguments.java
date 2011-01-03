@@ -19,7 +19,7 @@ package astex;
 
 import java.util.*;
 
-public class Arguments extends Hashtable {
+public class Arguments extends Hashtable<Object,Object> {
     /** Add a dash to the argument if it doesn't exist. */
     public static String addDash(String argument){
 	if(argument != null && argument.startsWith("-") == false){

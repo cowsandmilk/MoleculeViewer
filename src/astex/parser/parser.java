@@ -4568,9 +4568,9 @@ class CUP$parser$actions {
 			System.out.println("storing definition " + name +
 				" atom count " + selectedAtoms.size());
 
-			Hashtable h = new Hashtable();
-
 			int count = selectedAtoms.size();
+			Hashtable<Atom, Atom> h = new Hashtable<Atom,Atom>(count);
+
 
 			for(int i = 0; i < count; i++){
 				Atom a = (Atom)selectedAtoms.get(i);

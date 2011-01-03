@@ -449,8 +449,8 @@ public class Residue extends Generic implements Selectable {
     public static final String TorsionFormat = "torsionFormat";
 
 
-    public Enumeration getProperties(){
-        Vector v = new Vector();
+    public Enumeration<String> getProperties(){
+        Vector<String> v = new Vector<String>(1);
 
         //v.addElement(Torsions);
         //v.addElement(TorsionRadius);

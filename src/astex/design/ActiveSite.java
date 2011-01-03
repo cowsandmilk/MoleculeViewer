@@ -86,7 +86,7 @@ public class ActiveSite {
     private static double rmsdFailLevel    = 0.5;
 
     /** The hash of probe molecule names for this superstar map. */
-    private static Hashtable probeMolecules     = null;
+    private static Hashtable<String, Molecule> probeMolecules = null;
 
     /** Set up the radii from the superstar property file. */
     private static void setupRadii(){
@@ -138,7 +138,7 @@ public class ActiveSite {
 	setupRadii();
 
 	// hash for the istr molecules
-	probeMolecules = new Hashtable();
+	probeMolecules = new Hashtable<String, Molecule>(11);
 	
 	// clear the visit flags on the superstar atoms.
 	int atomCount = superstar.size();
@@ -660,7 +660,7 @@ public class ActiveSite {
 	}
 	
 	// look for the istr molecule 
-	Molecule istrMol = (Molecule)probeMolecules.get(istrName);
+	Molecule istrMol = probeMolecules.get(istrName);
 
 	if(istrMol == null){
 	    istrMol = MoleculeIO.read(istrName);
@@ -1233,7 +1233,7 @@ public class ActiveSite {
 
 	// build the type information
 	StringArray types = new StringArray();
-	Hashtable pmfs = new Hashtable();
+	Hashtable<String, DoubleArray> pmfs = new Hashtable<String, DoubleArray>(11);
 
 	for(int i = 0; i < exclusionCount; i++){
 	    Atom atom = (Atom)exclusion.get(i);
@@ -1326,9 +1326,9 @@ public class ActiveSite {
     /** Add in the potential of an atom. */
     public static void incorporatePotential(astex.Map map, int iatom,
 					    Atom atom, StringArray types,
-					    Hashtable pmfs, double maxd){
+					    Hashtable<String,DoubleArray> pmfs, double maxd){
 	String type = types.get(iatom);
-	DoubleArray pmf = (DoubleArray)pmfs.get(type);
+	DoubleArray pmf = pmfs.get(type);
 
 	if(pmf == null){
 	    Log.error("couldn't find pmf for " + type);
@@ -1398,7 +1398,7 @@ public class ActiveSite {
 					   IntArray neighbours,
 					   String probeName,
 					   StringArray types,
-					   Hashtable pmfs){
+					   Hashtable<String,DoubleArray> pmfs){
 	double aspScore = 0.0;
 	int neighbourCount = neighbours.size();
 
@@ -1409,7 +1409,7 @@ public class ActiveSite {
 	    String type = types.get(iatom);
 	    Atom atom = (Atom)exclusion.get(iatom);
 
-	    DoubleArray pmf = (DoubleArray)pmfs.get(type);
+	    DoubleArray pmf = pmfs.get(type);
 
 	    if(pmf == null){
 		Log.error("no pmf for " + type);
@@ -1433,7 +1433,7 @@ public class ActiveSite {
     }
 
     /** Try and load the pmf. */
-    public static void loadPmf(Hashtable pmfs, String location, String pmf){
+    public static void loadPmf(Hashtable<String, DoubleArray> pmfs, String location, String pmf){
 	String filename = location + "/" + pmf + ".pmf";
 	DoubleArray values = new DoubleArray();
 
