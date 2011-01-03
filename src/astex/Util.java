@@ -45,7 +45,7 @@ public class Util {
             return s;
         }
         
-        final StringBuffer result = new StringBuffer();
+        final StringBuffer result = new StringBuffer(s.length() * 2);
 
         int start = 0;
         int old = 0;

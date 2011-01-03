@@ -284,7 +284,7 @@ public class MoleculeIO {
      */
     public static boolean readAtomBlock(FILE file, int atomCount,
 					Molecule molecule){
-	StringBuffer elementBuffer = new StringBuffer(2);
+	StringBuilder elementBuffer = new StringBuilder(2);
 	boolean atomsInOrder = true;
         int previousId = Integer.MIN_VALUE;
 
@@ -1006,7 +1006,7 @@ public class MoleculeIO {
 
 	molecule.setUnitCell(cell);
 
-	StringBuffer spaceGroupName = new StringBuffer();
+	StringBuilder spaceGroupName = new StringBuilder(10);
 	String originalSpaceGroupName = file.getSubstring(55, 10);
 	if(originalSpaceGroupName != null){
 	    originalSpaceGroupName = originalSpaceGroupName.trim();

@@ -360,7 +360,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
             command = origCommand.replace('|', ';');
         }
 
-        StringBuffer newCommand = new StringBuffer();
+        StringBuilder newCommand = new StringBuilder(origCommand.length());
 
         try {
             // now do the values from other objects.
@@ -371,7 +371,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
                     String attribute = null;
                     
                     if(command.charAt(++i) == '{'){
-                        StringBuffer sb = new StringBuffer();
+                        StringBuilder sb = new StringBuilder(16);
                         while(command.charAt(++i) != '}'){
                             sb.append(command.charAt(i));
                         }

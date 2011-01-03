@@ -304,7 +304,7 @@ public class Log {
 	String methodName = "unknown-method";
 
 	if(realLine != null){
-	    StringBuffer sb = new StringBuffer(30);
+	    StringBuilder sb = new StringBuilder(30);
 	    int len = realLine.length();
 
 	    for(int i = 0; i < len; i++){

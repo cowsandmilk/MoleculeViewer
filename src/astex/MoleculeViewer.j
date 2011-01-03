@@ -285,8 +285,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Handle a print command in the scripting language. */
     public void handlePrint(String output){
-	StringBuffer sb = new StringBuffer();
 	int len = output.length();
+	StringBuilder sb = new StringBuilder(len);
 
 	// process any escape characters to introduce
 	// new lines etc.

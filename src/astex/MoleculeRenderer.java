@@ -5737,7 +5737,7 @@ public class MoleculeRenderer {
 	    System.err.println(command);
 	}else{
 	    if(commandLog == null){
-		commandLog = new StringBuffer();
+		commandLog = new StringBuffer(command.length() * 3);
 	    }
 	    commandLog.append(command);
 	}

@@ -440,9 +440,9 @@ public class Selection {
 	byte[] mask = generateSelectionMask(r);
 
 	for(int i = 0; i < idCount; i++){
-	    StringBuffer chainBuffer = new StringBuffer();
-	    StringBuffer residueBuffer = new StringBuffer();
-	    StringBuffer insertionBuffer = new StringBuffer();
+	    StringBuilder chainBuffer = new StringBuilder(4);
+	    StringBuilder residueBuffer = new StringBuilder(4);
+	    StringBuilder insertionBuffer = new StringBuilder(1);
 	    String compositeString = (String)ids.elementAt(i);
 	    int j;
 	    for(j = 0; j < compositeString.length(); j++){

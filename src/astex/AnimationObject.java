@@ -290,8 +290,8 @@ public class AnimationObject {
 
     /** Introduce variables etc. */
     public String processCommand(String s){
-	StringBuffer sb = new StringBuffer();
 	int len = s.length();
+	StringBuilder sb = new StringBuilder(len);
 
 	for(int i = 0; i < len; i++){
 	    char c = s.charAt(i);

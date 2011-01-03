@@ -440,7 +440,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     public void executeFile(String scriptFile){
 	FILE f = FILE.open(scriptFile);
 	
-	StringBuffer sb = new StringBuffer(128);
+	StringBuilder sb = new StringBuilder(128);
 	int c = 0;
 
 	while((c = f.read()) != FILE.EOF){
@@ -494,7 +494,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
         //System.out.println("URLFetchPost");
 
-        StringBuffer contents = new StringBuffer(2048);
+        StringBuilder contents = new StringBuilder(2048);
 
         int questionPos = urlString.indexOf('?');
 
@@ -561,7 +561,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
 	//System.out.println("URLFetch");
 
-        StringBuffer contents = new StringBuffer(2048);
+        StringBuilder contents = new StringBuilder(2048);
 
         try {
 
@@ -613,7 +613,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
     public String getSelection(){
 	MoleculeRenderer renderer = moleculeViewer.getMoleculeRenderer();
-	StringBuffer selection = new StringBuffer();
+	StringBuilder selection = new StringBuilder(100);
 
 	int molCount = renderer.getMoleculeCount();
 
@@ -645,7 +645,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
     public String getCoordinates(){
 	MoleculeRenderer renderer = moleculeViewer.getMoleculeRenderer();
-	StringBuffer buf = new StringBuffer();
+	StringBuilder buf = new StringBuilder(30);
         AtomIterator iterator = renderer.getAtomIterator();
         
         while(iterator.hasMoreElements()){
@@ -665,7 +665,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
     public String getSelectedAtoms(){
 	MoleculeRenderer renderer = moleculeViewer.getMoleculeRenderer();
-	StringBuffer buf = new StringBuffer(2048);
+	StringBuilder buf = new StringBuilder(2048);
         AtomIterator iterator = renderer.getAtomIterator();
         
         boolean first = true;

@@ -442,7 +442,7 @@ public class Format {
    
 	private static String repeat(char c, int n) {
 		if (n <= 0) return "";
-		StringBuffer s = new StringBuffer(n);
+		StringBuilder s = new StringBuilder(n);
 		for (int i = 0; i < n; i++) s.append(c);
 		return s.toString();
 	}
