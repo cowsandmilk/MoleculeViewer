@@ -62,9 +62,6 @@ import java.awt.image.*;
 #endif
 
 public class Renderer {
-    /** Should we draw the image logo. */
-    private boolean drawImageLogo = false;
-
     /** Shadow mode for the renderer. */
     public int shadowMode = ShadowsOff;
 
@@ -526,9 +523,6 @@ public class Renderer {
 	hersheyRadius = Settings.getDouble("fonts", "hershey.radius", 0.04);
 
 	setAmbient(Color32.pack(ar, ag, ab));
-
-	drawImageLogo = Settings.getBoolean("config", "draw.logo", false);
-
     }
 
     /** Set the ambient component of the lighting model. */
@@ -1021,90 +1015,6 @@ public class Renderer {
 	}
 
 	drawObjects(FinalRenderPass);
-
-	if(drawImageLogo){
-	    drawImage();
-	}
-    }
-
-    /** Check sum validity stuff. */
-    private boolean imageValidityChecked = false;
-    private boolean imageValid           = false;
-
-    /** Checksum bytes (for obfuscation). */
-    //private static final int csByte0 =  38;
-    //private static final int csByte1 =  85;
-    //private static final int csByte2 =   2;
-    //private static final int csByte3 = 245;
-    //private static final int csByte0 =  49;
-    //private static final int csByte1 =  54;
-    //private static final int csByte2 =  42;
-    //private static final int csByte3 =  16;
-    private static final int csByte0 = 110;
-    private static final int csByte1 =  82;
-    private static final int csByte2 = 154;
-    private static final int csByte3 = 240;
-
-    /** Draw the image. */
-    private final void drawImage(){
-	int width  = AstexLogo.width;
-	int height = AstexLogo.height;
-
-	if(imageValidityChecked == false){
-	    int checkSum = CRC32.crc32(AstexLogo.pixels, 0, width*height, -1);
-
-	    if(((csByte0)|(csByte1<<8)|(csByte2<<16)|(csByte3<<24)) != checkSum){
-		imageValid = false;
-	    }else{
-		imageValid = true;
-	    }
-
-	    imageValidityChecked = true;
-	}
-	//FILE.out.print("checkSum %d\n", checkSum);
-
-	if(imageValid){
-            // on screen antialiasing behaves differently to 
-            // off screen antialiasing.
-	    int hs = antialias ? pixelHeight/getSamples() : pixelHeight;
-	    int ws = antialias ? pixelWidth/getSamples() : pixelWidth;
-
-	    for(int y = 0; y < height; y++){
-		int yp = hs - height + y - 1 ;
-		for(int x = 0; x < width; x++){
-		    int xp = ws - width + x;
-		    int imageIndex = x + y * width;
-		    int p = AstexLogo.pixels[imageIndex];
-		    int rgb = (p & 0xffffff);
-
-		    if(rgb != 0){
-			int interp = ((p >> 24) & 0xff);
-                        if(interp != 0){
-                            if(antialias){
-                                int bg = opbuffer[xp + yp*ws];
-                                int newp = Color32.blend(rgb, bg, interp);
-                                opbuffer[xp + yp*ws] = newp;
-                            }else{
-                                int bg = pbuffer[xp + yp*ws];
-                                int newp = Color32.blend(rgb, bg, interp);
-                                setPixel(xp, yp, newp);
-                            }
-                        }
-			//setPixel(xp, yp, newp);
-		    }
-		}
-	    }
-	}else{
-	    // if someone fiddled with the image they get a grayscale image for
-	    // their trouble
-	    int pixel = 0;
-	    for(int y = 0; y < pixelHeight; y++){
-		for(int x = 0; x < pixelWidth; x++){
-		    pbuffer[pixel] = Color32.getGrayScale(pbuffer[pixel]);
-		    pixel++;
-		}
-	    }
-	}
     }
 
     /** Minimum intensity for depth cueing. */
