@@ -864,9 +864,7 @@ public class MoleculeRenderer {
 		    double e = hbondEnergy(n, h, o, c, hbondConstant);
 
 		    if(e < hbondCutoff){
-			Bond hbond = Bond.create();
-			hbond.setFirstAtom(n);
-			hbond.setSecondAtom(o);
+			Bond hbond = new Bond(n, o);
 			hbonds.add(hbond);
 		    }
 		}
@@ -2152,12 +2150,8 @@ public class MoleculeRenderer {
     /** Add a pair of atoms to the distance list. */
     public void addDistance2(Atom firstAtom, Atom secondAtom){
 	// reuse bond for maintaining a distance.
-	Bond distance = Bond.create();
+	Bond distance = new Bond(firstAtom, secondAtom);
 
-	distance.setFirstAtom(firstAtom);
-	distance.setSecondAtom(secondAtom);
-
-	//addDistance(distance);
 	distances.add(distance);
     }
 

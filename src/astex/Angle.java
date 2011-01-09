@@ -29,7 +29,11 @@ package astex;
  */
 public class Angle {
 	/** Default constructor. */
-	public Angle(){}
+	public Angle(Atom first, Atom second, Atom third){
+	    firstAtom  = first;
+	    secondAtom = second;
+	    thirdAtom  = third;
+	}
 
 	/** The first atom in the angle. */
 	private Atom firstAtom;
@@ -39,65 +43,4 @@ public class Angle {
 
 	/** The third atom in the angle. */
 	private Atom thirdAtom;
-
-	/** The ideal bond angle. */
-	private float idealBondAngle = -1.0f;
-
-	/** Set the first atom in the angle. */
-	public void setFirstAtom(Atom newFirstAtom){
-		firstAtom = newFirstAtom;
-	}
-
-	/** Set the second atom in the angle. */
-	public void setSecondAtom(Atom newSecondAtom){
-		secondAtom = newSecondAtom;
-	}
-
-	/** Set the second atom in the angle. */
-	public void setThirdAtom(Atom newThirdAtom){
-		thirdAtom = newThirdAtom;
-	}
-
-	/** Return the first atom in a angle. */
-	public Atom getFirstAtom(){
-		return firstAtom;
-	}
-
-	/** Return the second atom in a angle. */
-	public Atom getSecondAtom(){
-		return secondAtom;
-	}
-
-	/** Return the third atom in a angle. */
-	public Atom getThirdAtom(){
-		return thirdAtom;
-	}
-
-	/** Get the specified atom. */
-	public Atom getAtom(int index){
-		if(index == 0){
-			return firstAtom;
-		}else if(index == 1){
-			return secondAtom;
-		}else if(index == 2){
-			return thirdAtom;
-		}else{
-			return null;
-		}
-	}
-
-	/** Set the ideal angle angle. */
-	public void setIdealBondAngle(double d){
-		idealBondAngle = (float)d;
-	}
-
-	/** Get the ideal angle angle. */
-	public double getIdealBondAngle(){
-		if(idealBondAngle < 0.0f){
-			idealBondAngle =
-				(float)Point3d.angle(firstAtom, secondAtom, thirdAtom);
-		}
-
-		return idealBondAngle;
-	}
 }

@@ -370,11 +370,7 @@ public class Molecule extends Generic implements Selectable {
 		for(int b2 = b1 + 1; b2 < bondCount; b2++){
 		    Atom atom2 = atom.getBondedAtom(b2);
 
-		    Angle angle = new Angle();
-		    angle.setFirstAtom(atom1);
-		    angle.setSecondAtom(atom);
-		    angle.setThirdAtom(atom2);
-
+		    Angle angle = new Angle(atom1, atom, atom2);
 		    angles.add(angle);
 		}
 	    }
@@ -628,10 +624,7 @@ public class Molecule extends Generic implements Selectable {
 
 	if(((firstInsertion == ' ' || secondInsertion == ' ') ||
 	   firstInsertion == secondInsertion)&& !(firstAtom.isSolvent() || secondAtom.isSolvent())){
-	    newBond = Bond.create();
-
-	    newBond.setFirstAtom(firstAtom);
-	    newBond.setSecondAtom(secondAtom);
+	    newBond = new Bond(firstAtom, secondAtom);
 
 	    newBond.setBondOrder(bondOrder);
 
@@ -1536,12 +1529,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Create a improper for the 4 specified atoms. */
     public void addImproper(Atom a1, Atom a2, Atom a3, Atom a4){
-	Improper improper = new Improper();
-
-	improper.setFirstAtom(a1);
-	improper.setSecondAtom(a2);
-	improper.setThirdAtom(a3);
-	improper.setFourthAtom(a4);
+	Improper improper = new Improper(a1, a2, a3, a4);
 
 	impropers.add(improper);
     }

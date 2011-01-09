@@ -38,28 +38,19 @@ public class Bond extends Generic {
     public static final String BondOrder = "bondorder";
 
     /** Default constructor. */
-    private Bond(){
-        //super();
-	initialise();
-    }
-
+    public Bond(Atom a1, Atom a2){
     public Object getClassname(){
         return getClass().getName();
     }
 
-    /**
-     * Initialise a bond.
-     *
-     * This method is called to reset a bond that is reused,
-     * so all fields must get initialised here.
-     */
-    private void initialise(){
 	setBondOrder(SingleBond);
 	setBondColor(Color32.white);
 	setBondWidth(1);
 	setStickWidth(0.12);
 	setCylinderWidth(0.15);
 	attributes = 0;
+	firstAtom = a1;
+	secondAtom = a2;
     }
 
     public Object set(Object key, Object property){

@@ -29,7 +29,12 @@ package astex;
  */
 public class Improper {
 	/** Default constructor. */
-	public Improper(){ }
+	public Improper(Atom a1, Atom a2, Atom a3, Atom a4){
+	    firstAtom = a1;
+	    secondAtom = a2;
+	    thirdAtom = a3;
+	    fourthAtom = a4;
+	}
 
 	/**
 	 * Initialise an improper.
