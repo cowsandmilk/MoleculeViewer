@@ -288,10 +288,6 @@ public class Fit {
 	}
     }
 
-    private static double SQR(double a){
-	return a*a;
-    }
-
     private static double SIGN(double a, double b){
 	double absa = (a < 0.0 ? -a : a);
 	if(b >= 0.0){
@@ -299,19 +295,6 @@ public class Fit {
 	}else{
 	    return -absa;
 	}
-    }
-
-    /**
-     * Computes (a^2 + b^2 )^1/2 without destructive under or overflow.
-     */
-    private static double pythag(double a, double b) {
-	double absa,absb;
-	//absa=Math.abs(a);
-	//absb=Math.abs(b);
-	absa=(a < 0.0 ? -a : a);
-	absb=(b < 0.0 ? -b : b);
-	if (absa > absb) return absa*Math.sqrt(1.0+SQR(absb/absa));
-	else return (absb == 0.0 ? 0.0 : absb*Math.sqrt(1.0+SQR(absa/absb)));
     }
 
     /**
@@ -349,7 +332,7 @@ public class Fit {
 			return;
 		    }
 		    g=(d[l+1]-d[l])/(2.0*e[l]); //Form shift.
-		    r=pythag(g,1.0);
+		    r=Math.hypot(g,1.0);
 		    g=d[m]-d[l]+e[l]/(g+SIGN(r,g)); //This is dm - ks.
 		    s=c=1.0;
 		    p=0.0;
@@ -360,7 +343,7 @@ public class Fit {
 			//form.
 			f=s*e[i];
 			b=c*e[i];
-			e[i+1]=(r=pythag(f,g));
+			e[i+1]=(r=Math.hypot(f,g));
 			if (r == 0.0) { // Recover from underflow.
 			    d[i+1] -= p;
 			    e[m]=0.0;
