@@ -27,32 +27,15 @@ package astex;
 public class AtomicElement {
 	/** The maximum number of valence states that any of our atoms exist in. */
 	
-	public static final int MAX_VALENCE_STATES = 4;
-	
 	public String symbol;
 
-	int symbolLen;
-
 	public int atomicNumber;
-	double mass;
-	int valences[];
-	
-	public int drow;
-	public int dcol;
+	public double mass;
 
-	public AtomicElement(int an, String s, double m,
-						 int vv1, int vv2, int vv3, int vv4,
-						 int ddrow, int ddcol){
+	public AtomicElement(int an, String s, double m){
 		atomicNumber = an;
 		symbol = s;
 		
 		mass = m;
-		valences = new int[MAX_VALENCE_STATES];
-		valences[0] = vv1;
-		valences[1] = vv2;
-		valences[2] = vv3;
-		valences[3] = vv4;
-		drow = ddrow;
-		dcol = ddcol;
 	}
 }
