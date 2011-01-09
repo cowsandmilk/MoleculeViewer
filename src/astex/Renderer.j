@@ -1483,11 +1483,7 @@ public class Renderer {
     /** Render a tmesh object. */
     private void renderObject(Tmesh tmesh){
 	// only ca
-	if(tmesh instanceof GraphicalObject){
-	    tmesh.render();
-	}else{
-	    renderTmeshObject(tmesh);
-	}
+	renderTmeshObject(tmesh);
     }
 
     /** Render an actual tmesh object. */
