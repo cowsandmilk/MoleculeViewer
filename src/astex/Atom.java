@@ -129,9 +129,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     public static final int Ring      = 0x200000;
 
-
-    public ModellingData modellingData = null;
-
     /** The X coordinate attribute. */
     public static final int X = 0;
 
@@ -363,12 +360,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	case B: return bFactor;
 	case O: return occupancy;
 	case Q: return partialCharge;
-	case E: 
-	    if(modellingData != null){
-		return modellingData.energy;
-	    }else{
-		return 0.0;
-	    }
+	case E: return 0.0;
 	case ID: return getId();
 	default: 
 	    System.out.println("Atom: attempt to get unknown attribute " +
@@ -462,9 +454,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 			s += FILE.sprint("%.3f", getZ());
 		    }else if(nc == 'e'){
 			double v = 0.0;
-			if(modellingData != null){
-			    v = modellingData.energy;
-			}
 			s += FILE.sprint("%.2f", v);
 		    }else if(nc == 'b'){
 			s += FILE.sprint("%.1f", getBFactor());
