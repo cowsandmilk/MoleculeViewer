@@ -331,8 +331,6 @@ public class AnimationObject {
 
 		    double val = startValue + frac * (stopValue - startValue);
 
-		    //System.out.println("val " + val);
-
 		    i++;
 		    c = s.charAt(i);
 
