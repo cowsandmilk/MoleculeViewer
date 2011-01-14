@@ -209,10 +209,10 @@ public class Matrix {
 
     public String returnScript(){
 	String command = "matrix ";
-	command += FILE.sprint(" %g", x00) + FILE.sprint(" %g", x01) + FILE.sprint(" %g", x02) + FILE.sprint(" %g", x03);
-	command += FILE.sprint(" %g", x10) + FILE.sprint(" %g", x11) + FILE.sprint(" %g", x12) + FILE.sprint(" %g", x13);
-	command += FILE.sprint(" %g", x20) + FILE.sprint(" %g", x21) + FILE.sprint(" %g", x22) + FILE.sprint(" %g", x23);
-	command += FILE.sprint(" %g", x30) + FILE.sprint(" %g", x31) + FILE.sprint(" %g", x32) + FILE.sprint(" %g", x33);
+	command += String.format(" %g", x00) + String.format(" %g", x01) + String.format(" %g", x02) + String.format(" %g", x03);
+	command += String.format(" %g", x10) + String.format(" %g", x11) + String.format(" %g", x12) + String.format(" %g", x13);
+	command += String.format(" %g", x20) + String.format(" %g", x21) + String.format(" %g", x22) + String.format(" %g", x23);
+	command += String.format(" %g", x30) + String.format(" %g", x31) + String.format(" %g", x32) + String.format(" %g", x33);
 	command += ";";
 
 	return command;

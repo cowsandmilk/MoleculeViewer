@@ -441,24 +441,24 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 		    if(nc == '%'){
 			s += '%';
 		    }else if(nc == 'x'){
-			s += FILE.sprint("%.3f", getX());
+			s += String.format("%.3f", getX());
 		    }else if(nc == 'y'){
-			s += FILE.sprint("%.3f", getY());
+			s += String.format("%.3f", getY());
 		    }else if(nc == 'z'){
-			s += FILE.sprint("%.3f", getZ());
+			s += String.format("%.3f", getZ());
 		    }else if(nc == 'e'){
 			double v = 0.0;
-			s += FILE.sprint("%.2f", v);
+			s += String.format("%.2f", v);
 		    }else if(nc == 'b'){
-			s += FILE.sprint("%.1f", getBFactor());
+			s += String.format("%.1f", getBFactor());
 		    }else if(nc == 'B'){
-			s += FILE.sprint("%d", (int)getBFactor());
+			s += String.format("%d", (int)getBFactor());
 		    }else if(nc == 'o'){
-			s += FILE.sprint("%.2f", getOccupancy());
+			s += String.format("%.2f", getOccupancy());
 		    }else if(nc == 'q'){
-			s += FILE.sprint("%.2f", getPartialCharge());
+			s += String.format("%.2f", getPartialCharge());
 		    }else if(nc == 'i'){
-			s += FILE.sprint("%-4d", getId());
+			s += String.format("%-4d", getId());
 		    }else if(nc == 'I'){
 			s += getInsertionCode();
 		    }else if(nc == 'A'){
@@ -485,7 +485,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 		    }else if(nc == 'r'){
 			Residue res = getResidue();
 			if(res != null){
-			    s += FILE.sprint("%d", res.getNumber());
+			    s += String.format("%d", res.getNumber());
 			    if(res.getInsertionCode() != 0 &&
 			       res.getInsertionCode() != ' '){
 				s += res.getInsertionCode();

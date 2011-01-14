@@ -45,7 +45,7 @@ public class ColorButton extends ImageButton {
 	showAt(colorChooserDialog, x, y);
 
 	if(colorChooser.accept){
-	    String s = FILE.sprint("0x%06x", colorChooser.rgb & 0xffffff);
+	    String s = String.format("0x%06x", colorChooser.rgb & 0xffffff);
 	    return s;
 	}else{
 	    return null;

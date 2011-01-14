@@ -3686,26 +3686,26 @@ public class MoleculeRenderer {
 	String command = "animate\n\t-mode\t\trecenter\n\t-matrix\t\t\"";
 	Matrix m = renderer.rotationMatrix;
 
-	command += FILE.sprint("%g", m.x00) + FILE.sprint(",%g", m.x01);
-	command += FILE.sprint(",%g", m.x02) + FILE.sprint(",%g", m.x03);
-	command += FILE.sprint(",%g", m.x10) + FILE.sprint(",%g", m.x11);
-	command += FILE.sprint(",%g", m.x12) + FILE.sprint(",%g", m.x13);
-	command += FILE.sprint(",%g", m.x20) + FILE.sprint(",%g", m.x21); 
-	command += FILE.sprint(",%g", m.x22) + FILE.sprint(",%g", m.x23);
-	command += FILE.sprint(",%g", m.x30) + FILE.sprint(",%g", m.x31);
-	command += FILE.sprint(",%g", m.x32) + FILE.sprint(",%g", m.x33);
+	command += String.format("%g", m.x00) + String.format(",%g", m.x01);
+	command += String.format(",%g", m.x02) + String.format(",%g", m.x03);
+	command += String.format(",%g", m.x10) + String.format(",%g", m.x11);
+	command += String.format(",%g", m.x12) + String.format(",%g", m.x13);
+	command += String.format(",%g", m.x20) + String.format(",%g", m.x21); 
+	command += String.format(",%g", m.x22) + String.format(",%g", m.x23);
+	command += String.format(",%g", m.x30) + String.format(",%g", m.x31);
+	command += String.format(",%g", m.x32) + String.format(",%g", m.x33);
 
 	Point3d p = renderer.getCenter();
 
 	command += "\"\n\t-center\t\t\"";
-	command += FILE.sprint("%g,", p.x);
-	command += FILE.sprint("%g,", p.y);
-	command += FILE.sprint("%g", p.z);
+	command += String.format("%g,", p.x);
+	command += String.format("%g,", p.y);
+	command += String.format("%g", p.z);
 	command += "\"\n";
 
-	command += FILE.sprint("\t-radius\t\t%g\n", (renderer.width/renderer.getZoom()));
-	command += FILE.sprint("\t-clipfront\t%g\n", renderer.front);
-	command += FILE.sprint("\t-clipback\t%g\n", renderer.back);
+	command += String.format("\t-radius\t\t%g\n", (renderer.width/renderer.getZoom()));
+	command += String.format("\t-clipfront\t%g\n", renderer.front);
+	command += String.format("\t-clipback\t%g\n", renderer.back);
 	command += "\t-steps\t\t10\n";
 	command += "\t;\n";
 
@@ -4037,7 +4037,7 @@ public class MoleculeRenderer {
 	    format = Util.replace(format, "omega", "\\w");
 	}
 
-	format = FILE.sprint(format, t * 180.0/Math.PI);
+	format = String.format(format, t * 180.0/Math.PI);
 
 	renderer.drawString(m12.x, m12.y, m12.z, 1.0, Color32.white, format);
     }
@@ -4144,7 +4144,7 @@ public class MoleculeRenderer {
 	    // calculate and subsitute the distance.
 	    if(label.indexOf('%') != -1){
 		double len = g0.distance(g1);
-		label = FILE.sprint(label, len);
+		label = String.format(label, len);
 	    }
 
 	    double mx = 0.5 * (g0.x + g1.x);
@@ -4971,7 +4971,7 @@ public class MoleculeRenderer {
 	Log.info("showing slide %d", slideNumber);
 
 	if(slideShow != null){
-	    String script = FILE.sprint(slideShow, slideNumber);
+	    String script = String.format(slideShow, slideNumber);
 	    Log.info("about to play slide " + script);
 	    executeScript(script);
 	}else{

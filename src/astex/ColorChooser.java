@@ -149,7 +149,7 @@ public class ColorChooser extends Panel
 	    green.setIntValue((rgb & 0xff00) >> 8);
 	    blue.setIntValue((rgb & 0xff));
 
-	    hexText.setText("0x" + FILE.sprint("%06x", rgb &0xffffff));
+	    hexText.setText("0x" + String.format("%06x", rgb &0xffffff));
 	}
 
 	colorSample.setBackground(c);

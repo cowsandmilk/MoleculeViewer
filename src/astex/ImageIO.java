@@ -40,7 +40,7 @@ public class ImageIO {
 
 	if(posw != -1){
 	    String newname = name.substring(0, posw);
-	    newname += FILE.sprint("%d", width);
+	    newname += String.format("%d", width);
 	    newname += name.substring(posw + 2, name.length());
 
 	    name = newname;
@@ -50,14 +50,14 @@ public class ImageIO {
 
 	if(posh != -1){
 	    String newname = name.substring(0, posh);
-	    newname += FILE.sprint("%d", height);
+	    newname += String.format("%d", height);
 	    newname += name.substring(posh + 2, name.length());
 
 	    name = newname;
 	}
 
 	if(name.indexOf('%') != -1){
-	    name = FILE.sprint(name, imageNumber);
+	    name = String.format(name, imageNumber);
 	    imageNumber++;
 	}
 

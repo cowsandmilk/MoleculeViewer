@@ -229,92 +229,6 @@ public class FILE extends InputStream {
 	autoFlush = f;
     }
 
-    /** Return a formatted double as String. */
-    public static String sprint(String f, double d){
-
-        String s;
-
-        spr.parseFormat(f); 
-        spr.format(d);
-        s = spr.createString(); 
-
-        return s;
-    }
-
-    /** Return a formatted long as String. */
-    public static String sprint(String f, long d){
-
-        String s;
-
-        spr.parseFormat(f); 
-        spr.format(d);
-        s = spr.createString();
-        
-        return s;
-    }
-
-    /** Return a formatted String as String. */
-    public static String sprint(String f, String d){
-
-        String s;
-
-        spr.parseFormat(f); 
-        spr.format(d);
-        s = spr.createString();
-        
-        return s;
-    }
-
-    /** Copies all data to the main buffer. */
-    private String createString(){
-        byte localBuffer[] = new byte[bufferSize];
-        byte localtb[] = tb;
-
-        int nc = 0;
-
-        // Do preformatting.
-        for(int i = 0; i < preCount; i++){
-            localBuffer[nc++] = pre[i];
-        }
-
-        if(!left_align){
-            // Pad first.
-            nc = repeat(bSpace, width - (ntb - ntbStart) - ntbE, 
-                        localBuffer, nc);
-
-            // Copy the number.
-            for(int i = ntb-1; i >= ntbStart; i--){
-                localBuffer[nc++] = localtb[i];
-            }
-            
-            for(int i = ntbE-1; i >= 0; i--){
-                localBuffer[nc++] = localtb[i];
-            } 
-
-        } else {
-            // Copy the number.
-            for(int i = ntb-1; i >= ntbStart; i--){
-                localBuffer[nc++] = localtb[i];
-            }
-            
-            for(int i = ntbE-1; i >= 0; i--){
-                localBuffer[nc++] = localtb[i];
-            } 
-            
-            // Pad second.
-            nc = repeat(bSpace, width - (ntb - ntbStart) - ntbE, 
-                        localBuffer, nc);
-            
-        }
-
-        // Post-format.
-        for(int i = 0; i < postCount; i++){
-            localBuffer[nc++] = post[i];
-        }
-       
-        return new String(localBuffer, 0, 0, nc);
-    }   
-
     /** Print a char. */
     public void print(char c){
 	flushIfFull(1);
@@ -1033,7 +947,7 @@ public class FILE extends InputStream {
 	    boolean found = false;
 
 	    do {
-		String fileVersion = file + FILE.sprint("_%02d", version);
+		String fileVersion = file + String.format("_%02d", version);
 		File vf = new File(fileVersion);
 
 		if(vf.exists()){
@@ -1046,8 +960,8 @@ public class FILE extends InputStream {
 
 	    version++;
 
-	    String fileVersion = file + FILE.sprint("_%02d", version);
-	    //String fileVersion = prefix + FILE.sprint(".%02d", version) + suffix;
+	    String fileVersion = file + String.format("_%02d", version);
+	    //String fileVersion = prefix + String.format(".%02d", version) + suffix;
 
 	    File newf = new File(fileVersion);
 

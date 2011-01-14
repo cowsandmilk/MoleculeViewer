@@ -195,7 +195,7 @@ public class AnimationObject {
 	    FILE.out.print("diff %.3f\n", diff);
 	    FILE.out.print("curr %.3f\n", currentAngle*180.0/Math.PI);
 
-	    String command = FILE.sprint("view -rotatez %.3f;", diff);
+	    String command = String.format("view -rotatez %.3f;", diff);
 
 	    moleculeRenderer.execute(command);
 
@@ -217,7 +217,7 @@ public class AnimationObject {
                 Log.info("stepCount %d", stepCount);
             }
 
-	    String command = FILE.sprint("view -rotatez %g;", deltaAngle);
+	    String command = String.format("view -rotatez %g;", deltaAngle);
 
 	    moleculeRenderer.execute(command);
 
@@ -249,14 +249,14 @@ public class AnimationObject {
 	    double clipb = scb + frac * (fcb - scb);
 
 	    final StringBuilder command = new StringBuilder("center");
-	    command.append(FILE.sprint(" %g", cx));
-	    command.append(FILE.sprint(" %g", cy));
-	    command.append(FILE.sprint(" %g; ", cz));
+	    command.append(String.format(" %g", cx));
+	    command.append(String.format(" %g", cy));
+	    command.append(String.format(" %g; ", cz));
 
-	    command.append(FILE.sprint("radius %g;", cr));
+	    command.append(String.format("radius %g;", cr));
 
-	    command.append(FILE.sprint("clip %g ", clipf));
-	    command.append(FILE.sprint("%g;", clipb));
+	    command.append(String.format("clip %g ", clipf));
+	    command.append(String.format("%g;", clipb));
 	    
 	    if(startMatrix != null){
 		Matrix m = Matrix.interpolate(startMatrix, finishMatrix, frac);
@@ -335,9 +335,9 @@ public class AnimationObject {
 		    c = s.charAt(i);
 
 		    if(c == 'd'){
-			sb.append(FILE.sprint("%d", (long)val));
+			sb.append(String.format("%d", (long)val));
 		    }else{
-			sb.append(FILE.sprint("%g", val));
+			sb.append(String.format("%g", val));
 		    }
                 }
 	    }else{

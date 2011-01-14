@@ -649,7 +649,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 final Object clip = findComponent("frontclip");
 
                 if(clip != null){
-                    setString(clip, "text", FILE.sprint("%.1f", val));
+                    setString(clip, "text", String.format("%.1f", val));
                 }
             }
 	}else if(re.getType() == RendererEvent.BackClipMoved){
@@ -658,7 +658,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 		final double val = d.doubleValue();
                 final Object clip = findComponent("backclip");
                 if(clip != null){
-                    setString(clip, "text", FILE.sprint("%.1f", val));
+                    setString(clip, "text", String.format("%.1f", val));
                 }
             }
         }

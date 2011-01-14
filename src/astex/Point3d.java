@@ -474,8 +474,8 @@ public class Point3d {
     /** Return a string representation of this point. */
     public String toString(){
 	return
-	    FILE.sprint("%8.3f", x) +
-	    FILE.sprint("%8.3f", y) +
-	    FILE.sprint("%8.3f", z);
+	    String.format("%8.3f", x) +
+	    String.format("%8.3f", y) +
+	    String.format("%8.3f", z);
     }
 }

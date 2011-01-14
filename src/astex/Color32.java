@@ -299,16 +299,16 @@ public class Color32 {
 
     public static String format(int c){
 	return "'0x" +
-	    FILE.sprint("%02x", getRed(c)) +
-	    FILE.sprint("%02x", getGreen(c)) +
-	    FILE.sprint("%02x'", getBlue(c));
+	    String.format("%02x", getRed(c)) +
+	    String.format("%02x", getGreen(c)) +
+	    String.format("%02x'", getBlue(c));
     }
 
     public static String formatNoQuotes(int c){
 	return "0x" +
-	    FILE.sprint("%02x", getRed(c)) +
-	    FILE.sprint("%02x", getGreen(c)) +
-	    FILE.sprint("%02x", getBlue(c));
+	    String.format("%02x", getRed(c)) +
+	    String.format("%02x", getGreen(c)) +
+	    String.format("%02x", getBlue(c));
     }
 
     /* Some internal colors. */

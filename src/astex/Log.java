@@ -67,74 +67,74 @@ public class Log {
 
     public static void debug(String s, double d){
 	if(level <= DEBUG && getLoggingLevel(3) <= DEBUG1)
-	    log(logStrings[DEBUG], FILE.sprint(s, d));
+	    log(logStrings[DEBUG], String.format(s, d));
     }
     
     public static void debug3(String s, double d){
 	if(level <= DEBUG3 && getLoggingLevel(3) <= DEBUG3)
-	    log(logStrings[DEBUG3], FILE.sprint(s, d));
+	    log(logStrings[DEBUG3], String.format(s, d));
     }
     
     public static void debug2(String s, double d){
 	if(level <= DEBUG2 && getLoggingLevel(3) <= DEBUG2)
-	    log(logStrings[DEBUG2], FILE.sprint(s, d));
+	    log(logStrings[DEBUG2], String.format(s, d));
     }
     
     public static void debug1(String s, double d){
 	if(level <= DEBUG1 && getLoggingLevel(3) <= DEBUG1)
-	    log(logStrings[DEBUG1], FILE.sprint(s, d));
+	    log(logStrings[DEBUG1], String.format(s, d));
     }
     
     public static void info(String s, double d){
-	if(level <= INFO) log(logStrings[INFO], FILE.sprint(s, d));
+	if(level <= INFO) log(logStrings[INFO], String.format(s, d));
     }
     
     public static void warn(String s, double d){
-	if(level <= WARN) log(logStrings[WARN], FILE.sprint(s, d));
+	if(level <= WARN) log(logStrings[WARN], String.format(s, d));
     }
     
     public static void error(String s, double d){
-	if(level <= ERROR) log(logStrings[ERROR], FILE.sprint(s, d));
+	if(level <= ERROR) log(logStrings[ERROR], String.format(s, d));
     }
     
     public static void fatal(String s, double d){
-	if(level <= FATAL) log(logStrings[FATAL], FILE.sprint(s, d));
+	if(level <= FATAL) log(logStrings[FATAL], String.format(s, d));
     }
 
     public static void debug(String s, long d){
 	if(level <= DEBUG && getLoggingLevel(3) <= DEBUG1)
-	    log(logStrings[DEBUG], FILE.sprint(s, d));
+	    log(logStrings[DEBUG], String.format(s, d));
     }
     
     public static void debug3(String s, long d){
 	if(level <= DEBUG3 && getLoggingLevel(3) <= DEBUG3)
-	    log(logStrings[DEBUG3], FILE.sprint(s, d));
+	    log(logStrings[DEBUG3], String.format(s, d));
     }
     
     public static void debug2(String s, long d){
 	if(level <= DEBUG2 && getLoggingLevel(3) <= DEBUG2)
-	    log(logStrings[DEBUG2], FILE.sprint(s, d));
+	    log(logStrings[DEBUG2], String.format(s, d));
     }
     
     public static void debug1(String s, long d){
 	if(level <= DEBUG1 && getLoggingLevel(3) <= DEBUG1)
-	    log(logStrings[DEBUG1], FILE.sprint(s, d));
+	    log(logStrings[DEBUG1], String.format(s, d));
     }
     
     public static void info(String s, long d){
-	if(level <= INFO) log(logStrings[INFO], FILE.sprint(s, d));
+	if(level <= INFO) log(logStrings[INFO], String.format(s, d));
     }
     
     public static void warn(String s, long d){
-	if(level <= WARN) log(logStrings[WARN], FILE.sprint(s, d));
+	if(level <= WARN) log(logStrings[WARN], String.format(s, d));
     }
     
     public static void error(String s, long d){
-	if(level <= ERROR) log(logStrings[ERROR], FILE.sprint(s, d));
+	if(level <= ERROR) log(logStrings[ERROR], String.format(s, d));
     }
     
     public static void fatal(String s, long d){
-	if(level <= FATAL) log(logStrings[FATAL], FILE.sprint(s, d));
+	if(level <= FATAL) log(logStrings[FATAL], String.format(s, d));
     }
 
     public static void debug(String s){
@@ -178,11 +178,11 @@ public class Log {
     }
 
     public static void check(boolean condition, String s, double d){
-	if(!condition) logAssert(logStrings[ASSERT], FILE.sprint(s, d));
+	if(!condition) logAssert(logStrings[ASSERT], String.format(s, d));
     }
     
     public static void check(boolean condition, String s, long d){
-	if(!condition) logAssert(logStrings[ASSERT], FILE.sprint(s, d));
+	if(!condition) logAssert(logStrings[ASSERT], String.format(s, d));
     }
     
     /** Log the assertion. */
