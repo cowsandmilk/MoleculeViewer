@@ -738,7 +738,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
     public Object safeParse(String xml){
         try {
-            return parse(new StringBufferInputStream(xml));
+            return parse(new StringReader(xml));
         }catch(Exception e){
             System.out.println("error parsing xml: " + xml);
             e.printStackTrace();

@@ -5970,23 +5970,23 @@ public class Thinlet extends Canvas
 	 * @return the parsed components' root
 	 * @throws java.io.IOException
 	 */
-	public Object parse(String path, Object handler) throws IOException {
-		InputStream inputstream = null;
+	private Object parse(String path, Object handler) throws IOException {
+		Reader reader = null;
                 try {
-                    inputstream = new FileInputStream(path);
+                    reader = new FileReader(path);
                 } catch (Throwable e) {
                 }
-                if (inputstream == null) {
+                if (reader == null) {
                     try {
-                        inputstream = getClass().getResourceAsStream(path);
-                        if (inputstream == null) {
+                        reader = new InputStreamReader(getClass().getResourceAsStream(path));
+                        if (reader == null) {
                             try {
-                                inputstream = new URL(path).openStream();
+                                reader = new InputStreamReader(new URL(path).openStream());
                             } catch (MalformedURLException mfe) { /* thows nullpointerexception*/ }
                         }
                     } catch (Throwable e) {}
                 }
-                return parse(inputstream, handler);
+                return parse(new BufferedReader(reader), handler);
         }
                 
                 /**
@@ -5996,32 +5996,20 @@ public class Thinlet extends Canvas
 	 * @return the root component of the parsed stream
 	 * @throws java.io.IOException
 	 */
-	public Object parse(InputStream inputstream) throws IOException {
-		return parse(inputstream, this);
+	public Object parse(Reader reader) throws IOException {
+		return parse(reader, this);
 	}
 
-	/**
+        /**
 	 * Creates a component from the given stream and event handler
 	 *
-	 * @param inputstream read xml from this stream
+	 * @param reader read xml from this stream
 	 * @param handler event handlers are implemented in this object
 	 * @return the parsed components' root
 	 * @throws java.io.IOException
 	 */
-	public Object parse(InputStream inputstream, Object handler) throws IOException {
-		return parse(inputstream, true, false, handler);
-	}
-
-	/**
-	 * You can use the internal xml parser as a simple SAX-like parser,
-	 * during the process it calls the <i>startElement</i>, <i>characters</i>,
-	 * and <i>endElement</i> methods
-	 *
-	 * @param inputstream e.g. <i>new URL("http://myserver/myservlet").openStream()</i>
-	 * @throws java.io.IOException
-	 */
-	protected void parseXML(InputStream inputstream) throws IOException {
-		parse(inputstream, false, false, null);
+	private Object parse(Reader reader, Object handler) throws IOException {
+		return parse(reader, true, false, handler);
 	}
 
 	/**
@@ -6043,20 +6031,6 @@ public class Thinlet extends Canvas
 	 * The SAX-like parser calls this method, you have to overwrite it
 	 */
 	protected void endElement() {}
-	
-	/**
-	 * You can use the internal xml parser as a simple DOM-like parser,
-	 * use the <i>getDOMAttribute</i>, <i>getDOMText</i>,
-	 * <i>getDOMCount</i>, <i>getDOMNode</i>, <i>getClass</i>,
-	 * and <i>getParent</i> methods to analise the document
-	 *
-	 * @param inputstream e.g. <i>new URL("http://myserver/myservlet").openStream()</i>
-	 * @return the root tag
-	 * @throws java.io.IOException
-	 */
-	protected Object parseDOM(InputStream inputstream) throws IOException {
-		return parse(inputstream, false, true, null);
-	}
 	
 	/**
 	 * Gets the attribute value by the specified key for a DOM tag
@@ -6112,10 +6086,10 @@ public class Thinlet extends Canvas
 	public void setResourceBundle(ResourceBundle resourcebundle) {
 		this.resourcebundle = resourcebundle;
 	}
-
-	/**
+	
+/**
 	 *
-	 * @param inputstream
+	 * @param reader
 	 * @param validate parse GUI from xml if true
 	 * @param dom parse an xml resoource
 	 * @param handler
@@ -6123,9 +6097,8 @@ public class Thinlet extends Canvas
 	 * @throws java.io.IOException
 	 * @throws java.lang.IllegalArgumentException
 	 */
-	private Object parse(InputStream inputstream,
+	private Object parse(Reader reader,
 			boolean validate, boolean dom, Object handler) throws IOException {
-		Reader reader = new BufferedReader(new InputStreamReader(inputstream));
 		try {
 			Object[] parentlist = null;
 			Object current = null;
@@ -6310,7 +6283,6 @@ public class Thinlet extends Canvas
 			if (reader != null) { reader.close(); }
 		}
 	}
-	
 
     /** Hash the paintmethods to make them faster to lookup. */
     private Hashtable paintMethodHash = null;
