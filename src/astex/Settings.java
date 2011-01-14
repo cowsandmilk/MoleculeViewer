@@ -125,17 +125,4 @@ public class Settings {
 			}
 		}
 	}
-
-	/** Test method. */
-	public static void main(String args[]){
-
-		System.out.println("thinlet    " + Settings.getString("thinlet", "astex.Distance.mode"));
-		System.out.println("hb    " + Settings.getDouble("config", "hbond.constant"));
-
-		System.out.println("gecko " + Settings.getDouble("config", "hbond.gecko"));
-
-		System.out.println("log " + Settings.getBoolean("config", "log"));
-
-		System.out.println("fragment.1 " + Settings.getString("fragment", "fragment.1"));
-	}
 }

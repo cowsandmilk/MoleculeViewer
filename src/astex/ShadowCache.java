@@ -847,21 +847,4 @@ public class ShadowCache {
 	tuv[0] = DOT(edge2, qvec) * inv_det;
 	return 1;
     }
-
-    public static void main(String args[]){
-	double a[] = { 0., 0., 0. };
-	double b[] = { 1., 0., 0. };
-	double c[] = { 0., 1., 0. };
-	double tuv[] = new double[3];
-
-
-	double o[] = { 0.2, 0.2, 1. };
-	double d[] = { 0., 0., 1. };
-
-	int i = intersect_triangle(o, d, a, b, c, tuv);
-
-	if(i == 1){
-	    FILE.out.print("t %f\n", tuv[0]);
-	}
-    }
 }

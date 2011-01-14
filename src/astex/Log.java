@@ -387,11 +387,4 @@ public class Log {
 
 	return -1;
     }
-
-    public static void main(String args[]){
-	Log.debug1("debugging info");
-	Log.info("Just for your info");
-	Log.warn("That number should be bigger");
-	Log.fatal("something terrible happened");
-    }
 }

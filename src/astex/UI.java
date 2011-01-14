@@ -75,27 +75,4 @@ public class UI {
 	sb.setBackground(Color.white);
 	return sb;
     }
-
-
-    public static void main(String args[]){
-	Frame f = new Frame();
-
-	add(f);
-	add("Controls 1");
-	add(new JCLabel("fred"));
-	add(new JCLabel("bob"));
-	newRow();
-	add(new JCLabel("angela"));
-	//pop();
-	newRow();
-	add("Controls 2", 2,1, UI.BOTH);
-	add(new JCLabel("fred"));
-	add(new JCLabel("bob"));
-	newRow();
-	add(new JCLabel("angela"));
-	pop();
-
-	f.pack();
-	f.setVisible(true);
-    }
 }

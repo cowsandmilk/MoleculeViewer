@@ -281,77 +281,7 @@ public class Format {
 			s = s.substring(0, precision);
 		return pad(s);
 	}
-   
-    
-	/**
-	 * a test stub for the format class
-	 */
-   
-	public static void main(String[] a) {
-		double x = 1.23456789012;
-		double y = 123;
-		double z = 1.2345e30;
-		double w = 1.02;
-		double u = 1.234e-5;
-		int d = 0xCAFE;
-		Format.print(System.out, "x = |%f|\n", x);
-		Format.print(System.out, "u = |%20f|\n", u);
-		Format.print(System.out, "x = |% .5f|\n", x);
-		Format.print(System.out, "w = |%20.5f|\n", w);
-		Format.print(System.out, "x = |%020.5f|\n", x);
-		Format.print(System.out, "x = |%+20.5f|\n", x);
-		Format.print(System.out, "x = |%+020.5f|\n", x);
-		Format.print(System.out, "x = |% 020.5f|\n", x);
-		Format.print(System.out, "y = |%#+20.5f|\n", y);
-		Format.print(System.out, "y = |%-+20.5f|\n", y);
-		Format.print(System.out, "z = |%20.5f|\n", z);
-      
-		Format.print(System.out, "x = |%e|\n", x);
-		Format.print(System.out, "u = |%20e|\n", u);
-		Format.print(System.out, "x = |% .5e|\n", x);
-		Format.print(System.out, "w = |%20.5e|\n", w);
-		Format.print(System.out, "x = |%020.5e|\n", x);
-		Format.print(System.out, "x = |%+20.5e|\n", x);
-		Format.print(System.out, "x = |%+020.5e|\n", x);
-		Format.print(System.out, "x = |% 020.5e|\n", x);
-		Format.print(System.out, "y = |%#+20.5e|\n", y);
-		Format.print(System.out, "y = |%-+20.5e|\n", y);
-      
-		Format.print(System.out, "x = |%g|\n", x);
-		Format.print(System.out, "z = |%g|\n", z);
-		Format.print(System.out, "w = |%g|\n", w);
-		Format.print(System.out, "u = |%g|\n", u);
-		Format.print(System.out, "y = |%.2g|\n", y);
-		Format.print(System.out, "y = |%#.2g|\n", y);
-		Format.print(System.out, "d = |%d|\n", d);
-		Format.print(System.out, "d = |%20d|\n", d);            
-		Format.print(System.out, "d = |%020d|\n", d);    
-		Format.print(System.out, "d = |%+20d|\n", d);
-		Format.print(System.out, "d = |% 020d|\n", d);
-		Format.print(System.out, "d = |%-20d|\n", d);
-		Format.print(System.out, "d = |%20.8d|\n", d);
-		Format.print(System.out, "d = |%x|\n", d);            
-		Format.print(System.out, "d = |%20X|\n", d);    
-		Format.print(System.out, "d = |%#20x|\n", d);
-		Format.print(System.out, "d = |%020X|\n", d);
-		Format.print(System.out, "d = |%20.8x|\n", d);
-		Format.print(System.out, "d = |%o|\n", d);            
-		Format.print(System.out, "d = |%020o|\n", d);    
-		Format.print(System.out, "d = |%#20o|\n", d);
-		Format.print(System.out, "d = |%#020o|\n", d);
-		Format.print(System.out, "d = |%20.12o|\n", d);
-      
-		Format.print(System.out, "s = |%-20s|\n", "Hello");      
-		Format.print(System.out, "s = |%-20c|\n", '!');      
-		// regression test to confirm fix of reported bugs
-		Format.print(System.out, "|%i|\n", Long.MIN_VALUE);
-		Format.print(System.out, "|%6.2e|\n", 0.0);
-		Format.print(System.out, "|%6.2g|\n", 0.0);
-		Format.print(System.out, "|%6.2f|\n", 9.99);
-		Format.print(System.out, "|%6.2f|\n", 9.999);
-		Format.print(System.out, "|%6.0f|\n", 9.999);
-	}
-   
+
 	private static String repeat(char c, int n) {
 		if (n <= 0) return "";
 		StringBuilder s = new StringBuilder(n);

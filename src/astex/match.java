@@ -209,12 +209,4 @@ public class match {
             sIdx++;
         }
     }
-
-    /**
-     * Test method for the matcher.
-     */
-    public static void main(String args[]){
-      System.out.println("pattern " + args[0] + " string " + args[1]);
-      System.out.println("match " + matches(args[0], args[1]));
-    }
 }

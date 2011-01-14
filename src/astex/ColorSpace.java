@@ -169,12 +169,4 @@ public class ColorSpace extends Canvas {
     public Dimension getPreferredSize(){
         return new Dimension(200, 200);
     }
-
-    public static void main(String args[]){
-	Frame f = new Frame();
-	f.add(new ColorSpace());
-
-	f.pack();
-	f.setVisible(true);
-    }
 }

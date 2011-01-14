@@ -256,25 +256,4 @@ public class ColorChooser extends Panel
 
     public void mouseMoved(MouseEvent e){
     }
-
-
-    public static void main(String args[]){
-	Frame f = new Frame();
-	Dialog d = new Dialog(f, true);
-
-	ColorChooser ccd = new ColorChooser(d);
-	d.add(ccd);
-
-	f.pack();
-	f.setVisible(true);
-
-	d.pack();
-	d.setVisible(true);
-
-	if(ccd.accept){
-	    System.out.println("accepted colour "+ ccd.rgb);
-	}
-
-	System.exit(0);
-    }
 }

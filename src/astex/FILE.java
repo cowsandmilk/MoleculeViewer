@@ -2178,23 +2178,6 @@ public class FILE extends InputStream {
     }
 
     /**
-     * Test program for the FILE class.
-     */
-    public static void main(String args[]){
-	if(args.length > 0){
-	    FILE f = FILE.write(args[0]);
-	    
-	    if(f != null){
-		f.print("hello\n");
-		
-		f.close();
-	    }else{
-		System.out.println("couldn't open " + args[0]);
-	    }
-	}
-    }
-
-    /**
      * Read the data from the specified FILE object.
      */
     public static int readFrom(FILE file){

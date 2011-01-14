@@ -177,29 +177,4 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 	    userInterface.moleculeViewer.repaint();
 	}
     }
-
-    public static void main(String args[]){
-	Frame f = new Frame();
-	JCScrolledWindow window = new JCScrolledWindow();
-	window.setScrollbarDisplay(JCScrolledWindow.DISPLAY_VERTICAL_ONLY);
-	window.setPreferredSize(300, 100);
-
-	JCContainer container = new JCContainer();
-	container.setLayout(new JCGridLayout(0, 1));
-
-	for(int i = 0; i < args.length; i++){
-	    Tmesh tm = new Tmesh();
-	    tm.setName(args[i]);
-	    ObjectControl oc = new ObjectControl(null, tm);
-	    container.add(oc);
-	}
-
-	window.add(container);
-	//window.doLayout();
-	f.add(window);
-
-	f.pack();
-	f.setVisible(true);
-	
-    }
 }

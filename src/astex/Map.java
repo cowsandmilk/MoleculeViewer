@@ -1145,11 +1145,4 @@ public class Map extends Symmetry {
 
 	return false;
     }
-
-    /** Test program. */
-    public static void main(String args[]){
-	Map map = Map.create();
-	map.setFile(args[0]);
-	map.read();
-    }
 }
