@@ -32,14 +32,14 @@ public class ThinletUI extends Thinlet implements WindowListener,
     public MoleculeViewer moleculeViewer     = null;
     public MoleculeRenderer moleculeRenderer = null;
 
-    private Hashtable<String, String> initialised = new Hashtable<String,String>(11);
+    private HashSet<String> initialised = new HashSet<String>(11);
 
     /** Main entry point for scripting execution via thinlet. */
     private void execute(Object component){
         String init = (String)getProperty(component, "init");
 
-        if(init != null && initialised.get(init) == null){
-            initialised.put(init, init);
+        if(init != null && !initialised.contains(init)){
+            initialised.add(init);
 
             init = preprocess(component, init);
 
@@ -444,8 +444,8 @@ public class ThinletUI extends Thinlet implements WindowListener,
     private void populateResidues(Object resnode, Object atomnode){
         removeAll(resnode);
         removeAll(atomnode);
-        Hashtable<String,String> resnames = new Hashtable<String,String>(100);
-        Hashtable<String,String> atomnames = new Hashtable<String, String>(100);
+        final TreeSet<String> resnames = new TreeSet<String>();
+        final TreeSet<String> atomnames = new TreeSet<String>();
 
         for(int m = 0; m < moleculeRenderer.getMoleculeCount(); m++){
             Molecule mol = moleculeRenderer.getMolecule(m);
@@ -455,13 +455,13 @@ public class ThinletUI extends Thinlet implements WindowListener,
                     Residue res = chain.getResidue(r);
                     String resname = res.getName();
                     if(resnames.contains(resname) == false){
-                        resnames.put(resname, resname);
+                        resnames.add(resname);
                     }
                     for(int a = 0; a < res.getAtomCount(); a++){
                         Atom atom = res.getAtom(a);
                         String atomname = atom.getAtomLabel();
                         if(atomnames.contains(atomname) == false){
-                            atomnames.put(atomname, atomname);
+                            atomnames.add(atomname);
                         }
                     }
                 }
@@ -469,23 +469,11 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
 
         // residue names
-        String names[] = new String[resnames.size()];
-        int count = 0;
-
-        Enumeration<String> k = resnames.elements();
-
-        while(k.hasMoreElements()){
-            String name = k.nextElement();
-            names[count++] = name;
-        }
-
-        sort(names, count);
-
         char lastChar = 0;
         Object folder = null;
 
-        for(int i = 0; i < count; i++){
-            char c = names[i].charAt(0);
+        for(String name: resnames){
+            final char c = name.charAt(0);
             if(c != lastChar){
                 folder = create("node");
                 setString(folder, "text", "" + c);
@@ -497,29 +485,18 @@ public class ThinletUI extends Thinlet implements WindowListener,
             }
 
             Object node = create("node");
-            setString(node, "text", names[i]);
-            putProperty(node, "selection", "name '" + names[i] + "'");
+            setString(node, "text", name);
+            putProperty(node, "selection", "name '" + name + "'");
             add(folder, node);
         }
 
         // atom names
 
-        count = 0;
-        names = new String[atomnames.size()];
-        k = atomnames.elements();
-
-        while(k.hasMoreElements()){
-            String name = k.nextElement();
-            names[count++] = name;
-        }
-
-        sort(names, count);
-
         lastChar = 0;
         folder = null;
 
-        for(int i = 0; i < count; i++){
-            char c = names[i].charAt(0);
+        for(String name: atomnames){
+            final char c = name.charAt(0);
             if(c != lastChar){
                 folder = create("node");
                 setString(folder, "text", "" + c);
@@ -531,28 +508,11 @@ public class ThinletUI extends Thinlet implements WindowListener,
             }
 
             Object node = create("node");
-            setString(node, "text", names[i]);
-            putProperty(node, "selection", "atom '" + names[i] + "'");
+            setString(node, "text", name);
+            putProperty(node, "selection", "atom '" + name + "'");
             add(folder, node);
         }
 
-    }
-
-    private void sort(String a[], int n){
-	for (int i = n; --i >= 0; ) {
-            boolean flipped = false;
-	    for (int j = 0; j < i; j++) {
-		if (a[j].compareTo(a[j+1]) > 0){
-		    String T = a[j];
-		    a[j] = a[j+1];
-		    a[j+1] = T;
-		    flipped = true;
-		}
-	    }
-	    if (!flipped) {
-	        return;
-	    }
-        }
     }
 
     public void genericAdded(MoleculeRenderer renderer, Generic generic){
@@ -749,7 +709,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     /** Hashtable of component names to objects. */
-    private Hashtable<String, Object> components = null;
+    private HashMap<String, Object> components = null;
 
     /**
      * Look up a cached object name.
@@ -757,7 +717,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
      */
     private Object findComponent(String name){
         if(components == null){
-            components = new Hashtable<String, Object>(11);
+            components = new HashMap<String, Object>(11);
         }
 
         Object component = components.get(name);
