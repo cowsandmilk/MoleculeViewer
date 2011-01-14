@@ -160,48 +160,48 @@ public class ThinletUI extends Thinlet implements WindowListener,
             return value;
         }
 
-        if(s.equals("$o")){
+        if("$o".equals(s)){
             boolean selected = getBoolean(component, "selected");
             return selected ? "on" : "off";
         }
 
-        if(s.equals("$b")){
+        if("$b".equals(s)){
             boolean selected = getBoolean(component, "selected");
             return selected ? "true" : "false";
         }
 
-        if(s.equals("$t")){
+        if("$t".equals(s)){
             return getString(component, "text");
         }
 
-        if(s.equals("$d")){
+        if("$d".equals(s)){
             return "" + getInteger(component, "value");
         }
 
-        if(s.equals("$V")){
+        if("$V".equals(s)){
             return "" + getInteger(component, "value") * 0.1;
         }
 
-        if(s.equals("$v")){
+        if("$v".equals(s)){
             return "" + getInteger(component, "value") * 0.01;
         }
 
-        if(s.equals("$c")){
+        if("$c".equals(s)){
             Color color = getColor(component, "background");
             return Color32.format(color.getRGB());
         }
 
-        if(s.equals("$C")){
+        if("$C".equals(s)){
             Color color = getColor(component, "background");
             return Color32.formatNoQuotes(color.getRGB());
         }
 
-        if(s.equals("$f")){
+        if("$f".equals(s)){
             Color color = getColor(component, "foreground");
             return Color32.formatNoQuotes(color.getRGB());
         }
 
-        if(s.equals("$n")){
+        if("$n".equals(s)){
             if("combobox".equals(getClass(component))){
                 component = getSelectedItem(component);
             }
@@ -209,7 +209,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
             return name;
         }
 
-        if(s.equals("$h")){
+        if("$h".equals(s)){
             double hsv[] = { 0.0, 1.0, 1.0 };
             int value = getInteger(component, "value");
             hsv[0] = (double)value;
