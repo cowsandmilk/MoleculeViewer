@@ -665,8 +665,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
     /** An atom was selected. */
     public void atomSelected(MoleculeRenderer renderer, Atom atom){
-        //System.out.println("atomSelected " + atom);
-
         if(atom == null){
             Object moleculeTree = findComponent("molecule_tree");
             Object items[] = getSelectedItems(moleculeTree);
