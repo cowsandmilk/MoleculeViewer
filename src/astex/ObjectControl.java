@@ -23,15 +23,15 @@ import jclass.bwt.*;
 
 public class ObjectControl extends Panel implements JCItemListener, JCActionListener, JCAdjustmentListener {
     /** The tmesh object we control. */
-    UserInterface userInterface = null;
-    Tmesh tmesh           = null;
-    JCCheckbox selected   = null;
-    JCCheckbox displayed  = null;
-    JCCheckbox backface   = null;
-    JCSlider transparency = null;
-    JCButton delete       = null;
-    JCButton edit         = null;
-    ColorButton colorButton  = null;
+    private UserInterface userInterface = null;
+    public Tmesh tmesh            = null;
+    public JCCheckbox selected    = null;
+    private JCCheckbox displayed  = null;
+    private JCCheckbox backface   = null;
+    private JCSlider transparency = null;
+    private JCButton delete       = null;
+    private JCButton edit         = null;
+    private ColorButton colorButton  = null;
 
     /** Public constructor. */
     public ObjectControl(UserInterface ui, Tmesh tm){
@@ -41,7 +41,6 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 	userInterface = ui;
 
 	setLayout(new JCGridLayout(1, 0));
-	//setLayout(new BorderLayout());
 
 	delete = new JCButton("X");
 	delete.addActionListener(this);
@@ -167,7 +166,6 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 		    mr.execute(command);
 		    colorButton.setForeground(new Color(newColor));
 		    colorButton.setBackground(new Color(newColor));
-		    //colorButton.setLabel(null);
 		}
 	    }
 

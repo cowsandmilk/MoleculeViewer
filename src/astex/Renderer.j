@@ -83,13 +83,13 @@ public class Renderer {
     public int pixelHeight = 0;
 
     /** Number of pixels. */
-    public int pixelCount = 0;
+    private int pixelCount = 0;
 
     /** The pixel buffer. */
     public int pbuffer[] = null;
 
     /** The z-buffer. */
-    public int zbuffer[] = null;
+    private int zbuffer[] = null;
 
     /** Number of fixed precision bits. */
     public static final int FixedBits = 12;
@@ -98,7 +98,7 @@ public class Renderer {
     private static final double FFixedBits = (1 << FixedBits);
 
     /** Floating point multiplier for z-buffer interpolation. */
-    public static final double ZFixedBits = (1 << (FixedBits+8));
+    private static final double ZFixedBits = (1 << (FixedBits+8));
 
     /** The centre point of the view. */
     private Point3d center = new Point3d();
@@ -143,10 +143,7 @@ public class Renderer {
     private double cartoonNormalCutoff = 0.08;
 
     /** Have we calcualated our light map? */
-    public transient boolean lightMapCalculated = false;
-
-    /** Have we initialised the single color lookup table? */
-    public boolean colorInitialised = false;
+    private transient boolean lightMapCalculated = false;
 
     /** The list of lights. */
     public DynamicArray lights = new DynamicArray(8);
@@ -155,10 +152,7 @@ public class Renderer {
     public Hashtable<String,Texture> textures = new Hashtable<String,Texture>(11);
 
     /** The current texture. */
-    public Texture texture = null;
-
-    /** Is clipping enabled? */
-    public boolean clipping = false;
+    private Texture texture = null;
 
     /** The current transparency. */
     private int transparency = 0xff;
@@ -167,19 +161,13 @@ public class Renderer {
     private boolean transparent = false;
 
     /** Does this triangle need clipping? */
-    public boolean clipTriangle = false;
-
-    /** Do RGB Gouraud shading rather than Phong lookup. */
-    public boolean rgb = false;
+    private boolean clipTriangle = false;
 
     /** Do phong shading. */
-    public boolean phong = true;
+    private boolean phong = true;
 
     /** Do backface removal of triangles. */
-    public boolean frontFaceOnly = true;
-
-    /** Are we backlighting back facing triangles. */
-    public boolean backlit = false;
+    private boolean frontFaceOnly = true;
 
     /** Do depth cueing of the final image. */
     public boolean depthcue = false;
@@ -188,30 +176,22 @@ public class Renderer {
     public boolean analyticalSpheres = false;
 
     /** Minimum z-coordinate after transformation. */
-    public int zmin = 0 ;
+    private int zmin = 0 ;
 
     /** Maximum z-coordinate after transformation. */
-    public int zmax = 0;
+    private int zmax = 0;
 
     /** The base color for simple color triangle rendering. */
-    public int triangleColor = 0;
-
-    /** Components of the triangle color for fast shading */
-    public int triangleColorR = 0;
-    public int triangleColorG = 0;
-    public int triangleColorB = 0;
+    private int triangleColor = 0;
 
     /** Are we doing triangle debugging color style. */
-    public boolean colorTriangle = false;
-
-    /** The current scale. */
-    public double scale = 1.0;
+    private boolean colorTriangle = false;
 
     /** The current zoom. */
-    public double zoom = 1.0;
+    private double zoom = 1.0;
 
     /** The clip increment. */
-    public double clipIncrement = 0.5;
+    private double clipIncrement = 0.5;
 
     /** The background colour. */
     private int background = 0xff000000;
@@ -232,31 +212,20 @@ public class Renderer {
     private String logo = null;
 
     /** Contrasting colors for debugging renderer performance. */
-    public int debugColor[] = {
+    private int debugColor[] = {
 	0xff9999, 0x99ff99, 0x9999ff, 0xffff99, 0xff99ff, 0x99ffff
-    };
-
-    /** Primary colors for specific triangle issues. */
-    public int triangleColors[] = {
-	Color32.white, 0xff9999, 0x99ff99, 0x9999ff,
-	Color32.red, Color32.green, Color32.blue, Color32.brown
     };
 
     public transient DynamicArray rendererEventListeners = new DynamicArray();
 
     /** Are we antialiasing. */
-    public boolean antialias = false;
+    private boolean antialias = false;
 
     /** Are we doing wu line antialiasing. */
     public boolean wuAntiAlias = false;
 
     /** Did antialiasing mode change? */
     private boolean antialiasModeChanged = false;
-
-    /** Return the current antialiasing setting. */
-    public boolean getAntiAlias(){
-	return antialias;
-    }
 
     /** Set the current antialiasing setting. */
     public void setAntiAlias(boolean b){
@@ -289,11 +258,6 @@ public class Renderer {
 	calculateLightMap();
     }
 
-    /** Get the cartoon normal cutoff. */
-    public double getCartoonNormalCutoff(){
-	return cartoonNormalCutoff;
-    }
-
     /** Set the background colour. */
     public void setBackgroundColor(int c){
 	background = c;
@@ -317,16 +281,6 @@ public class Renderer {
     /** Set top of background colour gradient. */
     public void setGradientBottom(int c){
         gradientBottom = c;
-    }
-
-    /** Set the scale. */
-    public void setScale(double s){
-	scale = s;
-    }
-
-    /** Get the scale. */
-    public double getScale(){
-	return scale;
     }
 
     /** Set the zoom. */
@@ -353,11 +307,7 @@ public class Renderer {
 
     /** Set the radius. */
     public void setRadius(double d){
-	//FILE.out.print("radius set to %.1f\n", d);
-
 	if(d < 4.0){
-	    //Exception e = new Exception("setRadius");
-	    //e.printStackTrace();
 	    d = 4.0;
 	}
 
@@ -370,7 +320,7 @@ public class Renderer {
     }
 
     /** Set the front clip plane. */
-    public void setFrontClip(double v){
+    private void setFrontClip(double v){
 	setFrontClip(v, true);
     }
 
@@ -393,7 +343,7 @@ public class Renderer {
     }
 
     /** Set the back clip plane. */
-    public void setBackClip(double v){
+    private void setBackClip(double v){
 	setBackClip(v, true);
     }
 
@@ -423,25 +373,16 @@ public class Renderer {
 
     /** Set the clip. */
     public void setClip(double d){
-	//System.out.println("setClip " + d);
 	if(d < clipIncrement){
 	    d = clipIncrement;
 	}
 	setFrontClip(d);
 	setBackClip(-d);
-
-	//System.out.println("front " + front);
-	//System.out.println("back " + back);;
     }
 
     /** Set the clip. */
     public double getClip(){
 	return front;
-    }
-
-    /** Set the clip increment. */
-    public void setClipIncrement(double inc){
-        clipIncrement = inc;
     }
 
     /** Increment the clip plane distance. */
@@ -482,8 +423,6 @@ public class Renderer {
     public void resetCenterAndRadius(){
         center.x = center.y = center.z = 0.0;
         width = 0.0;
-        //scaleInitialised = false;
-        //centerInitialised = false;
     }
 
     /** Default renderer. */
@@ -546,7 +485,7 @@ public class Renderer {
     }
 
     /** Add a light. */
-    public void addLight(boolean onOff,
+    private void addLight(boolean onOff,
 			 double x, double y, double z,
 			 int diffuseColor, int specularColor,
 			 double power){
@@ -706,7 +645,7 @@ public class Renderer {
     }
 
     /** Remove specific graphical object. */
-    public void removeGraphicalObjects(Tmesh tm){
+    private void removeGraphicalObjects(Tmesh tm){
 	if(objects.contains(tm)){
 	    objects.remove(tm);
 	    tm.setRenderer(null);
@@ -765,7 +704,6 @@ public class Renderer {
             String name = object.getName();
 
             if(name != null && match.matches(pattern, name)){
-		//System.out.println("setting " + attribute + " to " + value);
 		if(attribute == Tmesh.UScale){
 		    object.setUScale(value);
 		}else if(attribute == Tmesh.VScale){
@@ -878,7 +816,6 @@ public class Renderer {
 	    }else{
 		depthScale[i] = 255 - (int)(255*(Math.pow(Math.E, fogDensity*(255-i)) - 1)/
 					    (Math.pow(Math.E, fogDensity*255)-1));
-		//System.out.println("depthScale["+i+"] = " + depthScale[i]);
 	    }
 	}
 
@@ -893,8 +830,6 @@ public class Renderer {
 	drawObjects(PostRenderPass);
 
 	if(depthcue){
-
-	    //System.out.println("depthcue");
 	    int zb[] = zbuffer;
 	    int pb[] = pbuffer;
 
@@ -921,12 +856,8 @@ public class Renderer {
 	    // background is white, fog to white
 	    if(background == Color32.white){
 		for(int i = 0; i < pixelCount; i++){
-		    //System.out.println("zb[i] " + zb[i]);
 		    if(zb[i] != zmin){
 			int scale = (zb[i] - zmin)/range;
-			//scale *= scale;
-			//shade = (int)(170 + 85 * scale);
-			//System.out.println("range " + range + " scale " + scale);
 			shade = depthScale[scale];
 			// can do this with & somehow
 			int whiteComponent = Color32.scale(0xcccccc, 255 - shade);
@@ -939,12 +870,8 @@ public class Renderer {
 		}
 	    }else{
 		for(int i = 0; i < pixelCount; i++){
-		    //System.out.println("zb[i] " + zb[i]);
 		    if(zb[i] != zmin){
 			int scale = (zb[i] - zmin)/range;
-			//scale *= scale;
-			//shade = (int)(170 + 85 * scale);
-			//System.out.println("range " + range + " scale " + scale);
 			shade = depthScale[scale];
 			pb[i] = Color32.scale(pb[i], shade);
 		    }
@@ -1010,7 +937,6 @@ public class Renderer {
 
 		// need to skip row
 		index += pixelWidth;
-		//index += 3*w;
 	    }
 	}
 
@@ -1048,13 +974,7 @@ public class Renderer {
 	    initialiseDepthMap();
 	}
 
-	//FILE.out.print("z %10d", z);
-	//FILE.out.print(" frontClip %10d", frontClip);
-	//FILE.out.print(" backClip  %10d ", backClip);
-
 	int zslot = (int)(255.0*(z-backClip)/(double)(frontClip-backClip));
-
-	//FILE.out.print(" zslot  %10d\n", zslot);
 
 	if(zslot < 0){
 	    zslot = 0;
@@ -1132,8 +1052,6 @@ public class Renderer {
 	    indexSort(sz, ids, 0, sphereCount - 1);
 
 	    for(int pass = 0; pass < 2; pass++){
-		
-		//for(int id = 0; id < sphereCount; id++){
 		for(int id = sphereCount - 1; id >= 0; id--){
 		    int i = ids[id];
 		    if(pass == 0 && stransp.get(i) > 200 ||
@@ -1208,7 +1126,6 @@ public class Renderer {
      */
     private void ensureTransformCapacity(int n){
 	if(xt == null || xt.length < n){
-	    //System.out.println("allocating transform buffers: " + n);
 	    xt = new int[n];
 	    yt = new int[n];
 	    zt = new int[n];
@@ -1223,7 +1140,6 @@ public class Renderer {
 
     /** Return the overall scale. */
     public double getOverallScale(){
-        //return scale * zoom;
         return zoom * pixelWidth/(width*2.0);
     }
 
@@ -1239,11 +1155,8 @@ public class Renderer {
 	}
 	overallMatrix.transform(rotationMatrix);
 	double overallScale = getOverallScale();
-	// negative for y scale flips the image upside down
-	//overallMatrix.scale(overallScale, -overallScale, overallScale);
 	//original
 	overallMatrix.scale(overallScale, -overallScale, 1.0);
-	//overallMatrix.translate(width/2, height/2, 0.0);
 	overallMatrix.translate(pixelWidth/2, pixelHeight/2, 0.0);
 				//clipDistance * overallScale);
     }
@@ -1264,21 +1177,6 @@ public class Renderer {
     }
 
     /** Apply a transform to a point. */
-    public void applyTransform2(double x, double y, double z, int s[]){
-        Matrix m = overallMatrix;
-        double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
-        double mx10 = m.x10, mx11 = m.x11, mx12 = m.x12;
-        double mx20 = m.x20, mx21 = m.x21, mx22 = m.x22;
-        double mx30 = m.x30, mx31 = m.x31, mx32 = m.x32;
-        double xx = x*mx00 + y*mx10 + z*mx20 + mx30 + 0.5;
-        double yy = x*mx01 + y*mx11 + z*mx21 + mx31 + 0.5;
-        double zz = x*mx02 + y*mx12 + z*mx22 + mx32;
-        s[0] = (int)xx;
-        s[1] = (int)yy;
-        s[2] = (int)zz;
-    }
-
-    /** Apply a transform to a point. */
     public void applyTransform(double x, double y, double z, double s[]){
         Matrix m = overallMatrix;
         double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
@@ -1294,7 +1192,7 @@ public class Renderer {
     }
 
     /** Apply a transform to a point. */
-    public void transformNormal(double x, double y, double z, double s[]){
+    private void transformNormal(double x, double y, double z, double s[]){
         Matrix m = rotationMatrix;
         double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
         double mx10 = m.x10, mx11 = m.x11, mx12 = m.x12;
@@ -1355,7 +1253,6 @@ public class Renderer {
 	    xx = x*mx00 + y*mx10 + z*mx20 + mx30 + 0.5;
 	    yy = x*mx01 + y*mx11 + z*mx21 + mx31 + 0.5;
 	    zz = x*mx02 + y*mx12 + z*mx22 + mx32;
-	    //System.out.print("zz " + zz);
 	    // we have to have pixel coordinate x and y values
 	    clipped[i] = 0;
 	    
@@ -1375,7 +1272,6 @@ public class Renderer {
 	    if(debug){
 		drawString(xlocal[i], ylocal[i], zlocal[i], 0.1, Color32.white, "" + i);
 	    }
-	    //System.out.println(" becomes " + zt[i]);
 
 	    if(zt[i] < zmin){
 		zmin = zt[i];
@@ -1449,10 +1345,6 @@ public class Renderer {
 
     /* Temporary variables for triangle rendering. */
     /* Coordinates, normals, textures/rgb. */
-    //private int AA[] = new int[10];
-    //private int BB[] = new int[10];
-    //private int CC[] = new int[10];
-    //private int DD[] = new int[10];
 
     private Vertex vertexA = new Vertex();
     private Vertex vertexB = new Vertex();
@@ -1519,9 +1411,6 @@ public class Renderer {
 	}else if((renderMode & ModeTexture) == 0){
 	    renderMode |= ModeTriangle;
 	}
-
-	// fix me
-	//renderMode |= ModeTriangle;
 
 	if(texture != null){
 	    phong = false;
@@ -1654,7 +1543,6 @@ public class Renderer {
 
 	// this way does more correct clipping
 	// back to front so you can see the back
-	//for(int ii = 0; ii < triangles; ii++){
 
 	// this does more interpretable transparency
 	// front to back so you don't see internal 
@@ -1663,7 +1551,6 @@ public class Renderer {
         int trianglesRendered = 0;
 
         for(int ii = triangles - 1; ii >= 0; ii--){
-	    //for(int ii = 0; ii < triangles; ii++){
 	    i = displayOrder[ii];
 	    v0 = tri0[i];
 	    v1 = tri1[i];
@@ -1749,10 +1636,6 @@ public class Renderer {
 		    }else{
 			triangleColor = debugColor[i%debugColor.length];
 		    }
-
-		    triangleColorR = Color32.getRed(triangleColor);
-		    triangleColorG = Color32.getGreen(triangleColor);
-		    triangleColorB = Color32.getBlue(triangleColor);
 		}
 
 		if(shadowMode == ShadowsOn){
@@ -1953,7 +1836,6 @@ public class Renderer {
 	zbuffer[ipix] = iz;
 	
 	// ambient
-	//int c = Color32.add(pcolor, ambient);
 	// diffuse map contains ambient component already?
 	int c = pcolor;
 
@@ -1962,9 +1844,6 @@ public class Renderer {
 	    // no specular highlight
 	    // and is drawn at lower intensity
 	    c = Color32.scale(c, 200);
-	    //nx = -nx;
-	    //ny = -ny;
-	    //nz = -nz;
 	}
 
 	// figure out if we need shadowin
@@ -1982,7 +1861,6 @@ public class Renderer {
 	    // if we need transparency put it in here
 	    // assume that render order is ok
 	    if((renderMode & ModeTransparent) != 0){
-		//System.out.println("transparency " + transparency);
 		c = Color32.blend(c, pbuffer[ipix], transparency);
 	    }
 	
@@ -1992,7 +1870,6 @@ public class Renderer {
 	    // if we need transparency put it in here
 	    // assume that render order is ok
 	    if((renderMode & ModeTransparent) != 0){
-	    //System.out.println("transparency " + transparency);
 		c = Color32.blend(c, pbuffer[ipix], transparency);
 	    }
 	}
@@ -2409,18 +2286,6 @@ public class Renderer {
 	double overallScale1 = 1./getOverallScale();
 	double rt = overallScale * r;
 
-	/*
-	if(!lightMapCalculated){
-	    calculateLightMap();
-	}
-
-	color = Color32.white;
-
-	if(!colorInitialised){
-	    initialiseColor();
-	}
-	*/
-
 	applyTransform(x1, y1, z1, cx1);
 	applyTransform(x2, y2, z2, cx2);
 
@@ -2433,14 +2298,10 @@ public class Renderer {
 	if(background == Color32.black){
 	    rgb1shade = depthCueShadedColor(rgb1, (int)(0.5*(cx1[2]+cx2[2])*ZFixedBits));
 	}
-	//int rgb1shade = rgb1;
 
 	// need to make z be same scale as x,y for the intersections
 	cx1[2] *= overallScale;
 	cx2[2] *= overallScale;
-
-	//System.out.println("cx1[2] " + cx1[2]);
-	//System.out.println("cx2[2] " + cx2[2]);
 
 	Geometry.rayCapsuleIntInit(cx1, cx2, rt, front - back);
 
@@ -2460,11 +2321,6 @@ public class Renderer {
 					       rt);
 	    return;
 	}
-
-	//int pxmin = (int)Math.min(cx1[0] - rt, cx2[0] - rt);
-	//int pxmax = (int)Math.max(cx1[0] + rt + 1, cx2[0] + rt + 1);
-	//int pymin = (int)Math.min(cx1[1] - rt, cx2[1] - rt);
-	//int pymax = (int)Math.max(cx1[1] + rt + 1, cx2[1] + rt + 1);
 
 	int pxmin = (int)(cx1[0]); if(cx2[0] < pxmin) pxmin = (int)cx2[0];
 	pxmin -= rt + 3;
@@ -2519,7 +2375,6 @@ public class Renderer {
 
 			if(shadowMode == ShadowsOn){
 			    if(ShadowCache.pointShadowed(i, j, zpos*overallScale )){
-			    //c = (c >> 1) & 0x7f7f7f;
 				c = Color32.multiply(rgb1shade, shadowMap[lutID]);
 			    }else{
 				int s = highlightMap[lutID];
@@ -2565,10 +2420,6 @@ public class Renderer {
 
     /** Generate the sphere bitmap for this radius. */
     private void generateSphereBitmap(double rorig, double rsd, int rgb){
-
-	//Log.info("rorig %7.3f", rorig);
-	//Log.info("rsd   %7.3f", rsd);
-
 	if(!lightMapCalculated){
 	    calculateLightMap();
 	}
@@ -2583,8 +2434,6 @@ public class Renderer {
 
 	sphereColor = new int[4 * rs * rs];
 	sphereZ = new int[4 * rs * rs];
-
-	//System.out.println("sphere memory " + (2 * sphereZ.length * 4));
 
 	for(int iy = -rs; iy < rs; iy++){
 	    double ny = (double)iy/rs;
@@ -2669,14 +2518,7 @@ public class Renderer {
 
 	zs = x*m.x02 + y*m.x12 + z*m.x22 + m.x32;
 
-
-	//Log.info("zs %8.3f", zs);
-
-	//zs *= overallScale;
-
 	int zscale = (int)(zs*ZFixedBits);
-
-	//Log.info("zscale %d", zscale);
 
 	double rsd = overallScale * r;
 	rs = (int)(overallScale * r);
@@ -2700,11 +2542,6 @@ public class Renderer {
 	int pb[] = pbuffer;
 	int sz[] = null;
 	int sc[] = null;
-
-	// little effect
-	//if(xs < -rs || ys < -rs || ys > (h + rs) || xs > (w + rs)){
-	//    return;
-	//}
 	
 	// look for this size/colour sphere in the sphere cache.
 	for(int i = 0; i < cacheCount; i++){
@@ -2772,7 +2609,6 @@ public class Renderer {
 			if(iz < frontClip){
 			    zb[pixel] = frontClip;
 			    pb[pixel] = (rgb>>2)&0x3F3F3F;
-			    //pb[pixel] = (rgb);
 			}
 		    }
 
@@ -2911,11 +2747,9 @@ public class Renderer {
 
 		    // we have intersection...
 
-		    //double h = Math.sqrt(r2 - d2);
 		    double h = fastSqrt(r2 - d2);
 
 		    // iterate through the solutions
-		    //for(int sol = +1; sol >= -1; sol -= 2){
 		    for(int sol = +1; sol >= 0; sol -= 2){
 
 			double zpos = tz + sol * h;
@@ -2942,10 +2776,6 @@ public class Renderer {
 				}
 
 				int c = Color32.multiply(rgb, diffuseMap[lutID]);
-
-				// XXX
-				//int s = highlightMap[lutID];
-				//c = Color32.add(c, s);
 				
 				if(shadowMode == ShadowsOn){
 				   if(sol == -1 ||
@@ -2978,17 +2808,9 @@ public class Renderer {
 
 				break;
 			    }
-			    
-			    /*}else if(izpos > frontClip){
-			      pb[px] = clipColor;
-			      zb[px] = frontClip;
-			    */
 			}
 		    }
-		    //hit++;
 		}else{
-		    //miss++;
-
 		    // if we are past halfway and we are
 		    // outside the sphere we can bail out
 		    // should calculate span line extent properly
@@ -2999,9 +2821,6 @@ public class Renderer {
 		px++;
 	    }
 	}
-
-	//System.out.println("hit="+hit + " miss="+miss);
-
     }
 
     /** Draw a box in transformed screen coords. */
@@ -3024,47 +2843,8 @@ public class Renderer {
         }
     }
 
-    /**
-     * Draw an image at the specified location.
-     */
-    public void drawPixels(double x, double y, double z,
-                           int w, int h, int pix[],
-                           int hints){
-        applyTransform(x, y, z, tix);
-
-        int p = 0;
-
-        for(int j = 0; j < h; j++){
-            for(int i = 0; i < w; i++){
-                int pixel = pix[p++];
-                
-                int xs = (int)tix[0] + i;
-                int ys = (int)tix[1] + j - h;
-
-                if(xs >= 0 && ys >= 0 && xs < pixelWidth && ys < pixelHeight){
-                    int zs = (int)(tix[2] * ZFixedBits);
-                    
-                    int alpha = (pixel >> 24)& 0xff;
-
-                    if(alpha > 0){
-                        int pixelIndex = xs + ys * pixelWidth;
-                        if(antialias){
-                            int bg = opbuffer[pixelIndex];
-                            int newp = Color32.blend(pixel, bg, alpha);
-                            opbuffer[pixelIndex] = newp;
-                        }else{
-                            int bg = pbuffer[pixelIndex];
-                            int newp = Color32.blend(pixel, bg, alpha);
-                            setPixel(xs, ys, zs, newp);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     /** Draw a string at the specified point. */
-    public void drawDirectString(int x, int y, int color, String string){
+    private void drawDirectString(int x, int y, int color, String string){
 	int stringLength = string.length();
 
 	if(antialias){
@@ -3092,7 +2872,6 @@ public class Renderer {
 	    x += drawChar(x + (int)(charOffsets[0] + 0.5),
 			  y - (int)(charOffsets[1] + 0.5), 0,
 			  c, font, color, true, null, null, false);
-	    //System.out.println("x " + x);
 	}
     }
 
@@ -3271,11 +3050,6 @@ public class Renderer {
 
 	int bitmapWidth       = bitmapFont[charIndex+512];
 
-	//Log.info("maxCharWidth %d", maxCharWidth);
-	//Log.info("bitmapWidth %d", bitmapWidth);
-	//Log.info("maxAscent %d", maxAscent);
-	//Log.info("maxDescent %d", maxDescent);
-
 	int xBitmapOrigin = (gridX) * maxCharWidth;
 	int yBitmapOrigin = 9 + (gridY + 1) * maxCharHeight;
 
@@ -3288,9 +3062,6 @@ public class Renderer {
 
 	int bitmapHeight = maxAscent + maxDescent;
 
-	//System.out.println("char "  +c+ " xBitmapOrigin " + xBitmapOrigin +
-	//		   " yBitmapOrigin " + yBitmapOrigin + " width " + bitmapWidth);
-
         for(int y = 0; y < bitmapHeight; y++){
             int yPixel = yBitmapOrigin + y;
 
@@ -3298,8 +3069,6 @@ public class Renderer {
 		int xPixel = xBitmapOrigin + x;
 
 		int bitmapPixel = xPixel + yPixel * 512;
-
-		//System.out.print(bitmapFont[bitmapPixel]);
 
                 if(bitmapFont[bitmapPixel] != 0){
 		    if(measure){
@@ -3393,14 +3162,6 @@ public class Renderer {
 	    if(pass == 1){
 		double dx = 0.0;
 		double dy = 0.0;
-		
-		/*
-		for(int i = 0; i < 3; i++){
-		    FILE.out.print("%d ", i);
-		    FILE.out.print("%f ", fontMin[i]);
-		    FILE.out.print("%f\n", fontMax[i]);
-		}
-		*/
 
 		if((stringJustification & JustifyLeft) != 0){
 		    dx = x - fontMin[0];
@@ -3497,7 +3258,6 @@ public class Renderer {
 	String s = (String)font.get(c-32);
 	int len  = s.length();
 
-	//System.out.println("data " + s);
 	// margins of this glyph
 	double lm = ((s.charAt(0)-'R')) * fontHeight;
 	double rm = ((s.charAt(1)-'R')) * fontHeight;
@@ -3522,7 +3282,6 @@ public class Renderer {
 		nextx = (c0 - 'R');
 		// the -9 reflects the origin of the hershey
 		// coordinate system.
-		//		nexty = (c1 - 'R') - 9;
 		nexty = (c1 - 'R');
 
 		if(lastx != -1 || lasty != -1){
@@ -3590,8 +3349,6 @@ public class Renderer {
 
 	    while(hf.nextLine()){
 		String line = hf.getCurrentLineAsString();
-		//System.out.println("line " + line);
-		//hersheyFont.add(line);
 		hersheyFont.add(line.substring(8));
 	    }
 
@@ -3627,8 +3384,6 @@ public class Renderer {
 	    }else{
 		String format   = s.substring(1, pos);
 		String tokens[] = FILE.split(format, ",");
-		
-		//System.out.println("format |" + format + "|");
 
 		if(format.indexOf('=') != -1){
 		    for(int i = 0; i < tokens.length; i++){
@@ -3682,9 +3437,7 @@ public class Renderer {
 			}
 		    }
 		}else{
-		    if(tokens.length == 1){
-			
-		    }else if(tokens.length == 2){
+		    if(tokens.length == 2){
 			charOffsets[0] = FILE.readDouble(tokens[0]);
 			charOffsets[1] = FILE.readDouble(tokens[1]);
 		    }else if(tokens.length == 3){
@@ -3760,10 +3513,6 @@ public class Renderer {
 	return font;
     }
 
-    public void drawZImage(double x, double y, double z,
-                           int pix[], int w, int h){
-    }
-
     /** Draw a dot. */
     public void drawDot(int xt, int yt, int zt, int c){
 	if(ZVISIBLE(zt)){
@@ -3791,20 +3540,11 @@ public class Renderer {
     }
 
     /** Set a pixel checking for on screen. */
-    public void setPixel(int x, int y, int c){
+    private void setPixel(int x, int y, int c){
 	if(x >= 0 && x < pixelWidth && y >= 0 && y < pixelHeight){
 	    int pos = INDEX(x, y);
 	    pbuffer[pos] = c;
 	}
-    }
-
-    /** Get a pixel value checking for on screen. */
-    public int getPixel(int x, int y){
-	if(x >= 0 && x < pixelWidth && y >= 0 && y < pixelHeight){
-	    int pos = INDEX(x, y);
-	    return pbuffer[pos];
-	}
-        return 0;
     }
 
     // activate the code that does antialiased line drawing...
@@ -3851,10 +3591,6 @@ public class Renderer {
 	    if(rgb1 != rgb2){
 		rgb2shade = depthCueColor(rgb2, zc);
 	    }
-	    //rgb1shade = Color32.scale(rgb1, scale);
-	    //if(rgb1 != rgb2){
-	    //	rgb2shade = Color32.scale(rgb2, scale);
-	    //}
 	}else{
 	    // no fog so don't shade at all
 	    // this will be dealt with by image
@@ -4072,7 +3808,7 @@ public class Renderer {
         drawGamma = d;
     }
 
-    protected void initialiseGammaTable(){
+    private void initialiseGammaTable(){
         if(gamma_table == null){
             gamma_table = new int[256];
             /* generate gamma correction table */
@@ -4091,7 +3827,7 @@ public class Renderer {
      * 2) No z-buffering
      * 3) Imperfect line endings
      */
-    public void drawAntiAliasedLine(int x0, int y0, int z0,
+    private void drawAntiAliasedLine(int x0, int y0, int z0,
                                     int x1, int y1, int z1, int Colour0, int Colour1){
 
         if(gamma_table == null){
@@ -4100,8 +3836,6 @@ public class Renderer {
 
         int dx, dy, dz, xDir, z;
         if(y0>y1) {
-            //Swap(y0,y1);
-            //Swap(x0,x1);
             int swap = y0;
             y0 = y1;
             y1 = swap;
@@ -4149,8 +3883,6 @@ public class Renderer {
                 swap = z0;
                 z0 = z1;
                 z1 = swap;
-		//dx = -dx;
-                //Swap(x0,x1);
             }
             int xm = (x0 + x1) >> 1;
 
@@ -4232,7 +3964,6 @@ public class Renderer {
             transp &= 0xff;
             transp = gamma_table[transp];
             int fg = Color32.scale(c, transp);
-            //setPixel(x, y, Color32.add(bg, ctransp));
             int rbg = (bg >> 16) & 0xff;
             int gbg = (bg >> 8)  & 0xff;
             int bbg = (bg & 0xff);
@@ -4419,7 +4150,7 @@ public class Renderer {
     }
 
     /** Public redrawing operations that can be overridden. */
-    public void publicRedraw(){
+    private void publicRedraw(){
     }
 
     /** The antialiasing pixel buffer. */
@@ -4429,7 +4160,7 @@ public class Renderer {
     private int azbuffer[] = null;
 
     /** The original pixel buffer. */
-    public int opbuffer[] = null;
+    private int opbuffer[] = null;
 
     /** The original z buffer. */
     private int ozbuffer[] = null;
@@ -4505,11 +4236,6 @@ public class Renderer {
     /** Should we display the status string. */
     private boolean displayStatusString = true;
 
-    /** Set whether or not to display the status string. */
-    public void setDisplayStatusString(boolean b){
-        displayStatusString = b;
-    }
-
     /** Draw the status string if there is one displayed. */
     private void drawStatusString(){
         if(displayStatusString && statusString != null){
@@ -4522,19 +4248,9 @@ public class Renderer {
 	logo = newLogo;
     }
 
-    /** Get the current logo. */
-    public String getLogo(){
-	return logo;
-    }
-
     /** Set the current StatusString. */
     public void setStatusString(String newStatusString){
 	statusString = newStatusString;
-    }
-
-    /** Get the current StatusString. */
-    public String getStatusString(){
-	return statusString;
     }
 
     /**
@@ -4552,13 +4268,11 @@ public class Renderer {
 	   antialias){
 	    pbuffer = new int[pixelCount];
 	    zbuffer = new int[pixelCount];
-	    //apbuffer = null;
-	    //azbuffer = null;
 	    antialiasModeChanged = true;
 	}
     }
 
-    /** The numbe of samples along each axis. */
+    /** The number of samples along each axis. */
     private int samples = 1;
 
     /** Set the number of samples. */
@@ -4607,12 +4321,10 @@ public class Renderer {
 	}
 
 	color = newc;
-	colorInitialised = false;
 
 	for(int i = 0; i < colorMapCacheCount; i++){
 	    if(colorMapCacheColor[i] == newc){
 		colorMap = colorMapCache[i];
-		colorInitialised = true;
 		return;
 	    }
 	}
@@ -4681,8 +4393,6 @@ public class Renderer {
 	    colorMap[i] = pixel;
 	}
 
-	colorInitialised = true;
-
 #ifdef JPEG
 	try {
 	    int ns2p1 = NormalSamples2 + 1;
@@ -4736,8 +4446,6 @@ public class Renderer {
 	cacheCount = 0;
 	colorMapCacheCount = 0;
 	color = 0;
-
-	//calculateSphereMap();
 	
 	double dnx, dny, dnz;
 
@@ -4793,7 +4501,7 @@ public class Renderer {
         cacheCount = 0;
     }
 
-    public double powFactor = 1.0;
+    private double powFactor = 1.0;
 
     public void setWrapAngle(double d){
         wrapAngle = d;
@@ -4802,8 +4510,8 @@ public class Renderer {
         cacheCount = 0;
     }
 
-    public double wrapAngle = -1.0;
-    public double cosWrapAngle = Math.cos(wrapAngle);
+    private double wrapAngle = -1.0;
+    private double cosWrapAngle = Math.cos(wrapAngle);
 
     private static final double PiBy2 = 0.5 * Math.PI;
 

@@ -83,11 +83,6 @@ public class Surface {
 	}
     }
 
-    /** Turn debugging on/off. */
-    public static void setDebug(boolean d){
-	debugFlag = d;
-    }
-
     /** Set the probe radius. */
     public static void setProbeRadius(double radius){
 	rp = radius;
@@ -96,11 +91,6 @@ public class Surface {
     /** Set the minimum grid spacing. */
     public static void setMinimumSpacing(double s){
 	minimumSpacing = s;
-    }
-
-    /** Set the maximum grid size. */
-    public static void setMaximumGridsize(int gs){
-	maximumGridSize = gs;
     }
 
     /** The x-coordinate of the atoms. */
@@ -118,7 +108,7 @@ public class Surface {
     /** The radii of the atoms squared. */
     private static double ar2[] = null;
 
-    /** The list of selectd atoms. */
+    /** The list of selected atoms. */
     private static int selected[] = null;
 
     /** The number of atoms. */
@@ -223,13 +213,9 @@ public class Surface {
 
 	then = System.currentTimeMillis();
 
-	//torusPoints = 0;
-
 	projectTorii();
 
 	debug("Torus projection " + (System.currentTimeMillis() - then));
-
-	//debug("Torus points " + torusPoints);
 
 	// fix up the grid points that were outside
 	// the solvent accessible surface
@@ -243,7 +229,6 @@ public class Surface {
 	}
 
 	// fix
-	//GraphicalObject surface = GraphicalObject.create();
 	Tmesh surface = new Tmesh();
 	if(solid){
 	    surface.style = Tmesh.TRIANGLES;
@@ -263,7 +248,6 @@ public class Surface {
 	debug("Contour         " + (System.currentTimeMillis() - then));
 
 	// fix
-	//int pointCount = surface.pointCount;
 	int pointCount = surface.np;
 
 	for(int i = 0; i < pointCount; i++){
@@ -288,67 +272,12 @@ public class Surface {
 
 	if(solid){
 	    debug("points " + surface.np + " triangles " + surface.nt);
-
-	    //fixNormals(surface);
 	}
-
-	// fix
-	//debug("surface has " + surface.lineCount + " lines");
 
 	return surface;
     }
 
-    /** Make better normals for the surface. */
-    public static void fixNormals(Tmesh surface){
-	l = new Lattice((maxRadius - rp) * 1.05);
-
-	for(int a = 0; a < atomCount; a++){
-	    l.add(a, ax[a], ay[a], az[a]);
-	}
-
-	IntArray neighbours = new IntArray();
-
-	int pointCount = surface.np;
-
-	for(int p = 0; p < pointCount; p++){
-	    neighbours.removeAllElements();
-	    double px = surface.x[p];
-	    double py = surface.y[p];
-	    double pz = surface.z[p];
-
-	    l.getPossibleNeighbours(-1, px, py, pz, neighbours, true);
-
-	    int neighbourCount = neighbours.size();
-	    int total = 0;
-
-	    for(int n = 0; n < neighbourCount; n++){
-		int a = neighbours.get(n);
-		double d = distance(ax[a], ay[a], az[a], px, py, pz);
-
-		if(Math.abs(d - (ar[a] - rp)) < 0.0005){
-		    total++;
-		    // this point is on surface of this atom
-		    double nx = px - ax[a];
-		    double ny = py - ay[a];
-		    double nz = pz - az[a];
-		    double len = Math.sqrt(nx*nx + ny*ny + nz*nz);
-		    nx /= len;
-		    ny /= len;
-		    nz /= len;
-
-		    surface.nx[p] = (float)nx;
-		    surface.ny[p] = (float)ny;
-		    surface.nz[p] = (float)nz;
-		}
-	    }
-
-	    if(total > 1){
-		System.out.println("point " + p + " on surface of " + total + " atoms");
-	    }
-	}
-    }
-
-    public static void clipSurface(Tmesh surface, boolean solid){
+    private static void clipSurface(Tmesh surface, boolean solid){
 	int pointCount = surface.np;
 	long then = System.currentTimeMillis();
 
@@ -397,9 +326,6 @@ public class Surface {
 	    }
 
 	    if(vis == 0){
-		//for(int a = 0; a < atomCount; a++){
-		//if(selected[a] == 1){
-		//  Atom atom = (Atom)atoms.get(a);
 		for(int aa = 0; aa < neighbourCount; aa++){
 		    int a = neighbours[aa];
 		    double dx = aax[a] - x;
@@ -497,14 +423,10 @@ public class Surface {
 	}
 	
 	debug("point compaction         " + (System.currentTimeMillis() - then));
-	
-	
-	//debug("post process     " + (System.currentTimeMillis() - then));
-	
     }
 
     /** Project the points inside the atoms onto the surface. */
-    public static void projectPoints(){
+    private static void projectPoints(){
 	float gr[] = grid;
 
 	IntArray possibleNeighbours = new IntArray();
@@ -610,7 +532,7 @@ public class Surface {
     }
 
     /** Project the points inside the atoms onto the surface. */
-    public static void projectTorii(){
+    private static void projectTorii(){
 
 	IntArray possibleNeighbours = new IntArray();
 
@@ -665,7 +587,7 @@ public class Surface {
     private static double sinTable[] = null;
 
     /** Project the points of a torus onto the grid. */
-    public static void projectTorus(int a, int b){
+    private static void projectTorus(int a, int b){
 	double r1 = ar[a];
 	double r2 = ar[b];
 	double dx = ax[b] - ax[a];
@@ -713,8 +635,6 @@ public class Surface {
 	lastClip = -1;
 
 	for(int i = 0; i < np; i++){
-	    //double cost = Math.cos(theta);
-	    //double sint = Math.sin(theta);
 	    double cost = cosTable[i];
 	    double sint = sinTable[i];
 	    double px = mid.x + cost*n1.x + sint*n2.x;
@@ -722,7 +642,6 @@ public class Surface {
 	    double pz = mid.z + cost*n1.z + sint*n2.z;
 
 	    if(obscured(px, py, pz, a, b) == -1){
-		//torusPoints++;
 
 		int ng = 4 + (int)((rp / spacing));
 	    
@@ -767,18 +686,8 @@ public class Surface {
 	}
     }
 
-    /** Calculate the distance between two points. */
-    public static double distance(double xa, double ya, double za,
-				  double xb, double yb, double zb){
-	double dx = xa - xb;
-	double dy = ya - yb;
-	double dz = za - zb;
-
-	return Math.sqrt(dx*dx + dy*dy + dz*dz);
-    }
-
-    /** Calucate the sqaured distance between two points. */
-    public static double distance2(double xa, double ya, double za,
+    /** Calculate the squared distance between two points. */
+    private static double distance2(double xa, double ya, double za,
 				   double xb, double yb, double zb){
 	double dx = xa - xb;
 	double dy = ya - yb;
@@ -788,7 +697,7 @@ public class Surface {
     }
 
     /** The last atom that clipped a point. */
-    public static int lastClip = -1;
+    private static int lastClip = -1;
 
     /**
      * Is the point within one of the atoms in the list.
@@ -799,7 +708,7 @@ public class Surface {
      * Return value of -1 indicates that the point
      * was not obscured by any atom in the neighbour list.
      */
-    public static int obscured(double x, double y, double z,
+    private static int obscured(double x, double y, double z,
 			       int a, int b){
 	if(lastClip != -1){
 	    double dx = ax[lastClip] - x;
@@ -832,7 +741,7 @@ public class Surface {
     }
 
     /** Find the size of the atoms that we will surface. */
-    public static void initialiseGrid(double minSpacing){
+    private static void initialiseGrid(double minSpacing){
 
 	// figure out the size of the box containing
 	// the selected atoms.
@@ -1069,8 +978,6 @@ public class Surface {
 		}
 	    }
 	}
-
-	//ds.setColor(Renderer.yellow);
 
 	return ds;
     }

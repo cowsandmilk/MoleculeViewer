@@ -20,9 +20,6 @@ package astex.anasurface;
 import astex.*;
 
 public class Edge extends IntArray {
-    /** Torus to which we belong. */
-    public Torus torus = null;
-
     /** Index of first sphere on edge. */
     public Vertex v0 = new Vertex();
     
@@ -35,34 +32,15 @@ public class Edge extends IntArray {
     /** Radius of arc. */
     public double r;
 
-    /** Angle of arc. */
-    public double angle;
-    
-    /** Do we self intersect? */
-    public boolean selfIntersects = false;
-
     /** Normal to edge plane, used for clipping. */
     public double n[] = new double[3];
 
     /** Probe face that this edge belongs to. */
     public Face probeFace = null;
 
-    /** Torus face that this edge belongs to. */
-    public Face torusFace = null;
-
-    /** Constructor. */
-    public Edge(int n){
-	super(n);
-    }
-
     /** Constructor. */
     public Edge(){
 	super();
-    }
-
-    /** print the edge. */
-    public void print(String s){
-	System.out.println(s + " v0.i " + v0.i + " v1.i " + v1.i);
     }
 
     public boolean isEdge(int i, int j){
@@ -72,21 +50,6 @@ public class Edge extends IntArray {
         }
 
         return false;
-    }
-
-    public Edge copy(){
-	Edge newe = new Edge();
-	for(int i = 0; i < 3; i++){
-	    newe.cen[i] = cen[i];
-	    newe.n[i] = n[i];
-	}
-
-	newe.angle = angle;
-	newe.r = r;
-	newe.v0 = v0;
-	newe.v1 = v1;
-
-	return newe;
     }
 }
 

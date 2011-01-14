@@ -106,7 +106,7 @@ public class FILE extends InputStream {
     private int nextCharacter = 1;
 
     /** The constant that represents the end of file. */
-    public static int EOF = -1;
+    public static final int EOF = -1;
     
     /** Have fields been determined for the current line. */
     private boolean fieldsDetermined = false;
@@ -149,9 +149,7 @@ public class FILE extends InputStream {
      */
     
     /** Wrapper allowing write to stdout and stderr. */
-    public static FILE out = new FILE(System.out);
-    public static FILE err = new FILE(System.err);
-    public static FILE in  = new FILE(System.in);
+    public static final FILE out = new FILE(System.out);
     public static FILE spr = new FILE();
  
     /** Output stuff. */

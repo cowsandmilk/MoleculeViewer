@@ -55,52 +55,6 @@ public class Improper {
 	/** The fourth atom in the improper. */
 	private Atom fourthAtom;
 
-	/** The ideal bond torsion. */
-	private float idealImproperAngle = 0.0f;
-
-	/** Has the ideal improper been assigned. */
-	private boolean idealImproperAngleAssigned = false;
-
-	/** Set the first atom in the improper. */
-	public void setFirstAtom(Atom atom){
-		firstAtom = atom;
-	}
-
-	/** Set the second atom in the improper. */
-	public void setSecondAtom(Atom atom){
-		secondAtom = atom;
-	}
-
-	/** Set the third atom in the improper. */
-	public void setThirdAtom(Atom atom){
-		thirdAtom = atom;
-	}
-
-	/** Set the fourth atom in the improper. */
-	public void setFourthAtom(Atom atom){
-		fourthAtom = atom;
-	}
-
-	/** Return the first atom in a improper. */
-	public Atom getFirstAtom(){
-		return firstAtom;
-	}
-
-	/** Return the second atom in a improper. */
-	public Atom getSecondAtom(){
-		return secondAtom;
-	}
-
-	/** Return the third atom in a improper. */
-	public Atom getThirdAtom(){
-		return thirdAtom;
-	}
-
-	/** Return the fourth atom in a improper. */
-	public Atom getFourthAtom(){
-		return fourthAtom;
-	}
-
 	/** Get the specified atom. */
 	public Atom getAtom(int index){
 		if(index == 0){
@@ -114,23 +68,6 @@ public class Improper {
 		}else{
 			return null;
 		}
-	}
-
-	/** Set the ideal improper angle. */
-	public void setIdealImproperAngle(double d){
-		idealImproperAngle = (float)d;
-	}
-
-	/** Get the ideal improper angle. */
-	public double getIdealImproperAngle(){
-		if(idealImproperAngleAssigned == false){
-			idealImproperAngle =
-				(float)Point3d.torsion(firstAtom, secondAtom,
-									   thirdAtom, fourthAtom);
-			idealImproperAngleAssigned = true;
-		}
-
-		return idealImproperAngle;
 	}
 }
 

@@ -316,7 +316,6 @@ public class Texgen {
 		tm.setUOffset(-0.5);
 	    }
 	}else{
-	    //tm.vscale = (float)(1.0/0.6);
 	    if(func == Lipophilicity){
 		tm.setVOffset(min);
 		tm.setVScale(1.0/(max - min));
@@ -324,13 +323,6 @@ public class Texgen {
 		tm.setVOffset(-0.5);
 	    }
 	}
-
-	//System.out.println("tm.uoffset " + tm.uoffset);
-	//System.out.println("tm.uscale " + tm.uscale);
-
-	//for(int i = 0; i < tnp; i++){
-	//    tlocal[i] = (float)((tlocal[i] - min)/(max - min));
-	//}
     }
 
     /** Generate an amide hydrogen position. */

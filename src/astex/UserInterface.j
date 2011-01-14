@@ -53,7 +53,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	moleculeViewer = mv;
 	moleculeRenderer = moleculeViewer.getMoleculeRenderer();
 
-	//userInterfaceFrame = new Frame();
 	Frame mainFrame = Util.getFrame(mv);
 	userInterfaceFrame = new Dialog(mainFrame, "Control panel...", false);
 
@@ -155,8 +154,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 				 initialFrontClip, 5, 1000);
 	frontClip.setPreferredSize(120, BWTEnum.NOVALUE);
 	frontClip.setNumTicks(10);
-	//frontClip.setMinimumLabel(new JCLabel("0.5"));
-	//frontClip.setMaximumLabel(new JCLabel("20"));
 
 	frontClip.addAdjustmentListener(this);
 
@@ -207,8 +204,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     private Checkbox lightOnOff = null;
     private JCSlider diffuseSlider = null;
     private JCSlider specularSlider = null;
-    //JCSlider sheenSlider = null;
-    //JCSlider spreadSlider = null;
     private JCSlider phongSlider = null;
     private JCSlider ambientSlider = null;
     private Checkbox cartoonCB = null;
@@ -244,29 +239,11 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	Layout.nofill(controlsPanel, specularSlider, 0, 2);
 	Layout.nofill(controlsPanel, new JCLabel("Specular"), 1, 2);
 
-	/*
-	sheenSlider = new JCSlider(BWTEnum.HORIZONTAL, 80, 0, 1024);
-	sheenSlider.setPreferredSize(80, BWTEnum.NOVALUE);
-	sheenSlider.setNumTicks(10);
-	sheenSlider.addAdjustmentListener(this);
-	Layout.nofill(controlsPanel, sheenSlider, 0, 3);
-	Layout.nofill(controlsPanel, new JCLabel("Sheen"), 1, 3);
-
-	spreadSlider = new JCSlider(BWTEnum.HORIZONTAL, 50, 0, 100);
-	spreadSlider.setPreferredSize(80, BWTEnum.NOVALUE);
-	spreadSlider.setNumTicks(10);
-	spreadSlider.addAdjustmentListener(this);
-	Layout.nofill(controlsPanel, spreadSlider, 0, 4);
-	//Layout.nofill(controlsPanel, new JCLabel("Spread"), 1, 4);
-	Layout.nofill(controlsPanel, new JCLabel("Spread"), 1, 4);
-	*/
-
 	phongSlider = new JCSlider(BWTEnum.HORIZONTAL, 50, 0, 100);
 	phongSlider.setPreferredSize(80, BWTEnum.NOVALUE);
 	phongSlider.setNumTicks(10);
 	phongSlider.addAdjustmentListener(this);
 	Layout.nofill(controlsPanel, phongSlider, 0, 4);
-	//Layout.nofill(controlsPanel, new JCLabel("Phong"), 1, 4);
 	Layout.nofill(controlsPanel, new JCLabel("Phong"), 1, 4);
 
 	ambientSlider = new JCSlider(BWTEnum.HORIZONTAL,
@@ -372,15 +349,11 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		    buildSchematic();
 		}
 	    }
-	    ;	
-
-	//panel.setLayout(new JCAlignLayout(6, 3, 3));
+	    ;
 
 	JCGroupBox surfaceGB = UI.groupbox("Surface");
 
 	int row = 0;
-	
-	//Layout.nofill(surfaceGB, new JCLabel("Surface"), 0, row);
 
 	row++;
 
@@ -388,11 +361,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	surfaceName.setBackground(Color.white);
 	Layout.nofill(surfaceGB, new JCLabel("Name"),     0, row);
 	Layout.nofill(surfaceGB, surfaceName,              1, row);
-
-	//Layout.fill(surfaceGB, surfaceName,              1, row,
-	//	    4, 1, GridBagConstraints.HORIZONTAL);
-
-	//row++;
 
 	probeRadius = UI.spinbox(3, 0, 1000, 150, 2, 10, null);
 
@@ -403,8 +371,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    
 	Layout.nofill(surfaceGB, new JCLabel("Quality"), 4, row);
 	Layout.nofill(surfaceGB, surfaceQuality,         5, row);
-
-	//row++;
 
 	JCButton buildSurface = new JCButton("Build");
 	buildSurface.setActionCommand("build_surface");
@@ -439,17 +405,10 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	buildSchematic.setActionCommand("build_schematic");
 	buildSchematic.addActionListener(this);
 
-	//Layout.nofill(schematicGB, new JCLabel("Schematic"), 0, row);
 	Layout.nofill(schematicGB, buildSchematic,           6, row);
-	    
-	//Layout.fill(schematicGB, schematicName,              1, row,
-	//	    4, 1, GridBagConstraints.HORIZONTAL);
-	    
-	//row++;
 
 	row++;
 
-	//Layout.nofill(schematicGB, new JCLabel("Points"),    1, 7);
 	Layout.nofill(schematicGB, new JCLabel("Width"),     1, row);
 	Layout.nofill(schematicGB, new JCLabel("Thick"),     2, row);
 	Layout.nofill(schematicGB, new JCLabel("Taper"),     3, row);
@@ -458,9 +417,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	row++;
 
 	Layout.nofill(schematicGB, new JCLabel("Helix"),   0, row);
-
-	//ribbonPoints = UI.spinbox(3, 4, 12, 8, 0, 1, sbl);
-	//Layout.nofill(schematicGB, ribbonPoints,             1, 8);
 
 	ribbonWidth  = UI.spinbox(3, 100, 500, 220, 2, 20, sbl);
 	Layout.nofill(schematicGB, ribbonWidth,              1, row);
@@ -472,9 +428,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	Layout.nofill(schematicGB, ribbonMinWidth,           3, row);
 
 	row++;
-
-	//ribbonEllipsePoints = UI.spinbox(3, 4, 50, 12, 0, 1, sbl);
-	//Layout.nofill(schematicGB, ribbonEllipsePoints,     1, 9);
 
 	ribbonEllipse = UI.checkbox("Oval", "ribbonEllipse", cbl);
 	Layout.nofill(schematicGB, ribbonEllipse,           1, row);
@@ -488,9 +441,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	//arrows
 	Layout.nofill(schematicGB, new JCLabel("Arrows"),   0, row);
-
-	//arrowPoints = UI.spinbox(3, 2, 12, 4, 0, 1, sbl);
-	//Layout.nofill(schematicGB, arrowPoints,              1, 10);
 
 	arrowWidth  = UI.spinbox(3, 100, 500, 220, 2, 20, sbl);
 	Layout.nofill(schematicGB, arrowWidth,              1, row);
@@ -508,9 +458,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	//coil
 	Layout.nofill(schematicGB, new JCLabel("Coil"),     0, row);
-
-	//tubePoints = UI.spinbox(3, 2, 12, 4, 0, 1, sbl);
-	//Layout.nofill(schematicGB, tubePoints,              1, 11);
 
 	tubeWidth  = UI.spinbox(3, 0, 500, 20, 2, 2, sbl);
 	Layout.nofill(schematicGB, tubeWidth,               1, row);
@@ -640,10 +587,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	JCLabel xoff = new JCLabel("XYZ");
 	Layout.nofill(labelsGB, xoff,         2, 1);
-	//JCLabel yoff = new JCLabel("Y");
-	//Layout.nofill(labelsGB, yoff, column, 1);
-	//JCLabel zoff = new JCLabel("Z");
-	//Layout.nofill(labelsGB, zoff, column++, 2);
 
 	JCSpinBoxListener lsbl = new JCSpinBoxListener() {
 		public void spinBoxChangeBegin(JCSpinBoxEvent e){
@@ -660,7 +603,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	Layout.nofill(labelsGB, stringXOff,   3, 1);
 	Layout.nofill(labelsGB, stringYOff,   4, 1);
-	//Layout.fill(labelsGB, stringZOff,   5, 1, 2, 1, GridBagConstraints.HORIZONTAL);
 	Layout.constrain(labelsGB, stringZOff,          5, 1,
 			 2, 1, GridBagConstraints.HORIZONTAL,
 			 GridBagConstraints.WEST, 0., 0.0);
@@ -746,7 +688,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	Layout.nofill(distanceGB, radiusLabel, 4, 1);
 
 	radiusSB = UI.spinbox(4, 0, 100, 2, 2, 1, dspl);
-	//Layout.nofill(distanceGB, radiusSB,    5, 1);
 	Layout.constrain(distanceGB, radiusSB,          5, 1,
 			 2, 1, GridBagConstraints.HORIZONTAL,
 			 GridBagConstraints.WEST, 0., 0.0);
@@ -764,8 +705,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	nameTF = new TextField("set1", 5);
 	nameTF.addActionListener(al);
 	Layout.nofill(distanceGB, nameTF,        1, 2);
-	//Layout.fill(distanceGB, nameTF,        1, 2,
-	//    1, 1, GridBagConstraints.HORIZONTAL);
 
 	JCLabel labelLabel = new JCLabel("Label");
 	Layout.nofill(distanceGB, labelLabel,  2, 2);
@@ -827,8 +766,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	command += ";";
 
-	//System.out.println("command |" + command + "|");
-
 	moleculeRenderer.execute(command);
 	moleculeRenderer.repaint();
     }
@@ -879,8 +816,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	String label = currentLabel.getText();
 
 	String command = "label '" + prefix + label + "' current;";
-
-	//System.out.println("command |"+command+"|");
 
 	moleculeRenderer.execute(command);
 	moleculeRenderer.repaint();
@@ -993,7 +928,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	style.setFolderClosedIcon(null);
 	style.setItemIcon(null);
 	style.setFont(new Font("courier", Font.PLAIN, 12));
-	//style.setBackgroundSelected(Color.gray);
 
 	for(int i = 0; i < moleculeRenderer.getMoleculeCount(); i++){
 	    Molecule mol = moleculeRenderer.getMolecule(i);
@@ -1152,94 +1086,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	    objectContainer.add(oc);
 	}
-	
-	//objectList.setColumnLabels(objectColumns);
-	//objectList.setSpacing(10);
-	//objectList.useSystemColors(true);
-	//objectList.getList().setBackground(Color.white);
-	//objectList.setAllowMultipleSelections(true);
-
-	/*
-	textureCoordinate =
-	    JCCheckbox.makeGroup(textureCoords, textureValues, true);
-	textureCoordinate.setOrientation(JCCheckboxGroup.VERTICAL);
-	textureCoordinate.setTitle("Texture");
-
-	Layout.fill(panel, textureCoordinate, 1, 2, 1, 2,
-		    GridBagConstraints.HORIZONTAL);
-	
-	JCGroupBox properties = UI.groupbox("Properties");
-	//JCContainer propertyBox = new JCContainer();
-	properties.setLayout(new GridLayout());
-
-
-	JCButton electrostatic = new JCButton("Electrostatic");
-	electrostatic.setActionCommand("electrostatic");
-	electrostatic.addActionListener(this);
-
-	Layout.fill(properties, electrostatic, 1, 1, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-
-	applyCharges = new JCCheckbox("Charge");
-	applyCharges.setState(1);
-	applyCharges.setIndicator(JCCheckbox.INDICATOR_CHECK);
-
-	Layout.fill(properties, applyCharges, 2, 1, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-
-	JCButton mlp = new JCButton("Lipophilicity");
-	mlp.setActionCommand("lipophilicity");
-	mlp.addActionListener(this);
-
-	Layout.fill(properties, mlp, 1, 2, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-	
-	mlpAbsolute = new JCCheckbox("Absolute");
-	
-	Layout.fill(properties, mlpAbsolute, 2, 2, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-
-	JCButton distance = new JCButton("Distance");
-	distance.setActionCommand("distance");
-	distance.addActionListener(this);
-
-	Layout.fill(properties, distance, 1, 3, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-	
-	JCButton curvature = new JCButton("Curvature");
-	curvature.setActionCommand("curvature");
-	curvature.addActionListener(this);
-
-	Layout.fill(properties, curvature, 1, 4, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-	
-	JCButton atomColors = new JCButton("Atom colors");
-	atomColors.setActionCommand("atom_colors");
-	atomColors.addActionListener(this);
-
-	Layout.fill(properties, atomColors, 1, 5, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-	
-	//JCSlider distanceMax = new JCSlider(JCSlider.HORIZONTAL, 8, 1, 20);
-	//distanceMax.setPreferredSize(70, BWTEnum.NOVALUE);
-	//distanceMax.setNumTicks(10);
-	//distanceMax.setMinimumLabel(new JCLabel("1"));
-	//distanceMax.setMaximumLabel(new JCLabel("20"));
-
-	distanceMax = new JCSpinBox(6);
-	distanceMax.setMinimum(10);
-	distanceMax.setMaximum(4000);
-	distanceMax.setDecimalPlaces(1);
-	distanceMax.setIncrement(5);
-	distanceMax.setIntValue(80);
-	distanceMax.addSpinBoxListener(this);
-
-	Layout.fill(properties, distanceMax, 2, 3, 1, 1,
-		    GridBagConstraints.HORIZONTAL);
-
-	Layout.fill(panel, properties, 2, 2, 1, 3,
-		    GridBagConstraints.HORIZONTAL);
-	*/
 	return panel;
     }
 
@@ -1279,8 +1125,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	component.addMouseListener(this);
 	outliner.setBackground(Color.white);
 
-	//outliner.setAllowMultipleSelections(true);
-
 	outliner.setPreferredSize(140, 150);
 	outliner.setRootVisible(true);
 	outliner.addItemListener(this);
@@ -1301,7 +1145,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		JCOutlinerNode node =
 		    new JCOutlinerNode(null, parent);
 		node.setLabel(label);
-		//folder.addNode(atomFolder);
 		node.setUserData(selection);
 		node.setStyle(style);
 	    }else if(child.getName().equals("folder")){
@@ -1337,7 +1180,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     }
 
     public void outlinerFolderStateChangeBegin(JCOutlinerEvent ev){
-	//System.out.println("foder state change begin ev " + ev);
 	JCOutlinerFolderNode folder = (JCOutlinerFolderNode)ev.getNode();
 	JCOutliner outliner = (JCOutliner)ev.getSource();
 	if(ev.getNewState() == BWTEnum.FOLDER_OPEN_ALL){
@@ -1381,7 +1223,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 			JCOutlinerNode atomFolder =
 			    new JCOutlinerNode(null, folder);
 			atomFolder.setLabel(atom.getAtomLabel());
-			//folder.addNode(atomFolder);
 			atomFolder.setUserData(atom);
 			atomFolder.setStyle(style);
 		    }
@@ -1393,37 +1234,12 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     }
 
     public void outlinerFolderStateChangeEnd(JCOutlinerEvent ev) {
-	//System.out.println("foder state change end   ev " + ev);
-	/*if (ev.getNewState() == BWTEnum.FOLDER_CLOSED)
-	  return;
-	  JCOutlinerFolderNode node = (JCOutlinerFolderNode)ev.getNode();
-	  JCOutliner outliner = (JCOutliner)ev.getSource();
-	  if (node.getChildren().size() > 0)      
-	  outliner.makeNodeVisible((JCOutlinerNode)node.getChildren().getLast());
-	*/
     }
 
     public void outlinerNodeSelectBegin(JCOutlinerEvent ev) {
-	// System.out.println("NodeSelectBegin: " +
-	//			   ev.getNode().getLabelString());
-
-	//hmm need to fire the atomselected event here ideally
-	// but it will have selected a lot of atoms possibly.
     }
 
     public void outlinerNodeSelectEnd(JCOutlinerEvent ev) {
-        //System.out.println("NodeSelectEnd: " +
-	//		   ev.getNode().getLabelString());
-    }
-
-    public void outlinerNodeUnselectBegin(JCOutlinerEvent ev) {
-        //System.out.println("NodeUnselectBegin: " +
-	//		   ev.getNode().getLabelString());
-    }
-
-    public void outlinerNodeUnselectEnd(JCOutlinerEvent ev) {
-        //System.out.println("NodeUnselectEnd: " +
-	//		   ev.getNode().getLabelString());
     }
 
     public void itemStateChanged(ItemEvent ev) {
@@ -1495,7 +1311,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     private Dialog colorChooserDialog = null;
     private ColorChooser colorChooser = null;
 
-    public int getColor(){
+    private int getColor(){
 	Frame mainFrame = Util.getFrame(moleculeViewer);
 
 	if(colorChooserDialog == null){
@@ -1559,7 +1375,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	}else if(command.equals("reset")){
 	    mr.resetView();
 	}else if(!command.startsWith("display")){
-	    //Object selectedObjects[] = objectList.getSelectedObjects();
 	    DynamicArray selectedObjects = getSelectedObjects();
 
 	    if(selectedObjects == null){
@@ -1577,17 +1392,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	if(command.startsWith("display")){
 	    mr.execute(command);
 
-	    /*
-	    AtomIterator ai = mr.getAtomIterator();
-
-	    while(ai.hasMoreElements()){
-		Atom a = ai.getNextAtom();
-		if(a.isSelected()){
-		    a.setOrClearAttribute(bit, set);
-		}
-	    }
-	    */
-
 	    moleculeViewer.dirtyRepaint();
 	}
     }
@@ -1601,16 +1405,13 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	}
 	command += "schematic -name " + name;
 	command += " -quality " + schematicQuality.getValue();
-	//command += " -ribbonpoints " + ribbonPoints.getValue();
 	command += " -ribbonwidth " + ribbonWidth.getValue();
 	command += " -ribbonthickness " + ribbonThickness.getValue();
 	command += " -ribbonminwidth " + ribbonMinWidth.getValue();
-	//command += " -arrowpoints " + arrowPoints.getValue();
 	command += " -arrowwidth " + arrowWidth.getValue();
 	command += " -arrowheadwidth " + arrowHeadWidth.getValue();
 	command += " -arrowthickness " + arrowThickness.getValue();
 	command += " -arrowsmoothing " + arrowSmoothing.getValue();
-	//command += " -tubepoints " + tubePoints.getValue();
 	command += " -tuberadius " + tubeWidth.getValue();
 	command += " -tubetaperradius " + tubeTaper.getValue();
 	command += " -tubesmoothing " + tubeSmoothing.getValue();
@@ -1619,12 +1420,9 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    ((ribbonCylinders.getState() == 1) ? "true" : "false");
 	command += " -ribbonellipse " +
 	    ((ribbonEllipse.getState() == 1) ? "true" : "false");
-	//command += " -ribbonellipsepoints " + ribbonEllipsePoints.getValue();
 	command += " -alltube " +
 	    ((allTube.getState() == 1) ? "true" : "false");
 	command += " default and aminoacid;";
-
-	//System.out.println(command);
 
 	moleculeRenderer.execute(command);
 	moleculeViewer.dirtyRepaint();
@@ -1645,14 +1443,11 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    }
 	}
 
-	//System.out.println("selected objects " + selectedObjects.size());
-
 	return selectedObjects;
     }
 
     /** Handle events in the renderer. */
     public boolean handleRendererEvent(RendererEvent re){
-	//System.out.println("handleRendererEvent " + re);
 	int type = re.getType();
 
 	if(type == RendererEvent.ObjectAdded){
@@ -1709,7 +1504,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	if(source == distanceMax){
 
 	    DynamicArray selectedObjects = getSelectedObjects();
-	    //Object selectedObjects[] = null;
 	    if(selectedObjects != null){
 		    
 		for(int i = 0; i < selectedObjects.size(); i++){
@@ -1722,7 +1516,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		    }else{
 			texCoord = "v";
 		    }
-		    //System.out.println("texCoord " + texCoord);
 			
 		    double d = FILE.readDouble(distanceMax.getValue());
 
@@ -1774,7 +1567,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
     /** A molecule was added. */
     public void moleculeAdded(MoleculeRenderer renderer, Molecule molecule){
-	//System.out.println("molecule added " + molecule);
 	addMolecule(molecule);
     }
 
@@ -1801,7 +1593,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	Object o = e.getSource();
 
 	if(o == frontClip){
-	    //System.out.println("frontClip " + e);
 	    int value = frontClip.getValue();
 	    double val = value * 0.1;
 	    String s = f.format(val);
@@ -1813,9 +1604,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    String s = f.format(val);
 	    backValue.setText(s);
 	    moleculeRenderer.renderer.setBackClip(val, false);
-	    //}else if(o == sheenSlider){
-	    //int value = sheenSlider.getValue();
-	    //moleculeRenderer.execute("light " + activeLight + " -sheen " + value + ";");
 	}else if(o == phongSlider){
 	    int value = phongSlider.getValue();
 	    moleculeRenderer.execute("light " + activeLight + " -phongpower " + value + ";");
@@ -1836,7 +1624,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	moleculeViewer.dirtyRepaint();
     }
 
-    static final String[] rainbow = {
+    private static final String[] rainbow = {
         "rrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrr",
         "rrrrrrrrrrrrrrrr",
@@ -1881,8 +1669,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	if(ev.getSource() instanceof JCOutlinerComponent){
 	    JCOutlinerComponent oc = (JCOutlinerComponent)ev.getSource();
 
-	    //System.out.println("mouseClicked " + ev);
-
 	    Event e = new Event(oc, Event.MOUSE_UP, null);
 	    e.x = ev.getX();
 	    e.y = ev.getY();
@@ -1890,8 +1676,6 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    JCOutlinerNode node = oc.eventToNode(e);
 
 	    if(oc.eventInShortcut(e, node) == false){
-		//System.out.println("node " + node);
-
 		Object userData = node.getUserData();
 		
 		int mode = selectMode.getValue();
@@ -1959,7 +1743,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     }
 
     /** Build a string that will perform a selection operation. */
-    public String buildSelectionCommand(Selectable sel, int mode){
+    private String buildSelectionCommand(Selectable sel, int mode){
 	String prefix = null;
 
 	if(mode == SelectMode){

@@ -57,7 +57,6 @@ public class Schematic {
 	    // using the current ones as approximations.
 	    tm.recalculateNormals();
 
-	    //System.out.println("tm " + tm);
 	}catch(Exception e){
 	    e.printStackTrace();
 	}
@@ -98,8 +97,6 @@ public class Schematic {
 	    colors = new int[resCount];
 	    resids = new int[resCount];
 	    widthInitialised = new boolean[resCount];
-	    //System.out.println("allocating space for " +
-	    //	       resCount + " residues");
 
 	    for(int i = 0; i < resCount; i++){
 		guides[i] = new Point3d();
@@ -115,18 +112,13 @@ public class Schematic {
     }
 
     /** Add schematic objects for this chain. */
-    public static void chainSchematic(Arguments args, Tmesh tm , Chain chain){
-	//System.out.println("#### chainSchematic");
+    private static void chainSchematic(Arguments args, Tmesh tm , Chain chain){
 
 	int minResidues = args.getInteger("-minchainresidues", 5);
 	
 	if(chain.getResidueCount() < minResidues) return;
 
-	//System.out.println("before ensureCapacity");
-
 	ensureCapacity(chain);
-
-	//System.out.println("after ensureCapacity");
 
 	tm.setColorStyle(Tmesh.TriangleColor);
 
@@ -168,8 +160,6 @@ public class Schematic {
 		guideCount++;
 	    }
 	}
-
-	//System.out.println("guideCount " + guideCount);
 
 	if(guideCount < 2){
 	    return;
@@ -217,8 +207,6 @@ public class Schematic {
 	boolean allTube = args.getBoolean("-alltube", false);
 
 	if(allTube){
-	    //System.out.println("alltube is true guideCount "+guideCount);
-	    //System.out.println("resids length "+ resids.length);
 	    residCount = 0;
 
 	    for(int r = 0; r < guideCount; r++){
@@ -227,7 +215,6 @@ public class Schematic {
 		residCount++;
 	    }
 
-	    //System.out.println("alltube is true residCount "+residCount);
 	    tube(args, tm);
 	}else{
 
@@ -350,7 +337,7 @@ public class Schematic {
     private static final double SINB = 0.1908;
 
     /** Add ribbon to graphical object. */
-    public static void ribbon(Arguments args, Tmesh tm){
+    private static void ribbon(Arguments args, Tmesh tm){
 	int quality           = args.getInteger("-quality", 1);
 	double tangent_length = args.getDouble("-ribbontangent", 5.0);
 	int splinePoints      = args.getInteger("-ribbonpoints", 8);
@@ -505,7 +492,6 @@ public class Schematic {
 			en.normalise();
 
 			currentEllipse[iep] = tm.addPoint(ep.x, ep.y, ep.z, en.x, en.y, en.z, 0.0, 0.0);
-			//tm.addSphere(ep.x, ep.y, ep.z, 0.02, Color32.yellow);
 		    }
 
 		    if(!first){
@@ -564,13 +550,8 @@ public class Schematic {
 			    }else{
 				tcolor = color;
 			    }
-			//if(k == 1 || k == 3){
 			    tm.addTriangle(v[0+2*k], v[1+2*k], lastv[0+2*k], tcolor);
 			    tm.addTriangle(v[1+2*k], lastv[0+2*k], lastv[1+2*k], tcolor);
-			    //if(!cylinders){
-			    //tm.addTriangle(v[0+k], v[1+k], lastv[0+k], color);
-			    //tm.addTriangle(v[1+k], lastv[0+k], lastv[1+k], color);
-			    //}
 			}
 			
 			double cylRadius = aThick * 1.5;
@@ -591,7 +572,6 @@ public class Schematic {
 		wplast.set(wp);
 		
 		firstVertices = false;
-		//}
 		
 		plast.set(p);
 		
@@ -617,7 +597,7 @@ public class Schematic {
     }
 
     /** Add a tube to the object. */
-    public static void tube(Arguments args, Tmesh tm){
+    private static void tube(Arguments args, Tmesh tm){
 	int quality      = args.getInteger("-quality", 1);
 	int smooth       = args.getInteger("-tubesmoothing", 1);
 	int splinePoints = args.getInteger("-tubepoints", 4);
@@ -631,8 +611,6 @@ public class Schematic {
 
 	splinePoints *= quality;
 	perimPoints *= quality;
-
-	//System.out.println("hello from tube "+residCount);
 
 	ensureSplineCapacity(residCount * splinePoints);
 
@@ -737,8 +715,6 @@ public class Schematic {
 	    radii = new DoubleArray();
 	}
 
-	//System.out.println("building trig");
-
 	// build the trig lookup table
 	double sinTheta[] = new double[perimPoints];
 	double cosTheta[] = new double[perimPoints];
@@ -805,8 +781,6 @@ public class Schematic {
 	    }
 	}
 
-	//System.out.println("building points");
-
 	Point3d alast = null;
 	Point3d blast = null;
 
@@ -852,10 +826,6 @@ public class Schematic {
 	    color = splineColor[isp];
 	    
 	    for(int ip = 0; ip < perimPoints; ip++){
-		//double theta = 2. * Math.PI * (double)ip/(double)perimPoints;
-		//double costheta = Math.cos(theta);
-		//double sintheta = Math.sin(theta);
-		//double theta = 2. * Math.PI * (double)ip/(double)perimPoints;
 		double costheta = cosTheta[ip];
 		double sintheta = sinTheta[ip];
 
@@ -901,8 +871,6 @@ public class Schematic {
 	    blast = b;
 	}
 
-	//System.out.println("blocking faces");
-
 	// block off the last face.
 	double ptmp[] = new double[3];
 	double ntmp[] = new double[3];
@@ -919,20 +887,10 @@ public class Schematic {
 	for(int p = 2; p < perimPoints; p++){
 	    tm.addTriangle(face[0], face[p-1], face[p], color);
 	}
-
-	//System.out.println("pointCount " + tm.np);
-	
-	/*
-	for(int i = 0; i < nsp - 1; i++){
-	    tm.addCylinder(spline[i].x, spline[i].y, spline[i].z,
-			   spline[i+1].x, spline[i+1].y, spline[i+1].z,
-			   radius, splineColor[i], splineColor[i]);
-	}
-	*/
     }
 
     /** Add an arrow to the object. */
-    public static void arrow(Arguments args, Tmesh tm){
+    private static void arrow(Arguments args, Tmesh tm){
 	int quality       =       args.getInteger("-quality", 1);
 	int smooth        =       args.getInteger("-arrowsmoothing", 3);
 	int splinePoints  =       args.getInteger("-arrowpoints", 4);
@@ -946,24 +904,6 @@ public class Schematic {
 	splinePoints *= quality;
 
 	if(residCount <= 1) return;
-
-	/*
-	for(int i = 1; i < residCount - 1; i++){
-	    int r = resids[i];
-	    Point3d ab = Point3d.unitVector(guides[r-1], guides[r]);
-	    Point3d bc = Point3d.unitVector(guides[r], guides[r+1]);
-	    Point3d dir = Point3d.unitVector(guides[r-1], guides[r+1]);
-	    Point3d bob = new Point3d();
-	    Point3d.cross(bob, width[r], dir);
-	    Point3d.cross(width[r], bob, dir);
-	}
-
-	int rfirst = resids[0];
-	int rlast  = resids[residCount-1];
-
-	width[rfirst].set(width[rfirst+1]);
-	width[rlast-2].set(width[rlast-1]);
-	*/
 
 	// correct direction swaps
 	for(int i = 1; i < residCount; i++){
@@ -1075,14 +1015,6 @@ public class Schematic {
 		}else{
 		    t = (double)sp/(double)(splinePoints);
 		}
-
-		/*
-		if(t <= 0.5){
-		    color = colors[r];
-		}else{
-		    color = colors[r+1];
-		}
-		*/
 
 		// new color interpolation scheme...
 		// blame joe
@@ -1199,8 +1131,8 @@ public class Schematic {
 	}
     }
 
-    /** Linear interoplation between p1 and p2. */
-    public static void interpolate(Point3d s,
+    /** Linear interpolation between p1 and p2. */
+    private static void interpolate(Point3d s,
 				   Point3d p1, Point3d p2,
 				   double t){
 	s.x = p1.x + t * (p2.x - p1.x);
@@ -1210,7 +1142,7 @@ public class Schematic {
     }
 
     /** Interpolate hermite spline. */
-    public static void hermite_single(Point3d P1, Point3d P2,
+    private static void hermite_single(Point3d P1, Point3d P2,
 				      Point3d T1, double T1len,
 				      Point3d T2, double T2len,
 				      double s, Point3d p){

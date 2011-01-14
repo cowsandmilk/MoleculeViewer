@@ -19,70 +19,69 @@ package astex;
 
 public class ShadowCache {
     /** Sphere cache for shadows. */
-    public static FloatArray scachex = new FloatArray();
-    public static FloatArray scachey = new FloatArray();
-    public static FloatArray scachez = new FloatArray();
-    public static FloatArray scacher = new FloatArray();
+    private static FloatArray scachex = new FloatArray();
+    private static FloatArray scachey = new FloatArray();
+    private static FloatArray scachez = new FloatArray();
+    private static FloatArray scacher = new FloatArray();
 
     /** Cylinder cache for shadows. */
-    public static FloatArray ccachex0 = new FloatArray();
-    public static FloatArray ccachey0 = new FloatArray();
-    public static FloatArray ccachez0 = new FloatArray();
-    public static FloatArray ccachex1 = new FloatArray();
-    public static FloatArray ccachey1 = new FloatArray();
-    public static FloatArray ccachez1 = new FloatArray();
-    public static FloatArray ccacher  = new FloatArray();
+    private static FloatArray ccachex0 = new FloatArray();
+    private static FloatArray ccachey0 = new FloatArray();
+    private static FloatArray ccachez0 = new FloatArray();
+    private static FloatArray ccachex1 = new FloatArray();
+    private static FloatArray ccachey1 = new FloatArray();
+    private static FloatArray ccachez1 = new FloatArray();
+    private static FloatArray ccacher  = new FloatArray();
 
     /** Triangle cache for shadows. */
-    public static FloatArray tcachex0 = new FloatArray();
-    public static FloatArray tcachey0 = new FloatArray();
-    public static FloatArray tcachez0 = new FloatArray();
-    public static FloatArray tcachex1 = new FloatArray();
-    public static FloatArray tcachey1 = new FloatArray();
-    public static FloatArray tcachez1 = new FloatArray();
-    public static FloatArray tcachex2 = new FloatArray();
-    public static FloatArray tcachey2 = new FloatArray();
-    public static FloatArray tcachez2 = new FloatArray();
-    //public static IntArray   ttransp  = new IntArray();
+    private static FloatArray tcachex0 = new FloatArray();
+    private static FloatArray tcachey0 = new FloatArray();
+    private static FloatArray tcachez0 = new FloatArray();
+    private static FloatArray tcachex1 = new FloatArray();
+    private static FloatArray tcachey1 = new FloatArray();
+    private static FloatArray tcachez1 = new FloatArray();
+    private static FloatArray tcachex2 = new FloatArray();
+    private static FloatArray tcachey2 = new FloatArray();
+    private static FloatArray tcachez2 = new FloatArray();
 
-    public static FloatArray tcen2dx  = new FloatArray();
-    public static FloatArray tcen2dy  = new FloatArray();
-    public static FloatArray tcenx    = new FloatArray();
-    public static FloatArray tceny    = new FloatArray();
-    public static FloatArray tcenz    = new FloatArray();
-    public static FloatArray tcenr    = new FloatArray();
+    private static FloatArray tcen2dx  = new FloatArray();
+    private static FloatArray tcen2dy  = new FloatArray();
+    private static FloatArray tcenx    = new FloatArray();
+    private static FloatArray tceny    = new FloatArray();
+    private static FloatArray tcenz    = new FloatArray();
+    private static FloatArray tcenr    = new FloatArray();
 
     /** References to the triangle array contents. */
-    public static float tx0[] = null;
-    public static float ty0[] = null;
-    public static float tz0[] = null;
-    public static float tx1[] = null;
-    public static float ty1[] = null;
-    public static float tz1[] = null;
-    public static float tx2[] = null;
-    public static float ty2[] = null;
-    public static float tz2[] = null;
+    private static float tx0[] = null;
+    private static float ty0[] = null;
+    private static float tz0[] = null;
+    private static float tx1[] = null;
+    private static float ty1[] = null;
+    private static float tz1[] = null;
+    private static float tx2[] = null;
+    private static float ty2[] = null;
+    private static float tz2[] = null;
 
     /** References to the triangle bounding sphere info. */
-    public static float tc2x[] = null;
-    public static float tc2y[] = null;
-    public static float tcx[] = null;
-    public static float tcy[] = null;
-    public static float tcz[] = null;
-    public static float tcr[] = null;
+    private static float tc2x[] = null;
+    private static float tc2y[] = null;
+    private static float tcx[] = null;
+    private static float tcy[] = null;
+    private static float tcz[] = null;
+    private static float tcr[] = null;
 
     /** References for sphere centers. */
-    public static float scx[] = null;
-    public static float scy[] = null;
-    public static float scz[] = null;
-    public static float scr[] = null;
+    private static float scx[] = null;
+    private static float scy[] = null;
+    private static float scz[] = null;
+    private static float scr[] = null;
 
     /** Cache and occlusion lists. */
-    public static IntArray sphereShadowCacheList    = new IntArray();
-    public static IntArray sphereOcclusionCacheList = new IntArray();
-    public static IntArray cylinderShadowCacheList  = new IntArray();
-    public static IntArray triangleShadowCacheList  = new IntArray();
-    public static IntArray initialList              = new IntArray();
+    private static IntArray sphereShadowCacheList    = new IntArray();
+    private static IntArray sphereOcclusionCacheList = new IntArray();
+    private static IntArray cylinderShadowCacheList  = new IntArray();
+    private static IntArray triangleShadowCacheList  = new IntArray();
+    private static IntArray initialList              = new IntArray();
 
     /** Overall scale factor in the renderer. */
     public static double overallScale = 1.0;
@@ -118,7 +117,7 @@ public class ShadowCache {
     }
 
     /** Prepare bounding sphere that encloses cylinder. */
-    public static void boundingSphereCylinder(double c0x, double c0y, double c0z,
+    private static void boundingSphereCylinder(double c0x, double c0y, double c0z,
 					      double c1x, double c1y, double c1z,
 					      double r, double bs[]){
 	bs[0] = 0.5 * (c0x + c1x);
@@ -131,7 +130,7 @@ public class ShadowCache {
     }
 
     /** Prepare bounding sphere that encloses cylinder. */
-    public static void boundingSphereTriangle(double x0, double y0, double z0,
+    private static void boundingSphereTriangle(double x0, double y0, double z0,
 					      double x1, double y1, double z1,
 					      double x2, double y2, double z2,
 					      double bs[]){
@@ -192,11 +191,7 @@ public class ShadowCache {
 		
 		double dot = s2px*light.x + s2py*light.y + s2pz*light.z;
 		
-		if(dot <= 0.0 /* &&
-		   (Math.abs(s2px) > 1.e-3 ||
-		    Math.abs(s2py) > 1.e-3 ||
-		    Math.abs(s2pz) > 1.e-3)
-		   */){
+		if(dot <= 0.0){
 		    // could shadow us
 		    // project intersphere vector onto 2d coordinate frame
 		    double projx = lightx.x * s2px + lightx.y * s2py + lightx.z * s2pz;
@@ -323,24 +318,11 @@ public class ShadowCache {
 	ccacher.add((float)r);
     }
 
-    /** Add a cylinder to the cache list. */
+    /** Add a triangle to the cache list. */
     public static void addTriangleToCacheList(double x0, double y0, double z0,
 					      double x1, double y1, double z1,
 					      double x2, double y2, double z2,
 					      int transparency){
-	/*
-	FILE.out.print("%d\n", tcachex0.size());
-	FILE.out.print("%5.1f,", x0);
-	FILE.out.print("%5.1f,", y0);
-	FILE.out.print("%5.1f\n", z0);
-	FILE.out.print("%5.1f,", x1);
-	FILE.out.print("%5.1f,", y1);
-	FILE.out.print("%5.1f\n", z1);
-	FILE.out.print("%5.1f,", x2);
-	FILE.out.print("%5.1f,", y2);
-	FILE.out.print("%5.1f\n", z2);
-	*/
-
 	tcachex0.add((float)x0);
 	tcachey0.add((float)y0);
 	tcachez0.add((float)z0);
@@ -350,7 +332,6 @@ public class ShadowCache {
 	tcachex2.add((float)x2);
 	tcachey2.add((float)y2);
 	tcachez2.add((float)z2);
-	//ttransp.add(transparency);
     }
 
     /** Cylinder endpoints */
@@ -374,7 +355,6 @@ public class ShadowCache {
      * i.e. does the normal point away from the light.
      */
     public static boolean selfShadowed(double nx, double ny, double nz, double tol){
-	//if(nx*light.x + ny*light.y + nz*light.z < 0.0){
 	if(nx*light.x + ny*light.y + nz*light.z < tol){
 	    return true;
 	}
@@ -449,11 +429,6 @@ public class ShadowCache {
 
 	//reform ray1 as the direction to the light
 
-	// offset ray further to try and reduce self
-	// shadowing for triangles
-	//ray0[2] += 20.0 / overallScale;
-	// no longer needed
-
 	ray1[0] = light.x;
 	ray1[1] = light.y;
 	ray1[2] = light.z;
@@ -468,12 +443,6 @@ public class ShadowCache {
 	}
 
 	int triangleCacheCount = triangleShadowCacheList.size();
-
-	/*
-	FILE.out.print("p %6.2f,", ray0[0]);
-	FILE.out.print("%6.2f,", ray0[1]);
-	FILE.out.print("%6.2f\n", ray0[2]);
-	*/
 
 	for(int j = 0; j < triangleCacheCount; j++){
 	    int i = triangleShadowCacheList.get(j);
@@ -497,17 +466,6 @@ public class ShadowCache {
 	    return false;
 	}
 
-	/*
-	c0[0] = tcachex0.get(i);
-	c0[1] = tcachey0.get(i);
-	c0[2] = tcachez0.get(i);
-	c1[0] = tcachex1.get(i);
-	c1[1] = tcachey1.get(i);
-	c1[2] = tcachez1.get(i);
-	c2[0] = tcachex2.get(i);
-	c2[1] = tcachey2.get(i);
-	c2[2] = tcachez2.get(i);
-	*/
 	c0[0] = tx0[i];
 	c0[1] = ty0[i];
 	c0[2] = tz0[i];
@@ -528,7 +486,7 @@ public class ShadowCache {
 
     private static int lastObscuringSphere = -1;
 
-    public static boolean obscuredBySphere(int i, double x, double y, double z){
+    private static boolean obscuredBySphere(int i, double x, double y, double z){
 	double s2px = x - scx[i];
 	double s2py = y - scy[i];
 	double s2pz = z - scz[i];
@@ -568,7 +526,7 @@ public class ShadowCache {
 
 
     /** Is this point in another sphere. */
-    public static boolean pointInSphere(double x, double y, double z){
+    private static boolean pointInSphere(double x, double y, double z){
 	int sphereCount = sphereOcclusionCacheList.size();
 
 	for(int i = 0; i < sphereCount; i++){
@@ -588,7 +546,6 @@ public class ShadowCache {
 
     /** Clear out the shadow data structures. */
     public static void clearShadowCaches(){
-	//Log.info("%d spheres cleared from cache", ShadowCache.scachex.size());
 	scachex.removeAllElements();
 	scachey.removeAllElements();
 	scachez.removeAllElements();
@@ -611,7 +568,6 @@ public class ShadowCache {
 	tcachex2.removeAllElements();
 	tcachey2.removeAllElements();
 	tcachez2.removeAllElements();
-	//ttransp.removeAllElements();
 
 	tcen2dx.removeAllElements();
 	tcen2dy.removeAllElements();
@@ -625,9 +581,8 @@ public class ShadowCache {
     private static Point3d lightx = null;
     private static Point3d lighty = null;
 
-    /** Set up the shadow cache data structures for renderering. */
+    /** Set up the shadow cache data structures for rendering. */
     public static void setupShadowCaches(Light l0, double ovs){
-	//Log.info("%d spheres in cache", ShadowCache.scachex.size());
 	light.x = l0.pos[0];
 	// light y needs to be negative to correct for 
 	// on screen orientation
@@ -671,9 +626,6 @@ public class ShadowCache {
 	scy = scachey.getArray();
 	scz = scachez.getArray();
 	scr = scacher.getArray();
-
-	//System.out.println("lightx.light " + lightx.dot(light));
-	//System.out.println("lighty.light " + lighty.dot(light));
     }
 
     private static NeighbourGrid2D triangleGrid = new NeighbourGrid2D();

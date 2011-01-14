@@ -73,87 +73,9 @@ public class UI {
 	}
 
 	sb.setBackground(Color.white);
-	//sb.setInsets(new Insets(0,0,0,0));
 	return sb;
     }
 
-    private static int xGrid[] = new int[1000];
-    private static int yGrid[] = new int[1000];
-    private static Object obj[] = new Object[1000];
-    private static int depth = 0;
-
-    public static final int NONE = GridBagConstraints.NONE;
-    public static final int HORIZONTAL = GridBagConstraints.HORIZONTAL;
-    public static final int VERTICAL = GridBagConstraints.VERTICAL;
-    public static final int BOTH = GridBagConstraints.BOTH;
-
-    public static void add(Object o){
-	add(o, 1, 1, 0);
-    }
-
-    public static void add(Object o, int xWidth){
-	add(o, xWidth, 1, 0);
-    }
-
-    public static void add(Object o, int xWidth, int fill){
-	add(o, xWidth, 1, fill);
-    }
-
-    public static void add(Object o, int xWidth, int yWidth, int fill){
-
-	if(o instanceof String){
-	    //System.out.println("creating box");
-	    JCGroupBox box = new JCGroupBox((String)o);
-	    box.setInsets(new Insets(5, 5, 5, 5));
-
-	    o = box;
-	}
-
-	if(depth > 0){
-	    int currentDepth = depth - 1;
-	    Container parent = (Container)obj[currentDepth];
-
-	    Layout.fill(parent, (Component)o,
-			xGrid[currentDepth],
-			yGrid[currentDepth],
-			xWidth, yWidth,
-			fill);
-
-	    xGrid[currentDepth] += xWidth;
-	    yGrid[currentDepth] += (yWidth-1);
-	}
-
-	if(o instanceof Container && !(o instanceof JCComboBox)){
-	    Container p = (Container)o;
-	    p.setLayout(new GridBagLayout());
-	    obj[depth] = p;
-	    xGrid[depth] = 0;
-	    yGrid[depth] = 0;
-	    depth++;
-	}
-
-	//System.out.println("after add depth = " + depth);
-    }
-
-    public static void pop(){
-	if(depth > 0){
-	    depth--;
-	}else{
-	    System.out.println("ui stack already empty");
-	}
-    }
-
-    public static void newRow(){
-	if(depth > 0){
-	    int currentDepth = depth - 1;
-	    xGrid[currentDepth] = 0;
-	    yGrid[currentDepth]++;
-	}
-    }
-
-    public static void reset(){
-	depth = 0;
-    }
 
     public static void main(String args[]){
 	Frame f = new Frame();

@@ -30,38 +30,21 @@ package astex;
  */
 public class Chain implements Selectable {
     /** Default constructor. */
-    private Chain(){
+    public Chain(){
 	residues = new DynamicArray(1);
-	initialise();
-    }
-
-    /** Initialise a chain object. */
-    private void initialise(){
-	name = null;
-	number = undefinedChainNumber;
-	parent = null;
-	residues.removeAllElements();
-	currentResidue = null;
     }
 
     /** Dynamic array of residues. */
     private DynamicArray residues = null;
 
     /** Undefined residue number. */
-    public static int undefinedChainNumber = -9999;
+    private static final int undefinedChainNumber = -9999;
 
-    /** Undefined resiude name. */
-    public static String undefinedChainName = "X";
-
-    /**
-     * Public interface for creating chains.
-     */
-    public static Chain create(){
-	return new Chain();
-    }
+    /** Undefined residue name. */
+    private static final String undefinedChainName = "X";
 
     /** Parent molecule. */
-    private Molecule parent = null;
+    private Molecule parent;
 	
     /** Set the parent molecule. */
     public void setParent(Molecule molecule){
@@ -71,19 +54,6 @@ public class Chain implements Selectable {
     /** Get the parent. */
     public Molecule getParent(){
 	return parent;
-    }
-
-    /** Insertion code. */
-    private char insertionCode = 0;
-
-    /** Set the insertion code. */
-    public void setInsertionCode(char code){
-	insertionCode = code;
-    }
-
-    /** Get the insertion code. */
-    public char getInsertionCode(){
-	return insertionCode;
     }
 
     /** Chain name. */
@@ -103,23 +73,6 @@ public class Chain implements Selectable {
 	}
     }
 
-    /** Chain number. */
-    private int number;
-
-    /** Set the chain number. */
-    public void setNumber(int newNumber){
-	number = newNumber;
-    }
-
-    /** Get the chain number. */
-    public int getNumber(){
-	if(number == undefinedChainNumber){
-	    return 1;
-	}else{
-	    return number;
-	}
-    }
-
     /**
      * Return the number of atoms in the molecule.
      */
@@ -135,11 +88,11 @@ public class Chain implements Selectable {
     }
 
     /** The current residue. */
-    private Residue currentResidue = null;
+    private Residue currentResidue;
 
     /** Add a residue to the chain. */
     public Residue addResidue(){
-	currentResidue = Residue.create();
+	currentResidue = new Residue();
 	currentResidue.setParent(this);
 
 	residues.add(currentResidue);
@@ -159,25 +112,6 @@ public class Chain implements Selectable {
 	}
 		
 	return currentResidue;
-    }
-
-    /** Get maximum residue id. */
-    public int getMaximumResidueId(){
-	int resCount = getResidueCount();
-	int maximum = Integer.MIN_VALUE;
-
-	for(int r = 0; r < resCount; r++){
-	    Residue res = getResidue(r);
-	    if(res.getNumber() > maximum){
-		maximum = res.getNumber();
-	    }
-	}
-
-	if(maximum == Integer.MIN_VALUE){
-	    maximum = 0;
-	}
-
-	return maximum;
     }
 
     public String selectStatement(){

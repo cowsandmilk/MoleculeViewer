@@ -285,7 +285,7 @@ public class SplitterBar extends Panel {
 
 		} // checkComponents()
 	public int getOrientation() {return orientation;}
-	void mouseDrag(MouseEvent e) {
+	public void mouseDrag(MouseEvent e) {
 		if (SplitterLayout.dragee == null)
 			SplitterLayout.dragee = this;
 		else if (SplitterLayout.dragee != this)
@@ -324,21 +324,21 @@ public class SplitterBar extends Panel {
 			alreadyDrawn=true;
 			}
 		}
-	void mouseEnter(MouseEvent e) {
+	public void mouseEnter(MouseEvent e) {
 		if (SplitterLayout.dragee != null) return;
 		setCursor((orientation == SplitterLayout.VERTICAL)?VERT_CURSOR:HORIZ_CURSOR);
 		invalidate();
 		validate();
 		repaint();
 		}
-	void mouseExit(MouseEvent e) {
+	public void mouseExit(MouseEvent e) {
 		if (SplitterLayout.dragee != null) return;
 		setCursor(DEF_CURSOR);
 		invalidate();
 		validate();
 		repaint();
 	   	}   
-	void mouseRelease(MouseEvent e) {
+	public void mouseRelease(MouseEvent e) {
 		if (alreadyDrawn) {
 			if (SplitterLayout.dragee != this) return;
 			SplitterLayout.dragee = null;
@@ -367,10 +367,6 @@ public class SplitterBar extends Panel {
 	*/
 	public void paint (Graphics g) {
             g.setColor(new Color(0x89899a));
-            //if (mouseInside)
-            //		g.setColor(Color.yellow);
-            //else
-            //	g.setColor(Colors.lightSkyBlue3);
 		Component c[] = getComponents();
 		if (c != null && c.length > 0)
 	    	for(int i = 0; i <c.length;i++) {
@@ -385,11 +381,6 @@ public class SplitterBar extends Panel {
 				}
 		else {
                     Rectangle r = getBounds();
-			//if (orientation == SplitterLayout.VERTICAL)
-			//	g.fill3DRect(2,r.height/2-1,r.width-5,3,true);
-			//else
-			//	g.fill3DRect(r.width/2-1,2,3,r.height-5,true);
-			//}
 			if (orientation == SplitterLayout.VERTICAL){
                             g.drawLine(2, r.height/2 -12, 2, r.height/2 + 12);
                             g.drawLine(r.width - 2, r.height/2 -12, r.width - 2, r.height/2 + 12);
@@ -399,7 +390,7 @@ public class SplitterBar extends Panel {
 			}
                 }
         }
-	void setOrientation(int o) {orientation = o;}
+	public void setOrientation(int o) {orientation = o;}
 	public void swapOrientation() {
 		setOrientation(getOrientation()==SplitterLayout.HORIZONTAL?SplitterLayout.VERTICAL:SplitterLayout.HORIZONTAL);
 	}

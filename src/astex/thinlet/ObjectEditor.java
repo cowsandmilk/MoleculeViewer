@@ -29,7 +29,7 @@ public class ObjectEditor extends ThinletUI {
     private static DialogLauncher dialogLauncher = null;
     private static ObjectEditor objectEditor = null;
 
-    public ObjectEditor(String name){
+    private ObjectEditor(String name){
         String template = readTemplate("/astex/thinlet/objecteditortemplate.xml.properties");
         template = Util.replace(template, "%n", name);
         add(safeParse(template));
@@ -75,7 +75,7 @@ public class ObjectEditor extends ThinletUI {
         dialogLauncher.setVisible(true);
     }
     
-    public void setTextureCoordinates(String name){
+    private void setTextureCoordinates(String name){
         if(name == null){
             print.f("can't find object called " + name);
             return;
@@ -107,26 +107,6 @@ public class ObjectEditor extends ThinletUI {
         }else{
             print.f("couldn't configure editor for " + name);
         }
-    }
-
-    public void executeTexture(Object o){
-        execute(o);
-
-        Object parent = getParent(o);
-
-        while(getParent(parent) != getDesktop()){
-            parent = getParent(parent);
-        }
-
-        String name = getString(parent, "name");
-
-        setTextureCoordinates(name);
-    }
-
-    public void ok(Object dialogPanel){
-        Dialog dialog = (Dialog)getProperty(getDesktop(), "dialog");
-
-        dialog.setVisible(false);
     }
 
     public boolean destroy(){

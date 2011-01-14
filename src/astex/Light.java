@@ -25,10 +25,10 @@ public class Light {
     public double pos[] = new double[3];
 
     /** Packed diffuse colour. */
-    public int diffuse = 0;
+    public int diffuse;
 
     /** Packed specular colour. */
-    public int specular = 0;
+    public int specular;
     
     /** Sheen of highlight. */
     public double power = 50.0;

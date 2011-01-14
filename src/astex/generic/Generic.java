@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Generic implements GenericInterface {
     
-    public static final String ClassName   = "__class__";
+    private static final String ClassName   = "__class__";
 
     private static final Hashtable<String,Object> emptyHashtable = new Hashtable<String,Object>(0);
     private static final Vector<GenericInterface> emptyVector = new Vector<GenericInterface>(0);

@@ -18,7 +18,6 @@
 
 package astex.splitter;
 
-import java.awt.*;
 import java.awt.event.*;
 
 /**

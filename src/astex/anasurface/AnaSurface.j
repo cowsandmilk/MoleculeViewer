@@ -9,21 +9,19 @@ import astex.*;
 
 public class AnaSurface {
     /* Input coordinates and radii. */
-    public double xyz[][] = null;
-    public double radius[] = null;
-    public double radius2[] = null;
-    public double rsq[] = null;
-    public int visible[] = null;
-    public int colors[] = null;
-    public DynamicArray edgeList[] = null;
-    public DynamicArray probeList[] = null;
-    public DynamicArray faceList[] = null;
-    public DynamicArray vertexList[] = null;
-    public DynamicArray torusList[] = null;
-    public int nxyz = 0;
+    private double xyz[][] = null;
+    private double radius[] = null;
+    private double radius2[] = null;
+    private double rsq[] = null;
+    private int colors[] = null;
+    private DynamicArray edgeList[] = null;
+    private DynamicArray probeList[] = null;
+    private DynamicArray vertexList[] = null;
+    private DynamicArray torusList[] = null;
+    private int nxyz = 0;
 
     /** Is debugging on? */
-    public static boolean debug = false;
+    private static boolean debug = false;
 
     /** The default probe radius for the surface class. */
     public static double defaultProbeRadius = 1.5;
@@ -32,73 +30,69 @@ public class AnaSurface {
     public static int defaultQuality = 1;
 
     /** The probe radius for the surface. */
-    public double probeRadius = 1.5;
+    private double probeRadius = 1.5;
 
     /** The tesselation depth for sphere template. */
-    public int density = 1;
+    private int density = 1;
 
     /** Write the probes out to a file. */
-    public String probesFilename = null;
+    private String probesFilename = null;
 
     /** Probe placements. */
-    DynamicArray probes = new DynamicArray(1024);
+    private DynamicArray probes = new DynamicArray(1024);
 
     /** The vertices on the molecular surface. */
-    DynamicArray vertices = new DynamicArray(1024);
+    private DynamicArray vertices = new DynamicArray(1024);
 
     /** The edges of the molecular surface. */
-    DynamicArray edges = new DynamicArray(1024);
+    private DynamicArray edges = new DynamicArray(1024);
 
     /** The faces of the molecular surface. */
-    DynamicArray faces = new DynamicArray(1024);
+    private DynamicArray faces = new DynamicArray(1024);
 
     /** The torii of the molecular surface. */
-    DynamicArray torii = new DynamicArray(1024);
+    private DynamicArray torii = new DynamicArray(1024);
 
     /** The number of torii with a single face. */
-    public int singleFace = 0;
+    private int singleFace = 0;
 
     /** The maximum number of edges on a single torus. */
-    public int maximumTorusEdges = 0;
+    private int maximumTorusEdges = 0;
 
     /** The maximum number of edges on a single convex face. */
-    public int maximumFaceEdges = 0;
+    private int maximumFaceEdges = 0;
 
     /** The number of self intersecting torii. */
-    public int selfIntersectingTorii = 0;
+    private int selfIntersectingTorii = 0;
 
     /** The number of self intersecting torii. */
-    public int selfIntersectingProbes = 0;
+    private int selfIntersectingProbes = 0;
 
     /** The number of distance comparisons made. */
-    public int distanceComparisons = 0;
+    private int distanceComparisons = 0;
 
     /** The tmesh object that will hold the final surface. */
-    public Tmesh tmesh = new Tmesh();
+    private Tmesh tmesh = new Tmesh();
 
     /** Desired length of triangle edges. */
     // This is actually the probe separation along the
     // the torus center at the minute
-    public double desiredTriangleLength = 1.5;
+    private double desiredTriangleLength = 1.5;
 
     /** The target length for toroidal triangles. */
-    public double targetLen = 0.0;
-
-    /** The time the surface generation started. */
-    long startTime = 0;
+    private double targetLen = 0.0;
 
     /** The current Color for the triangle. */
     public int backgroundColor = Color32.white;
 
     /** Edge lengths for different qualities. */
-    double qLength[] = {0.0, 1.5, 0.9, 0.5, 0.3};
+    private static final double qLength[] = {0.0, 1.5, 0.9, 0.5, 0.3};
 
     /** Default constructor. */
     public AnaSurface(double x[][], double r[],
 		      int visible[], int colors[], int n){
 	this.xyz = x;
 	this.radius = r;
-	this.visible = visible;
 	this.colors = colors;
 	this.nxyz = n;
 
@@ -110,8 +104,6 @@ public class AnaSurface {
 	    this.density = defaultQuality;
 	    this.desiredTriangleLength = qLength[quality];
 	}
-        //tmesh.style = Tmesh.DOTS;
-	//tmesh.setColorStyle(Tmesh.TriangleColor);
     }
 
     /** Construct the surface. */
@@ -245,9 +237,6 @@ public class AnaSurface {
 	// space for keeping the probe lists
 	probeList = new DynamicArray[nxyz];
 
-	// space for keeping the probe lists
-	faceList = new DynamicArray[nxyz];
-
 	// space for keeping the vertex lists
 	vertexList = new DynamicArray[nxyz];
 
@@ -262,7 +251,7 @@ public class AnaSurface {
 	buildSphereTemplate(this.density);
     }
 
-    public void triangulateAtoms(){
+    private void triangulateAtoms(){
 	for(int ia = 0; ia < nxyz; ia++){
 	    transformSphere(xyz[ia], radius[ia]);
 
@@ -271,7 +260,7 @@ public class AnaSurface {
     }
 
     /** Perform the various parts of the triangulation process. */
-    public void triangulate(){
+    private void triangulate(){
 
 	int faceCount = faces.size();
 
@@ -299,7 +288,7 @@ public class AnaSurface {
     }
 
     /** Process a single face. */
-    public void processFace(Face f){
+    private void processFace(Face f){
 	int edgeCount = f.size();
 
 	if(f.type == Face.Undefined){
@@ -338,23 +327,20 @@ public class AnaSurface {
 	if(f.type != Face.Undefined){
 	    clipSphere(f, ia);
 	    
-	    addWholeTriangles(f);
+	    addWholeTriangles();
 	}
 
 	processConvexFace(f);
     }
 
     /** Edges on the sphere. */
-    Edge sphereEdges[] = new Edge[100];
-    boolean used[] = new boolean[100];
-    Face convexFace = new Face(Face.Convex);
-    Face sphereFace = new Face(Face.Convex);
-    int scount = 0;
+    private boolean used[] = new boolean[100];
+    private Face convexFace = new Face(Face.Convex);
+    private Face sphereFace = new Face(Face.Convex);
 
     /** The final triangulation stage for the remaining sphere surface. */
     private void triangulateSphere(int ia){
 	if(edgeList[ia] == null){
-	    //System.out.println("attempt to surface sphere with no edges.");
 	    return;
 	}
 
@@ -363,7 +349,6 @@ public class AnaSurface {
 	convexFace.r = radius[ia];
 
 	int ecount = edgeList[ia].size();
-	scount = 0;
 
 	sphereFace.removeAllElements();
 
@@ -555,7 +540,7 @@ public class AnaSurface {
 	if(debug) System.out.println("after clipping point count " +
 				     vArray.size());
 
-	addTriangles(f);
+	addTriangles();
     }
 
     /** See if this edge is on the boundary. */
@@ -573,7 +558,7 @@ public class AnaSurface {
     int ecount = 0;
 
     /** Return how many times the edge v0-v1 is used. */
-    public int edgePairCount(int vv0, int vv1){
+    private int edgePairCount(int vv0, int vv1){
 	if(vv0 > vv1){
 	    // swap vertex pair
 	    int tmp = vv0;
@@ -590,7 +575,7 @@ public class AnaSurface {
 	return 0;
     }
 
-    public int addEdgePair(int vv0, int vv1, boolean lookup){
+    private int addEdgePair(int vv0, int vv1, boolean lookup){
 	if(vv0 == vv1){
 	    Log.error("vv0 == vv1");
 	}
@@ -618,8 +603,6 @@ public class AnaSurface {
 		    if(euse[i] >= 2){
 			FILE.out.print("### edge already used twice %4d", vv0);
 			FILE.out.print(" %4d\n", vv1);
-			//Exception e = new Exception();
-			//e.printStackTrace();
 		    }
 		    euse[i]++;
 		    return i;
@@ -635,25 +618,24 @@ public class AnaSurface {
     }
 
     /** The list of edge vertices we have to triangulate. */
-    IntArray vArray = new IntArray(64);
+    private IntArray vArray = new IntArray(64);
 
     /** The list of edge ids associated with the vertices. */
-    IntArray eArray = new IntArray(64);
+    private IntArray eArray = new IntArray(64);
 
-    public double pp0[] = new double[3];
-    public double pp1[] = new double[3];
-    public double pp2[] = new double[3];
-    public double pp3[] = new double[3];
+    private double pp0[] = new double[3];
+    private double pp1[] = new double[3];
+    private double pp2[] = new double[3];
+    private double pp3[] = new double[3];
 
-    public double npp0[] = new double[3];
-    public double npp1[] = new double[3];
-    public double npp2[] = new double[3];
-    public double npp3[] = new double[3];
+    private double npp0[] = new double[3];
+    private double npp1[] = new double[3];
+    private double npp2[] = new double[3];
 
-    public double circum[] = new double[3];
+    private double circum[] = new double[3];
 
     /** Triangulate an arbitrary collection of edges and interior points. */
-    public void addTriangles(Face f){
+    private void addTriangles(){
 	int nv = vArray.size();
 	int vlist[] = vArray.getArray();
 	int elist[] = eArray.getArray();
@@ -822,9 +804,7 @@ public class AnaSurface {
 				continue;
 			    }
 			    
-			    addIfAcceptable(vi, pp0, npp0,
-					    vj, pp1, npp1, 
-					    vk, pp2, npp2, f);
+			    addIfAcceptable(vi, vj, vk);
 			}
 		    }
 		}
@@ -866,11 +846,7 @@ public class AnaSurface {
 			
 				tmesh.getVertex(vj, pp1, npp1);
 			
-				//System.out.println("adding " + i + " " + j + " " + k);
-			
-				addIfAcceptable(vi, pp0, npp0,
-						vj, pp1, npp1, 
-						vk, pp2, npp2, f);
+				addIfAcceptable(vi, vj, vk);
 				added = true;
 				break;
 			    }
@@ -909,13 +885,8 @@ public class AnaSurface {
 	}
     }
 
-    double tcp[] = new double[3];
-
     /** Perform some sanity checking of the new triangle. */
-    public void addIfAcceptable(int vi, double ppi[], double nppi[],
-				int vj, double ppj[], double nppj[],
-				int vk, double ppk[], double nppk[],
-				Face f){
+    private void addIfAcceptable(int vi, int vj, int vk){
 	if(vi == 169 && vj == 654 && vk == 655){
 	    Exception e = new Exception();
 	    e.printStackTrace();
@@ -958,7 +929,7 @@ public class AnaSurface {
      *
      * Adapted from Graphics Gems.
      */
-    public double circumCircle(double cc[],
+    private double circumCircle(double cc[],
 			       double p1[], double p2[], double p3[]) {
 	double d1 = 0.0;
 	double d2 = 0.0;
@@ -986,18 +957,14 @@ public class AnaSurface {
 	return distance(cc, p1);
     }
 
-    int unclipped[] = new int[3];
-    int lastunclipped[] = new int[3];
-    int leuc[] = new int[3];
-
-    int debugColor[] = {
+    private int debugColor[] = {
 	0xff781e,
 	0x4bc3ff,
 	0x37ffc3,
 	0xaaff00,
     };	
 
-    public void meshAddTriangle(int v0, int v1, int v2){
+    private void meshAddTriangle(int v0, int v1, int v2){
 	if(v0 == 0 && v1 == 0 && v2 == 0){
 	    try {
 		Exception e = new RuntimeException("");
@@ -1009,36 +976,6 @@ public class AnaSurface {
 
 	tmesh.addTriangle(v0, v1, v2,
 			  debugColor[tmesh.nt % debugColor.length]);
-    }
-
-    /** Is this triangle clipped by probes. */
-    public boolean clippedByProbes(int v0, int v1, int v2){
-	if(clippingProbes != null){
-	    int cpc = clippingProbes.size();
-	    //System.out.println("clipping probe count " + cpc);
-	    for(int i = 0; i < cpc; i++){
-		Probe p = (Probe)clippingProbes.get(i);
-		if(tmesh.distance(v0, p.x) < p.r &&
-		   tmesh.distance(v1, p.x) < p.r &&
-		   tmesh.distance(v2, p.x) < p.r){
-		    System.out.println("!! triangle removed by clipping");
-		    return true;
-		}
-	    }
-	}
-	return false;
-    }
-
-    public void addTriangle(int t){
-	int sit = si[t];
-	int sjt = sj[t];
-	int skt = sk[t];
-
-	int v0 = tmesh.addPoint(tsx[sit], snx[sit], 0.0, 0.0);
-	int v1 = tmesh.addPoint(tsx[sjt], snx[sjt], 0.0, 0.0);
-	int v2 = tmesh.addPoint(tsx[skt], snx[skt], 0.0, 0.0);
-	
-	tmesh.addTriangle(v0, v1, v2);
     }
 
     /* Working space for doubles. */
@@ -1128,7 +1065,7 @@ public class AnaSurface {
     private double clipTolerance = 0.0;
 
     /** Clip sphere according to plane list and add to tmesh. */
-    public void clipSphere(Face f, int ia){
+    private void clipSphere(Face f, int ia){
 	int edgeCount = f.size();
 
 	// reset the clip and hull markers
@@ -1213,7 +1150,7 @@ public class AnaSurface {
 	}
     }
 
-    public int colorPoint(Face f, double p[]){
+    private int colorPoint(Face f, double p[]){
 	Vertex v0 = ((Edge)f.get(0)).v0;
 	Vertex v1 = ((Edge)f.get(1)).v0;
 	Vertex v2 = ((Edge)f.get(2)).v0;
@@ -1223,19 +1160,9 @@ public class AnaSurface {
 	double d2 = distance(p[0], p[1], p[2], v2.x[0], v2.x[1], v2.x[2]);
 	double sum = 2.0 * (d0 + d1 + d2);
 
-	//FILE.out.print("d0 %5.2f ", d0);
-	//FILE.out.print("d1 %5.2f ", d1);
-	//FILE.out.print("d2 %5.2f\n", d2);
-
-	//FILE.out.print("sum %5.2f\n", sum);
-
 	double comp0 = (d1 + d2)/sum;
 	double comp1 = (d0 + d2)/sum;
 	double comp2 = (d0 + d1)/sum;
-
-	//FILE.out.print("c0 %5.2f ", comp0);
-	//FILE.out.print("c1 %5.2f ", comp1);
-	//FILE.out.print("c2 %5.2f\n", comp2);
 
 	int r = 0, g = 0, b = 0;
 
@@ -1249,13 +1176,11 @@ public class AnaSurface {
 	b += comp1 * Color32.getBlue(colors[v1.i]);
 	b += comp2 * Color32.getBlue(colors[v2.i]);
 
-	//Color32.print("rgb ", r, g, b);
-
 	return Color32.pack(r, g, b);
     }
 
     /** Add the remaing triangles. */
-    public void addWholeTriangles(Face f){
+    private void addWholeTriangles(){
 	// now we clipped all the points add the
 	// remaining triangles to the tmesh
 	for(int t = 0; t < nst; t++){
@@ -1271,7 +1196,7 @@ public class AnaSurface {
     }
 
     /** Transform the sphere to this atom position/size. */
-    public void transformSphere(double xs[], double rs){
+    private void transformSphere(double xs[], double rs){
 
 	for(int i = 0; i < nsp; i++){
 	    clipped[i] = -1;
@@ -1283,19 +1208,6 @@ public class AnaSurface {
 
 	currentLongestEdge = rs * longestEdge;
     }
-
-    Edge sorted[] = new Edge[3];
-
-    /** Current list of clipping probes. */
-    private DynamicArray clippingProbes = null;
-
-    /** Working space for contact face triangulation. */
-    double mid01[] = new double[3];
-    double mid12[] = new double[3];
-    double mid20[] = new double[3];
-    double nmid01[] = new double[3];
-    double nmid12[] = new double[3];
-    double nmid20[] = new double[3];
 
     /** vector for coordinate frame. */
     private double pp[] = new double[3];
@@ -1309,7 +1221,7 @@ public class AnaSurface {
     private double ntp[] = new double[3];
 
     /** Where the saddle face points end up in the tmesh. */
-    int tmeshv[][] = new int[100][100];
+    private int tmeshv[][] = new int[100][100];
 
     /** Deltas for the wrap angle calculation. */
     private double pp2cij[] = new double[3];
@@ -1317,7 +1229,7 @@ public class AnaSurface {
     private double n1[] = new double[3];
     private double n2[] = new double[3];
 
-    public void processToroidalFace(Face f){
+    private void processToroidalFace(Face f){
 	triangulateToroidalFace(f);
     }
 
@@ -1410,8 +1322,6 @@ public class AnaSurface {
 		double component = t.uijnorm2[i] * sina + t.uijnorm[i] * cosa;
 
 		pp[i]   = t.tij[i] + t.rij * component;
-		//ccij[i] = t.cij[i] + t.rcij * component;
-		//ccji[i] = t.cji[i] + t.rcji * component;
 		ccij[i] = f.iij[i] + t.rcij * component;
 		ccji[i] = f.iji[i] + t.rcji * component;
 	    }
@@ -1449,8 +1359,6 @@ public class AnaSurface {
 
 		// tidy up any slight rounding error
 		if(wa > wrapAngle){
-		    //System.out.println("t.i " + t.i + " t.j " + t.j);
-		    //System.out.println("ii " + ii + " nwap " + nwap);
 		    wa = wrapAngle;
 		}
 		
@@ -1522,21 +1430,21 @@ public class AnaSurface {
     }
 
     /** Working space for torus processing. */
-    Edge torusEdges[] = new Edge[1000];
+    private Edge torusEdges[] = new Edge[1000];
 
     /** Angles relative to torus normal. */
-    double angles[] = new double[1000];
+    private double angles[] = new double[1000];
 
     /** Vector form contact circle to torus vertex. */
     private double cij2v[] = new double[3];
 
     /** Working space for intersecting torii. */
-    double qij[] = new double[3];
-    double qji[] = new double[3];
+    private double qij[] = new double[3];
+    private double qji[] = new double[3];
 
-    double cusp[] = new double[3];
-    double nleft[] = new double[3];
-    double nright[] = new double[3];
+    private double cusp[] = new double[3];
+    private double nleft[] = new double[3];
+    private double nright[] = new double[3];
 
     /** Process a single torus. */
     private void processTorus(Torus t){
@@ -1575,7 +1483,6 @@ public class AnaSurface {
 		System.out.println("edge has " + e.v0.i + "," + e.v1.i);
 	    }
 
-	    //angles[ee] = angle2(t.uijnorm, cij2v, t.uij);
 	    angles[ee] = angle(cij2v, t.uijnorm, t.uijnorm2);
 
 	    //System.out.println("angle "+ angles[ee]);
@@ -1657,9 +1564,6 @@ public class AnaSurface {
 		    qij[i] = t.tij[i] - dtq * t.uij[i];
 		    qji[i] = t.tij[i] + dtq * t.uij[i];
 		}
-
-		//e0.probeFace.skip = true;
-		//e1.probeFace.skip = true;
 
 		if(e0.probeFace == null || e1.probeFace == null){
 		    System.out.println("e0 or e1 has null probe face");
@@ -1749,9 +1653,9 @@ public class AnaSurface {
 	}
     }
 
-    public double vx0[] = new double[3];
-    public double vx1[] = new double[3];
-    public double pint[] = new double[3];
+    private double vx0[] = new double[3];
+    private double vx1[] = new double[3];
+    private double pint[] = new double[3];
 
     private Edge addSimpleEdge(Vertex v0, Vertex v1, Edge refEdge,
 			       double x[], double n[], double rr){
@@ -1806,7 +1710,7 @@ public class AnaSurface {
 
     private Edge oldEdges[] = new Edge[100];
 
-    public void replaceProbeEdges(Edge olde, Edge e0, Edge e1, Edge e2){
+    private void replaceProbeEdges(Edge olde, Edge e0, Edge e1, Edge e2){
 	Face probeFace = olde.probeFace;
 	
 	if(olde.v0 != e0.v0 || olde.v1 != e2.v1 ||
@@ -1902,14 +1806,6 @@ public class AnaSurface {
 			
 			if(k > j){
 			    tripletCount++;
-			    
-			    /*
-			    double trij = torusRadius(radius[i], radius[j], distance(xyz[i], xyz[j]), probeRadius);
-			    double trjk = torusRadius(radius[j], radius[j], distance(xyz[j], xyz[k]), probeRadius);
-			    double trki = torusRadius(radius[k], radius[i], distance(xyz[k], xyz[i]), probeRadius);
-			    
-			    if(trij < probeRadius || trjk < probeRadius || trki < probeRadius) continue;
-			    */
 
 			    if(constructProbePlacement(xyz[i], radius[i],
 						       xyz[j], radius[j],
@@ -1946,9 +1842,6 @@ public class AnaSurface {
 
 					Face f1 = (Face)faces.getReverse(0);
 					Face f2 = (Face)faces.getReverse(1);
-
-					//f1.skip = true;
-					//f2.skip = true;
 					
 					f1.intersection = Face.ProbeIntersection;
 					f2.intersection = Face.ProbeIntersection;
@@ -1984,8 +1877,6 @@ public class AnaSurface {
         if(obscured2(p, j, i, k)){
             return true;
         }
-
-        //cacheSphere = -1;
 
         return false;
     }
@@ -2056,14 +1947,11 @@ public class AnaSurface {
     }
 
     /** Temporary for calculating normals. */
-    double nnv[] = new double[3];
+    private double nnv[] = new double[3];
 
     /** Add a vertex for the surface. */
-    //private Vertex addVertex(double vx[], int i, Probe p){
     private Vertex addVertex(double vx[], int i, double px[]){
 	Vertex v = new Vertex();
-
-	//v.p = p;
 
 	vector(nnv, vx, px);
 	normalise(nnv);
@@ -2221,10 +2109,10 @@ public class AnaSurface {
     }
 
     // working space
-    double edgen[] = new double[3];
-    double otherv[] = new double[3];
+    private double edgen[] = new double[3];
+    private double otherv[] = new double[3];
 
-    public Edge constructProbeEdge(Vertex v0, double p0[],
+    private Edge constructProbeEdge(Vertex v0, double p0[],
 				   Vertex v1, double p1[],
 				   double pother[],
 				   double pijk[], double rad){
@@ -2264,7 +2152,6 @@ public class AnaSurface {
 		// if the radius is smaller than the probe
 		// radius the torus intersects itself
 		torus.selfIntersects = true;
-		//torus.selfIntersects = false;
 	    }
 
 	    // generate contact circles on each end of torus
@@ -2299,7 +2186,7 @@ public class AnaSurface {
     }
 
     /** Is there a torus between i and j. */
-    public Torus findTorus(int i, int j){
+    private Torus findTorus(int i, int j){
 	if(torusList[i] == null) return null;
 	
 	int torusCount = torusList[i].size();
@@ -2317,7 +2204,7 @@ public class AnaSurface {
     }
 
     /** Calculate the torus axis unit vector. */
-    public static void torusAxisUnitVector(double uij[],
+    private static void torusAxisUnitVector(double uij[],
 					   double ai[], double aj[]){
 	double dij = 1.0/distance(ai, aj);
 
@@ -2327,7 +2214,7 @@ public class AnaSurface {
     }
 
     /** Calculate the position of the torus center. */
-    public static double torusCenter(double tij[],
+    private static double torusCenter(double tij[],
 				     double ai[], double ri,
 				     double aj[], double rj,
 				     double rp){
@@ -2349,19 +2236,8 @@ public class AnaSurface {
 	    Math.sqrt(dij2 - (rdiff * rdiff))/dij;
     }
 
-    /** Torus radius. */
-    public static double torusRadius(double ri, double rj, double dij, double rp){
-	double dij2 = dij * dij;
-	double rsum = ri + rj + rp + rp;
-	double rdiff = ri - rj;
-
-	return 0.5 *
-	    Math.sqrt((rsum*rsum) - dij2) *
-	    Math.sqrt(dij2 - (rdiff * rdiff))/dij;
-    }
-
     /** Base triangle angle. */
-    public static double baseTriangleAngle(double uij[], double uik[]){
+    private static double baseTriangleAngle(double uij[], double uik[]){
 	double dot2 = dot(uij, uik);
 	dot2 *= dot2;
 
@@ -2369,11 +2245,10 @@ public class AnaSurface {
 	else if(dot2 > 1.0) dot2 = 1.0;
 
 	return Math.sqrt(1. - dot2);
-	//return Math.acos(dot(uij, uik));
     }
     
     /** Calculate the base plane normal vector. */
-    public static void basePlaneNormalVector(double uijk[], double uij[],
+    private static void basePlaneNormalVector(double uijk[], double uij[],
 					     double uik[], double swijk){
 	cross(uijk, uij, uik);
 
@@ -2383,13 +2258,13 @@ public class AnaSurface {
     }
 
     /** Generate the torus basepoint unit vector. */
-    public static void torusBasepointUnitVector(double utb[], double uijk[],
+    private static void torusBasepointUnitVector(double utb[], double uijk[],
 						double uij[]){
 	cross(utb, uijk, uij);
     }
 
     /** Generate the base point. */
-    public static void basePoint(double bijk[], double tij[], double utb[],
+    private static void basePoint(double bijk[], double tij[], double utb[],
 				 double uik[], double tik[], double swijk){
 	double dotut = 0.0;
 
@@ -2405,7 +2280,7 @@ public class AnaSurface {
     }
 
     /** Calculate probe height. */
-    public static double probeHeight(double rip, double bijk[], double ai[]){
+    private static double probeHeight(double rip, double bijk[], double ai[]){
 	double h2 = (rip*rip) - distance2(bijk, ai);
 	if(h2 < 0.0){
 	    return -1.0;
@@ -2419,7 +2294,7 @@ public class AnaSurface {
      *
      * Call with -hijk for the opposite placement.
      */
-    public static void probePosition(double pijk[], double bijk[],
+    private static void probePosition(double pijk[], double bijk[],
 				     double hijk, double uijk[]){
 	for(int i = 0; i < 3; i++){
 	    pijk[i] = bijk[i] + hijk * uijk[i];
@@ -2427,7 +2302,7 @@ public class AnaSurface {
     }
 
     /** Construct vertex position. */
-    public void constructVertex(double v[], double pijk[],
+    private void constructVertex(double v[], double pijk[],
 				 double ai[], double r){
 	double rip = r + probeRadius;
 
@@ -2437,7 +2312,7 @@ public class AnaSurface {
     }
 
     /** Form cross product of two vectors (a = b x c). */
-    public static double cross(double a[], double b[], double c[]){
+    private static double cross(double a[], double b[], double c[]){
 	a[0] = (b[1] * c[2]) - (b[2] * c[1]);
 	a[1] = (b[2] * c[0]) - (b[0] * c[2]);
 	a[2] = (b[0] * c[1]) - (b[1] * c[0]);
@@ -2449,7 +2324,7 @@ public class AnaSurface {
     private double bc[] = new double[3];
 
     /** Form cross from three vectors (n = ab x bc). */
-    public double normal(double n[],
+    private double normal(double n[],
 			 double a[], double b[], double c[]){
 	vector(ab, a, b);
 	vector(bc, b, c);
@@ -2461,14 +2336,14 @@ public class AnaSurface {
     }
 
     /** Negate the vector. */
-    public void negate(double a[]){
+    private void negate(double a[]){
 	a[0]= -a[0];
 	a[1]= -a[1];
 	a[2]= -a[2];
     }
 
     /** Generate the plane equation. */
-    public double plane_eqn(double p[], double o[], double n[]){
+    private double plane_eqn(double p[], double o[], double n[]){
 	double px = p[0] - o[0];
 	double py = p[1] - o[1];
 	double pz = p[2] - o[2];
@@ -2478,30 +2353,19 @@ public class AnaSurface {
     }
 
     /** Generate the dot product. */
-    public static double dot(double a[], double b[]){
+    private static double dot(double a[], double b[]){
 	return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
     }
 
-    /** Generate the dot product. */
-    public double dotnorm(double a[], double b[]){
-	return (a[0]*b[0] + a[1]*b[1] + a[2]*b[2])/(length(a)*length(b));
-    }
-
-    /** Generate the dot product. */
-    public double dot(double ax, double ay, double az,
-		      double bx, double by, double bz){
-	return ax*bx + ay*by + az*bz;
-    }
-
     /** Generate vector from a to b. */
-    public static void vector(double v[], double a[], double b[]){
+    private static void vector(double v[], double a[], double b[]){
 	v[0] = b[0] - a[0];
 	v[1] = b[1] - a[1];
 	v[2] = b[2] - a[2];
     }
 
     /* Form normal n to vector v. */
-    public void normal(double n[], double v[]){
+    private void normal(double n[], double v[]){
 	n[0] = 1.0; n[1] = 1.0; n[2] = 1.0;
 
         if(v[0] != 0.) n[0] = (v[2] + v[1]) / -v[0];
@@ -2512,7 +2376,7 @@ public class AnaSurface {
     }
 
     /** Normalise the vector. */
-    public void normalise(double p[]){
+    private void normalise(double p[]){
 	double len = p[0]*p[0] + p[1]*p[1] + p[2]*p[2];
 
 	if(len != 0.0){
@@ -2526,18 +2390,18 @@ public class AnaSurface {
     }
 
     /** Copy b into a. */
-    public void copy(double b[], double a[]){
+    private void copy(double b[], double a[]){
 	a[0] = b[0]; a[1] = b[1]; a[2] = b[2];
     }
 
-    public void mid(double m[], double a[], double b[]){
+    private void mid(double m[], double a[], double b[]){
 	for(int i = 0; i < 3; i++){
 	    m[i] = 0.5 * (a[i] + b[i]);
 	}
     }
 
     /** Distance between two points. */
-    public static double distance(double a[], double b[]){
+    private static double distance(double a[], double b[]){
 	double dx = a[0] - b[0];
 	double dy = a[1] - b[1];
 	double dz = a[2] - b[2];
@@ -2555,52 +2419,20 @@ public class AnaSurface {
     }
 
     /** Length of vector. */
-    public static double length(double v[]){
+    private static double length(double v[]){
 	return Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
     }
 
     /** Scale the length of a vector. */
-    public static void scale(double v[], double s){
+    private static void scale(double v[], double s){
 	v[0] *= s; v[1] *= s; v[2] *= s;
     }
-
-    /** Working space for angle calculations. */
-    private double dd1[] = new double[3];
-    private double dd3[] = new double[3];
-    private double pos_d[] = new double[3];
 
     /** Small value for zero comparisons. */
     private static double R_SMALL = 0.000000001;
 
-    /**
-     * Return angle between two vectors.
-     *
-     * Adapted from PyMol.
-     */
-    public double angle2(double v10[], double v23[], double v12[]){
-	double result = 0.0;
-
-	if(length(v12) < R_SMALL){
-	    result = angle(v10, v23);
-	}else{
-	    cross(dd1, v12, v10);
-	    cross(dd3, v12, v23);
-	    if(length(dd1) < R_SMALL || length(dd3) < R_SMALL){
-		result = angle(v10, v23);
-	    }else{
-		result = angle(dd1, dd3);
-		cross(pos_d, v12, dd1);
-		if(dot(dd3, pos_d) < 0.0){
-		    result = -result;
-		}
-	    }
-	}
-
-	return result;
-    }
-
     /** another angle function. */
-    public double angle(double ref[], double n1[], double n2[]){
+    private double angle(double ref[], double n1[], double n2[]){
 	double result = angle(ref, n1);
 
 	if(dot(ref, n2) < 0.0){
@@ -2611,7 +2443,7 @@ public class AnaSurface {
     }
 
     /** Angle between two vectors. */
-    public double angle(double v1[], double v2[]){
+    private double angle(double v1[], double v2[]){
 	double denom = length(v1) * length(v2);
 	double result = 0.0;
 
@@ -2693,7 +2525,7 @@ public class AnaSurface {
      *
      * A neighbour is any sphere within ri + rj + 2 * rp
      */
-    public void buildNeighbourList(){
+    private void buildNeighbourList(){
 	first = new int[nxyz];
 	count = new int[nxyz];
 	// use IntArray to dynamically grow the 
@@ -2709,14 +2541,10 @@ public class AnaSurface {
 	    for(int j = 0; j < nxyz; j++){
 		double dij2 = distance2(xyz[i], xyz[j]);
 		double rirj = ri + radius2[j];
-		//double trad = torusRadius(radius[i], radius[j], Math.sqrt(dij2), probeRadius);
-		if(dij2 < rirj*rirj /*  && trad > probeRadius*/ ){
-		    if(i != j){
-			count[i]++;
-			nList.add(j);
-			//nn[neighbourCount] = j;
-			neighbourCount++;
-		    }
+		if(dij2 < rirj*rirj && i != j){
+		    count[i]++;
+		    nList.add(j);
+		    neighbourCount++;
 		}
 	    }
 
@@ -2772,61 +2600,8 @@ public class AnaSurface {
 	return t;
     }
 
-    /**
-     * Merge the elements of a and b.
-     * c is assumed long enough to receive all the elements.
-     */
-    public int mergeElements(int a[], int firsta, int na,
-			     int b[], int firstb, int nb,
-			     int c[]){
-
-	// if either is the empty set, the intersection is empty
-	int enda = firsta + na;
-	int endb = firstb + nb;
-	int j = firsta;
-	int k = firstb;
-	int t = 0;
-
-	//printArray("---\na", a, firsta, na);
-	//printArray("b", b, firstb, nb);
-
-	while(j < enda && k < endb){
-
-	    if(a[j] < b[k]){
-		c[t] = a[j];
-		j++;
-		t++;
-	    }else if(a[j] > b[k]){
-		c[t] = b[k];
-		k++;
-		t++;
-	    }else{
-		c[t] = a[j];
-		t++;
-		k++;
-		j++;
-	    }
-	}
-
-	while(j < enda){
-	    c[t] = a[j];
-	    t++;
-	    j++;
-	}
-
-	while(k < endb){
-	    c[t] = b[k];
-	    t++;
-	    k++;
-	}
-
-	//printArray("c", c, 0, t);
-
-	return t;
-    }
-
     /** Are the two points within distance d of each other. */
-    public boolean within(double x1, double y1, double z1,
+    private boolean within(double x1, double y1, double z1,
 			  double x2, double y2, double z2,
 			  double d){
 	double dx = x2 - x1;
@@ -2841,7 +2616,7 @@ public class AnaSurface {
     }
 
     /** Calculate distance between two points. */
-    public double distance(double x1, double y1, double z1,
+    private double distance(double x1, double y1, double z1,
 			   double x2, double y2, double z2){
 	double dx = x2 - x1;
 	double dy = y2 - y1;
@@ -2850,18 +2625,8 @@ public class AnaSurface {
 	return Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
 
-    /** Calculate squared distance between two points. */
-    public double distance2(double x1, double y1, double z1,
-			    double x2, double y2, double z2){
-	double dx = x2 - x1;
-	double dy = y2 - y1;
-	double dz = z2 - z1;
-
-	return dx*dx + dy*dy + dz*dz;
-    }
-
     /** Output the probes file. */
-    public void outputProbes(DynamicArray pr, String filename){
+    private void outputProbes(DynamicArray pr, String filename){
 	FILE output = FILE.write(filename);
 
 	if(output == null){
@@ -2936,11 +2701,6 @@ public class AnaSurface {
 	int stop = 0;
 	
 	for(int sub = 0; sub < subDivisions; sub++){
-
-	    //System.out.println("subdivision " + sub);
-	    //System.out.println("firstTriangle " + firstTriangle);
-	    //System.out.println("triangleCount " + triangleCount);
-
 	    for(int t = firstTriangle; t < triangleCount; t++){
 		int midij = findSpherePoint(si[t], sj[t]);
 		int midjk = findSpherePoint(sj[t], sk[t]);
@@ -3022,8 +2782,6 @@ public class AnaSurface {
 
 	print("points in sphere template", nsp);
 	print("triangles in sphere template", nst);
-
-	//outputSphereTemplate();
     }
 
     /** How many hull neighbours does this point have. */
@@ -3071,7 +2829,6 @@ public class AnaSurface {
 
 	for(int d = 0; d < nsp; d++){
 	    if(within(mx, my, mz, sx[d][0], sx[d][1], sx[d][2], 0.0001)){
-		//System.out.println("found point " + d);
 		return d;
 	    }
 	}

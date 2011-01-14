@@ -25,17 +25,17 @@ public class ColorChooser extends Panel
     implements JCActionListener,  MouseMotionListener,  MouseListener,
 	       JCSpinBoxListener, ActionListener {
 
-    Dialog dialog = null;
+    private Dialog dialog;
 
-    ColorSpace cs = null;
-    JCSpinBox red = null;
-    JCSpinBox green = null;
-    JCSpinBox blue = null;
-    TextField hexText = null;
-    Panel colorSample = null;
+    private ColorSpace cs;
+    private JCSpinBox red;
+    private JCSpinBox green;
+    private JCSpinBox blue;
+    private TextField hexText;
+    private Panel colorSample;
 
-    JCButton ok = null;
-    JCButton cancel = null;
+    private JCButton ok;
+    private JCButton cancel;
 
     public boolean accept = false;
 
@@ -55,19 +55,16 @@ public class ColorChooser extends Panel
 	red.setAutoArrowDisable(false);
 	red.setMinimum(0);
 	red.setMaximum(255);
-	//red.addSpinBoxListener(this);
 
 	JCLabel greenLabel = new JCLabel("Green");
 	green = new JCSpinBox(3);
 	green.setMinimum(0);
 	green.setMaximum(255);
-	//green.addSpinBoxListener(this);
 
 	JCLabel blueLabel = new JCLabel("Blue");
 	blue = new JCSpinBox(3);
 	blue.setMinimum(0);
 	blue.setMaximum(255);
-	//blue.addSpinBoxListener(this);
 
 
 	Layout.fill(spinboxContainer, redLabel, 0, 0,
@@ -87,7 +84,6 @@ public class ColorChooser extends Panel
 	
 	JCLabel thisColor = new JCLabel("New");
 	colorSample = new Panel();
-	//colorSample.setSize(100, 100);
 
 	// common colours
 
@@ -149,7 +145,6 @@ public class ColorChooser extends Panel
 	rgb = c.getRGB();
 
 	if(source != red && source != green && source != blue){
-	    //FILE.out.print("rgb = %x\n", rgb);
 	    red.setIntValue((rgb & 0xff0000) >> 16);
 	    green.setIntValue((rgb & 0xff00) >> 8);
 	    blue.setIntValue((rgb & 0xff));

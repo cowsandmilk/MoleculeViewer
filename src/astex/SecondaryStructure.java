@@ -57,12 +57,10 @@ public class SecondaryStructure {
     public static boolean debug = false;
 
     /** Assign secondary structure for this molecule. */
-    public static void assignMolecule(Molecule mol){
+    private static void assignMolecule(Molecule mol){
 	Arguments args        = new Arguments();
 	double hbondConstant  = args.getDouble("hbond.constant", -999.0);
 	double hbondCutoff    = args.getDouble("hbond.cutoff", -999.0);
-
-	//System.out.println("hbondCutoff " + hbondCutoff);
 
 	nres = 0;
 	int realRes = 0;
@@ -75,7 +73,6 @@ public class SecondaryStructure {
 	    for(int r = 0; r < residueCount; r++){
 		Residue res = chain.getResidue(r);
 
-		//assignInitialType(res);
 		res.setSecondaryStructure(Residue.Coil);
 
 		// need to assign gaps here to 
@@ -114,8 +111,6 @@ public class SecondaryStructure {
 	    }
 	}
 
-	//Util.startTimer(0);
-
 	IntArray neighbours = new IntArray();
 
 	Lattice ol = new Lattice(MaxHBondDistance * 1.05);
@@ -126,8 +121,6 @@ public class SecondaryStructure {
 		ol.add(r2, o.x, o.y, o.z);
 	    }
 	}
-
-	//System.out.println("lattice created");
 
 	// assign mainchain hydrogen bonds.
 	for(int r1 = 0; r1 < nres; r1++){
@@ -170,17 +163,10 @@ public class SecondaryStructure {
 	    }
 	}
 
-	//Util.stopTimer("hydrogen bond calculation %5dms\n", 0);
-
-	//System.out.println("about to do helix");
-
 	// put turns in...
 	for(int r1 = 3; r1 < nres; r1++){
 	    if(hbonded(r1, r1 - 3)){
-		//System.out.println("seen turn");
-		//for(int r2 = r1 - 3; r2 <= r1; r2++){
 		for(int r2 = r1 - 2; r2 < r1; r2++){
-		    //System.out.println("setting " + r2);
 		    types[r2] = Residue.Turn;
 		}
 	    }
@@ -221,7 +207,6 @@ public class SecondaryStructure {
 		    if(ri < rj && rj >= 0 && rj < nres){
 			if(debug){
 			    System.out.println("## ri < rj rj valid");
-			    //if(types[rj] == Residue.Coil || types[rj] == Residue.Sheet){
 			    System.out.println("### type is coilri < rj rj valid");
 			}
 			if((hbonded(ri, rj)     && hbonded(rj,ri))){
@@ -235,16 +220,12 @@ public class SecondaryStructure {
 			    assignSheetType(rj);
 			    assignSheetType(ri-1);
 			    assignSheetType(rj+1);
-				
-			    //types[ri] = types[rj] = Residue.Sheet;
-			    //types[ri-1] = types[rj+1] = Residue.Sheet;
+
 			    if(Math.abs(ri - rj) >= 5){
 				assignSheetType(ri+1);
 				assignSheetType(rj-1);
-				//types[ri+1] = types[rj-1] = Residue.Sheet;
 			    }
 			}
-			//}
 		    }
 		}
 	    }
@@ -253,24 +234,17 @@ public class SecondaryStructure {
 	for(int ri = 0; ri < nres; ri++){
 	    if(types[ri] == Residue.Coil || types[ri] == Residue.Sheet){
 		int hbondCount = hbond_no[ri].size();
-		//if(hbondCount > 0){
-		//    System.out.println("checking residue " + (ri+1) + " " +
-		//		       hbondCount + " hbonds");
-		//}
 		for(int hb = 0; hb < hbondCount; hb++){
 		    int rrj = hbond_no[ri].get(hb);
-		    //System.out.println("hydrogen bonded to " + (rrj+1));
 		    for(int rj = rrj - 1; rj < rrj + 2; rj++){
 			if((rj >= 0 && rj < nres) &&
 			    ((hbonded(ri, rj-1) && hbonded(rj+1,ri)) ||
 			     (hbonded(rj-1, ri) && hbonded(ri,rj+1)))){
 			    // parallel
-			    //types[ri] = types[rj] = Residue.Sheet;
 			    assignSheetType(ri);
 			    assignSheetType(rj);
 			    if(Math.abs(ri - rj) >= 5){
 				assignSheetType(rj+1);
-				//types[rj+1] = Residue.Sheet;
 			    }
 			    assignSheetType(rj-1);
 			}
@@ -292,7 +266,6 @@ public class SecondaryStructure {
 	    // copy them back
 	    for(int r = 0; r < residueCount; r++){
 		Residue res = chain.getResidue(r);
-		//System.out.println(types[mapping[nres]] + " "+ res);
 		res.setSecondaryStructure(types[mapping[nres++]]);
 	    }
 	}
@@ -311,7 +284,6 @@ public class SecondaryStructure {
 	    return false;
 	}
 
-	//if(hbond_on[ri].contains(rj) && hbond_no[rj].contains(ri)){
 	if(hbond_no[ri].contains(rj)){
 	    return true;
 	}
@@ -420,48 +392,6 @@ public class SecondaryStructure {
 	for(int r = 0; r < n; r++){
 	    if(types[r] == Residue.Turn){
 		types[r] = Residue.Coil;
-	    }
-	}
-    }
-
-    /** Assign initial type on basis of phi/psi. */
-    public static void assignInitialType(Residue res){
-	Atom Ni = res.getAtom("N");
-	Atom CAi = res.getAtom("CA");
-	Atom Ci = res.getAtom("C");
-	Atom Cim1 = null;
-	Atom Nip1 = null;
-
-	if(Ni == null && CAi == null && Ci == null){
-	    res.setSecondaryStructure(Residue.Undefined);
-	}else{
-	    if(Ni != null){
-		Cim1 = Ni.getBondedAtom("C");
-	    }
-
-	    if(Ci != null){
-		Nip1 = Ci.getBondedAtom("N");
-	    }
-
-	    if(Ni == null || CAi == null || Ci == null ||
-	       Cim1 == null || Nip1 == null){
-		res.setSecondaryStructure(Residue.Coil);
-	    }else{
-
-		double phi = Point3d.torsionDegrees(Cim1, Ni, CAi, Ci);
-		double psi = Point3d.torsionDegrees(Ni, CAi, Ci, Nip1);
-
-		//System.out.print(res);
-		//System.out.println(" " + phi + " " + psi);
-
-		int ssType = Residue.Coil;
-
-		if(phi < -45 && phi > -160 &&
-		   psi > -80 && psi < -25){
-		    ssType = Residue.Helix;
-		}
-
-		res.setSecondaryStructure(ssType);
 	    }
 	}
     }

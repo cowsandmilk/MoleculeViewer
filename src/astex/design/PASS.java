@@ -69,7 +69,7 @@ public class PASS {
 	mol.setName(args.getString("-name", "PASS"));
 	mol.setMoleculeType(Molecule.FeatureMolecule);
 
-	generatePASSMolecule(mol, args, atoms);
+	generatePASSMolecule(mol, atoms);
 
 	return mol;
     }
@@ -81,8 +81,7 @@ public class PASS {
     private static double maxRad = 0.0;
 
     /** Actually generate the PASS atoms. */
-    public static void generatePASSMolecule(Molecule mol,
-					    Arguments args,
+    private static void generatePASSMolecule(Molecule mol,
 					    DynamicArray atoms){
 	int atomCount = atoms.size();
 
@@ -224,8 +223,6 @@ public class PASS {
 
 	    tripletCount = 0;
 
-	    //Rprobe = Raccretion;
-
 	    for(int i = 0; i < n; i++){
 		Probe pi = (Probe)newProbes.get(i);
 		for(int j = i+1; j < n; j++){
@@ -249,11 +246,6 @@ public class PASS {
 									   pk.x, Raccretion,
 									   Raccretion,
 									   p0, p1);
-                                    //AnaSurface.constructProbePlacement(pi.x, pi.r,
-                                    //				   pj.x, pj.r,
-                                    //				   pk.x, pk.r,
-                                    //				   Raccretion,
-                                    //				   p0, p1);
 
 				    if(retCode){
 					// placement was succesful.
@@ -360,7 +352,6 @@ public class PASS {
                 atom.x = probe.x[0];
                 atom.y = probe.x[1];
                 atom.z = probe.x[2];
-                //atom.setVDWRadius(probe.r);
                 atom.setVDWRadius(Rprobe);
                 atom.setBFactor(burialCount(probe.x));
             }
@@ -403,13 +394,8 @@ public class PASS {
 	    double rsq = probe.r + r;
 	    rsq *= rsq;
 
-	    if(dx*dx+dy*dy+dz*dz < rsq){
-	    //if(distance2(p, x[neighbour]) < rsq[neighbour]){
-		// measurably faster to check after
-		// satisfying the distance
-		if(neighbour != j && neighbour != k){
-		    return true;
-		}
+	    if(dx*dx+dy*dy+dz*dz < rsq && neighbour != j && neighbour != k){
+		return true;
 	    }
 	}
 
@@ -480,7 +466,7 @@ public class PASS {
      *
      * A neighbour is any sphere within ri + rj + 2 * rp
      */
-    public static void buildNeighbourList(DynamicArray atoms){
+    private static void buildNeighbourList(DynamicArray atoms){
 	int n = atoms.size();
 
 	first = new int[n];

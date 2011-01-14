@@ -145,14 +145,7 @@ public class Geometry {
 		if(fDiscr > 0.0){
 			// line intersects infinite cylinder in two places
 			fRoot = Math.sqrt(fDiscr);
-			//fRoot = Renderer.fastSqrt(fDiscr);
 			fInv = 1.0/fA;
-			//fT =(-fB - fRoot)*fInv;
-			//fTmp = kP[2] + fT*kD[2];
-			//if(0.0 <= fTmp && fTmp <= fWLength){
-			//    fTmpStore[iQuantity] = fTmp;
-			//    afT[iQuantity++] = fT*fInvDLength;
-			//}
 
 			fT =(-fB + fRoot)*fInv;
 			fTmp = kP[2] + fT*kD[2];
@@ -160,31 +153,15 @@ public class Geometry {
 				fTmpStore[iQuantity] = fTmp;
 				afT[iQuantity++] = fT*fInvDLength;
 			}
-
-			//if(iQuantity == 2){
-			//System.out.println("return with two cyl intersects");
-			// line intersects capsule wall in two places
-			//return 2;
-			//}
 		}
 
 		if(iQuantity != 1){
 			// test intersection with bottom hemisphere
-			// fA = 1
 			fB += kP[2]*kD[2];
 			fC += kP[2]*kP[2];
 			fDiscr = fB*fB - fC;
 			if(fDiscr > 0.0){
 				fRoot = Math.sqrt(fDiscr);
-				//fRoot = Renderer.fastSqrt(fDiscr);
-				//fT = -fB - fRoot;
-				//fTmp = kP[2] + fT*kD[2];
-				//if(fTmp <= 0.0){
-				//	fTmpStore[iQuantity] = 0.0;
-				//	afT[iQuantity++] = fT*fInvDLength;
-				//if(iQuantity == 2)
-				//    return 2;
-				//}
 
 				fT = -fB + fRoot;
 				fTmp = kP[2] + fT*kD[2];
@@ -200,37 +177,23 @@ public class Geometry {
 				if(fTmp <= 0.0){
 					fTmpStore[iQuantity] = 0.0;
 					afT[iQuantity++] = fT*fInvDLength;
-					//if(iQuantity == 2)
-					//    return 2;
 				}
 			}
 
 			if(top && iQuantity != 1){
 				// test intersection with top hemisphere
-				// fA = 1
 				fB -= kD[2]*fWLength;
 				fC += fWLength*(fWLength - 2.0*kP[2]);
 
 				fDiscr = fB*fB - fC;
 				if(fDiscr > 0.0){
 					fRoot = Math.sqrt(fDiscr);
-					//fRoot = Renderer.fastSqrt(fDiscr);
-					//fT = -fB - fRoot;
-					//fTmp = kP[2] + fT*kD[2];
-					//if(fTmp >= fWLength){
-					//	fTmpStore[iQuantity] = fWLength;
-					//	afT[iQuantity++] = fT*fInvDLength;
-					//if(iQuantity == 2)
-					//    return 2;
-					//}
 
 					fT = -fB + fRoot;
 					fTmp = kP[2] + fT*kD[2];
 					if(fTmp >= fWLength){
 						fTmpStore[iQuantity] = fWLength;
 						afT[iQuantity++] = fT*fInvDLength;
-						//if(iQuantity == 2)
-						//    return 2;
 					}
 				}else if(fDiscr == 0.0){
 					fT = -fB;
@@ -238,8 +201,6 @@ public class Geometry {
 					if(fTmp >= fWLength){
 						fTmpStore[iQuantity] = fWLength;
 						afT[iQuantity++] = fT*fInvDLength;
-						//if(iQuantity == 2)
-						//    return 2;
 					}
 				}
 			}

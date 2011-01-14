@@ -63,36 +63,23 @@ package astex;
  */
 public class match {
     /** This flag represents the asterisk (`*') wildcard character. */
-    public static final int ASTERISK = 1 << 0;
+    private static final int ASTERISK = 1 << 0;
     /** This flag represents the question mark (`?') wildcard
      *  character.
      */
-    public static final int QUESTION_MARK = 1 << 1;
+    private static final int QUESTION_MARK = 1 << 1;
     /** This flag represents the bracket (`[..]') matching feature. */
-    public static final int BRACKETS = 1 << 2;
+    private static final int BRACKETS = 1 << 2;
     /** This flag represents escaping feature, using backslash (`\'). */
-    public static final int BACKSLASH = 1 << 3;
-    /** All possible matching features. */
-    public static final int ALL = ASTERISK|QUESTION_MARK|BRACKETS|BACKSLASH;
+    private static final int BACKSLASH = 1 << 3;
     /** The default matching constructs (<tt>ASTERISK</tt>,
      *  <tt>QUESTION_MARK</tt>, and <tt>BRACKETS</tt>).
      */
-    public static final int DEFAULT = ASTERISK|QUESTION_MARK|BRACKETS|BACKSLASH;
+    private static final int DEFAULT = ASTERISK|QUESTION_MARK|BRACKETS|BACKSLASH;
 
     /** Return true if string matches pattern.  */
     public static boolean matches(String pattern, String string) {
         return matchExprRecursor(string, pattern, 0, 0, DEFAULT);
-    }
-
-    /** Return true if string matches pattern.
-     *
-     *  @param pattern Wildcard pattern.
-     *  @param string String to match.
-     *  @param flags Logical OR of allowed matching features.
-     *  @returns <tt>true</tt> if string matched.
-     */
-    public static boolean matches(String pattern, String string, int flags) {
-        return matchExprRecursor(string, pattern, 0, 0, flags);
     }
 
     /**
@@ -159,18 +146,9 @@ public class match {
              * which can include character ranges.
              */
             if ((types & BRACKETS) != 0 && pattern.charAt(pIdx) == '[') {
-                //int begin = pIdx+1;
-            
                 for (pIdx++ ; ; pIdx++) {
-                    if (pIdx >= pLen || /* pIdx != begin && */ pattern.charAt(pIdx) == ']')
+                    if (pIdx >= pLen || pattern.charAt(pIdx) == ']')
                         return false;
-
-                    /* Check for escaped characters. */
-                    //if ((types & BACKSLASH) != 0 && pattern.charAt(pIdx) == '\\') {
-                    //    if (pattern.charAt(pIdx+1) == string.charAt(sIdx))
-                    //        break;
-                    //    continue;
-                    //}
 
                     if (pattern.charAt(pIdx) == string.charAt(sIdx)) {
                         /* Increase so that the for loop below won't stop at
@@ -184,12 +162,9 @@ public class match {
                     /* If `]' was the first matching character
                      *
                      */
-                    if (pIdx < (pLen-1) && pattern.charAt(pIdx+1) == '-'
-                        /*    && !(pIdx == begin
-                            && pattern.charAt(begin) == ']') */ ) {
+                    if (pIdx < (pLen-1) && pattern.charAt(pIdx+1) == '-') {
                         
                         if (pIdx >= (pLen-2) || pattern.charAt(pIdx+2) == ']')
-                            //continue;
                             return false;
 
                         char chStr = string.charAt(sIdx);
@@ -206,10 +181,6 @@ public class match {
                 }
 
                 for ( ; pattern.charAt(pIdx) != ']' ; pIdx++) {
-                    /* Check for escaped characters. */
-                    //if ((types & BACKSLASH) != 0 && pattern.charAt(pIdx) == '\\')
-                    //    pIdx++;
-                
                     if (pIdx >= pLen) {
                         pIdx--;
                         break;

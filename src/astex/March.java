@@ -47,7 +47,7 @@ public class March {
     private static int ijDim = 0;
 
     /** Debugging? */
-    private static boolean debug = false;
+    private static final boolean debug = false;
 
     /** Empty edge identifier. */
     private static final int emptyEdge = -1;
@@ -56,7 +56,7 @@ public class March {
     private static final float epsilon = 0.000001f;
 
     /** tmesh object so that we can output triangles. */
-    public static Tmesh tmesh = null;
+    private static Tmesh tmesh = null;
 
     /** Looukp hoojami. */
     private static int nedge01 = 0;
@@ -103,9 +103,6 @@ public class March {
 	jDim2 = jDim - 2;
 	kDim2 = kDim - 2;
 	ijDim = iDim * jDim;
-
-	/* Create Tmesh object */
-	//tmesh = new Tmesh();
 
 	/* Allocate enough space for the indexing tags
 	   for the edges and set to empty. */
@@ -173,13 +170,6 @@ public class March {
 		tmesh.nz[iv] = -tmesh.nz[iv];
 	    }
 	}
-
-	//long now = System.currentTimeMillis();
-
-	//System.out.println("time " + (now -then ) + "ms");
-
-	//System.out.println("points " + tmesh.np + " lines " + tmesh.nt);
-
 	return tmesh;
     }
 
@@ -273,16 +263,9 @@ public class March {
 			off = getEdgeOffset(0, i+1, j);
 
 			layerEdges[off] = cellVerts[4];
-
-			//off = getEdgeOffset(7, i+1, j);
 			layerEdges[off+1] = cellVerts[5];
-		    
-			//off = getEdgeOffset(8, i+1, j);
 			layerEdges[off+2] = cellVerts[6];
-
-			//off = getEdgeOffset(11, i+1, j);
 			layerEdges[off+3] = cellVerts[7];
-
 		    }
 
 		    /* Propagate to the front. */
@@ -290,14 +273,8 @@ public class March {
 
 			off = getEdgeOffset( 3, i, j+1);
 			layerEdges[off] = cellVerts[1];
-		    
-			//off = getEdgeOffset( 9, i, j+1);
 			layerEdges[off+5] = cellVerts[9];
-
-			//off = getEdgeOffset( 4, i, j+1);
 			layerEdges[off+4] = cellVerts[5];
-		    
-			//off = getEdgeOffset( 8, i, j+1);
 			layerEdges[off+8] = cellVerts[10];
 		    }
 
@@ -385,7 +362,6 @@ public class March {
 	    double mean = 0.25 * (cell[v0] + cell[v1] + cell[v2] + cell[v3]);
 	    // check which side the mean is on relative to one corner
 	    if(mean > level == cell[v0] > level){
-	    //if(mean > level && cell[v0] > level){
 		tmesh.addLine(cellVerts[e0], cellVerts[e1], faceIndex);
 		tmesh.addLine(cellVerts[e2], cellVerts[e3], faceIndex);
 	    }else{
@@ -609,7 +585,6 @@ public class March {
 		n[1] /= len;
 		n[2] /= len;
 	    }else{ /* We have to fake this normal. */
-		//System.out.println("!!! null normal");
 		n[0] = 1.0f;
 		n[1] = 0.0f;
 		n[2] = 0.0f;

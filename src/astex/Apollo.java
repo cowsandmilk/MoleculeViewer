@@ -18,28 +18,7 @@
 package astex;
 
 public class Apollo {
-    private static final double xs[][] = new double[3][4];
-    private static final double rs[]   = new double[4];
-
-    public static boolean tangentSphere(double xa, double ya, double za, double ra,
-					double xb, double yb, double zb, double rb,
-					double xc, double yc, double zc, double rc,
-					double xd, double yd, double zd, double rd,
-					double xe[]){
-	rs[0] = ra;
-	rs[1] = rb;
-	rs[2] = rc;
-	rs[3] = rd;
-	xs[0][0] = xa; xs[1][0] = ya; xs[2][0] = za;
-	xs[0][1] = xa; xs[1][1] = ya; xs[2][1] = za;
-	xs[0][2] = xa; xs[1][2] = ya; xs[2][2] = za;
-	xs[0][3] = xa; xs[1][3] = ya; xs[2][3] = za;
-
-	return tangentSphere(xs, rs, xe);
-    }
-    
     private static final double rd[]   = new double[2];
-    //private static final double rs[]   = new double[4];
     private static final double rv[]   = new double[3];
     private static final double xd[][] = new double[3][4];
     private static final double xt[]   = new double[3];
@@ -130,7 +109,7 @@ public class Apollo {
 		    s += xv[i][js]*xv[i][js];
 		}
 		if(s < 1.e-6){
-		    //System.out.println("tangentSphere: no solution");
+		    //no solution
 		    return false;
 		}
 		//C
@@ -186,7 +165,7 @@ public class Apollo {
 	}
 
 	if(Math.abs(xt[im]) < 1.e-6){
-	    //System.out.println("tangentSphere: no solution");
+	    //no solution
 	    return false;
 	}
 // C
@@ -214,7 +193,7 @@ public class Apollo {
 	double c = b*b-a*(b1*b1+b2*b2-1.);
 
 	if(c < -1.e-6){
-	    //System.out.println("tangentSphere: no solution");
+	    //no solution
 	    return false;
 	}
 	c = Math.sqrt(Math.max(c,0.));
@@ -260,7 +239,7 @@ public class Apollo {
 	//C
 
 	if(rt < 1.e-6 && rt1 < 1.e-6){
-	    //System.out.println("tangentSphere: no solution");
+	    //no solution
 	    return false;
 	}
 // C#### Correct solution has the smallest positive distance from origin.
@@ -311,94 +290,4 @@ public class Apollo {
 //       ENDDO
 //       IF (LE) STOP 'ERROR: Sphere not tangential.'
 //       END
-
-    private static final double xe[] = new double[4];
-
-    public static void main(String args[]){
-
-	double xs[][] = {{0.0, 0.0, 0.0, 4.0},
-			 {0.0, 0.0, 4.0, 0.0},
-			 {0.0, 4.0, 0.0, 0.0},
-	};
-	
-	double rs[] = {1.0, 1.0, 1.0, 1.0};
-
-
-	if(args.length == 0){
-	    boolean success = tangentSphere(xs, rs, xe);
-
-	    if(success){
-		FILE.out.print("solution ");
-		for(int i = 0; i < 4; i++){
-		    FILE.out.print("%8.3f,", xe[i]);
-		}
-		FILE.out.print("\n");
-		
-		for(int j = 0; j < 4; j++){
-		    double d = 0.0;
-		    for(int i = 0; i < 3; i++){
-			FILE.out.print("x[%d]", i);
-			FILE.out.print("[%d]", j);
-			FILE.out.print("= %8.3f\n", xs[i][j]);
-			double dx = xe[i] - xs[i][j];
-			d += dx*dx;
-		    }
-		    d = Math.sqrt(d);
-		    
-		    FILE.out.print("sphere %d ", j);
-		    FILE.out.print("d = %8.3f,", d);
-		    FILE.out.print("r = %8.3f,", rs[j]+xe[3]);
-		    FILE.out.print("diff = %8.3f\n", Math.abs(d-(rs[j]+xe[3])));
-		    
-		}
-	    }
-	}else{
-	    int successCount = 0;
-	    int failCount    = 0;
-	    int hardFail     = 0;
-	    
-	    int a = FILE.readInteger(args[0]);
-
-	    for(int i = 0; i < a; i++){
-		for(int j = 0; j < a; j++){
-		    for(int k = 0; k < a; k++){
-			for(int l = 0; l < a; l++){
-			    for(int s = 0; s < 4; s++){
-				for(int x = 0; x < 3; x++){
-				    xs[x][s] = Math.random() * 10.0;
-				}
-			    }
-			    
-			    boolean success = tangentSphere(xs, rs, xe);
-			    
-			    if(success){
-				for(int s = 0; s < 4; s++){
-				    double d = 0.0;
-				    for(int x = 0; x < 3; x++){
-					double dx = xe[x] - xs[x][s];
-					d += dx*dx;
-				    }
-				    d = Math.sqrt(d);
-				    d -= (rs[s]+xe[3]);
-				    if(Math.abs(d) > 1.e-3){
-					hardFail++;
-					break;
-				    }
-				}
-				
-				
-				successCount++;
-			    }else{
-				failCount++;
-			    }
-			}
-		    }
-		}
-	    }
-	    
-	    FILE.out.print("successes  %10d\n", (successCount - hardFail));
-	    FILE.out.print("failures   %10d\n", failCount);
-	    FILE.out.print("hard fail  %10d\n", hardFail);
-	}
-    }
 }

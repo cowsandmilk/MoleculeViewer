@@ -39,7 +39,7 @@ public class UniversalFilenameFilter implements FilenameFilter {
 	}
 
 	/** Set the accepted file name extensions. */
-	public void setExtensions(String extensions[]){
+	private void setExtensions(String extensions[]){
 		acceptedExtensions = extensions;
 	}
 

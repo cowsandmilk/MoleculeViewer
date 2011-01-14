@@ -30,7 +30,7 @@ public class Tmesh {
     public int np = 0;
 
     /** The number of points allocated for the object. */
-    public int npalloc = 0;
+    private int npalloc = 0;
 
     /** The x coordinates of the points. */
     public float x[] = null;
@@ -64,27 +64,6 @@ public class Tmesh {
 
     /** The transparency of the object. */
     public int transparency = 0xff;
-    
-    /** The texture scaling mode. */
-    private int textureScalingMode = OriginalScalingMode;
-
-    /** The original textureScalingMode. */
-    public static final int OriginalScalingMode = 0;
-
-    /** The min,max textureScalingMode. */
-    public static final int MinMaxScalingMode = 1;
-
-    /** The minimum u texture coord. */
-    public float umin = 0.0f;
-
-    /** The maximum u texture coord. */
-    public float umax = 1.0f;
-
-    /** The minimum v texture coord. */
-    public float vmin = 0.0f;
-
-    /** The maximum u texture coord. */
-    public float vmax = 1.0f;
 
     /** The offset for the u texture coord. */
     private float uoffset = 0.0f;
@@ -119,7 +98,7 @@ public class Tmesh {
     public int nt = 0;
 
     /** The number of triangles allocated. */
-    int ntalloc = 0;
+    private int ntalloc = 0;
 
     /** The indices of the points in the triangles. */
     public int t0[] = null;
@@ -134,10 +113,10 @@ public class Tmesh {
     public int tcolor[] = null;
 
     /** The number of points we will grow a tmesh by. */
-    static final int PointAllocationIncrement = 4096;
+    private static final int PointAllocationIncrement = 4096;
 
     /** The number of triangles we will grow a tmesh by. */
-    static final int TriangleAllocationIncrement = 8192;
+    private static final int TriangleAllocationIncrement = 8192;
 
     /** Renderering Style. */
     public int style = TRIANGLES;
@@ -170,7 +149,7 @@ public class Tmesh {
     public static final int VertexColor = 3;
 
     /** Debugging on? */
-    public boolean debug = false;
+    private boolean debug = false;
 
     /** Set the uscale. */
     public void setUScale(double f){
@@ -254,33 +233,6 @@ public class Tmesh {
 	}
     }
 
-    /** Set min and max for the specified texture coordinate. */
-    public void setMinMax(int uv){
-	double tmin =  1.e10;
-	double tmax = -1.e10;
-	
-	int pointCount = np;
-
-	if(uv == UTexture || uv == VTexture){
-	    float tt[] = null;
-	    if(uv == Tmesh.UTexture){
-		tt = u;
-	    }else if(uv == Tmesh.VTexture){
-		tt = v;
-	    }
-	    for(int i = 0; i < pointCount; i++){
-		double t = tt[i];
-
-		if(t < tmin) tmin = t;
-		if(t > tmax) tmax = t;
-	    }
-
-	    setTextureRange(uv, tmin, tmax);
-	}else{
-	    Log.error("texture coordinate must be 1 or 2, not "+ uv);
-	}
-    }
-
     /** Set the object color style. */
     public void setColorStyle(int s){
 	colorStyle = s;
@@ -290,7 +242,7 @@ public class Tmesh {
     }
 
     /** Get the object color style. */
-    public int getColorStyle(){
+    private int getColorStyle(){
 	return colorStyle;
     }
 
@@ -299,7 +251,7 @@ public class Tmesh {
     }
 
     /** Is this object visible. */
-    boolean visible = true;
+    private boolean visible = true;
     
     /**
      * Get the value of visible.
@@ -307,16 +259,6 @@ public class Tmesh {
      */
     public boolean isVisible() {
 	return visible;
-    }
-
-    /** Set the texture scaling mode. */
-    public void setTextureScalingMode(int sm){
-	textureScalingMode = sm;
-    }
-    
-    /** Get the texture scaling mode. */
-    public int getTextureScalingMode(){
-	return textureScalingMode;
     }
     
     /**
@@ -328,15 +270,7 @@ public class Tmesh {
     }
 
     /** Does this object show backfacing triangles. */
-    boolean backface;
-    
-    /**
-     * Get the value of backface.
-     * @return value of backface.
-     */
-    public boolean getBackface() {
-	return backface;
-    }
+    public boolean backface;
     
     /**
      * Set the value of backface.
@@ -347,7 +281,7 @@ public class Tmesh {
     }
 
     /** Base color of this object. */
-    int color = 0x00ff00;
+    public int color = 0x00ff00;
     
     /**
      * Get the value of color.
@@ -403,10 +337,6 @@ public class Tmesh {
 	this.name = v;
     }
 
-    /** Set whether this point is clipped. */
-    public void setClipped(int i, boolean state){
-    }
-
     /** Default line width (-1.0 indicates line of 1 pixel width). */
     private double lineWidth = -1.0;
 
@@ -422,11 +352,6 @@ public class Tmesh {
     /** Set the linewidth. */
     public double getLineWidth(){
 	return lineWidth;
-    }
-
-    /** Add a point to the object. */
-    public int addPoint(Point3d x, Point3d n, double tu, double tv){
-	return addPoint(x.x, x.y, x.z, n.x, n.y, n.z, tu, tv);
     }
 	
     /** Add a point to the object. */
@@ -475,25 +400,13 @@ public class Tmesh {
 	}
     }
 
-    /** Set the vertex info for the specified point. */
-    public void setVertex(int v, double px[], double nxx[]){
-	x[v] = (float)px[0];
-	y[v] = (float)px[1];
-	z[v] = (float)px[2];
-	if(nxx != null){
-	    nx[v] = (float)nxx[0];
-	    ny[v] = (float)nxx[1];
-	    nz[v] = (float)nxx[2];
-	}
-    }
-
     /** Get the number of points. */
     public int getnPoints(){
 	return np;
     }
 
     /** Set the initial capacity for points. */
-    public void setPointCapacity(int nn){
+    private void setPointCapacity(int nn){
 	npalloc = nn;
 	x = new float[npalloc];
 	y = new float[npalloc];
@@ -507,7 +420,7 @@ public class Tmesh {
     }
 
     /** Make sure we have room for the next point. */
-    public void ensurePointCapacity(){
+    private void ensurePointCapacity(){
 	if(np == npalloc){
 	    npalloc += PointAllocationIncrement;
 
@@ -590,7 +503,7 @@ public class Tmesh {
     }
 
     /** Set the initial capacity for triangles. */
-    public void setTriangleCapacity(int nn){
+    private void setTriangleCapacity(int nn){
 	ntalloc = nn;
 	t0 = new int[ntalloc];
 	t1 = new int[ntalloc];
@@ -599,7 +512,7 @@ public class Tmesh {
     }
 
     /** Make sure we have room for the next triangle. */
-    public void ensureTriangleCapacity(){
+    private void ensureTriangleCapacity(){
 	if(nt == ntalloc){
 	    ntalloc += TriangleAllocationIncrement;
 
@@ -644,14 +557,6 @@ public class Tmesh {
 	    
 	    np++;
 	}
-    }
-
-    /** Add a line to this mesh. */
-    public void addLine(double x1, double y1, double z1,
-			double x2, double y2, double z2,
-			int c1, int c2){
-	addCylinder(x1, y1, z1, x2, y2, z2, 0.0, c1, c2);
-	
     }
 
     /** Add a cylinder to this tmesh. */
@@ -700,7 +605,7 @@ public class Tmesh {
     }
 
     /** Read a ply file. */
-    public static Tmesh readPly(FILE f){
+    private static Tmesh readPly(FILE f){
 	System.out.println("reading ply file");
 	
 	Tmesh tmesh = new Tmesh();
@@ -885,15 +790,6 @@ public class Tmesh {
 	return tmesh;
     }
 
-    /** Distance between two points. */
-    public double distance(int v0, int v1){
-	double dx = x[v0] - x[v1];
-	double dy = y[v0] - y[v1];
-	double dz = z[v0] - z[v1];
-
-	return Math.sqrt(dx*dx + dy*dy + dz*dz);
-    }
-
     /** Distance between vertex and point. */
     public double distance(int v0, double p[]){
 	double dx = x[v0] - p[0];
@@ -901,13 +797,6 @@ public class Tmesh {
 	double dz = z[v0] - p[2];
 
 	return Math.sqrt(dx*dx + dy*dy + dz*dz);
-    }
-
-    /** Find mid point of two vertices. */
-    public void mid(double v[], int v0, int v1){
-	v[0] = 0.5 * (x[v0] + x[v1]);
-	v[1] = 0.5 * (y[v0] + y[v1]);
-	v[2] = 0.5 * (z[v0] + z[v1]);
     }
 
     /** Prints the tmesh to a file. */
@@ -952,46 +841,6 @@ public class Tmesh {
 	}
 	    
 	output.close();
-    }
-
-    /** Find simple bounding sphere of the tmesh. */
-    public double getBoundingSphere(double c[]){
-	if(c == null){
-	    System.out.println("tmesh " + name + ": null array for center");
-	    return 0.0;
-	}
-
-	c[0] = c[1] = c[2] = 0.0;
-
-	if(np > 0){
-	    for(int i = 0; i < np; i++){
-		c[0] += x[i];
-		c[1] += y[i];
-		c[2] += z[i];
-	    }
-
-	    c[0] /= np;
-	    c[1] /= np;
-	    c[2] /= np;
-
-	    double rsq = 0.0;
-
-	    for(int i = 0; i < np; i++){
-		double dx = c[0] - x[i];
-		double dy = c[1] - y[i];
-		double dz = c[2] - z[i];
-
-		double rnew = dx*dx + dy*dy + dz*dz;
-
-		if(rnew > rsq){
-		    rsq = rnew;
-		}
-	    }
-
-	    return Math.sqrt(rsq);
-	}else{
-	    return 0.0;
-	}
     }
 
     private Hashtable<Integer, Integer> clipHash = null;
@@ -1316,289 +1165,6 @@ public class Tmesh {
 	return name + ": " + np + " points, " + nt + " triangles";
     }
 
-    /** Test program. */
-    public static void main(String args[]){
-	Tmesh tm = Tmesh.read(args[0]);
-
-	System.out.println(tm);
-    }
-
-    /** Maximum number of triangle per point. */
-    private static final int maxTriangles = 100;
-
-    /** Get lookup for 'like 2D' triangle array. */
-    private int triangleLookup(int i, int j){
-	return (i + np * j);
-    }
-
-    /** Sum of the distances three edges of the triangle. */
-    private float sumTriangleDis(int i, int j, int k){
-	
-	float dis = 0.0f;
-	
-	dis += distance(i,j);
-	dis += distance(j,k);
-	dis += distance(i,k);
-	
-	return dis;
-    }
-    
-    /** Removes triangle. */
-    private void removeTriangle(int t, int p1, int p2){
-
-	/* Set keepTriangles to false. */
-	keepTriangles[t]  = false;
-	keepPoints[p1]    = false;
-
-	/* Create new position for point. */
-	interpolate(p1, p2);
-
-	/* Set all the other triangles 
-	   referencing p1 to reference p2. */
-	int ntri = ntriangles[p1];
-	for(int ot = 0; ot < ntri; ot++){
-	   
-	    int lt   = triangleLookup(p1, ot);
-	    int tref = triangleRef[lt];
-
-	    /* Change the triangle reference for p1 to p2. */
-	    changeTriangleRef(p1, p2, tref); 
-	    
-	    /* Add the reference for the new triangle that p2 to triangleRef. */
-	    changePointTriangleRef(p2, tref);
-	}
-    }
-
-    /** Interpolate position poisition of p1 and p2. */
-    private void interpolate(int p1, int p2){
-
-	x[p2] = 0.5f * (x[p2] + x[p1]);
-	y[p2] = 0.5f * (y[p2] + y[p1]);
-	z[p2] = 0.5f * (z[p2] + z[p1]);
-
-	nx[p2] = 0.5f * (nx[p2] + nx[p1]);
-	ny[p2] = 0.5f * (ny[p2] + ny[p1]);
-	nz[p2] = 0.5f * (nz[p2] + nz[p1]);
-
-	u[p2] = 0.5f * (u[p2] + u[p1]);
-	v[p2] = 0.5f * (v[p2] + v[p1]);
-
-    }
-
-    /** changePointTriangleRef. */
-    private void changePointTriangleRef(int p2, int t){
-
-	/* Need to check if we already have it.
-	   If we do just return else add the new triangle ref. */
-	int ntri = ntriangles[p2];
-	for(int j = 0; j < ntri; j++){
-	    int lt   = triangleLookup(p2, j);
-	    int tref = triangleRef[lt];	    
-	    if(tref == t) return;
-	}
-	
-	int lt = triangleLookup(p2, ntri);
-	triangleRef[lt] = t;
-
-	ntriangles[p2]++;
-
-    }
-
-    /** Changes triangles to reference new point. */
-    private void changeTriangleRef(int p1, int p2, int t){
-
-	/* First change triangles to reference
-	   new point in the main tmesh object. */
-	if(t0[t] == p1){
-	    t0[t] = p2;
-	    if(t1[t] == p2 || t2[t] == p2){
-		keepTriangles[t] = false;
-	    }
-	}
-	if(t1[t] == p1){
-	    t1[t] = p2;
-	    if(t0[t] == p2 || t2[t] == p2){
-		keepTriangles[t] = false;
-	    }
-	}
-        if(t2[t] == p1){
-	    t2[t] = p2;
-	    if(t0[t] == p2 || t1[t] == p2){
-		keepTriangles[t] = false;
-	    }
-	}
-
-    }
- 
-    /** Copies the contents of i to c for the
-	vertex information in the tmesh. */
-    private int copyUp(int c, int i){
-	
-	x[c]  = x[i];
-	y[c]  = y[i];
-	z[c]  = z[i];
-	nx[c] = nx[i];
-	ny[c] = ny[i];
-	nz[c] = nz[i];
-	u[c] = u[i];
-	v[c] = v[i];
-	
-	c++;
-
-	return c;	
-    }
-
-    /** Copies the contents of i to c for the
-	triangle information in the tmesh. */
-    private int copyUpTriangles(int c, int i){
-
-	t0[c] = t0[i];
-	t1[c] = t1[i];
-	t2[c] = t2[i];
-
-	c++;
-	
-	return c;
-    }
-
-    /** '2D like' array of references to each triangle
-	indexed via each point. */
-    private int triangleRef[] = null;
-
-    /** Number of triangles for each point. */
-    private int ntriangles[]  = null;
-
-    /** Parallel arrays denoting whether 
-	triangle/points are kept or not. */
-    private boolean keepTriangles[] = null;
-    private boolean keepPoints[] = null;
-
-    /** Smooth the tmesh object. */
-    public void smooth(double dlen){
-	float flen = (float)dlen;
-	
-	/* Average distance betwen points. */
-	float avDis = 0.0f;
-
-	/* Allocate memory for arrays. */
-	triangleRef   = new int[np * maxTriangles];
-	ntriangles    = new int[np];
-	keepTriangles = new boolean[nt];
-	keepPoints    = new boolean[np];
-
-	/* Initialise arrays. */
-	for(int i = 0; i < np; i++){
-	    ntriangles[i] = 0;
-	    keepPoints[i] = false;
-	}
-
-	/* Get triangle information into arrays. */
-	for(int i = 0; i < nt; i++){
-
-	    int look;
-	    int p0 = t0[i];
-	    
-	    /** Initialise keep triangles. */
-	    keepTriangles[i] = true;	    
-
-	    look = triangleLookup(p0, ntriangles[p0]);
-	    triangleRef[look] = i;
-	    ntriangles[p0]++;
-
-	    int p1 = t1[i];
-	    look = triangleLookup(p1, ntriangles[p1]);
-	    triangleRef[look] = i;
-	    ntriangles[p1]++;
-
-	    int p2 = t2[i];
-	    look = triangleLookup(p2, ntriangles[p2]);
-	    triangleRef[look] = i;
-	    ntriangles[p2]++;
-
-	    /* Add sum of three distances. */
-	    avDis += sumTriangleDis(p0, p1, p2);
-	}
-
-	/* Calculate avDis. Each traingle shares an 
-	   edge so divide by 2*nt. Then calculate flen. */
-	avDis /= (2*nt);
-	flen *= avDis;
-	
-	for(int t = 0; t < nt; t++){
-
-	    if(keepTriangles[t]){
-		if(distance(t0[t], t1[t]) < flen){
-		    removeTriangle(t, t0[t], t1[t]);
-		} 
-		else if(distance(t1[t], t2[t]) < flen){
-		    removeTriangle(t, t1[t], t2[t]);
-		}
-		else if(distance(t0[t], t2[t]) < flen){
-		    removeTriangle(t, t0[t], t2[t]);
-		} 
-	    }
-	}
-	
-	/* Find certices will still need. */
-	for(int i = 0; i < nt; i++){
-	    if(keepTriangles[i]){
-		keepPoints[t0[i]] = true;
-		keepPoints[t1[i]] = true;
-		keepPoints[t2[i]] = true;
-	    }
-	}
-
-
-	/* Copy up all the vertices and relabel
-	   the triangle references. */
-	int count = 0;
-	for(int i = 0; i < np; i++){
-	    if(keepPoints[i]){
-		count = copyUp(count, i);
-		for(int j = 0; j < ntriangles[i]; j++){
-		    int look = triangleRef[triangleLookup(i, j)];
-		    if(keepTriangles[look]){
-			if(t0[look] == i){
-			    t0[look] = count - 1;		
-			} 
-			if(t1[look] == i){
-			    t1[look] = count - 1;
-			} 
-			if(t2[look] == i){
-			    t2[look] = count - 1;	
-			} 
-		    }  
-		}
-	    }
-	}
-
-	/* Reset the number of points. */
-	np = count;
-
-	/* Now copy up all the triangles. */
-	count = 0;
-	for(int i = 0; i < nt; i++){
-	    if(keepTriangles[i]){		
-		count = copyUpTriangles(count, i);
-	    }
-	}
-	
-	/* Reset the numbr of triangles. */
-	nt = count;
-	
-	/* Report new number of points and triangles. */
-	//System.out.println("number of vertices (after smoothing) " + np);
-	//System.out.println("number of triangles (after smoothing) " + nt);
-	
-
-	/* Dereference the arrays. */
-	triangleRef   = null;
-	ntriangles    = null;
-	keepTriangles = null;
-	keepPoints    = null;
-
-    }
-
     /** Copy the specified objects into a new object. */
     public static Tmesh copy(DynamicArray objects){
 	Tmesh newTmesh = new Tmesh();
@@ -1660,17 +1226,10 @@ public class Tmesh {
     private Renderer renderer;
 
     /**
-     * Get the MoleculeRenderer value.
-     */
-    public Renderer getRenderer() {
-	return renderer;
-    }
-
-    /**
      * Set the Renderer value.
      */
     public void setRenderer(Renderer r) {
-	this.renderer = r;
+	renderer = r;
     }
     
     /** Which pass of the renderer do we get drawn in. */
@@ -1688,18 +1247,8 @@ public class Tmesh {
      * Set the RenderPass value.
      * @param newRenderPass The new RenderPass value.
      */
-    public void setRenderPass(int newRenderPass) {
+    private void setRenderPass(int newRenderPass) {
 	this.renderPass = newRenderPass;
-    }
-
-    /** 
-     * Called when the Tmesh needs to draw itself.
-     *
-     * Render states are obtained from the moleculeRenderer
-     * which gives a reference to the low lying renderer,
-     * and the container which holds moleculeRenderer.
-     */
-    public void render(){
     }
 }
 

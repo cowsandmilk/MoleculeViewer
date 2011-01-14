@@ -26,7 +26,4 @@ public class Vertex {
 
     /** The vertex entry in the tmesh. */
     public int vi;
-
-    /** The probe that generated this vertex. */
-    //public Probe p;
 }

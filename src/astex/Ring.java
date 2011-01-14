@@ -38,23 +38,7 @@ public class Ring extends Generic {
     /**
      * Private default constructor.
      */
-    private Ring(){
-	initialise();
-    }
-	
-    /**
-     * Initialise the ring object.
-     */
-    private void initialise(){
-	atoms.removeAllElements();
-	bonds.removeAllElements();
-    }
-
-    /**
-     * Create a ring.
-     */
-    public static Ring create(){
-	return new Ring();
+    public Ring(){
     }
 
     /**
@@ -74,14 +58,14 @@ public class Ring extends Generic {
     /**
      * Get an atom.
      */
-    public Atom getAtom(int index){
+    private Atom getAtom(int index){
 	return (Atom)atoms.get(index);
     }
 
     /**
      * Get a bond.
      */
-    public Bond getBond(int index){
+    private Bond getBond(int index){
 	return (Bond)bonds.get(index);
     }
 
@@ -91,14 +75,14 @@ public class Ring extends Generic {
     }
 
     /** Return the bond count. */
-    public int getBondCount(){
+    private int getBondCount(){
 	return bonds.size();
     }
 
     /**
      * Does this ring contain the specified atom?
      */
-    public boolean contains(Atom queryAtom){
+    private boolean contains(Atom queryAtom){
 	int atomCount = getAtomCount();
 	for(int i = 0; i < atomCount; i++){
 	    Atom atom = getAtom(i);
@@ -119,41 +103,6 @@ public class Ring extends Generic {
 	    Bond bond = getBond(i);
 	    if(bond == queryBond){
 		return true;
-	    }
-	}
-
-	return false;
-    }
-
-    /** Return the index of the atom in the ring or -1 if not present. */
-    public int getAtomIndex(Atom queryAtom){
-	int atomCount = getAtomCount();
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-	    if(atom == queryAtom){
-		return a;
-	    }
-	}
-
-	return -1;
-    }
-
-    /** Is this ring planar, but not necessarily aromatic. */
-    public boolean isPlanar(){
-	if(isAromatic()){
-	    return true;
-	}else{
-	    int bondCount = getBondCount();
-
-	    if(bondCount == 4){
-		for(int i = 0; i < bondCount; i++){
-		    Bond bond = getBond(i);
-
-		    if(bond.isNonRotatable()){
-			//System.out.println("saw planar 4-ring");
-			return true;
-		    }
-		}
 	    }
 	}
 

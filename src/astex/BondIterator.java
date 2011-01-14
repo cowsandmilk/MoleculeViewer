@@ -29,10 +29,6 @@ public class BondIterator implements Enumeration<Bond> {
 	/** The scene that we will enumerate the bonds of. */
 	private MoleculeRenderer renderer = null;
 
-	/** Private default constructor. */
-	private BondIterator(){
-	}
-
 	/** The number of molecules. */
 	private int moleculeCount = 0;
 
@@ -65,10 +61,6 @@ public class BondIterator implements Enumeration<Bond> {
 		if(currentMolecule == null){
 			return false;
 		}
-		
-		//System.out.println("currentBondIndex " + currentBondIndex);
-		//System.out.println("currentMoleculeBondCount " +
-		//				   currentMoleculeBondCount);
 
 		if(currentBondIndex < currentMoleculeBondCount){
 			return true;

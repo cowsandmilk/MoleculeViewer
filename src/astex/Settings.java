@@ -25,17 +25,14 @@ public class Settings {
 
 	/** The main get method. */
 	public static Object get(String table, String property){
-		//Log.info("looking for table " + table);
 		Properties properties = propertyObjects.get(table);
 
 		if(properties == null){
-			//Log.info("couldn't find " + table);
 			String resource = table + ".properties";
 
 			properties = FILE.loadProperties(resource);
 
 			if(properties != null){
-				//Log.info("loaded " + table);
 				propertyObjects.put(table, properties);
 			}else{
 				Log.error("couldn't load " + table);
@@ -47,16 +44,6 @@ public class Settings {
 
 		if(object == null){
 			return null;
-		}else{
-			return object;
-		}
-	}
-
-	public static Object get(String table, String property, Object defaultVal){
-		Object object = get(table, property);
-
-		if(object == null){
-			return defaultVal;
 		}else{
 			return object;
 		}
@@ -123,7 +110,7 @@ public class Settings {
 	}
 
 	/** Lookup value of String arg or return default. */
-	public static boolean getBoolean(String table, String argument, boolean defaultVal){
+	private static boolean getBoolean(String table, String argument, boolean defaultVal){
 		Object o = get(table, argument);
 
 		if(o == null){

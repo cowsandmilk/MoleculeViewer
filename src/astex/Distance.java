@@ -37,19 +37,6 @@ public class Distance extends Generic {
 	/** The centroid distance mode. */
 	public static final int Centroids = 2;
 
-	/** The mode we are collecting distances in. */
-	//private int mode = Pairs;
-
-	/** Set the distance mode. */
-	//public void setMode(int m){
-	//mode = m;
-	//}
-
-	/** Get the distance mode. */
-	//public int getMode(){
-	//return mode;
-	//}
-
 	public static Distance createDistanceMonitor(Atom a0, Atom a1){
 		String monitorAtomLabel = "%a %r%c";
 		Distance d = new Distance();
@@ -157,27 +144,4 @@ public class Distance extends Generic {
 
 		return true;
 	}
-
-	/** The format for the distance display. */
-	//public String format = "%.2fA";
-
-	//public int labelColor = Color32.white;
-
-	/** The color of the distance visual. */
-	//public int color = Color32.white;
-
-	/** The radius of the cylinder. */
-	//public double radius = -1.0;
-
-	/** The distance the dash is on for. */
-	//public double on = 0.2;
-
-	/** The distance the dash is off for. */
-	//public double off = 0.2;
-
-	/** Name of the distance object. */
-	//public String name = "distance";
-
-	/** Is this distnace visible. */
-	//public boolean visible = true;
 }

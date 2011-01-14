@@ -21,10 +21,10 @@ import java.util.*;
 
 public class Animate extends Thread {
 	/** The list of animation objects. */
-	public Vector<AnimationObject> stages = null;
+	private Vector<AnimationObject> stages = null;
 
 	/** The MoleculeViewer we are associated with. */
-	public MoleculeViewer moleculeViewer = null;
+	private MoleculeViewer moleculeViewer = null;
 
 	/** Should we maintain interactive display. */
 	private boolean interactive      = true;
@@ -47,24 +47,6 @@ public class Animate extends Thread {
 	/** Set the stages. */
 	public void setStages(Vector<AnimationObject> v){
 		stages = v;
-	}
-
-	/** Return the total number of steps in the animation. */
-	public int getStepCount(){
-		int totalSteps = 0;
-
-		int stageCount = stages.size();
-
-		Log.info("stages %3d", stageCount);
-
-		for(int s = 0; s < stageCount; s++){
-
-			AnimationObject stage = stages.elementAt(s);
-
-			totalSteps += stage.getSteps();
-		}
-
-		return totalSteps;
 	}
 
 	/** The run method. */

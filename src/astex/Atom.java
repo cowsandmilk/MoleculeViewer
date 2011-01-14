@@ -51,79 +51,79 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     }
 
     /** Undefined atom id. */
-    public static int Undefined = -1;
+    public static final int Undefined = -1;
 
     /** An integer for storing various attributes. */
     public int attributes = 0;
 
     /** The radius of the atom. */
-    public float radius = -1.0f;
+    private float radius = -1.0f;
 
     /** The stick radius of the atom. */
-    public float ballRadius = defaultBallRadius;
+    private float ballRadius = defaultBallRadius;
 
     /** The atom is solvent. */
-    public static int Solvent = 0x1;
+    public static final int Solvent = 0x1;
 
     /** The atom is labelled. */
-    public static int Labelled = 0x2;
+    public static final int Labelled = 0x2;
 
     /** The atom is selected. */
-    public static int Selected = 0x4;
+    public static final int Selected = 0x4;
 
     /** The atom is an heteroatom. */
-    public static int Hetero = 0x8;
+    public static final int Hetero = 0x8;
 
     /** The atom is temporarily selected. */
-    public static int TemporarilySelected =   0x10;
+    public static final int TemporarilySelected =   0x10;
 
     /** The atom visit flag. */
-    public static int Visited             =   0x20;
+    public static final int Visited             =   0x20;
 
     /** The atom display flag. */
-    public static int Displayed           =   0x40;
+    public static final int Displayed           =   0x40;
 
     /** The wide atom flag. */
-    public static int Wide                =   0x80;
+    public static final int Wide                =   0x80;
 
     /** The sphere flag. */
-    public static int VDWSphere           =  0x100;
+    public static final int VDWSphere           =  0x100;
 
     /** The surfaced atom flag. */
-    public static int Surface             =  0x200;
+    public static final int Surface             =  0x200;
 
     /** The surface context flag. */
-    public static int SurfaceContext      =  0x400;
+    public static final int SurfaceContext      =  0x400;
 
     /** The property set flag. */
-    public static int Property            =  0x800;
+    public static final int Property            =  0x800;
 
     /** The property set flag. */
-    public static int BallAndStick        = 0x1000;
+    public static final int BallAndStick        = 0x1000;
 
     /** The property set flag. */
-    public static int Cylinder            = 0x2000;
+    public static final int Cylinder            = 0x2000;
 
     /** The property set flag. */
-    public static int CustomLabelled      = 0x4000;
+    public static final int CustomLabelled      = 0x4000;
 
-    public static int DisplayedMask	  = 
+    public static final int DisplayedMask	  =
 	Displayed | Cylinder | BallAndStick | VDWSphere;
 
     /** Atom is active in energy calculations. */
-    public static int ModellingActive     = 0x8000;
+    public static final int ModellingActive     = 0x8000;
 
     /** Atom is environment in energy calculations. */
-    public static int ModellingEnvironment= 0x10000;
+    public static final int ModellingEnvironment= 0x10000;
 
     /** Atom is xray terms in energy calculations. */
-    public static int ModellingXray       = 0x20000;
+    public static final int ModellingXray       = 0x20000;
 
     /** Atom is fixed in energy calculations. */
-    public static int ModellingFixed      = 0x40000;
+    public static final int ModellingFixed      = 0x40000;
 
     /** Atom is fixed in energy calculations. */
-    public static int NameLeftJustified   = 0x80000;
+    public static final int NameLeftJustified   = 0x80000;
 
     public static final int Aromatic      = 0x100000;
 
@@ -154,7 +154,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public static final int E = 7;
 
     /** The color of selected atoms. */
-    private static int selectedColor = Color32.yellow;
+    private static final int selectedColor = Color32.yellow;
     
     /** Default radius for balls in ball and stick. */
     private static final float defaultBallRadius = 0.3f;
@@ -190,7 +190,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
      * 
      * Used only when we have more than three bonds.
      */
-    private DynamicArray bonds = null;
+    private DynamicArray bonds;
 	
     /** Reference to first bond (or null if there are no bonds). */
     private Bond firstBond;
@@ -259,9 +259,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     private static DynamicArray atomCache =
 	new DynamicArray(MaxAtomCacheSize);
 
-    public static int atomsCreated = 0;
-    public static int atomsCached = 0;
-
     /**
      * Create an atom.
      *
@@ -271,14 +268,11 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	int atomCacheSize = atomCache.size();
 
 	if(atomCacheSize > 0){
-	    //Log.info("atomCacheSize %d", atomCacheSize);
 	    Atom atom = (Atom)atomCache.get(atomCacheSize - 1);
 	    atomCache.removeElement(atomCacheSize - 1);
 	    atom.initialise();
-	    atomsCached++;
 	    return atom;
 	}else{
-	    atomsCreated++;
 	    return new Atom();
 	}
     }
@@ -487,7 +481,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 			    s += label;
 			}
 		    }else if(nc == 'a'){
-			//s += FILE.sprint("%s", getAtomLabel());
 			s += getAtomLabel();
 		    }else if(nc == 'r'){
 			Residue res = getResidue();
@@ -541,8 +534,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	    }
 	}
 
-        //System.out.println("after vars |"+s+"|");
-
         format = s;
 	s = "";
 	len = format.length();
@@ -564,8 +555,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
                     
                     url += c;
                 }
-
-                //System.out.println("url |" + url + "|");
 
                 FILE f = FILE.openURL(url);
 

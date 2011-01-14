@@ -47,9 +47,6 @@ public class Symmetry {
      */
     public Matrix scale = null;
 
-    /** Have we precalculated the f2c and c2f matrices from SCALE. */
-    public boolean matricesAssigned = false;
-
     /** The space group number. */
     private int spaceGroupNumber = 0;
 
@@ -62,25 +59,10 @@ public class Symmetry {
     /** The list of symmetry operators. */
     private DynamicArray symmetryOperators = null;
 
-    /** The encoding of the unit cell. */
-    private int ncode = 1;
-
     /** The default location of the symmetry library. */
-    private static String symmetryLibrary = "symmetry.properties";
-
-    /** Get the symmetry operators for the specified space group number. */
-    //public static DynamicArray getSymmetryOperators(int spaceGroupNumber){
-    //	return getSymmetryOperators(spaceGroupNumber, null);
-    //}
-
-    /** Get the symmetry operators for the specified space group name. */
-    //public static DynamicArray getSymmetryOperators(String spaceGroupName){
-    //	return getSymmetryOperators(-1, spaceGroupName);
-    //}
+    private static final String symmetryLibrary = "symmetry.properties";
 
     /** Get the symmetry operators for the specified space group. */
-    //public static DynamicArray getSymmetryOperators(int spaceGroupNumber,
-    //						    String spaceGroupName){
     public DynamicArray getSymmetryOperators(){
 	if(symmetryOperators != null){
 	    return symmetryOperators;
@@ -100,8 +82,6 @@ public class Symmetry {
 	    }
 	}
 
-	//System.out.println("looking for symmetry group |" + compactedOriginalName + "|");
-
 	while(file.nextLine()){
 	    String line = file.getCurrentLineAsString();
 	    StringTokenizer tokenizer = new StringTokenizer(line);
@@ -114,8 +94,6 @@ public class Symmetry {
 	    int number = FILE.readInteger(numberToken);
 	    int operatorCount = FILE.readInteger(operatorCountToken);
 
-	    //System.out.println("checking |" + name + "|");
-
 	    if(number == spaceGroupNumber ||
 	       (compactedOriginalName != null && name.equals(compactedOriginalName)) ||
 	       (spaceGroupName != null && shortName.equals(spaceGroupName))){
@@ -125,13 +103,10 @@ public class Symmetry {
 
 		symmetryOperators = new DynamicArray();
 
-		//if(number == spaceGroupNumber ||
-		//(spaceGroupName != null && name.equals(spaceGroupName))){
 		for(int i = 0; i < operatorCount; i++){
 		    file.nextLine();
 		    String operatorString = file.getCurrentLineAsString();
 		    readSymmetryOperator(operatorString, symmetryOperators);
-		    //System.out.println("operatorString " + operatorString);
 		}
 
 		break;
@@ -157,7 +132,7 @@ public class Symmetry {
      * and compared it to P21, but we need to compare it to
      * 'P 1 21 1'. This method returns that compacted name.
      */
-    public static String getSpaceGroupName(String spaceGroupDescription){
+    private static String getSpaceGroupName(String spaceGroupDescription){
 	int firstApostrophe = spaceGroupDescription.indexOf('\'');
 	int lastApostrophe = spaceGroupDescription.lastIndexOf('\'');
 	String spaceGroupName = "";
@@ -172,7 +147,7 @@ public class Symmetry {
     }
 
     /** Decode one symmetry operator. */
-    public static void readSymmetryOperator(String line,
+    private static void readSymmetryOperator(String line,
 					    DynamicArray symmetryOperators){
 	StringTokenizer lineTokenizer = new StringTokenizer(line, ",");
 	String xToken = lineTokenizer.nextToken().trim();
@@ -184,13 +159,10 @@ public class Symmetry {
 	m.setIdentity();
 
 	decodeSymmetryToken(xToken, c);
-	//m.x00 = c[0]; m.x01 = c[1]; m.x02 = c[2]; m.x03 = c[3];
 	m.x00 = c[0]; m.x10 = c[1]; m.x20 = c[2]; m.x30 = c[3];
 	decodeSymmetryToken(yToken, c);
-	//m.x10 = c[0]; m.x11 = c[1]; m.x12 = c[2]; m.x13 = c[3];
 	m.x01 = c[0]; m.x11 = c[1]; m.x21 = c[2]; m.x31 = c[3];
 	decodeSymmetryToken(zToken, c);
-	//m.x20 = c[0]; m.x21 = c[1]; m.x22 = c[2]; m.x23 = c[3];
 	m.x02 = c[0]; m.x12 = c[1]; m.x22 = c[2]; m.x32 = c[3];
 
 	symmetryOperators.add(m);
@@ -211,9 +183,7 @@ public class Symmetry {
     };
 
     /** Decode the symmetry token in the String. */
-    public static void decodeSymmetryToken(String token, double components[]){
-	//System.out.println("token " + token);
-		
+    private static void decodeSymmetryToken(String token, double components[]){
 	for(int i = 0; i < components.length; i++){
 	    components[i] = 0.0;
 	}
@@ -299,7 +269,6 @@ public class Symmetry {
 	    // unit cell parameters but this value seems
 	    // to work ok...
 
-	    //check.print("check");
 	    if(check.isIdentity(1.e-2)){
 		// reorientation was pure rotation
 		c2f.copy(s);
@@ -331,11 +300,6 @@ public class Symmetry {
 	spaceGroupNumber = 0;
     }
 
-    /** Get the space group name. */
-    public String getSpaceGroupName(){
-	return spaceGroupName;
-    }
-
     /** Set the original space group name (with spaces). */
     public void setOriginalSpaceGroupName(String s){
 	originalSpaceGroupName = s;
@@ -345,30 +309,6 @@ public class Symmetry {
     public String getOriginalSpaceGroupName(){
 	return originalSpaceGroupName;
     }
-
-    /** Set the coding. */
-    public void setUnitCellCode(int code){
-	ncode = code;
-    }
-
-    /** Get the coding. */
-    public int getUnitCellCode(){
-	return ncode;
-    }
-
-    /** Get the symmetry operators. */
-
-    /*    public DynamicArray getSymmetryOperators(){
-	if(symmetryOperators == null){
-	    if(spaceGroupName != null){
-		symmetryOperators = getSymmetryOperators(spaceGroupName);
-	    }else{
-		symmetryOperators = getSymmetryOperators(spaceGroupNumber);
-	    }
-	}
-
-	return symmetryOperators;
-	}*/
 
     /** Get the fractionalising matrix. */
     public Matrix getCartesianToFractionalMatrix(){
@@ -381,12 +321,12 @@ public class Symmetry {
     }
 
     /** Return the square of the argument. */
-    public static double SQ(double x){
+    private static double SQ(double x){
 	return x*x;
     }
 
     /** Generate the fractional to cartesian matrices. */
-    public static  void generateMatrices(double cell[],
+    private static  void generateMatrices(double cell[],
 					 Matrix cartesianToFractional,
 					 Matrix fractionalToCartesian){
 	double cabg[] = new double[3];
@@ -435,79 +375,5 @@ public class Symmetry {
 	fractionalToCartesian.x11= sabg[2]*cell[1];
 	fractionalToCartesian.x21=-sabg[1]*cabgs[0]*cell[2];
 	fractionalToCartesian.x22=sabg[1]*sabgs1*cell[2];
-
-	//fractionalToCartesian.print("fractionToCartesian matrix");
     }
-
-    /**
-     * Transform a point by a crystallographic matrix.
-     * This seems to be the transpose of the matrices used for
-     * the graphics transformations.
-     */
-    public static void transformPoint2(Point3d p, Matrix m){
-	double xx = p.x, yy = p.y, zz = p.z;
-	p.x = xx*m.x00 + yy*m.x01 + zz*m.x02 + m.x03;
-	p.y = xx*m.x10 + yy*m.x11 + zz*m.x12 + m.x13;
-	p.z = xx*m.x20 + yy*m.x21 + zz*m.x22 + m.x23;
-    }
-
-    /** Test method for the symmetry code. */
-    public static void main(String args[]){
-	//DynamicArray operators = getSymmetryOperators(args[0]);
-    }
-
-    public int cnxSpaceGroupNameToNumber(String cnxName){
-	int cnxCount = cnxSpaceGroups.length;
-
-	for(int i = 0; i < cnxCount; i++){
-	    if(cnxSpaceGroups[i].equals(cnxName)){
-		return i;
-	    }
-	}
-
-	System.out.println("cnxSpaceGroupNameToNumber: " +
-			   "couldn't match CNX space group  "+ cnxName);
-
-	return 1;
-    }
-
-    /**
-     * One time map of CNX names to space group numbers.
-     * Index is space group number.
-     */
-    private static String cnxSpaceGroups[] = {
-	"", "P1", "P-1", "P2", "P2(1)", "C2", "PM", "PC", "CM", "CC", "P2/M",
-	"P2(1)/M", "C2/M", "P2/C", "P2(1)/C", "C2/C", "P222", "P222(1)",
-	"P2(1)2(1)2", "P2(1)2(1)2(1)", "C222(1)", "C222", "F222", "I222",
-	"I2(1)2(1)2(1)", "PMM2", "PMC2(1)", "PCC2", "PMA2", "PCA2(1)",
-	"PNC2", "PMN2(1)", "PBA2", "PNA2(1)", "PNN2", "CMM2", "CMC2(1)",
-	"CCC2", "AMM2", "ABM2", "AMA2", "ABA2", "FMM2", "FDD2", "IMM2",
-	"IBA2", "IMA2", "PMMM", "PNNN", "PCCM", "PBAN", "PMMA", "PNNA",
-	"PMNA", "PCCA", "PBAM", "PCCN", "PBCM", "PNNM", "PMMN", "PBCN",
-	"PBCA", "PNMA", "CMCM", "CMCA", "CMMM", "CCCM", "CMMA", "CCCA",
-	"FMMM", "FDDD", "IMMM", "IBAM", "IBCA", "IMMA", "P4", "P4(1)",
-	"P4(2)", "P4(3)", "I4", "I4(1)", "P-4", "I-4", "P4/M", "P4(2)/M",
-	"P4/N", "P4(2)/N", "I4/M", "I4(1)/A", "P422", "P42(1)2", "P4(1)22",
-	"P4(1)2(1)2", "P4(2)22", "P4(2)2(1)2", "P4(3)22", "P4(3)2(1)2",
-	"I422", "I4(1)22", "P4MM", "P4BM", "P4(2)CM", "P4(2)NM", "P4CC",
-	"P4NC", "P4(2)MC", "P4(2)BC", "I4MM", "I4CM", "I4(1)MD", "I4(1)CD",
-	"P-42M", "P-42C", "P-42(1)M", "P-42(1)C", "P-4M2", "P-4C2", "P-4B2",
-	"P-4N2", "I-4M2", "I-4C2", "I-42M", "I-42D", "P4/MMM", "P4/MCC",
-	"P4/NBM", "P4/NNC", "P4/MBM", "P4/MNC", "P4/NMM", "P4/NCC",
-	"P4(2)/MMC", "P4(2)/MCM", "P4(2)/NBC", "P4(2)/NNM", "P4(2)/MBC",
-	"P4(2)/MNM", "P4(2)/NMC", "P4(2)/NCM", "I4/MMM", "I4/MCM",
-	"I4(1)/AMD", "I4(1)/ACD", "P3", "P3(1)", "P3(2)", "R3", "P-3", "R-3",
-	"P312", "P321", "P3(1)12", "P3(1)21", "P3(2)12", "P3(2)21", "R32",
-	"P3M1", "P31M", "P3C1", "P31C", "R3M", "R3C", "P-31M", "P-31C",
-	"P-3M1", "P-3C1", "R-3M", "R-3C", "P6", "P6(1)", "P6(5)", "P6(2)",
-	"P6(4)", "P6(3)", "P-6", "P6/M", "P6(3)/M", "P622", "P6(1)22",
-	"P6(5)22", "P6(2)22", "P6(4)22", "P6(3)22", "P6MM", "P6CC",
-	"P6(3)CM", "P6(3)MC", "P-6M2", "P-6C2", "P-62M", "P-62C", "P6/MMM",
-	"P6/MCC", "P6(3)/MCM", "P6(3)/MMC", "P23", "F23", "I23", "P2(1)3",
-	"I2(1)3", "PM-3", "PN-3", "FM-3", "FD-3", "IM-3", "PA-3", "IA-3",
-	"P432", "P4(2)32", "F432", "F4(1)32", "I432", "P4(3)32", "P4(1)32",
-	"I4(1)32", "P-43M", "F-43M", "I-43M", "P-43N", "F-43C", "I-43D",
-	"PM-3M", "PN-3N", "PM-3N", "PN-3M", "FM-3M", "FM-3C", "FD-3M",
-	"FD-3C", "IM-3M", "IA-3D",
-    };
 }

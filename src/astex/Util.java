@@ -26,9 +26,6 @@ public class Util {
 
     /** Start the specified time. */
     public static void startTimer(int i){
-	//if(startTime[i] != 0){
-	//    System.out.println("warning timer " + i + " was already running");
-	//}
 	startTime[i] = System.currentTimeMillis();
     }
 
@@ -77,18 +74,5 @@ public class Util {
 	}
 
 	return frame;
-    }
-
-    /** Return the applet that contains the specified component. */
-    public static Applet getApplet(Component c){
-	Applet applet  = null;
-
-	while((c = c.getParent()) != null){
-	    if(c instanceof Applet){
-		applet = (Applet)c;
-	    }
-	}
-
-	return applet;
     }
 }

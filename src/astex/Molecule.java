@@ -69,17 +69,11 @@ import astex.generic.*;
 import java.util.*;
 
 public class Molecule extends Generic implements Selectable {
-    /** Dynmamic array of atoms. */
-    public DynamicArray atoms = null;
+    /** Dynamic array of atoms. */
+    private DynamicArray atoms = null;
 
     /** Dynamic array of bonds. */
-    public DynamicArray bonds = null;
-
-    /** Dynamic array of angles. */
-    private DynamicArray angles = null;
-
-    /** Dynamic array of improper angles. */
-    private DynamicArray impropers = null;
+    private DynamicArray bonds = null;
 
     /** Dynamic array of rings. */
     private DynamicArray rings = null;
@@ -111,36 +105,27 @@ public class Molecule extends Generic implements Selectable {
     /* Bit masks for various properties. */
 
     /** Have rings been assigned. */
-    private static int RingsAssigned = 0x1;
-
-    /** Have angles been assigned. */
-    private static int AnglesAssigned = 0x2;
-
-    /** Have impropers been assigned. */
-    private static int ImpropersAssigned = 0x4;
+    private static final int RingsAssigned = 0x1;
 
     /** Total number of residues. */
     private static int residueCount = 0;
     
     /* Constants for various overall display styles. */
 
-    /** Completely off. */
-    public static int Off = 0;
-
     /** Normal display style. */
-    public static int Normal = 1;
+    public static final int Normal = 1;
 
     /** Backbone trace. */
-    public static int Trace = 2;
+    public static final int Trace = 2;
 
     /** Backbone trace and atoms. */
-    public static int TraceAlways = 3;
+    public static final int TraceAlways = 3;
 
     /** The display style for the molecule. */
     private int displayStyle = Normal;
 
     /** Is the molecule displayed or not. */
-    private int displayed = 1;
+    private boolean displayed = true;
 
     /** What type of molecule is this. */
     private int moleculeType = NormalMolecule;
@@ -178,35 +163,8 @@ public class Molecule extends Generic implements Selectable {
     public Molecule(){
 	atoms = new DynamicArray(20);
 	bonds = new DynamicArray(20);
-	angles = new DynamicArray(20);
-	impropers = new DynamicArray(20);
 	rings = new DynamicArray(1, 1);
 	chains = new DynamicArray(1, 1);
-
-	initialise();
-    }
-
-    /** Initialise the molecule. */
-    public void initialise(){
-	atoms.removeAllElements();
-	bonds.removeAllElements();
-	angles.removeAllElements();
-	impropers.removeAllElements();
-	rings.removeAllElements();
-	chains.removeAllElements();
-
-	currentChain = null;
-	flags = 0;
-
-	center = null;
-	radius = 0.0;
-
-	symmetry = null;
-
-	displayStyle = Normal;
-	displayed = 1;
-
-	residueCount = 0;
 
         set(DisplayHydrogens, Boolean.TRUE);
         set(DisplayBondDetails, Boolean.TRUE);
@@ -247,11 +205,11 @@ public class Molecule extends Generic implements Selectable {
     /** Set if the molecule is on or off. */
     public void setDisplayed(int newState){
 	if(newState == 0){
-	    displayed = 0;
+	    displayed = false;
 	}else if(newState == 1){
-	    displayed = 1;
+	    displayed = true;
 	}else if(newState == 2){
-	    displayed = 1 - displayed;
+	    displayed = !displayed;
 	}else{
 	    System.out.println("setDisplayed: invalid state " + newState);
 	}
@@ -259,11 +217,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Is the molecule displayed? */
     public boolean getDisplayed(){
-	if(displayed == 1){
-	    return true;
-	}else{
-	    return false;
-	}
+	return displayed;
     }
 
     /** Return the number of atoms in the molecule. */
@@ -332,93 +286,6 @@ public class Molecule extends Generic implements Selectable {
 	return (Bond)bonds.get(index);
     }
 
-    /** Get the number of atoms for this molecule. */
-    public int getAngleCount(){
-	ensureAnglesAssigned();
-
-	return angles.size();
-    }
-
-    /** Get the specified angle. */
-    public Angle getAngle(int index){
-	ensureAnglesAssigned();
-
-	return (Angle)angles.get(index);
-    }
-
-    /** Make sure we have generated the angles. */
-    private void ensureAnglesAssigned(){
-	if((flags & AnglesAssigned) == 0){
-	    generateAngles();
-	    flags |= AnglesAssigned;
-	}
-    }
-
-    /** Actually generate the angles. */
-    private void generateAngles(){
-	angles.removeAllElements();
-
-	int atomCount = getAtomCount();
-	Object atomArray[] = getAtomArray();
-
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)atomArray[a];
-	    int bondCount = atom.getBondCount();
-
-	    for(int b1 = 0; b1 < bondCount; b1++){
-		Atom atom1 = atom.getBondedAtom(b1);
-		for(int b2 = b1 + 1; b2 < bondCount; b2++){
-		    Atom atom2 = atom.getBondedAtom(b2);
-
-		    Angle angle = new Angle(atom1, atom, atom2);
-		    angles.add(angle);
-		}
-	    }
-	}
-    }
-
-    /** Get the array of angles. */
-    public Object[] getAngleArray(){
-	return angles.getArray();
-    }
-
-    /** Get the number of atoms for this molecule. */
-    public int getImproperCount(){
-	ensureImpropersAssigned();
-
-	return impropers.size();
-    }
-
-    /** Get the specified improper. */
-    public Improper getImproper(int index){
-	ensureImpropersAssigned();
-
-	return (Improper)impropers.get(index);
-    }
-
-    /** Make sure we have generated the impropers. */
-    private void ensureImpropersAssigned(){
-	if((flags & ImpropersAssigned) == 0){
-	    generateImpropers();
-	    flags |= ImpropersAssigned;
-	}
-    }
-
-    /** Get the array of impropers. */
-    public Object[] getImproperArray(){
-	return impropers.getArray();
-    }
-
-    /** Return the atom array. */
-    public Object[] getAtomArray(){
-	return atoms.getArray();
-    }
-
-    /** Return the bond array. */
-    public Object[] getBondArray(){
-	return bonds.getArray();
-    }
-
     /** Make sure that rings have been assigned for the molecule. */
     private void ensureRingsAssigned(){
 	if((flags & RingsAssigned) == 0){
@@ -455,7 +322,7 @@ public class Molecule extends Generic implements Selectable {
     private Chain currentChain;
 
     /** Get the current chain. */
-    public Chain getCurrentChain(){
+    private Chain getCurrentChain(){
 	if(currentChain == null){
 	    addChain();
 	}
@@ -477,35 +344,12 @@ public class Molecule extends Generic implements Selectable {
 
     /** Add a chain to the molecule. */
     public Chain addChain(){
-	currentChain = Chain.create();
+	currentChain = new Chain();
 	currentChain.setParent(this);
 
 	chains.add(currentChain);
 
 	return currentChain;
-    }
-
-    /** Find or add a particular chain. */
-    public Chain findChain(String name, boolean add){
-	int chainCount = getChainCount();
-
-	for(int c = 0; c < chainCount; c++){
-	    Chain chain = getChain(c);
-
-	    if(chain.getName().equals(name)){
-		//Log.info("returning existing chain " + chain);
-		return chain;
-	    }
-	}
-
-	if(add){
-	    Chain chain = addChain();
-	    chain.setName(name);
-	    //Log.info("creating chain " + chain);
-	    return chain;
-	}
-
-	return null;
     }
 
     /** Add a residue to the current chain. */
@@ -517,26 +361,6 @@ public class Molecule extends Generic implements Selectable {
 	residue.setSequentialNumber(residueCount++);
 
 	return residue;
-    }
-
-    /** Get the maximum id for this molecule. */
-    public int getMaximumId(){
-	int maxId = Integer.MIN_VALUE;
-
-	int atomCount = getAtomCount();
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-	    int id = atom.getId();
-	    if(id > maxId){
-		maxId = id;
-	    }
-	}
-
-	if(maxId == Integer.MIN_VALUE){
-	    maxId = 0;
-	}
-
-	return maxId;
     }
 
     /** Add an atom to the molecule and return the reference to it. */
@@ -555,7 +379,7 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Add an atom to the chain, residue set. */
-    public Atom addAtom(Residue res){
+    private Atom addAtom(Residue res){
 	Atom atom = Atom.create();
 	atom.setParent(res);
 	atoms.add(atom);
@@ -565,39 +389,9 @@ public class Molecule extends Generic implements Selectable {
 	return atom;
     }
 
-    /**
-     * Reorder the atoms in a molecule.
-     * This needs doing to make the molecule master atom
-     * list reflect the order of atoms in chains/residues.
-     */
-    public void reorderAtoms(){
-	int atomCount = getAtomCount();
-
-	//Log.info("initial atomCount %5d", atomCount);
-
-	atoms.removeAllElements();
-
-	int chainCount = getChainCount();
-	for(int c = 0; c < chainCount; c++){
-	    Chain chain = getChain(c);
-	    int resCount = chain.getResidueCount();
-	    for(int r = 0; r < resCount; r++){
-		Residue res = chain.getResidue(r);
-		atomCount = res.getAtomCount();
-		for(int a = 0; a < atomCount; a++){
-		    Atom atom = res.getAtom(a);
-		    atoms.add(atom);
-		}
-	    }
-	}
-
-	atomCount = getAtomCount();
-	//Log.info("final atomCount   %5d", atomCount);
-    }
-
     /** Add a new ring to the molecule. */
-    public Ring addRing(){
-	Ring newRing = Ring.create();
+    private Ring addRing(){
+	Ring newRing = new Ring();
 		
 	rings.add(newRing);
 
@@ -642,11 +436,6 @@ public class Molecule extends Generic implements Selectable {
 	return newBond;
     }
 
-    /** Add a bond between two atoms with default bond order. */
-    public Bond addBond(Atom firstAtom, Atom secondAtom){
-	return addBond(firstAtom, secondAtom, Bond.SingleBond, true);
-    }
-
     /** Add a bond to the molecule and return a reference to it. */
     public Bond addBond(int firstAtomIndex, int secondAtomIndex,
 			int bondOrder){
@@ -654,11 +443,6 @@ public class Molecule extends Generic implements Selectable {
 	Atom secondAtom = getAtom(secondAtomIndex);
 
 	return addBond(firstAtom, secondAtom, bondOrder, true);
-    }
-
-    /** Add a bond to the molecule and return a reference to it. */
-    public Bond addBond(int firstAtomIndex, int secondAtomIndex){
-	return addBond(firstAtomIndex, secondAtomIndex, Bond.SingleBond);
     }
 
     /** Add a bond to the molecule and return a reference to it. */
@@ -687,7 +471,7 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Does this atom need treating specially for bonding. */
-    public boolean isSpecialAtom(Atom atom){
+    private boolean isSpecialAtom(Atom atom){
 	int element = atom.getElement();
 	if(element == PeriodicTable.SULPHUR ||
 	   element == PeriodicTable.PHOSPHORUS){
@@ -892,8 +676,6 @@ public class Molecule extends Generic implements Selectable {
 	cell2 = null;
 
 	System.gc();
-
-	//System.out.println(toString());
     }
 
     /** Get the contents of the cell. */
@@ -987,7 +769,6 @@ public class Molecule extends Generic implements Selectable {
 
 	// now check each atom.
 	for(int a1 = 0; a1 < atomCount; a1++){
-	    //Atom firstAtom = getAtom(a1);
 	    Atom firstAtom = (Atom)atomArray[a1];
 	    double firstRadius = bondingRadii[a1];
 	    int startAtom = 0;
@@ -1010,7 +791,6 @@ public class Molecule extends Generic implements Selectable {
 
 	    for(int a2 = startAtom; a2 < endAtom; a2++){
 		if(a2 != a1){
-		    //Atom secondAtom = getAtom(a2);
 		    Atom secondAtom = (Atom)atomArray[a2];
 		    double secondRadius = bondingRadii[a2];
 		    double dSquare = firstRadius + secondRadius;
@@ -1033,79 +813,8 @@ public class Molecule extends Generic implements Selectable {
 	}
     }
 
-    /** Connect all of the atoms in a single residue. */
-    public void connectResidue(Residue residue){
-	int atomCount = residue.getAtomCount();
-
-	for(int a1 = 0; a1 < atomCount; a1++){
-	    Atom firstAtom = residue.getAtom(a1);
-	    double firstRadius = firstAtom.getBondingRadius();
-
-	    for(int a2 = a1 + 1; a2 < atomCount; a2++){
-		Atom secondAtom = residue.getAtom(a2);
-		double secondRadius = secondAtom.getBondingRadius();
-
-		double dSquare = firstRadius + secondRadius;
-		dSquare *= dSquare;
-
-		if(firstAtom.distanceSq(secondAtom) < dSquare){
-
-		    Bond bond = firstAtom.getBond(secondAtom);
-
-		    if(bond == null){
-			addBond(firstAtom, secondAtom, Bond.SingleBond, false);
-		    }
-		}
-	    }
-	}
-    }
-
-    /** Connect all of the atoms in a single residue. */
-    public void connectResidues(Residue firstResidue, Residue secondResidue){
-	int firstAtomCount = firstResidue.getAtomCount();
-	int secondAtomCount = secondResidue.getAtomCount();
-
-	for(int a1 = 0; a1 < firstAtomCount; a1++){
-	    Atom firstAtom = firstResidue.getAtom(a1);
-	    double firstRadius = firstAtom.getBondingRadius();
-
-	    for(int a2 = 0; a2 < secondAtomCount; a2++){
-		Atom secondAtom = secondResidue.getAtom(a2);
-		double secondRadius = secondAtom.getBondingRadius();
-
-		double dSquare = firstRadius + secondRadius;
-		dSquare *= dSquare;
-
-		if(firstAtom.distanceSq(secondAtom) < dSquare){
-
-		    Bond bond = firstAtom.getBond(secondAtom);
-
-		    if(bond == null){
-			addBond(firstAtom, secondAtom, Bond.SingleBond, false);
-		    }
-		}
-	    }
-	}
-    }
-
-    /** Count how many bond angles this molecule has. */
-    public int countAngles(){
-	int totalAngles = 0;
-
-	for(int i = 0; i < getAtomCount(); i++){
-	    Atom atom = getAtom(i);
-			
-	    int bondCount = atom.getBondCount();
-
-	    // number of angle restraints is nb*(nb-1)/2
-	    totalAngles += (bondCount * (bondCount - 1)) / 2;
-	}
-		
-	return totalAngles;
-    }
-
     /** Find rings in the structure. */
-    public void findRings(){
+    private void findRings(){
 
 	// assign ids to the atoms so that we can compare
 	// ordering for creating rings.
@@ -1135,7 +844,7 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Find rings of a particular size. */
-    public void findRings(int ringSize){
+    private void findRings(int ringSize){
 	if(ringSize == 3){
 	    find3Rings();
 	}else{
@@ -1157,7 +866,7 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Find 3 membered rings by direct search. */
-    public void find3Rings(){
+    private void find3Rings(){
 	for(int a = 0; a < getAtomCount(); a++){
 	    Atom atom = getAtom(a);
 	    int bondCount = atom.getBondCount();
@@ -1223,7 +932,7 @@ public class Molecule extends Generic implements Selectable {
      * 1. the first atom has the lowest index.
      * 2. the second atom has a lower index than the last atom.
      */
-    public void possiblyCreateRing(Atom atomPath[], Bond bondPath[],
+    private void possiblyCreateRing(Atom atomPath[], Bond bondPath[],
 				   int ringSize){
 	int firstAtomId = atomPath[0].getId();
 
@@ -1246,23 +955,6 @@ public class Molecule extends Generic implements Selectable {
 	    newRing.addAtom(atomPath[i]);
 	    newRing.addBond(bondPath[i]);
 	}
-    }
-
-    /** Is this bond in an aromatic ring. */
-    public boolean isBondInAromaticRing(Bond bond){
-	int ringCount = getRingCount();
-
-	for(int r = 0; r < ringCount; r++){
-	    Ring ring = getRing(r);
-	    //System.out.println("ring bond count " + ring.getBondCount());
-	    if(ring.contains(bond) && ring.isAromatic()){
-
-				//System.out.println("ring is aromatic");
-		return true;
-	    }
-	}
-
-	return false;
     }
 
     /** Return the best ring containing this bond. */
@@ -1291,41 +983,6 @@ public class Molecule extends Generic implements Selectable {
 	}
 					
 	return null;
-    }
-
-    /** Is this bond in a 6 membered ring. */
-    public boolean isBondIn6Ring(Bond bond){
-	int ringCount = getRingCount();
-
-	for(int r = 0; r < ringCount; r++){
-	    Ring ring = getRing(r);
-	    //System.out.println("ring bond count " + ring.getBondCount());
-	    if(ring.contains(bond) && ring.getAtomCount() == 6){
-					
-		//System.out.println("ring is aromatic");
-		return true;
-	    }
-	}
-
-	return false;
-    }
-
-		
-
-    /** Is this atom in a 3 membered ring. */
-    public boolean isAtomIn3MemberedRing(Atom atom){
-	int ringCount = getRingCount();
-
-	for(int r = 0; r < ringCount; r++){
-	    Ring ring = getRing(r);
-
-	    if(ring.getBondCount() == 3 &&
-	       ring.contains(atom)){
-		return true;
-	    }
-	}
-		
-	return false;
     }
 
     /** Set the molecule name */
@@ -1360,238 +1017,6 @@ public class Molecule extends Generic implements Selectable {
     /** Get the type. */
     public String getType(){
 	return type;
-    }
-    
-    /** Generate a dynamic array of all the planes in the molecule. */
-    private void generateImpropers(){
-	impropers.removeAllElements();
-
-	generateRingImpropers();
-
-	generateBondImpropers();
-
-	generateSp2Impropers();
-    }
-
-    /** Generate the impropers that are due to rings. */
-    public void generateRingImpropers(){
-	int ringCount = getRingCount();
-		
-	for(int r = 0; r < ringCount; r++){
-	    Ring ring = getRing(r);
-
-	    if(ring.isPlanar()){
-		generateRing(ring);
-	    }
-	}
-    }
-
-    /** Generate the impropers for one ring. */
-    public void generateRing(Ring ring){
-	int atomCount = ring.getAtomCount();
-
-	if(atomCount == 4){
-	    // we only need one improper
-	    addImproper(ring.getAtom(0),
-			ring.getAtom(1),
-			ring.getAtom(2),
-			ring.getAtom(3));
-	}else{
-	    // these are the impropers around the ring
-	    //for(int a = 0; a < atomCount - 3; a++){
-	    for(int a = 0; a < atomCount; a++){
-		addImproper(ring.getAtom(a),
-			    ring.getAtom((a + 1) % atomCount),
-			    ring.getAtom((a + 2) % atomCount),
-			    ring.getAtom((a + 3) % atomCount));
-	    }
-	}
-    }
-
-    /** Generate impropers to keep bonds flat. */
-    public void generateBondImpropers(){
-	int bondCount = getBondCount();
-
-	for(int i = 0; i < bondCount; i++){
-	    Bond bond = getBond(i);
-
-	    if(isBondInAromaticRing(bond) == false &&
-	       bond.isTerminalBond() == false){
-		int bondOrder = bond.getBondOrder();
-
-		if(bondOrder == Bond.SingleBond){
-		    if(singleBondRequiresImproper(bond)){
-			generateSingleBondImproper(bond);
-		    }
-		}else if(bondOrder == Bond.DoubleBond){
-		    generateDoubleBondImproper(bond);
-		}
-	    }
-	}
-    }
-
-    /** Does this single bond require a improper. */
-    public boolean singleBondRequiresImproper(Bond bond){
-	Atom firstAtom = bond.getFirstAtom();
-	Atom secondAtom = bond.getSecondAtom();
-	int firstAtomElement = firstAtom.getElement();
-	int secondAtomElement = secondAtom.getElement();
-
-	// currently restrice single bond planarity to
-	// bonds that have just carbon and nitrogen.
-	if(((firstAtomElement == PeriodicTable.CARBON ||
-	    firstAtomElement == PeriodicTable.NITROGEN) &&
-	   (secondAtomElement == PeriodicTable.CARBON ||
-	    secondAtomElement == PeriodicTable.NITROGEN)) &&
-	    ((firstAtom.hasBondWithOrder(Bond.DoubleBond) ||
-		firstAtom.hasBondWithOrder(Bond.AromaticBond)) &&
-	       (secondAtom.hasBondWithOrder(Bond.DoubleBond) ||
-		secondAtom.hasBondWithOrder(Bond.AromaticBond)))){
-	    return true;
-	}
-		
-	return false;
-    }
-
-    /** Generate the improper for this double bond. */
-    public void generateDoubleBondImproper(Bond bond){
-	Atom firstAtom = bond.getFirstAtom();
-	Atom secondAtom = bond.getSecondAtom();
-
-	Bond firstBond =
-	    firstAtom.getBondWithOrder(Bond.SingleBond);
-	Bond secondBond =
-	    secondAtom.getBondWithOrder(Bond.SingleBond);
-
-        if(firstBond == null || secondBond == null){
-            // allene like structure no single bon
-            return;
-        }
-
-	Atom firstBondOther = firstBond.getOtherAtom(firstAtom);
-	Atom secondBondOther = secondBond.getOtherAtom(secondAtom);
-
-	addImproper(firstBondOther, firstAtom,
-		    secondAtom, secondBondOther);
-    }
-
-    /** Generate the improper for this single bond. */
-    public void generateSingleBondImproper(Bond bond){
-	Atom firstAtom = bond.getFirstAtom();
-	Atom secondAtom = bond.getSecondAtom();
-
-	Bond firstAtomDoubleBond =
-	    firstAtom.getBondWithOrder(Bond.DoubleBond);
-	if(firstAtomDoubleBond == null){
-	    firstAtomDoubleBond =
-		firstAtom.getBondWithOrder(Bond.AromaticBond);
-	}
-
-	if(firstAtomDoubleBond == null){
-	    System.out.println("couldn't find double/aromatic bond");
-	}
-
-	Bond secondAtomDoubleBond =
-	    secondAtom.getBondWithOrder(Bond.DoubleBond);
-	if(secondAtomDoubleBond == null){
-	    secondAtomDoubleBond =
-		secondAtom.getBondWithOrder(Bond.AromaticBond);
-	}
-
-	if(secondAtomDoubleBond == null){
-	    System.out.println("couldn't find double/aromatic bond");
-	}
-
-	Atom firstAtomOther =
-	    firstAtomDoubleBond.getOtherAtom(firstAtom);
-	Atom secondAtomOther =
-	    secondAtomDoubleBond.getOtherAtom(secondAtom);
-
-	addImproper(firstAtomOther, firstAtom,
-		    secondAtom, secondAtomOther);
-    }
-
-    /** Generate impropers for sp2 hybrid atoms. */
-    public void generateSp2Impropers(){
-	int atomCount = getAtomCount();
-
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-
-	    if(atomNeedsImproper(atom)){
-		addImproper(atom.getBondedAtom(0),
-                            atom,
-			    atom.getBondedAtom(1),
-			    atom.getBondedAtom(2));
-	    }
-	}
-    }
-
-    /** Create a improper for the 4 specified atoms. */
-    public void addImproper(Atom a1, Atom a2, Atom a3, Atom a4){
-	Improper improper = new Improper(a1, a2, a3, a4);
-
-	impropers.add(improper);
-    }
-
-    /** Does this atom need a improper restraint. */
-    public boolean atomNeedsImproper(Atom atom){
-	int bondCount = atom.getBondCount();
-
-	if(bondCount == 3){
-	    int element = atom.getElement();
-
-	    if(element == PeriodicTable.CARBON){
-		if(atom.hasBondWithOrder(Bond.DoubleBond) ||
-		   atom.hasBondWithOrder(Bond.AromaticBond)){
-		    return true;
-		}
-	    }else if(element == PeriodicTable.NITROGEN &&nitrogenNeedsImproper(atom)){
-		return true;
-	    }
-	}
-
-	return false;
-    }
-
-    /** Does this nitrogen atom need a improper. */
-    public boolean nitrogenNeedsImproper(Atom atom){
-	if(isAtomIn3MemberedRing(atom)){
-	    // nitrogen in 3-ring is always
-	    // too strained to be planar
-	    return false;
-	}else{
-	    return true;
-	    //int bondCount = atom.getBondCount();
-		
-	    //for(int i = 0; i < bondCount; i++){
-	    //	Bond bond = atom.getBond(i);
-			
-	    //	if(bond.getBondOrder() == Bond.SingleBond){
-	    //		Atom otherAtom = bond.getOtherAtom(atom);
-	    //		if(otherAtom.hasBondWithOrder(Bond.DoubleBond)){
-	    //			return true;
-	    //		}
-	    //	}
-	    //}
-	}
-
-	//return false;
-    }
-
-    /** Method for CCP4Dictionary that generates list of planes. */
-    public void generatePlanes(DynamicArray planes){
-	int improperCount = getImproperCount();
-	for(int i = 0; i < improperCount; i++){
-	    Improper improper = getImproper(i);
-
-	    DynamicArray plane = new DynamicArray();
-	    for(int a = 0; a < 4; a++){
-		plane.add(improper.getAtom(a));
-	    }
-
-	    planes.add(plane);
-	}
     }
 
     /** Find the center of the molecule. */
@@ -1652,8 +1077,6 @@ public class Molecule extends Generic implements Selectable {
 
     /** Get the symmetry object. */
     public Symmetry getSymmetry(){
-	//ensureSymmetryAllocated();
-
 	return symmetry;
     }
 
@@ -1670,73 +1093,6 @@ public class Molecule extends Generic implements Selectable {
 	    ensureSymmetryAllocated();
 	    symmetry.setSpaceGroupName(name);
 	}
-    }
-
-    /** Clear the visit flags on all of the atoms. */
-    public void clearVisitFlags(){
-	int atomCount = getAtomCount();
-
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-	    atom.setVisited(false);
-	}
-    }
-
-    /**
-     * Mark the bonds that are part of a ring.
-     * This method is extremely inefficient (O(N^2)), but
-     * I can't figure out how to implement the linear
-     * time method without allocating extra storage for
-     * each atom (which I don't want to do).
-     */
-    public void markRingBonds(){
-	int bondCount = getBondCount();
-
-	for(int b = 0; b < bondCount; b++){
-	    Bond bond = getBond(b);
-			
-	    clearVisitFlags();
-
-	    Atom firstAtom = bond.getFirstAtom();
-	    Atom secondAtom = bond.getSecondAtom();
-
-	    secondAtom.setVisited(true);
-
-	    if(propagateCycleSearch(firstAtom, secondAtom, 0)){
-		bond.setRingBond(true);
-		//System.out.println("ring bond " + bond);
-	    }else{
-		bond.setRingBond(false);
-		//System.out.println("not ring bond " + bond);
-	    }
-	}
-    }
-
-    /** Propagate the search for cycles. */
-    public boolean propagateCycleSearch(Atom firstAtom, Atom secondAtom,
-					int depth){
-	int bondCount = firstAtom.getBondCount();
-	firstAtom.setVisited(true);
-		
-	for(int b = 0; b < bondCount; b++){
-	    Bond bond = firstAtom.getBond(b);
-	    Atom otherAtom = bond.getOtherAtom(firstAtom);
-
-	    if(otherAtom.isVisited()){
-		if(otherAtom == secondAtom && depth > 0){
-		    return true;
-		}
-	    }else{
-		boolean found =
-		    propagateCycleSearch(otherAtom, secondAtom, depth + 1);
-				
-		if(found){
-		    return true;
-		}
-	    }
-	}
-
-	return false;
     }
 
     /* Implementation of Selectable. */

@@ -30,13 +30,13 @@ public class ObjectPropertyDialog extends Dialog
     private static ObjectPropertyDialog opd = null;
 
     /** The object that we are currently operating on. */
-    Tmesh object = null;
+    private Tmesh object = null;
     
     /** The MoleculeRenderer object. */
-    MoleculeRenderer moleculeRenderer = null;
+    private MoleculeRenderer moleculeRenderer = null;
 
     /** Is the object active yet. */
-    boolean active = false;
+    private boolean active = false;
 
     /** Create the instance of the opd. */
     public synchronized static ObjectPropertyDialog
@@ -60,7 +60,7 @@ public class ObjectPropertyDialog extends Dialog
      * Create a dialog that lets us edit the texture based
      * properties of a tmesh object.
      */
-    public ObjectPropertyDialog(Frame f, String label,
+    private ObjectPropertyDialog(Frame f, String label,
 				MoleculeRenderer mr){
 	super(f, label, false);
 
@@ -72,28 +72,28 @@ public class ObjectPropertyDialog extends Dialog
     }
 
     /** Which texture coordinate we are editing. */
-    JCCheckboxGroup textureCoordinate = null;
+    private JCCheckboxGroup textureCoordinate = null;
     
-    private static int textureValues[] = {
+    private static final int textureValues[] = {
 	0, 1
     };
 
-    private static String[] textureCoords= {
+    private static final String[] textureCoords= {
 	"u", "v"
     };
 
-    JCCheckbox applyCharges = null;
-    JCCheckbox applyMlp     = null;
+    private JCCheckbox applyCharges = null;
+    private JCCheckbox applyMlp     = null;
 
-    JCSpinBox uminSB        = null;
-    JCSpinBox vminSB        = null;
-    JCSpinBox umaxSB        = null;
-    JCSpinBox vmaxSB        = null;
+    private JCSpinBox uminSB        = null;
+    private JCSpinBox vminSB        = null;
+    private JCSpinBox umaxSB        = null;
+    private JCSpinBox vmaxSB        = null;
 
-    Hashtable<JCButton, String> imageHash = new Hashtable<JCButton, String>(11);
+    private Hashtable<JCButton, String> imageHash = new Hashtable<JCButton, String>(11);
 
     /** Create the controls for this property editor. */
-    public void createControls(){
+    private void createControls(){
 	textureCoordinate =
 	    JCCheckbox.makeGroup(textureCoords, textureValues, true);
 	textureCoordinate.setOrientation(JCCheckboxGroup.VERTICAL);
@@ -103,9 +103,6 @@ public class ObjectPropertyDialog extends Dialog
 		    GridBagConstraints.HORIZONTAL);
 
 	JCGroupBox properties = UI.groupbox("Properties");
-	//JCContainer propertyBox = new JCContainer();
-	//properties.setLayout(new GridLayout());
-
 
 	JCButton electrostatic = new JCButton("Electrostatic");
 	electrostatic.setActionCommand("electrostatic");
@@ -162,23 +159,6 @@ public class ObjectPropertyDialog extends Dialog
 
 	Layout.fill(properties, clipObject, 1, 8, 1, 1,
 		    GridBagConstraints.HORIZONTAL);
-	
-	//JCSlider distanceMax = new JCSlider(JCSlider.HORIZONTAL, 8, 1, 20);
-	//distanceMax.setPreferredSize(70, BWTEnum.NOVALUE);
-	//distanceMax.setNumTicks(10);
-	//distanceMax.setMinimumLabel(new JCLabel("1"));
-	//distanceMax.setMaximumLabel(new JCLabel("20"));
-
-	//distanceMax = new JCSpinBox(6);
-	//distanceMax.setMinimum(10);
-	//distanceMax.setMaximum(4000);
-	//distanceMax.setDecimalPlaces(1);
-	//distanceMax.setIncrement(5);
-	//distanceMax.setIntValue(80);
-	//distanceMax.addSpinBoxListener(this);
-
-	//Layout.fill(properties, distanceMax, 2, 3, 1, 1,
-	//	    GridBagConstraints.HORIZONTAL);
 
 	Layout.fill(this, properties, 1, 0, 1, 2,
 		    GridBagConstraints.VERTICAL);
@@ -197,8 +177,6 @@ public class ObjectPropertyDialog extends Dialog
 
 	JCLabel vmaxLabel = new JCLabel("vmax");
 	vmaxSB = UI.spinbox(5, -10000, 10000, 0, 2, 5, this);
-
-	//setMinMax();
 
 	Layout.nofill(rangeGB, uminLabel, 0, 0);
 	Layout.nofill(rangeGB, uminSB,    1, 0);
@@ -256,8 +234,6 @@ public class ObjectPropertyDialog extends Dialog
 	    String smallImageName = Settings.getString("config", smallImageTag);
 
 	    if(smallImageName != null){
-		//Image im = JCUtilConverter.toImage(app, smallImageName);
-
 		Image smallImage = Texture.loadImage(smallImageName);
 
 		if(smallImage != null){
@@ -313,7 +289,6 @@ public class ObjectPropertyDialog extends Dialog
 	    }
 
 	    command += ";";
-	    //System.out.println("command " + command);
 	}else{
 	    handled = false;
 	}
@@ -338,15 +313,10 @@ public class ObjectPropertyDialog extends Dialog
 	String command        = "";
 
 	if(actionCommand.equals("distance")){
-	    //double d = FILE.readDouble(distanceMax.getValue());
-
-	    //System.out.println("distance " + d);
 	    command += "object " + name + " texture distance " +
 		       texCoord + " default;";
 	    command += "object " + name + " texture " +
 		       texCoord + "div 8.0;";
-	    //moleculeRenderer.execute("object " + name + " texture " +
-	    //       texCoord + "div " + d +";");
 
 	    if(tc == 0){
 		command += "texture load white 'white.jpg';";
@@ -379,10 +349,6 @@ public class ObjectPropertyDialog extends Dialog
 
 	    command += "object " + name + " texture molcad;";
 	    needTexture = false;
-	    //moleculeRenderer.execute("object " + name + " texture " +
-	    //	   texCoord + "offset -0.44;");
-	    //moleculeRenderer.execute("object " + name + " texture " +
-	    //	   texCoord + "div 0.6;");
 	}else if(actionCommand.equals("curvature")){
 	    command += "object " + name + " texture curvature " +
 		texCoord + " 6 default;";
@@ -416,7 +382,7 @@ public class ObjectPropertyDialog extends Dialog
     }
 
     /** Set the min max values for this object. */
-    public void setMinMax(){
+    private void setMinMax(){
 	active = false;
 
 	// add 0.5 to make rounding better when converting to int
@@ -430,19 +396,11 @@ public class ObjectPropertyDialog extends Dialog
 	vmaxSB.setIntValue((int)(0.5 + 100.*vmax));
 
 	active = true;
-
-	/*
-	FILE.out.print("umin %f\n", umin);
-	FILE.out.print("umax %f\n", umax);
-	FILE.out.print("vmin %f\n", vmin);
-	FILE.out.print("vmax %f\n", vmax);
-	*/
     }
 
     /* Implementation of WindowListener. */
     public void windowClosing(WindowEvent e){
 	setVisible(false);
-	//dispose();
     }
 
     public void windowActivated(WindowEvent e){ }

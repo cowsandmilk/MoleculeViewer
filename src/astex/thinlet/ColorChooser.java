@@ -19,7 +19,6 @@ package astex.thinlet;
 
 import thinlet.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class ColorChooser extends Thinlet {
     private static int width = 320;
@@ -27,7 +26,7 @@ public class ColorChooser extends Thinlet {
 
     private static ColorChooser colorChooser = null;
 
-    public ColorChooser(){
+    private ColorChooser(){
         try {
             add(parse("/astex/thinlet/colorchooser.xml.properties"));
         }catch(Exception e){
@@ -82,78 +81,8 @@ public class ColorChooser extends Thinlet {
             return (Color)colorChooser.getProperty(root, "newcolor");
         }
     }
-    
-    public void colorok(Object dialogPanel){
-        Dialog dialog = (Dialog)getProperty(getDesktop(), "dialog");
-
-        dialog.setVisible(false);
-
-        Object sample = find("ccsample");
-        Color color = getColor(sample, "background");
-
-        putProperty(getDesktop(), "newcolor", color);
-        putProperty(getDesktop(), "ok", Boolean.TRUE);
-    }
-
-    public void colorcancel(Object component){
-        Dialog dialog = (Dialog)getProperty(getDesktop(), "dialog");
-
-        dialog.setVisible(false);
-
-        putProperty(getDesktop(), "ok", Boolean.FALSE);
-    }
-
-    public void change(Thinlet thinlet, Object component){
-        Object ccred    = thinlet.find("ccred");
-        Object ccgreen  = thinlet.find("ccgreen");
-        Object ccblue   = thinlet.find("ccblue");
-        Object cchex    = thinlet.find("cchex");
-        Object ccsample = thinlet.find("ccsample");
-
-        Color newcolor = null;
-        int red = 0, green = 0, blue = 0;
-
-        if("button".equals(getClass(component))){
-            newcolor = getColor(component, "background");
-            if(newcolor == null){
-                newcolor = new Color(0, 255, 0);
-            }
-            red = newcolor.getRed();
-            green = newcolor.getGreen();
-            blue = newcolor.getBlue();
-        }else{
-            red   = Integer.parseInt(getString(ccred, "text"));
-            green = Integer.parseInt(getString(ccgreen, "text"));
-            blue  = Integer.parseInt(getString(ccblue, "text"));
-        }
-
-        if(newcolor == null){
-            newcolor = new Color(red, green, blue);
-        }
-
-        setColor(ccsample, "background", newcolor);
-
-        setString(ccred,   "text", "" + red);
-        setString(ccgreen, "text", "" + green);
-        setString(ccblue,  "text", "" + blue);
-
-        String hex = Integer.toHexString(0xff000000|(red<<16)|(green<<8)|blue);
-        setString(cchex, "text", "0x" + hex.substring(2, 8));
-    }
 
     public boolean destroy(){
         return false;
     }
-
-    public void windowClosing(WindowEvent e){
-	e.getWindow().setVisible(false);
-    }
-
-    public void windowActivated(WindowEvent e){ }
-    public void windowClosed(WindowEvent e){ }
-    public void windowDeactivated(WindowEvent e){ }
-    public void windowDeiconified(WindowEvent e){ }
-    public void windowIconified(WindowEvent e){ }
-    public void windowOpened(WindowEvent e){ }
-
 }

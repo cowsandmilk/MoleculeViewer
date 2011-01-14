@@ -47,8 +47,6 @@ public class Point3d {
      * Constructor which allows the x, y, and z coordinates to be specified.
      */
     public Point3d(double xx, double yy, double zz){
-	initialise();
-
 	x = xx;
 	y = yy;
 	z = zz;
@@ -68,15 +66,6 @@ public class Point3d {
      */
     public Point3d(double xx, double yy){
 	this(xx, yy, 0.0);
-    }
-
-    /**
-     * Construct a 3D point with equal x, y and z coordinates.
-     *
-     * This is useful for initialising 3D bounding boxes and such like.
-     */
-    public Point3d(double xx){
-	this(xx, xx, xx);
     }
 
     /**
@@ -106,15 +95,6 @@ public class Point3d {
 	x = xx;
 	y = yy;
 	z = zz;
-    }
-
-    /**
-     * Set the x, y and z coordinates to the same value.
-     *
-     * Transformed and screen coordinates are note affected.
-     */
-    public void set(double xx){
-	set(xx, xx, xx);
     }
 
     /**
@@ -208,61 +188,12 @@ public class Point3d {
     }
 
     /**
-     * translates x and y coordinates the specified amounts
-     */
-    public void translate( double xtrans, double ytrans ) {
-	x += xtrans;
-	y += ytrans;
-    }
-
-    /**
-     * translates x, y and z coordinates the specified amounts
-     */
-    public void translate( double xtrans, double ytrans, double ztrans ) {
-	x += xtrans;
-	y += ytrans;
-	z += ztrans;
-    }
-
-    /**
      * Negate the x, y and z coordinates of this point.
      */
     public void negate(){
 	x = -x;
 	y = -y;
 	z = -z;
-    }
-
-    /**
-     * Find the vector minimum of the x, y and z coordinates of this point
-     * and another Point3d.
-     *
-     * This x coordinates is set to the minimum of our x coordinate and the
-     * x coordinate of the other Point3d.  The same is applied to the y and
-     * z coordinates. This is useful for accumulating bounding box values.
-     *
-     * @see #max
-     */
-    public void min(Point3d p){
-	if(p.x < x) x = p.x;
-	if(p.y < y) y = p.y;
-	if(p.z < z) z = p.z;
-    }
-
-    /**
-     * Find the vector maximum of the x, y and z coordinates of this point
-     * and another Point3d.
-     *
-     * This x coordinates is set to the maximum of our x coordinate and the
-     * x coordinate of the other Point3d.  The same is applied to the y and
-     * z coordinates. This is useful for accumulating bounding box values.
-     *
-     * @see #min
-     */
-    public void max(Point3d p){
-	if(p.x > x) x = p.x;
-	if(p.y > y) y = p.y;
-	if(p.z > z) z = p.z;
     }
 
     /**
@@ -318,11 +249,6 @@ public class Point3d {
 	return Math.sqrt(x*x + y*y + z*z);
     }
 
-    /** Return length of double[] vector. */
-    public static double length(double a[]){
-	return Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
-    }
-
     /**
      * Return another point, which is at the mid point of two points.
      */
@@ -346,26 +272,6 @@ public class Point3d {
     }
 
     /**
-     * Return a point that is a unit vector from the first to the second.
-     */
-    public static Point3d unitVector(double xa, double ya,
-				     double xb, double yb){
-	/*
-	 * Generate a unit vector from point a to b.
-	 */
-
-	double x = xb - xa;
-	double y = yb - ya;
-	double norm = Math.sqrt(x*x + y*y);
-
-	if(Math.abs(norm) > 1.e-5){
-	    return new Point3d(x/norm, y/norm);
-	}else{
-	    return new Point3d(1., 1.);
-	}
-    }
-
-    /**
      * Generate a vector from the first point to the second.
      *
      * The vector does not have a length of 1.
@@ -376,14 +282,6 @@ public class Point3d {
 	Point3d unit = new Point3d(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
 
 	return unit;
-    }
-
-    /** Make vector from p1 to p2 in p12. */
-    public static void vector(Point3d p12, Point3d p1, Point3d p2){
-	/* Make a vector from p1 to p2. */
-	p12.x = p2.x - p1.x;
-	p12.y = p2.y - p1.y;
-	p12.z = p2.z - p1.z;
     }
 
     /**
@@ -428,80 +326,6 @@ public class Point3d {
 	n.normalise();
     }
 
-    /**
-     * Generate a line perpendicular to the line described
-     * by the set of points xa,ya xb,yb.  The line is made to
-     * be of length len.
-     *
-     * The generated vector always points to the right as we look from
-     * above at the direction from a to b.
-     */
-    public static Point3d normalToLine(double xa, double ya,
-				       double xb, double yb, double len){
-	double x2, y2, norm;
-	double x1 = xb - xa;
-	double y1 = yb - ya;
-
-	if(Math.abs(y1) < 1.e-5){
-	    if(xb > xa){
-		x2 = 0.0; y2 = -1.0;
-	    }else{
-		x2 = 0.0; y2 = 1.0;
-	    }
-	}else{
-
-	    if(x1 == 0.0){
-		x2 = 1.0;
-		y2 = 0.0;
-	    }else{
-		if(y1/x1 < 0.0){
-		    if(xb > xa){
-			x2 = -1.0; y2 = x1/y1;
-		    }else{
-			x2 = 1.0; y2 = - x1/y1;
-		    }
-		}else{
-		    if(xb > xa){
-			x2 = 1.0; y2 = - x1/y1;
-		    }else{
-			x2 = -1.0; y2 = x1/y1;
-		    }
-		}
-	    }
-	}
-
-	/* The arrangement above always leads to non zero values
-	 * for y2 or x2.  So this division should always be safe. */
-
-	norm = len / Math.sqrt(y2 * y2 + x2 * x2);
-
-	x2 *= norm; y2 *= norm;
-
-	return new Point3d(x2, y2, 0.);
-    }
-
-    public static Point3d normalToLine(double xb, double yb){
-	return normalToLine(0., 0., xb, yb, 1.0);
-    }
-
-    /**
-     * Evaluate the plane equation for the specified vectors.
-     *
-     * The result is the distance above the plane defined by origin and normal.
-     * If normal is not a unit vector then the signed value simply indicates
-     * if the point is above or below the plane.
-     */
-    public static double planeEquation(Point3d point, Point3d origin,
-				       Point3d normal){
-	// form vector form origin to point.
-	double dx = point.x - origin.x;
-	double dy = point.y - origin.y;
-	double dz = point.z - origin.z;
-
-	// form dot product (which is the value of the plane equation).
-	return dx * normal.x + dy * normal.y + dz * normal.z;
-    }
-
     /** Return cross product with c. */
     public Point3d cross(Point3d c){
 
@@ -538,19 +362,6 @@ public class Point3d {
 	a[2] = (b[0] * c[1]) - (b[1] * c[0]);
     }
 
-	
-    /** Are this point identically equal to the specified point. */
-    public boolean equal(Point3d b){
-	/* Return true if points equal */
-
-	boolean ret;
-
-	ret = ((x == b.x) && (y == b.y) && (z == b.z));
-
-	return ret;
-    }
-
-
     /**
      * Scale the point by the specified amount.
      */
@@ -585,48 +396,6 @@ public class Point3d {
 	z /= s;
     }
 
-    /** The absolute value that we will consider to be zero. */
-    private static double smallNumber = 1.e-5;
-
-    /** Are all the components of this vector 0. */
-    public boolean isNullVector(){
-	if(Math.abs(x) < smallNumber &&
-	   Math.abs(y) < smallNumber &&
-	   Math.abs(z) < smallNumber){
-	    return true;
-	}else{
-	    return false;
-	}
-    }
-
-    /** Transform the point by the passed matrix. */
-    public Point3d transformByMatrix(Matrix m){
-	Point3d copy = new Point3d(this);
-	// copy the orignal coordinates
-	double xx = x, yy = y, zz = z;
-
-	// transform them.
-	copy.x = xx*m.x00 + yy*m.x10 + zz*m.x20 + m.x30;
-	copy.y = xx*m.x01 + yy*m.x11 + zz*m.x21 + m.x31;
-	copy.z = xx*m.x02 + yy*m.x12 + zz*m.x22 + m.x32;
-
-	return copy;
-    }
-
-    /** Static distance method. */
-    public static double distance(Point3d a, Point3d b){
-	double dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
-		
-	return Math.sqrt(dx*dx + dy*dy + dz*dz);
-    }
-
-    /** Static distance squared method. */
-    public static double distanceSq(Point3d a, Point3d b){
-	double dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
-		
-	return dx*dx + dy*dy + dz*dz;
-    }
-
     /** Calculate the angle between the 3 points. */
     public static double angle(Point3d a, Point3d b, Point3d c){
 	double xba = a.x - b.x, yba = a.y - b.y, zba = a.z - b.z;
@@ -645,37 +414,6 @@ public class Point3d {
     /** Calcluate the angle in degrees. */
     public static double angleDegrees(Point3d a, Point3d b, Point3d c){
 	return 180.0 * angle(a, b, c) / Math.PI;
-    }
-
-    private static Point3d tp1 = new Point3d();
-    private static Point3d tp2 = new Point3d();
-    private static Point3d tp3 = new Point3d();
-    private static Point3d tp4 = new Point3d();
-
-    public static double torsion(double p1x, double p1y, double p1z,
-                                 double p2x, double p2y, double p2z,
-                                 double p3x, double p3y, double p3z,
-                                 double p4x, double p4y, double p4z){
-
-        tp1.set(p1x, p1y, p1z);
-        tp2.set(p2x, p2y, p2z);
-        tp3.set(p3x, p3y, p3z);
-        tp4.set(p4x, p4y, p4z);
-
-        return torsion(tp1, tp2, tp3, tp4);
-    }
-
-    public static double torsionDegrees(double p1x, double p1y, double p1z,
-                                        double p2x, double p2y, double p2z,
-                                        double p3x, double p3y, double p3z,
-                                        double p4x, double p4y, double p4z){
-        
-        tp1.set(p1x, p1y, p1z);
-        tp2.set(p2x, p2y, p2z);
-        tp3.set(p3x, p3y, p3z);
-        tp4.set(p4x, p4y, p4z);
-
-        return torsionDegrees(tp1, tp2, tp3, tp4);
     }
 
     /** Calculate the torsion angle between the 4 points. */
@@ -731,13 +469,6 @@ public class Point3d {
 	x = xx;
 	y = yy;
 	z = zz;
-    }
-
-    public static void print(String s, double x[]){
-        FILE.out.print(s);
-        FILE.out.print(" %8.3f", x[0]);
-        FILE.out.print(" %8.3f", x[1]);
-        FILE.out.print(" %8.3f\n", x[2]);
     }
 
     /** Return a string representation of this point. */

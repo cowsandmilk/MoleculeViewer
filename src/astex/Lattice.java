@@ -22,7 +22,7 @@ package astex;
 
 public class Lattice {
     /** List of cells to search for all pairs search. */
-    private static int offsets[][] = {
+    private static final int offsets[][] = {
 	{  1, -1, 0 },
 	{  1,  0, 0 },
 	{  1,  1, 0 },
@@ -42,7 +42,7 @@ public class Lattice {
     private double maxDistance = -1.0;
 
     /** Set the maximum search distance. */
-    public void setMaximumDistance(double d){
+    private void setMaximumDistance(double d){
 	Log.check(d > 0.0, "search distance must be > 0.0");
 
 	if(maxDistance > 0.0){
@@ -57,19 +57,9 @@ public class Lattice {
 	return maxDistance;
     }
 
-    /** Return the number of objects. */
-    public int getObjectCount(){
-	return list.size();
-    }
-
     /** Create an empty lattice object. */
     public Lattice(double d){
 	setMaximumDistance(d);
-    }
-
-    /** Get the number of occupied cells. */
-    public int getCellCount(){
-	return celli.size();
     }
 
     /** Add an object reference to the lattice. */
@@ -112,8 +102,6 @@ public class Lattice {
 	// to add the new object to the cell chain
 	list.add(head.get(c));
 	head.set(c, actualId);
-
-	//FILE.out.print("final cell=%3d\n", c);
     }
 
     /** Get the contents of the cell. */
@@ -139,9 +127,6 @@ public class Lattice {
     /** Find the cell that corresponds to the id's. */
     private int findcell(int i, int j, int k){
 	int hashval = HASH(i, j, k);
-
-	//Log.assert(hashval >= 0 && hashval < HASHTABLESIZE,
-	//	   "invalid hash value");
 
 	// search list with this hashval, if not present return -1
 	IntArray cellList = hashTable[hashval];
@@ -197,7 +182,6 @@ public class Lattice {
 			    if(allNeighbours){
 				if(id == Undefined){
 				    while(iobj >= 0){
-					//System.out.println(".add");
 					neighbours.add(idsArray[iobj]);
 					iobj = l[iobj];
 				    }
@@ -206,7 +190,6 @@ public class Lattice {
 					// don't put ourselves
 					// in the list of neighbours
 					if(idsArray[iobj] != id){
-					    //System.out.println(".add");
 					    neighbours.add(idsArray[iobj]);
 					}
 					iobj = l[iobj];
@@ -217,7 +200,6 @@ public class Lattice {
 				    // don't put things less than us
 				    // in the list of neighbours
 				    if(idsArray[iobj] > id){
-					//System.out.println(".add");
 					neighbours.add(idsArray[iobj]);
 				    }
 				    iobj = l[iobj];
@@ -370,18 +352,6 @@ public class Lattice {
 
     /** Constant to indicate we don't care about ids. */
     public final static int Undefined = Integer.MIN_VALUE;
-
-    /**
-     * The coordinates for the points.
-     *
-     * Without a universal data type for points,
-     * it is difficult to see how to provide
-     * useful functionality without storing the
-     * object coordinates.
-     */
-    //private DoubleArray objx = new DoubleArray();
-    //private DoubleArray objy = new DoubleArray();
-    //private DoubleArray objz = new DoubleArray();
 
     /**
      * Test harness for the lattice construction.

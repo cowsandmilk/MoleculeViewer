@@ -47,7 +47,7 @@ public class Map extends Symmetry {
     public double volumeMax = 1.0;
 
     /** Maximum number of contour levels. */
-    public static int MaximumContourLevels = 3;
+    public static final int MaximumContourLevels = 3;
 
     /** The actual contour levels. */
     private double contourLevels[] = new double[MaximumContourLevels];
@@ -66,7 +66,7 @@ public class Map extends Symmetry {
     private boolean contourDisplayed[] = new boolean[MaximumContourLevels];
 
     /** Is the map file big endian or little endian. */
-    boolean littleEndian = true;
+    private boolean littleEndian = true;
 
     /** Size of map grid. */
     public int grid[] = new int[3];
@@ -115,17 +115,17 @@ public class Map extends Symmetry {
     public int maximumGrid[] = new int[3];
 
     /* various bogus stuff in the map header (some useful). */
-    int nu[] = new int[3];
-    int nv[] = new int[3];
+    public int nu[] = new int[3];
+    public int nv[] = new int[3];
     public int axis[] = new int[3];
-    int ihdr3[] = new int[3];
-    int ihdr4[] = new int[17];
-    int ihdr5[] = new int[1];
-    char ihdr6[] = new char[800];
-    double cell[] = new double[6];
-    double rhdr2[] = new double[3];
-    double rhdr3[] = new double[12];
-    double rms;
+    private int ihdr3[] = new int[3];
+    private int ihdr4[] = new int[17];
+    private int ihdr5[] = new int[1];
+    private char ihdr6[] = new char[800];
+    private double cell[] = new double[6];
+    private double rhdr2[] = new double[3];
+    private double rhdr3[] = new double[12];
+    public double rms;
     public float data[] = null;
 
     /* Regular format grids. */
@@ -210,13 +210,8 @@ public class Map extends Symmetry {
 	    file = null;
 	}
 
-	//System.out.println("about to read file = " + filename);
-
 	if(headerInitialised == false){
 	    file = FILE.open(filename);
-
-	//System.out.println("about to read map file = " + file);
-
 	    readHeader();
 	}
     }
@@ -388,13 +383,7 @@ public class Map extends Symmetry {
 
     /** Read an O header. */
     private void readOHeader(){
-	//System.out.println("readOHeader");
-
 	readShortArray(file, oheader);
-
-	//for(int i = 0; i < 23; i++){
-	//    System.out.println("oheader["+i+"] = " + oheader[i]);
-	//}
 
 	for(int i = 0; i < 512-(23*2); i++){
 	    int c = file.read();
@@ -503,20 +492,11 @@ public class Map extends Symmetry {
 			    for (int l = 0; l < cubieSizeX; l++) {
 				
 				byte sboxLMN = data[8*8*n+8*m+l];
-				
-				//short boxLMN = (short)sboxLMN;
-				
+
 				// No unsigned types in Java !
-				
-				//if (sboxLMN < 0){
-				//    boxLMN = (short)((int)sboxLMN+(int)256);
-				//}
-				
 				int pt3 = (k)*8 + n;
 				int pt2 = (j)*8 + m;
 				int pt1 = (i)*8 + l;
-				
-				//rhoTmp = (((double)boxLMN-plus)/prod);
 				
 				odata[pt1][pt2][pt3] = sboxLMN;
 			    } // l
@@ -550,8 +530,6 @@ public class Map extends Symmetry {
 	}
 
 	mode = readInteger(file);
-	//System.out.println("mode " + mode);
-
 	// we only support modes 0 and 2.
 	if(mode != 0 && mode != 2){
 	    file.close();
@@ -580,7 +558,6 @@ public class Map extends Symmetry {
 	}
 
 	// skip the symmetry operators
-	//System.out.println("symmetry operator bytes " + ihdr3[1]);
 	for(int i = 0; i < ihdr3[1]; i++){
 	    file.read();
 	}
@@ -594,8 +571,6 @@ public class Map extends Symmetry {
 	// setup the different matrices. 
 	setUnitCell(cell);
 
-	//System.out.println("done unit cell");
-		
 	printHeader(System.out);
     }
 
@@ -669,7 +644,7 @@ public class Map extends Symmetry {
 	needsReadingFlag = true;
     }
 
-    /** Set the radis of the region we will contour. */
+    /** Set the radius of the region we will contour. */
     public void setRadius(double r){
 	radius = r;
     }
@@ -786,9 +761,6 @@ public class Map extends Symmetry {
 		}
 	    }
 	}else if(mapType == O_BINARY){
-	    //System.out.println("readRegion get data for O_BINARY");
-
-
 	    for(int s = 0; s < grid2; s++){
 		for(int r = 0; r < grid1; r++){
 		    for(int c = 0; c < grid0; c++){
@@ -798,7 +770,6 @@ public class Map extends Symmetry {
 			    
 			    byte b = odata[c][r][s];
 
-			    //System.out.println("odata " + (int)b);
 			    short sb = 0;
 			    if(b < 0){
 				sb = (short)((int)b + 256);
@@ -808,13 +779,10 @@ public class Map extends Symmetry {
 			    float f = (float)(((float)sb - plus)/prod);
 
 			    data[point++] = f;
-			    //System.out.println("added point " + f);
 			}
 		    }
 		}
 	    }
-
-	    //System.out.println("points " + point);
 	}else{
 	    System.out.println("trying to reread data for type " + mapType);
 	}
@@ -825,7 +793,7 @@ public class Map extends Symmetry {
 	}
     }
 
-    /** Convert grid coordiantes to cartesian. */
+    /** Convert grid coordinates to cartesian. */
     public void relativeGridToCartesian(double ix, double iy, double iz,
 					Point3d p){
 	absoluteGridToCartesian(ix + nu[0] + minimumGrid[0],
@@ -889,9 +857,7 @@ public class Map extends Symmetry {
     /** Return the size of map we have loaded. */
     public void getMapBoxDimensions(int dims[]){
         if(mapType == INSIGHT_ASCII){
-            for(int i = 0; i < 3; i++){
-                dims[i] = ngrid[i];
-            }
+	    System.arraycopy(ngrid, 0, dims, 0, 3);
         }else{
             dims[0] = maximumGrid[0] - minimumGrid[0];
             dims[1] = maximumGrid[1] - minimumGrid[1];
@@ -955,9 +921,6 @@ public class Map extends Symmetry {
 	swapped[1] -= nu[1] + minimumGrid[1];
 	swapped[2] -= nu[2] + minimumGrid[2];
 
-	//g[0] = (int)Math.floor(swapped[0]);
-	//g[1] = (int)Math.floor(swapped[1]);
-	//g[2] = (int)Math.floor(swapped[2]);
 	g[0] = (int)(swapped[0] + 0.5);
 	g[1] = (int)(swapped[1] + 0.5);
 	g[2] = (int)(swapped[2] + 0.5);
@@ -980,9 +943,6 @@ public class Map extends Symmetry {
 	swapped[1] -= nu[1] + minimumGrid[1];
 	swapped[2] -= nu[2] + minimumGrid[2];
 
-	//g[0] = (int)Math.floor(swapped[0]);
-	//g[1] = (int)Math.floor(swapped[1]);
-	//g[2] = (int)Math.floor(swapped[2]);
 	g[0] = (int)(swapped[0]);
 	g[1] = (int)(swapped[1]);
 	g[2] = (int)(swapped[2]);
@@ -1090,7 +1050,6 @@ public class Map extends Symmetry {
 	if ((ch1 == FILE.EOF|| ch2 == FILE.EOF||
 	     ch3 == FILE.EOF|| ch4 == FILE.EOF)){
 	    System.out.println("eof");
-	    //return FILE.EOF;
 	}
 
 	if(littleEndian){

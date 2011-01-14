@@ -39,14 +39,6 @@ public class RendererEvent {
     public int getType() {
 	return type;
     }
-    
-    /**
-     * Set the value of type.
-     * @param v  Value to assign to type.
-     */
-    public void setType(int  v) {
-	this.type = v;
-    }
 
     private Object item = null;
     
@@ -56,13 +48,5 @@ public class RendererEvent {
      */
     public Object getItem() {
 	return item;
-    }
-    
-    /**
-     * Set the value of item.
-     * @param v  Value to assign to item.
-     */
-    public void setItem(Object  v) {
-	this.item = v;
     }
 }

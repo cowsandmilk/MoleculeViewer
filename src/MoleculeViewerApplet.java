@@ -387,10 +387,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	}
     }
 
-    public void finalize(){
-	//System.out.println("MoleculeViewerApplet.finalize()");
-    }
-
     public void stop(){
 	super.stop();
 	System.out.println("MoleculeViewerApplet.stop()");

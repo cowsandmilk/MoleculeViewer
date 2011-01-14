@@ -69,13 +69,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     public boolean ready = true;
 
     /** Are we initialised? */
-    public Image splashImage = null;
+    private Image splashImage = null;
 
     /** Are we announcing the origin of AstexViewer. */
-    public boolean announce = false;
+    private boolean announce = false;
 
     /** Definition of key bindings. */
-    public Hashtable<String,String> keyDefinitions = new Hashtable<String,String>();
+    private Hashtable<String,String> keyDefinitions = new Hashtable<String,String>();
 
     /** The animation thread. */
     private Animate animationThread = null;
@@ -95,7 +95,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Set whether we are running in application. */
-    public void setApplication(boolean b){
+    private void setApplication(boolean b){
         application = b;
     }
 
@@ -264,7 +264,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Are we animating? */
-    public boolean animating(){
+    private boolean animating(){
 	if(animationThread != null &&
 	   animationThread.isAlive() &&
 	   animationThread.getInteractive() == false){
@@ -318,7 +318,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Handle (de)activation of animation thread. */
-    public void suspendAnimationThread(boolean run){
+    private void suspendAnimationThread(boolean run){
 	if(animationThreadActive){
 	    if(run){
 		animationThread.resume();
@@ -329,7 +329,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Execute a command in the moleculeRenderer. */
-    public void execute(String s){
+    private void execute(String s){
 	moleculeRenderer.execute(s);
     }
 
@@ -347,18 +347,15 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	addMouseMotionListener(this);
 	addKeyListener(this);
 	readKeyDefinitions();
-
-	//loadMolecule("r:\\621p.pdb");
     }
 
     public void addNotify(){
         super.addNotify();
-        //print.f("### hello from addNotify");
         repaint();
     }
 
     /* Read the defintions of the commands from xml fie. */
-    public void readKeyDefinitions(){
+    private void readKeyDefinitions(){
 	FILE file = FILE.open("keymap.properties");
 	Reader reader = null;
         XMLElement xml = new XMLElement();
@@ -399,8 +396,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}
     }
 
-    public void dispose(){
-	//System.out.println("##### MoleculeViewer.dispose()");
+    private void dispose(){
     }
 
     /** Get the molecule renderer that we contain. */
@@ -420,7 +416,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Load a molecule given the name of its file. */
-    public void loadMolecule(String filename){
+    private void loadMolecule(String filename){
 	filename = FILE.getRelativePath(filename);
 
 	String command =
@@ -433,15 +429,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
         }
 
 	moleculeRenderer.execute(command);
-
-	//Molecule molecule = MoleculeIO.read(filename);
-
-	//if(molecule != null){
-	//    moleculeRenderer.addMolecule(molecule);
-	//}
     }
 
-    public void executeScript(String filename){
+    private void executeScript(String filename){
 	filename = FILE.getRelativePath(filename);
 
 	System.out.println("about to execute script " + filename);
@@ -449,22 +439,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Load a map given the name of its file. */
-    public void loadMap(String filename){
+    private void loadMap(String filename){
 	filename = FILE.getRelativePath(filename);
 
 	String command =
 	    "map load '" + filename + "' '" + filename + "';";
 
 	moleculeRenderer.execute(command);
-
-	//Map map = Map.create();
-
-	//if(map != null){
-	//    map.setFile(filename);
-	//    map.setName(filename);
-
-	//    moleculeRenderer.addMap(map);
-	//}
     }
 
     /** Handle a resize in a different way. */
@@ -476,7 +457,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     public void setBounds(int x, int y, int width, int height){
 	super.setBounds(x, y, width, height);
 
-	//finalize();
 	awtImage = null;
 
 	memoryImageSource = null;
@@ -484,27 +464,18 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Set the center point of the underlying renderer. */
-    public void setCenter(Point3d center){
+    private void setCenter(Point3d center){
 	moleculeRenderer.setCenter(center);
     }
 
     /** Set the radius of the underlying renderer. */
-    public void setRadius(double radius){
+    private void setRadius(double radius){
 	moleculeRenderer.setRadius(radius);
-    }
-
-    /** Set whether we are displaying symmetry. */
-    public void setSymmetry(boolean symmetry){
     }
 
     /** Add a map to the renderer. */
     public void addMap(Map map){
 	moleculeRenderer.addMap(map);
-    }
-
-    /** Remove a map from the renderer. */
-    public void removeMap(Map map){
-	moleculeRenderer.removeMap(map);
     }
 
     /** The preferred size for this MoleculeViewer. */
@@ -532,7 +503,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     /** A format for presenting the frame rate. */
     private Format f1 = new Format("%4.1f");
 
-    boolean firstTime = false;
+    private boolean firstTime = false;
 
     /** Override the paint method. */
     public void paint(Graphics g){
@@ -558,7 +529,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    drawLoadingScreen(g);
 	}else{
 
-	    drawImage(this, g);
+	    drawImage(g);
 
 	    if(showFrameRate){
 		frameCount++;
@@ -579,7 +550,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Function that paints the image when we load. */
-    public void drawLoadingScreen(Graphics g){
+    private void drawLoadingScreen(Graphics g){
 	g.setColor(Color.black);
 	g.fillRect(0, 0, getBounds().width, getBounds().height);
 
@@ -609,13 +580,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private transient Image awtImage = null;
     
     /** The pixel buffer that will produce the image. */
-    transient MemoryImageSource memoryImageSource = null;
+    private transient MemoryImageSource memoryImageSource = null;
 
     /** Paint the image. */
-    public synchronized void drawImage(Component c, Graphics g){
-
-	//System.out.println("Viewer paint()");
-
+    private synchronized void drawImage(Graphics g){
 	if(animating()){
 	    return;
 	}
@@ -686,15 +654,11 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     public void finalize(){
-	//System.out.println("MoleculeViewer.finalize()");
-
 	if(memoryImageSource != null){
-	    //memoryImageSource.dispose();
 	    memoryImageSource = null;
 	}
 
 	if(awtImage != null){
-	    //awtImage.dispose();
 	    awtImage.flush();
 	    awtImage = null;
 	}
@@ -706,14 +670,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    ui = null;
 	}
 #endif
-
-	/*
-	if(moleculeRenderer.renderer != null){
-	    moleculeRenderer.renderer.pbuffer = null;
-	    moleculeRenderer.renderer.zbuffer = null;
-	    moleculeRenderer.renderer = null;
-	}
-	*/
 
 	if(moleculeRenderer != null){
 	    moleculeRenderer = null;
@@ -731,7 +687,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 #endif
     }
 
-    TextField centerField = null;
+    private TextField centerField = null;
 
     /** Main entry point. */
     public static void main(String args[]){
@@ -760,7 +716,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
             moleculeViewer.getMoleculeRenderer();
         
         for(int i = 0; i < args.length; i++){
-            //System.out.println("args " + args[i]);
             if(args[i].endsWith(".xml")){
 #ifdef XSTREAM                
                 MoleculeRenderer mr =
@@ -835,10 +790,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private Atom pickedAtom = null;
 
     /** Has the mouse been dragged since the button was pressed. */
-    boolean dragged = false;
+    private boolean dragged = false;
 
     /** Has the center been moved by dragging the mouse. */
-    boolean centerMoved = false;
+    private boolean centerMoved = false;
 
     /* Implementation of MouseListener. */
 
@@ -884,7 +839,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	Window w = e.getWindow();
 
 	if(w == contourLevelDialog){
-	    //contourLevelDialog.setVisible(false);
 	    contourLevelDialog.setVisible(false);
 	    contourLevelDialog.dispose();
 	    contourLevelDialog = null;
@@ -916,48 +870,21 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Show the popup menu. */
     private void showPopupMenu(MouseEvent e){
-	//System.out.println("try to show popup");
 	if(popup != null){
-	    //System.out.println("popup non-null");
 	    add(popup);
 	    popup.show(this, e.getX(), e.getY());
 	}
     }
 
-    /** Create a popup menu. */
-    public void createPopup(MouseEvent e){
-	PopupMenu popupMenu = new PopupMenu();
-	add(popupMenu);
-	popupMenu.add("display");
-	popupMenu.add("display2");
-	popupMenu.show((Component)e.getSource(), e.getX(), e.getY());
-	remove(popupMenu);
-    }
-
-    /** Should we show the version. */
-    public void setShowVersion(boolean b){
-	showVersion = b;
-    }
-
-    public void install(Object o){
-#ifdef XRAYTOOLS
-        setManipulator((Manipulator)o);
-#endif
-    }
-
 #ifdef XRAYTOOLS
     /** The manipulator object for the viewer. */
     private Manipulator manipulator;
-#endif
-    
-#ifdef XRAYTOOLS
+
     /** Get the value of manipulator. */
     protected Manipulator getManipulator() {
 	return manipulator;
     }
-#endif
-    
-#ifdef XRAYTOOLS
+
     /** Set the value of manipulator. */
     protected void setManipulator(Manipulator  v) {
 	this.manipulator = v;
@@ -985,10 +912,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 					
 		    if(e.isShiftDown()){
 			moleculeRenderer.setCenter(pickedAtom);
-						
-			//}else if(e.isControlDown()){
 		    }else{
-			//Log.info("saw picked atom " + pickedAtom);
 			moleculeRenderer.addSelectedAtom(pickedAtom);
 			
 			moleculeRenderer.handlePick(pickedAtom);
@@ -1012,15 +936,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
                         }
 						
 			moleculeRenderer.generateBumps(pickedAtom);
-			//moleculeRenderer.generateBumps(pickedAtom);
 			
 		    }
 		}
 	    }else{
-		
-		//		    if(moveAtomsAllowed){
-		//	moleculeRenderer.finishOptimization();
-		//}
 		if(dragged == false){
 		    moleculeRenderer.removeAllSelectedAtoms();
 		// fix
@@ -1076,18 +995,15 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    if(pickedAtom != null && moveAtomsAllowed == true){
 		
 	    }else if(e.isControlDown()){
-		//System.out.println("translate by " + dx + " " + dy);
 		moleculeRenderer.translateCenter(dx, dy);
 		centerMoved = true;
 	    }else if(e.isShiftDown()){
-		//System.out.println("drag scaling");
 		// scale the molecule
 		moleculeRenderer.renderer.applyZoom(dy * 0.005);
 	    }else{
 		if(mousePressedEvent.getY() < getBounds().height * 0.05){
 		    moleculeRenderer.renderer.rotateZ(dx * 0.5);
 		}else{
-		//System.out.println("drag rotating");
 		    moleculeRenderer.renderer.rotateY(dx * 0.5);
 		    moleculeRenderer.renderer.rotateX(dy * 0.5);
 		}
@@ -1101,12 +1017,12 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	dirtyRepaint();
     }
 
-    String mouseOverCommand = null;
-    String mouseOverLabel = null;
-    Atom trackedAtom = null;
-    String trackedAtomLabel = null;
+    private String mouseOverCommand = null;
+    private String mouseOverLabel = null;
+    private Atom trackedAtom = null;
+    private String trackedAtomLabel = null;
 
-    public void handleMouseOver(MouseEvent e){
+    private void handleMouseOver(MouseEvent e){
 
         Atom nearestAtom = moleculeRenderer.getNearestAtom(e.getX(), e.getY());
 
@@ -1134,7 +1050,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
         dirtyRepaint();
     }
 
-    public void handleMouseOverCommand(MouseEvent e){
+    private void handleMouseOverCommand(MouseEvent e){
 
         Atom nearestAtom = moleculeRenderer.getNearestAtom(e.getX(), e.getY());
 
@@ -1156,7 +1072,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     public void mouseEntered(MouseEvent e){
-	//requestFocus();
     }
 
     public void mouseExited(MouseEvent e){
@@ -1184,7 +1099,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	   e.getKeyCode() == KeyEvent.VK_SHIFT){
 	    // we don't want the repeat events for
 	    // holding the modifier key itself...
-	    //Log.info(e.toString());
 	    return;
 	}
 
@@ -1226,8 +1140,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	if(modifiers.length() != 0){
 	    key = modifiers + "+" + key;
 	}
-
-	//Log.info("key <" + key +">");
 
 	String command = keyDefinitions.get(key);
 
@@ -1285,8 +1197,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	    r = moleculeRenderer.renderer.getRadius();
 
-	    //System.out.println("setClip in MoleculeViewer to " + r);
-
 	    moleculeRenderer.renderer.setClip(r);
 
 	}else if(c == 'z'){
@@ -1306,8 +1216,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    }else{
 		moleculeRenderer.renderer.incrementClip();
 	    }
-	    //}else if(c == 'c'){
-	    //moleculeRenderer.clipMaps();
 	}else if(c == 's'){
 	    moleculeRenderer.execute("select aminoacid and sphere 8.0 around current; surface binding_site green aminoacid and sphere 12.0 around current;");
 	}else if(c == 'w'){
@@ -1338,7 +1246,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(c == '5'){
 	    moleculeRenderer.renderer.emulate555 =
 		!moleculeRenderer.renderer.emulate555;
-	    //System.out.println("emulate555 " + moleculeRenderer.renderer.emulate555);
 	}else if(c == 'a'){
 	    
 	    if(moleculeRenderer.pickMode != MoleculeRenderer.ANGLE_PICK){
@@ -1366,52 +1273,51 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /* Tokens for the menu items. */
 	
-    private static String FileString = "File";
-    private static String OpenStructureString = "Open Structure...";
-    private static String OpenMapString = "Open Map...";
-    private static String OpenObjectString = "Open Object...";
-    private static String RunScriptString = "Run Script...";
-    private static String SaveViewString = "Save View...";
-    private static String SaveString = "Save All";
-    private static String SaveMoleculeString = "Save Molecule";
-    private static String WriteBMPString = "Write BMP...";
-    private static String ExitString = "Exit";
+    private static final String FileString = "File";
+    private static final String OpenStructureString = "Open Structure...";
+    private static final String OpenMapString = "Open Map...";
+    private static final String OpenObjectString = "Open Object...";
+    private static final String RunScriptString = "Run Script...";
+    private static final String SaveViewString = "Save View...";
+    private static final String SaveString = "Save All";
+    private static final String SaveMoleculeString = "Save Molecule";
+    private static final String WriteBMPString = "Write BMP...";
+    private static final String ExitString = "Exit";
 
-    private static String DisplayString = "Display";
-    private static String SymmetryString = "Symmetry";
-    private static String BumpsString = "Bumps";
-    private static String MapsString = "Maps";
-    private static String SolventString = "Solvent";
+    private static final String DisplayString = "Display";
+    private static final String SymmetryString = "Symmetry";
+    private static final String BumpsString = "Bumps";
+    private static final String MapsString = "Maps";
+    private static final String SolventString = "Solvent";
 
-    private static String OptionsString = "Options";
-    private static String MoveAtomsString = "Move Atoms";
+    private static final String MoveAtomsString = "Move Atoms";
 
-    private static String ColorString = "Colour";
-    private static String ColorByChainString = "By Chain";
-    private static String ColorByAtomString = "By Atom";
-    private static String ColorByBFactorString = "By B-factor";
-    private static String ColorByBFactorRangeString = "By B-factor Range";
-    private static String ColorByRainbowString = "By Rainbow";
-    private static String ColorChoiceString = "Change To";
-    private static String ColorBackgroundString = "Background";
+    private static final String ColorString = "Colour";
+    private static final String ColorByChainString = "By Chain";
+    private static final String ColorByAtomString = "By Atom";
+    private static final String ColorByBFactorString = "By B-factor";
+    private static final String ColorByBFactorRangeString = "By B-factor Range";
+    private static final String ColorByRainbowString = "By Rainbow";
+    private static final String ColorChoiceString = "Change To";
+    private static final String ColorBackgroundString = "Background";
 
-    private static String CloseString = "Close";
+    private static final String CloseString = "Close";
 
-    private static String SelectString = "Select";
-    private static String SelectionPopupString = "Popup...";
-    private static String SelectLigandString = "Ligands";
-    private static String LigandString = "Ligand";
-    private static String ClearSelectionString = "Clear";
-    private static String ExcludeString = "Exclude";
+    private static final String SelectString = "Select";
+    private static final String SelectionPopupString = "Popup...";
+    private static final String SelectLigandString = "Ligands";
+    private static final String LigandString = "Ligand";
+    private static final String ClearSelectionString = "Clear";
+    private static final String ExcludeString = "Exclude";
 
-    private static String ViewString = "View";
-    private static String ResetViewString = "Reset";
-    private static String CenterViewString = "Center On Selection";
-    private static String ClipMapsToSelectionString =
+    private static final String ViewString = "View";
+    private static final String ResetViewString = "Reset";
+    private static final String CenterViewString = "Center On Selection";
+    private static final String ClipMapsToSelectionString =
 	"Clip Maps To Selection";
-    private static String WideBondsForSelectionString =
+    private static final String WideBondsForSelectionString =
 	"Wide Bonds For Selection";
-    private static String ContourLevelsString = "Contour Levels...";
+    private static final String ContourLevelsString = "Contour Levels...";
 
     /** The menu that we will use for closing molecules. */
     private Menu closeMoleculeMenu = null;
@@ -1438,8 +1344,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	menus.add(createMeasureMenu());
 
-	//menus.add(createOptionsMenu());
-
 	updateMenus();
 
 	MenuBar menuBar = new MenuBar();
@@ -1457,7 +1361,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Create the file menu. */
-    public Menu createFileMenu(){
+    private Menu createFileMenu(){
 	Menu fileMenu = new Menu(FileString);
 	fileMenu.add(createMenuItem(OpenStructureString));
 	fileMenu.add(createMenuItem(OpenMapString));
@@ -1480,7 +1384,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     private Hashtable<String,String> writeBMPHash= new Hashtable<String,String>();
 
-    public Menu createBMPMenu(){
+    private Menu createBMPMenu(){
 	Menu menu = new Menu(WriteBMPString);
 
 	for(int i = 0; ; i++){
@@ -1499,7 +1403,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Create the select menu. */
-    public Menu createSelectMenu(){
+    private Menu createSelectMenu(){
 	Menu selectMenu = new Menu(SelectString);
 	selectMenu.add(createMenuItem(SelectionPopupString));
 	selectMenu.addSeparator();
@@ -1518,7 +1422,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Create the display menu. */
-    public Menu createDisplayMenu(){
+    private Menu createDisplayMenu(){
 	Menu displayMenu = new Menu(DisplayString);
 	displayMenu.add(createCheckboxMenuItem(MapsString, true));
 	displayMenu.add(createCheckboxMenuItem(SymmetryString, true));
@@ -1528,13 +1432,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	return displayMenu;
     }
 
-    public String builtinColors[] = {
+    private static final String builtinColors[] = {
 	"red", "green", "blue", "cyan", "magenta", "orange", "yellow", "brown",
 	"black", "white", "darkgrey"
     };
 
     /** Create the color menu. */
-    public Menu createColorMenu(){
+    private Menu createColorMenu(){
 	Menu colorMenu = new Menu(ColorString);
 
 	colorMenu.add(createMenuItem(ColorByAtomString));
@@ -1572,7 +1476,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Create the view menu. */
-    public Menu createViewMenu(){
+    private Menu createViewMenu(){
 	Menu viewMenu = new Menu(ViewString);
 
 	viewMenu.add(createMenuItem(ResetViewString));
@@ -1584,43 +1488,34 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	return viewMenu;
     }
 
-    /** Create the option menu. */
-    public Menu createOptionsMenu(){
-	Menu optionsMenu = new Menu(OptionsString);
-	optionsMenu.add(createCheckboxMenuItem(MoveAtomsString,
-					       moveAtomsAllowed));
-
-	return optionsMenu;
-    }
-
     /** Create the menu that lets us close molecules. */
-    public Menu createCloseMoleculeMenu(){
+    private Menu createCloseMoleculeMenu(){
 	ensureMenusCreated();
 
 	return closeMoleculeMenu;
     }
 
     /** Create the menu that lets us save molecules. */
-    public Menu createSaveMoleculeMenu(){
+    private Menu createSaveMoleculeMenu(){
 	ensureMenusCreated();
 
 	return saveMoleculeMenu;
     }
 
     /** Create the menu that lets us choose ligand groups. */
-    public Menu createLigandMenu(){
+    private Menu createLigandMenu(){
 	ensureMenusCreated();
 
 	return ligandMenu;
     }
 
-    CheckboxMenuItem nothingCheckbox = null;
-    CheckboxMenuItem distancesCheckbox = null;
-    CheckboxMenuItem angleCheckbox = null;
-    CheckboxMenuItem torsionsCheckbox = null;
+    private CheckboxMenuItem nothingCheckbox = null;
+    private CheckboxMenuItem distancesCheckbox = null;
+    private CheckboxMenuItem angleCheckbox = null;
+    private CheckboxMenuItem torsionsCheckbox = null;
 
     /** Create the menu that picks measurement options. */
-    public Menu createMeasureMenu(){
+    private Menu createMeasureMenu(){
 	ensureMenusCreated();
 
 	Menu measureMenu = new Menu("Measure");
@@ -1642,14 +1537,14 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }	
 
     /** Create a single menu item. */
-    public MenuItem createMenuItem(String label){
+    private MenuItem createMenuItem(String label){
 	MenuItem menuItem = new MenuItem(label);
 	menuItem.addActionListener(this);
 	return menuItem;
     }
 
     /** Create a single checkbox menu item. */
-    public CheckboxMenuItem createCheckboxMenuItem(String label,
+    private CheckboxMenuItem createCheckboxMenuItem(String label,
 						   boolean state){
 	CheckboxMenuItem menuItem = new CheckboxMenuItem(label);
 	menuItem.setState(state);
@@ -1674,8 +1569,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	    Map map = mapHashtable.get(button);
 	    Integer contour = contourLevelHashtable.get(button);
-	    
-	    //String color = getColor(p.x, p.y);
+
 	    String color = button.getValue();
 	    
 	    if(color != null){
@@ -1684,8 +1578,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		String command =
 		    "map '" + mapName + "' contour " + contour + " '" + color + "';";
 
-		//System.out.println("command " + command);
-		
 		moleculeRenderer.execute(command);
 
 		int c = Color32.getColorFromName(color);
@@ -1821,7 +1713,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    moleculeRenderer.removeAllTorsions();
 
 	}else{
-	    redraw = handleMenuAction(e, command);
+	    redraw = handleMenuAction(command);
 	}
 
 	if(redraw){
@@ -1845,7 +1737,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private Hashtable<Object,Integer> contourLevelHashtable = new Hashtable<Object,Integer>();
 
     /** Actually build the contour level. */
-    public void buildContourLevelDialog(){
+    private void buildContourLevelDialog(){
 	checkboxHashtable.clear();
 	mapHashtable.clear();
 	contourLevelHashtable.clear();
@@ -1878,10 +1770,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	contourLevelDialog.addWindowListener(this);
 
-	//contourLevelDialog.setSize(400, 0);
 	contourLevelDialog.setBounds(0, 709, 240, 80);
 	contourLevelDialog.pack();
-	//contourLevelDialog.doLayout();
 	contourLevelDialog.setVisible(true);
     }
 
@@ -1893,7 +1783,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	int column = 0;
 
-	//Checkbox checkbox = new Checkbox("xxx");
 	Checkbox checkbox = new Checkbox("");
 	// fix
 	checkbox.setState(displayed);
@@ -1903,22 +1792,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 			 GridBagConstraints.NONE,
 			 GridBagConstraints.WEST,
 			 0., 0.);
-	//Layout.nofill(contourLevelDialog, checkbox, 0, y);
-
-
-	//JCButton label = new JCButton("");
-	//label.setHighlightThickness(1);
-	//label.setShadowThickness(0);
-	//Color awtColor = Color32.getAWTColor(color);
-	//label.setForeground(awtColor);
-	//label.setText(contourFormat.format(level));
-	//label.addActionListener(this);
 
 	Color awtColor = Color32.getAWTColor(color);
 	ColorButton label = new ColorButton(awtColor, 12);
-	//label.setForeground(Color.black);
-	//label.setLabel(contourFormat.format(level));
-	//label.addActionListener(this);
 	checkbox.setForeground(Color.black);
 	checkbox.setLabel(contourFormat.format(level));
 	label.addActionListener(this);
@@ -1960,7 +1836,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Popup a dialog which allow us to alter contour levels. */
-    public void showContourLevelDialog(){
+    private void showContourLevelDialog(){
 	if(contourLevelDialog == null){
 	    Frame frame = Util.getFrame(this);
 	    contourLevelDialog =
@@ -1973,9 +1849,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Hide the contour level dialog. */
-    public void hideContourLevelDialog(){
+    private void hideContourLevelDialog(){
 	if(contourLevelDialog != null){
-	    //contourLevelDialog.setVisible(false);
 	    contourLevelDialog.dispose();
 	    contourLevelDialog = null;
 	}
@@ -2008,15 +1883,15 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /* Various command names. */
-    private static String CloseMoleculeCommand = "CloseMolecule";
-    private static String SaveMoleculeCommand = "SaveMolecule";
-    private static String SelectCommand = "Select";
-    private static String SelectLigandCommand = "SelectLigand";
-    private static String SetColorCommand = "SetColor";
-    private static String SetBackgroundColorCommand = "SetBackgroundColor";
+    private static final String CloseMoleculeCommand = "CloseMolecule";
+    private static final String SaveMoleculeCommand = "SaveMolecule";
+    private static final String SelectCommand = "Select";
+    private static final String SelectLigandCommand = "SelectLigand";
+    private static final String SetColorCommand = "SetColor";
+    private static final String SetBackgroundColorCommand = "SetBackgroundColor";
 
     /** Handle more complex menu actions. */
-    public boolean handleMenuAction(ActionEvent e, String commandString){
+    private boolean handleMenuAction(String commandString){
 	String words[] = FILE.split(commandString);
 	String command = words[0];
 	boolean redraw = true;
@@ -2028,15 +1903,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    saveMoleculeByName(words[1]);
 
 	}else if(command.equals(SetColorCommand)){
-	    //int color = Color32.getColorFromName(words[1]);
-
-	    //moleculeRenderer.colorBySpecifiedColor(color);
-
 	    moleculeRenderer.execute("color "+ words[1] + " default;");
 	}else if(command.equals(SetBackgroundColorCommand)){
-	    //int color = Color32.getColorFromName(words[1]);
-
-	    //moleculeRenderer.renderer.setBackgroundColor(color);
 	    moleculeRenderer.execute("background "+ words[1] +";");
 	}else if(command.equals(SelectCommand)){
 	    DynamicArray selection =
@@ -2068,7 +1936,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Save this molecule. */
-    public void saveMoleculeByName(String name){
+    private void saveMoleculeByName(String name){
 	Molecule mol = moleculeRenderer.getMolecule(name);
 
 	if(mol == null){
@@ -2112,7 +1980,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     /**
      * Check the file extension on a save file name.
      */
-    public String checkExtension(Molecule mol, String f){
+    private String checkExtension(Molecule mol, String f){
 	String file = null;
 	String extension = null;
 	int dot = f.lastIndexOf('.');
@@ -2151,9 +2019,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		}
 	    }
 	}
-
-	//Log.info("file      "+ file);
-	//Log.info("extension "+ extension);
 
 	return file + "." + extension;
     }
@@ -2259,23 +2124,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
         viewChangeOnly = false;
     }
 
-    DynamicArray repaintListeners = null;
-
-    public void addRepaintListener(Component c){
-        if(repaintListeners == null){
-            repaintListeners = new DynamicArray();
-        }
-
-        repaintListeners.add(c);
-    }
-
-    public void removeRepaintListener(Component c){
-        if(repaintListeners != null){
-            repaintListeners.remove(c);
-        }else{
-            throw new RuntimeException("no such repaintListener " + c);
-        }
-    }
+    private DynamicArray repaintListeners = null;
 
     private void notifyRepaintListeners(){
         if(repaintListeners != null){
@@ -2290,7 +2139,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Convenience method for loading a file. */
-    public String loadFile(String title){
+    private String loadFile(String title){
 	Frame frame = Util.getFrame(this);
 
 	FileDialog dialog = new FileDialog(frame, title, FileDialog.LOAD);
@@ -2323,7 +2172,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Get a file name to save to. */
-    public String saveFile(String title, String extensions[]){
+    private String saveFile(String title, String extensions[]){
 	Frame frame = Util.getFrame(this);
 
 	FileDialog dialog = new FileDialog(frame, title, FileDialog.SAVE);
@@ -2388,7 +2237,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Ensure that the close molecule menu is created. */
-    public void ensureMenusCreated(){
+    private void ensureMenusCreated(){
 	if(closeMoleculeMenu == null){
 	    closeMoleculeMenu = new Menu(CloseString);
 	}
@@ -2403,7 +2252,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Cause all the menus to get updated. */
-    public void updateMenus(){
+    private void updateMenus(){
 	// The menus that can change as we add/remove molecules.
 	Menu editableMenus[] = {
 	    closeMoleculeMenu,
@@ -2441,7 +2290,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Update the close molecule menu. */
-    public void updateCloseMoleculeMenu(){
+    private void updateCloseMoleculeMenu(){
 	int moleculeCount = moleculeRenderer.getMoleculeCount();
 	for(int i = 0; i < moleculeCount; i++){
 	    Molecule molecule = moleculeRenderer.getMolecule(i);
@@ -2456,7 +2305,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Update the save molecule menu. */
-    public void updateSaveMoleculeMenu(){
+    private void updateSaveMoleculeMenu(){
 	int moleculeCount = moleculeRenderer.getMoleculeCount();
 	for(int i = 0; i < moleculeCount; i++){
 	    Molecule molecule = moleculeRenderer.getMolecule(i);
@@ -2471,7 +2320,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Update the contents of the select menu. */
-    public void updateSelectMenu(){
+    private void updateSelectMenu(){
 	ResidueIterator iterator = moleculeRenderer.getResidueIterator();
 
 	while(iterator.hasMoreElements()){
@@ -2501,9 +2350,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Save the small molecules. */
-    public void saveMolecules(){
+    private void saveMolecules(){
 	int moleculeCount = moleculeRenderer.getMoleculeCount();
-	//System.out.println("saveMolecules");
 
 	for(int m = 0; m < moleculeCount; m++){
 	    Molecule molecule = moleculeRenderer.getMolecule(m);
@@ -2529,7 +2377,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    "center " + center.getX() + " " +
 	    center.getY() + " " + center.getZ() + ";";
 
-	viewString += "radius " + (r.width/r.zoom) + ";";
+	viewString += "radius " + (r.width/r.getZoom()) + ";";
 
 	viewString += "clip " + r.front + " " + r.back + ";";
 
@@ -2537,7 +2385,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Save this molecule. */
-    public void saveMolecule(Molecule molecule){
+    private void saveMolecule(Molecule molecule){
 	String name = molecule.getFilename();
 	//System.out.println("in saveMolecule " + name);
 
@@ -2555,7 +2403,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	output.close();
     }
 
-    public void saveScript(String scriptFile){
+    private void saveScript(String scriptFile){
 	FILE save = FILE.write(scriptFile);
 
 	StringBuffer commands = moleculeRenderer.commandLog;
@@ -2578,14 +2426,12 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     }
 
     /** Save the whole state. */
-    public void saveAndExit(){
-	//saveScript("startup.script");
-
+    private void saveAndExit(){
 	System.exit(0);
     }
 
 
-    Format hexFormat = new Format("0x%06x");
+    private Format hexFormat = new Format("0x%06x");
 
     private transient Frame colorChooserFrame = null;
     private transient Dialog colorChooserDialog = null;
@@ -2630,10 +2476,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	d.pack();
 
 	Dimension dSize = d.getSize();
-
-	// center chooser on the passed location
-	//x -= (int)(dSize.width * 0.5);
-	//y -= (int)(dSize.height * 0.5);
 
 	// shuffle coords to stop dialog being off screen.
 

@@ -29,77 +29,13 @@ import java.util.*;
 public class ThinletUI extends Thinlet implements WindowListener,
                                                   MoleculeRendererListener,
                                                   RendererEventListener {
-
-    public static Hashtable<String, DialogLauncher> userinterfaces = new Hashtable<String, DialogLauncher>(11);
-
-    public static void handleCommand(MoleculeViewer mv,
-                                     MoleculeRenderer mr,
-                                     Arguments args){
-        String xml = args.getString("-xml", null);
-
-        DialogLauncher dialogLauncher = userinterfaces.get(xml);
-
-        if(dialogLauncher == null){
-            ThinletUI tui = new ThinletUI(mv, xml);
-            dialogLauncher = tui.displayThinlet(mv, args);
-            if(dialogLauncher != null){
-                userinterfaces.put(xml, dialogLauncher);
-            }
-        }
-        
-        dialogLauncher.setVisible(true);
-    }
-
     public MoleculeViewer moleculeViewer     = null;
     public MoleculeRenderer moleculeRenderer = null;
 
-    Hashtable<String, String> initialised = new Hashtable<String,String>(11);
+    private Hashtable<String, String> initialised = new Hashtable<String,String>(11);
 
     /** Main entry point for scripting execution via thinlet. */
-    public void execute(String init, Object component){
-
-        if(initialised.get(init) == null){
-            initialised.put(init, init);
-
-            String text = getString(init, "text");
-
-            text = preprocess(init, text);
-            execute(text);
-        }
-
-        execute(component);
-    }
-
-    public Object console = null;
-
-    public long then = 0;
-
-    public void startTimer(){
-        then = System.currentTimeMillis();
-
-        if(console == null){
-            console = find("console");
-            System.out.print("Console is " + console);
-        }
-
-        setString(console, "text", "");
-    }
-
-    public void stopTimer(String s){
-
-        long now  = System.currentTimeMillis();
-
-        String current = getString(console, "text");
-
-        current += s + " " + (now - then) + " ms\n";
-
-        setString(console, "text", current);
-
-        then = now;
-    }
-
-    /** Main entry point for scripting execution via thinlet. */
-    public void execute(Object component){
+    private void execute(Object component){
         String init = (String)getProperty(component, "init");
 
         if(init != null && initialised.get(init) == null){
@@ -114,10 +50,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
         for(int i = 0; i < commands.length; i++){
             String command = (String)getProperty(component, commands[i]);
-
-            //System.out.println("class " + getClass(component));
-
-            //System.out.println(commands[i] + " " + command);
 
             if(command == null && !"table".equals(getClass(component))){
                 if("checkbox".equals(getClass(component))){
@@ -140,73 +72,28 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 }else if("textarea".equals(getClass(component))){
                     command = getString(component, "text");
                 }
-            }else if(command != null && ("table".equals(getClass(component)) || "tree".equals(getClass(component)))){
+            }else if(command != null && ("table".equals(getClass(component)) || "tree".equals(getClass(component))) && i == 1){
+		// only preprocess the pertable command
+		Object rows[] = getSelectedItems(component);
 
-                if(i == 1){
-                    //System.out.println("doing row part command = " + command);
-                
-                    // only preprocess the pertable command
-                    Object rows[] = getSelectedItems(component);
-                
-                    String wholeCommand = "";
-                    
-                    for(int r = 0; r < rows.length; r++){
-                        //System.out.println("row["+r+"] " + command);
-                        
-                        wholeCommand += preprocess(rows[r], command);
-                    }
-                    // do this per row...
-                    
-                    command = wholeCommand;
-                }
+		String wholeCommand = "";
+
+		for(int r = 0; r < rows.length; r++){
+		    wholeCommand += preprocess(rows[r], command);
+		}
+		// do this per row...
+
+		command = wholeCommand;
             }
 
             if(command != null){
-                //System.out.println("command:           " + command);
-
                 command = preprocess(component, command);
 
-                //System.out.println("processed command: " + command);
                 execute(command);
             }else{
                 if(i == 1){
                     Log.error("no command or text to execute");
                 }
-            }
-        }
-    }
-
-    /** Execute one component but using data from another. */
-    public void executeUsing(Object component, Object data){
-        String init = (String)getProperty(component, "init");
-
-        if(init != null){
-            init = preprocess(data, init);
-        }
-
-        if(init != null && initialised.get(init) == null){
-            initialised.put(init, init);
-
-            execute(init);
-        }
-
-        String commands[] = { "precommand", "command", "postcommand" };
-
-        for(int i = 0; i < commands.length; i++){
-            String command = (String)getProperty(component, commands[i]);
-
-            System.out.println(commands[i] + " " + command);
-
-            if(command == null && i == 1){
-                command = getString(component, "text");
-            }
-
-            if(command != null){
-                command = preprocess(data, command);
-                
-                execute(command);
-            }else{
-                Log.error("no command or text to execute");
             }
         }
     }
@@ -222,20 +109,15 @@ public class ThinletUI extends Thinlet implements WindowListener,
         moleculeViewer.dirtyRepaint();
     }
 
-    public void clear(Object component){
-        setString(component, "text", "");
-    }
-
     /**
      * get the cell from the selected row that has
      * the specified columnName property.
      */
-    public String getCellValueWithName(Object table, String name){
+    private String getCellValueWithName(Object table, String name){
         Object row = null;
 
         if(getClass(table).equals("row")){
             // it was a row really...
-            //System.out.println("getCellValueWithName called with row");
             row = table;
             table = getParent(row);
         }
@@ -268,9 +150,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return getString(cell, "text");
     }
 
-    public String getValue(Object component, String s){
-        //System.out.println("getValue " + getClass(component) + " " + s);
-
+    private String getValue(Object component, String s){
         if("table".equals(getClass(component)) || "row".equals(getClass(component))){
 
             String field = s.substring(1);
@@ -348,12 +228,11 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return null;
     }
 
-    public String preprocess(Object component, String origCommand){
+    private String preprocess(Object component, String origCommand){
         return preprocess(component, origCommand, true);
     }
 
-    public String preprocess(Object component, String origCommand, boolean replacePipe){
-        //System.out.println("initial command |" + command + "|");
+    private String preprocess(Object component, String origCommand, boolean replacePipe){
         String command = origCommand;
 
         if(replacePipe){
@@ -419,8 +298,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
             System.out.println("exception " + e);
             return null;
         }
-            
-        //System.out.println("final command   |" + newCommand + "|");
 
         return newCommand.toString();
     }
@@ -446,7 +323,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return false;
     }
 
-    public void setContent(String xml){
+    private void setContent(String xml){
         try{
             add(parse(xml));
         }catch(Exception e){
@@ -454,62 +331,13 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    public DialogLauncher displayThinlet(MoleculeViewer mv,
-                                         Arguments args){
-        String title     = args.getString("-title", args.getString("-xml", "..."));
-        int width        = args.getInteger("-width", 400);
-        int height       = args.getInteger("-height", 400);
-        int x            = args.getInteger("-x", 806);
-        int y            = args.getInteger("-y", 0);
-        boolean internal = args.getBoolean("-internal", false);
-        
-        if(internal){
-            Container parent = mv.getParent();
-            System.out.println("parent " + parent);
-
-            parent.removeAll();
-
-            if(!(parent.getLayout() instanceof SplitterLayout)){
-                System.out.println("not splitter " + parent);
-                
-                parent.setLayout(new SplitterLayout(SplitterLayout.HORIZONTAL));
-                
-                parent.add("3", mv);
-                
-                mv.setSize((int)(mv.getSize().width * 0.75), mv.getSize().height);
-
-                SplitterBar sb = new SplitterBar();
-                
-                parent.add(sb);
-                
-                //parent.add("1", new ComponentLauncher(this));
-                parent.add("1", this);
-            }else{
-                parent.setLayout(new BorderLayout());
-                parent.add(mv, BorderLayout.CENTER);
-            }
-
-            parent.doLayout();
-        }else{
-            DialogLauncher dialogLauncher =
-                new DialogLauncher(Util.getFrame(mv), title,
-                                   this, x, y, width, height);
-
-            return dialogLauncher;
-        }
-
-        return null;
-    }
-
     public ThinletUI(MoleculeViewer mv, String xml){
         this(mv);
 
         setContent(xml);
-
-        //initialise();
     }
 
-    public ThinletUI(MoleculeViewer mv){
+    private ThinletUI(MoleculeViewer mv){
         System.out.println("Thinlet GUI toolkit - www.thinlet.com");
         System.out.println("Copyright (C) 2002-2003 Robert Bajzat (robert.bajzat@thinlet.com)");
 
@@ -545,64 +373,10 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    public void initialiseObjects(Object objectComponent){
-        if(objectComponent != null){
-            int objectCount = moleculeRenderer.renderer.getGraphicalObjectCount();
-
-            for(int o = 0; o < objectCount; o++){
-                Tmesh tmesh = moleculeRenderer.renderer.getGraphicalObject(o);
-                
-                addObject(objectComponent, tmesh);
-            }
-        }
-    }
-
-    public void initialiseMolecules(Object molTree){
-        int molCount = moleculeRenderer.getMoleculeCount();
-
-        for(int m = 0; m < molCount; m++){
-            Molecule mol = moleculeRenderer.getMolecule(m);
-
-            addMolecule(molTree, mol);
-        }
-    }
-
-    public void initialiseMaps(Object mapComponent){
-        int mapCount = moleculeRenderer.getMapCount();
-
-        for(int m = 0; m < mapCount; m++){
-            astex.Map map = moleculeRenderer.getMap(m);
-
-            addMap(mapComponent, map);
-        }
-    }
-
-    public void initialiseFrontClip(Object fc){
-        setString(fc, "text", FILE.sprint("%.1f", moleculeRenderer.renderer.front));
-    }
-
-    public void initialiseBackClip(Object fc){
-        setString(fc, "text", FILE.sprint("%.1f", moleculeRenderer.renderer.back));
-    }
-
-    public void initialiseDistances(Object object){
-        int distanceCount = moleculeRenderer.getDistanceCount();
-
-        //print.f("object " + object);
-
-        for(int d = 0; d < distanceCount; d++){
-            Distance distance = moleculeRenderer.getDistance(d);
-
-            addDistance(object, distance);
-        }
-    }
-
     /** MoleculeRendererListener interface. */
 
     /** A molecule was added. */
     public void moleculeAdded(MoleculeRenderer renderer, Molecule molecule){
-        //System.out.println("moleculeAdded " + molecule);
-
         Object moleculeTree = findComponent("molecule_tree");
 
         addMolecule(moleculeTree, molecule);
@@ -618,9 +392,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     private void addMolecule(Object tree, Molecule mol){
-
-        //System.out.println("moleculeTree " + tree);
-
         if(tree != null){
             Object node = createNode(mol.getName(), false, mol);
 
@@ -670,12 +441,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    public void initialiseResidues(Object resnode, Object atomnode){
-        removeAll(resnode);
-
-        populateResidues(resnode, atomnode);
-    }
-
     private void populateResidues(Object resnode, Object atomnode){
         removeAll(resnode);
         removeAll(atomnode);
@@ -716,8 +481,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
         sort(names, count);
 
-        //print.f("residue names " + resnames.size());
-
         char lastChar = 0;
         Object folder = null;
 
@@ -752,8 +515,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
         sort(names, count);
 
-        //print.f("residue names " + resnames.size());
-
         lastChar = 0;
         folder = null;
 
@@ -777,11 +538,10 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
     }
 
-    public void sort(String a[], int n){
+    private void sort(String a[], int n){
 	for (int i = n; --i >= 0; ) {
             boolean flipped = false;
 	    for (int j = 0; j < i; j++) {
-		//if (a[j] > a[j+1]) {
 		if (a[j].compareTo(a[j+1]) > 0){
 		    String T = a[j];
 		    a[j] = a[j+1];
@@ -823,232 +583,12 @@ public class ThinletUI extends Thinlet implements WindowListener,
         add(list, item);
     }
 
-    public void editGeneric(Object list){
-        //print.f("class " + getClass(list));
-
-        Object distance = getSelectedItem(list);
-
-        //print.f("list " + list);
-        //print.f("distance " + distance);
-
-        Object propertyPanel = findComponent("property_panel");
-
-        //print.f("property_panel " + propertyPanel);
-
-        removeAll(propertyPanel);
-
-        Object ref = getProperty(distance, "reference");
-
-        if(ref != null && ref instanceof GenericInterface){
-            GenericInterface generic = (GenericInterface)ref;
-
-            //print.f("generic " + generic);
-            
-            Enumeration<String> properties = generic.getProperties();
-            
-            while(properties.hasMoreElements()){
-                String property = properties.nextElement();
-
-                //print.f("property " + property);
-
-                if( !(property.startsWith("__") &&
-                    property.endsWith("__")) ){ //add editor if not private
-                    addPropertyEditor(propertyPanel, generic, property);
-                }
-            }
-        }
-    }
-
-    public String generateDoubleEditor(String valString,
-                                       String minString,
-                                       String maxString,
-                                       String stepString,
-                                       String dpString){
-        String editString = "<spinbox text=\"" + valString;
-
-        if(minString != null){
-            editString += "\" minimum=\"" + minString;
-        }
-
-        if(maxString != null){
-            editString += "\" maximum=\"" + maxString;
-        }
-
-        editString += "\" decimals=\""+dpString +
-            "\" step=\"" + stepString + "\" action=\"applyEdit(this)\" columns=\"6\"/>";
-
-        return editString;
-    }
-
-    public String getColorString(int rgb){
+    private String getColorString(int rgb){
         return "#" + Integer.toHexString(rgb|0xff000000).substring(2);
     }
 
-    public String getColorString2(int rgb){
+    private String getColorString2(int rgb){
         return "0x" + Integer.toHexString(rgb|0xff000000).substring(2);
-    }
-
-    public void addPropertyEditor(Object panel, GenericInterface generic, String property){
-        String labelString = "<label text=\"" + property + "\"/>";
-
-        Object labelObject = safeParse(labelString);
-
-        add(panel, labelObject);
-
-        Object value = generic.get(property, "");
-
-        String className = (String)generic.getClassname();
-        String lookup = className + "." + property;
-
-        String editString = Settings.getString("thinlet", lookup);
-
-        if(editString != null){
-            editString = Util.replace(editString, "%v", value.toString());
-            editString = Util.replace(editString, "%e",  "action=\"applyEdit(this)\"");
-        }else{
-            if(value instanceof Color){
-                Color c = (Color)value;
-                String cs = getColorString(c.getRGB());
-                editString = readTemplate("/astex/thinlet/colorbutton.xml.properties");
-                editString = Util.replace(editString, "%c", cs);
-            }else if(value instanceof Double){
-                String minString = Settings.getString("thinlet", className + ".min", "-10000.0");
-                String maxString = Settings.getString("thinlet", className + ".max", "10000.0");
-                
-                String stepString = Settings.getString("thinlet", className + ".step", "0.1");
-                String dpString = Settings.getString("thinlet", className + ".decimals", "2");
-
-                String valString = FILE.sprint("%.6g", ((Double)value).doubleValue());
-
-                editString = generateDoubleEditor(valString, minString, maxString, stepString, dpString);
-            }else if(value instanceof Integer){
-                editString =
-                    "<spinbox text=\"" + value.toString() +
-                    "\" action=\"applyEdit(this)\" minimum=\"-100000\" maximum=\"100000\"/>";
-            }else if(value instanceof Boolean){
-                editString = "<checkbox selected=\"" + value.toString() + "\" action=\"applyEdit(this)\"/>";
-            }else{
-                editString = "<textfield text=\"" + value.toString() + "\" action=\"applyEdit(this)\"/>";
-            }
-        }
-
-        Object editObject = safeParse(editString);
-
-        add(panel, editObject);
-
-        // button must be first object in colorbutton template master
-        // panel
-        if(value instanceof Color){
-            editObject = getItem(editObject, 0);
-        }
-
-        putProperty(editObject, "reference", generic);
-        putProperty(editObject, "propertyString", property);
-    }
-
-    public Point getPositionOnScreen(Object component){
-        Point screen = getLocationOnScreen();
-        Point pos = new Point(screen.x, screen.y);
-
-        do {
-            Rectangle bounds = getRectangle(component, "bounds");
-            pos.x += bounds.x;
-            pos.y += bounds.y;
-            component = getParent(component);
-        }while(component != getDesktop());
-
-        return pos;
-    }
-
-    public void editObject(Object component){
-        Point pos = getPositionOnScreen(component);
-        Object parent = getParent(component);
-        String name = getString(parent, "name");
-        ObjectEditor.editObject(Util.getFrame(moleculeViewer),
-                                "Edit object...", pos.x, pos.y, this, name);
-
-    }
-
-    /** Apply a color edit then execute the other component. */
-    public void applyColorEdit(Object editor, Object component){
-        applyColorEdit(editor);
-
-        execute(component);
-    }
-
-    public void applyColorEdit(Object editor){
-        Point pos = getPositionOnScreen(editor);
-
-        Color color = ColorChooser.getcolor(Util.getFrame(moleculeViewer),
-                                            "Edit colour...", pos.x, pos.y);
-
-        if(color != null){
-            setColor(editor, "background", color);
-
-            String command = (String)getProperty(editor, "command");
-
-            if(command != null){
-                execute(editor);
-            }else{
-                applyEdit(editor);
-            }
-        }
-    }
-
-    public void applyEdit(Object editor){
-        GenericInterface generic = (GenericInterface)getProperty(editor, "reference");
-
-        if(generic == null){
-            return;
-        }
-        String propertyName = (String)getProperty(editor, "propertyString");
-        String value = getString(editor, "text");
-        boolean checkbox = false;
-        boolean boolValue = false;
-
-        if("checkbox".equals(getClass(editor))){
-            checkbox = true;
-            boolValue = getBoolean(editor, "selected");
-        }
-
-        String name = getString(editor, "name");
-
-        if(name != null &&
-           getString(editor, "name").equals("editor")){
-            Object parent = getParent(editor);
-
-            generic = (GenericInterface)getProperty(parent, "reference");
-            propertyName = (String)getProperty(parent, "propertyString");
-        }
-
-        Object o = generic.get(propertyName, null);
-
-        if(o == null){
-            print.f("no such property " + propertyName + " on " + generic);
-            return;
-        }else{
-            Object newValue = null;
-
-            if(o instanceof Double){
-                newValue = (Object)new Double(value);
-            }else if(o instanceof Integer){
-                newValue = (Object)new Integer(value);
-            }else if(o instanceof Boolean){
-                if(checkbox){
-                    newValue = (Object) Boolean.valueOf(boolValue);
-                }else{
-                    newValue = (Object) Boolean.valueOf(value);
-                }
-            }else if(o instanceof String){
-                newValue = (Object)value;
-            }else if(o instanceof Color){
-                newValue = getColor(editor, "background");
-            }
-
-            generic.set(propertyName, newValue);
-
-            moleculeViewer.dirtyRepaint();
-        }
     }
 
     public void genericRemoved(MoleculeRenderer renderer, Generic generic){
@@ -1140,13 +680,9 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     public boolean handleRendererEvent(RendererEvent re){
-        //System.out.println("rendererEvent " + re);
-
         if(re.getType() == RendererEvent.ObjectAdded){
             Tmesh tmesh = (Tmesh)re.getItem();
             Object objectList = findComponent("object_list");
-
-            //print.f("objectList " + objectList);
 
             addObject(objectList, tmesh);
         }else if(re.getType() == RendererEvent.ObjectRemoved){
@@ -1177,11 +713,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return true;
     }
 
-    public void resetView(Object component){
-        moleculeRenderer.resetView();
-        moleculeViewer.dirtyRepaint();
-    }
-
     private void addObject(Object component, Tmesh object){
         if(component != null){
             String objectString =
@@ -1194,7 +725,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    public Object createNode(String name, boolean expanded, Object ref){
+    private Object createNode(String name, boolean expanded, Object ref){
         String nodeString =
             "<node text=\"" + name + "\" name=\"" + name + "\" expanded=\"" + expanded + "\" font=\"courier\"/>";
 
@@ -1219,224 +750,6 @@ public class ThinletUI extends Thinlet implements WindowListener,
     public ThinletUI(){
     }
 
-    public void actionNode(Object component, Object mode){
-        //System.out.println("actionNode " + component);
-
-        editGeneric(component);
-
-        //doAction(component, "select");
-        doAction(component, getString(mode, "text"));
-    }
-
-    public void performNode(Object component){
-        //System.out.println("performNode " + component);
-
-        doAction(component, "center");
-    }
-
-    public void doAction(Object component, String action){
-        try {
-            moleculeRenderer.setSelectCount(false);
-
-            Object selectedItems[] = getSelectedItems(component);
-
-            //moleculeRenderer.execute("select none;");
-
-            for(int i = 0; i < selectedItems.length; i++){
-                Object selected = selectedItems[i];
-                Object reference = getProperty(selected, "reference");
-
-                if(reference != null && reference instanceof Selectable){
-                    String selectionExpression = ((Selectable)reference).selectStatement();
-                    
-                    moleculeRenderer.execute(action + " " + selectionExpression + ";");
-                    //moleculeViewer.dirtyRepaint();
-                }else{
-                    String selectionExpression = (String)getProperty(selected, "selection");
-     
-                    if(selectionExpression != null){
-                        moleculeRenderer.execute(action + " " + selectionExpression + ";");
-                    }
-                    //moleculeViewer.dirtyRepaint();
-                }
-            }
-            moleculeViewer.dirtyRepaint();
-        }catch(Exception e){
-	    e.printStackTrace();
-        }finally{
-            moleculeRenderer.setSelectCount(true);
-        }
-    }
-
-    public void expandNode(Object component){
-        Object selected = getSelectedItem(component);
-
-        if(selected != null){
-            setBoolean(component, "visible", false);
-
-            Object firstChild = getItem(selected, 0);
-
-            String name = getString(firstChild, "name");
-
-            if(name.equals("dummy")){
-                remove(firstChild);
-
-                Object ref = getProperty(selected, "reference");
-
-                if(ref != null){
-                    if(ref instanceof Chain){
-                        Chain chain = (Chain)ref;
-                        
-                        int resCount = chain.getResidueCount();
-                        
-                        for(int r = 0; r < resCount; r++){
-                            Residue residue = chain.getResidue(r);
-                            String label = residue.getName() + " " + residue.getNumber();
-
-                            if(residue.getInsertionCode() != ' '){
-                                label += residue.getInsertionCode();
-                            }
-
-                            Object node = createNode(label, false, residue);
-                            
-                            Object dummy = createNode("dummy", false, null);
-                            
-                            setColor(node, "foreground", (Color)residue.get(Residue.ResidueColor, Color.black));
-
-                            add(node, dummy);
-                            
-                            add(selected, node);
-                        }
-                    }else if(ref instanceof Residue){
-
-                        Residue residue = (Residue)ref;
-                        
-                        int atomCount = residue.getAtomCount();
-                        
-                        for(int a = 0; a < atomCount; a++){
-                            Atom atom = residue.getAtom(a);
-                            
-                            Object node = createNode(atom.getAtomLabel(), false, atom);
-
-                            if(atom.getBondCount() > 0){
-                                Object dummy = createNode("dummy", false, null);
-                            
-                                add(node, dummy);
-                            }
-                            
-                            add(selected, node);
-                        }
-                    }else if(ref instanceof Atom){
-                        Atom atom = (Atom)ref;
-
-                        int bondCount = atom.getBondCount();
-
-                        //print.f("atom " + atom);
-                        
-                        for(int b = 0; b < bondCount; b++){
-                            Bond bond = atom.getBond(b);
-                            
-                            Object node = createNode(getLabel(atom, bond), false, bond);
-                            
-                            add(selected, node);
-                        }
-                    }
-                }
-            }
-            setBoolean(component, "visible", true);
-        }
-    }
-
-    public void processPopup(Object component){
-        String command = (String)getProperty(component, "command");
-
-        Object parent = component;
-
-        do {
-            parent = getParent(parent);
-        }while(getClass(parent).equals("tree") == false);
-
-        Object selected = getSelectedItem(parent);
-
-        Object reference = getProperty(selected, "reference");
-
-        if(reference != null && reference instanceof Selectable){
-            String sel = ((Selectable)reference).selectStatement();
-            command = Util.replace(command, "%s", sel);
-            command = Util.replace(command, "|", ";");
-        }
-
-        //print.f("command "+command);
-
-        moleculeRenderer.execute(command);
-        moleculeViewer.dirtyRepaint();
-    }
-
-    public String getLabel(Atom atom, Bond bond){
-	Atom firstAtom = bond.getFirstAtom();
-	Atom secondAtom = bond.getSecondAtom();
-
-        if(atom != firstAtom){
-            Atom tmp = firstAtom;
-            firstAtom = secondAtom;
-            secondAtom = tmp;
-        }
-
-        Residue firstResidue = firstAtom.getResidue();
-        Residue secondResidue = secondAtom.getResidue();
-
-        String suffix = "";
-
-        if(secondResidue.getSequentialNumber() >
-           firstResidue.getSequentialNumber()){
-            suffix = "(+)";
-        }else if(secondResidue.getSequentialNumber() <
-                 firstResidue.getSequentialNumber()){
-            suffix = "(-)";
-        }
-            
-        return
-            firstAtom.getAtomLabel() + "-" + 
-            secondAtom.getAtomLabel() + suffix;
-    }
-
-    public void collapse(Object button){
-        Object parent = getParent(getParent(button));
-
-        Object target = getItem(parent, 1);
-
-        setBoolean(target, "visible", !getBoolean(target, "visible"));
-    }
-
-    public void initLightCanvas(Object lc, Object lightPanel){
-        LightCanvas lightCanvas = (LightCanvas)getComponent(lc, "bean");
-
-        lightCanvas.moleculeRenderer = moleculeRenderer;
-        lightCanvas.moleculeViewer = moleculeViewer;
-        lightCanvas.renderer = moleculeRenderer.renderer;
-
-        for(int i = 0; i < lightCanvas.renderer.lights.size(); i++){
-            Light light = (Light)lightCanvas.renderer.lights.get(i);
-            Object ld = find(lightPanel, "l" + i + "d");
-
-            if(ld != null){
-                setString(ld, "text", FILE.sprint("%d", light.diffuse & 255));
-            }
-            Object ls = find(lightPanel, "l" + i + "s");
-            if(ls != null){
-                setString(ls, "text", FILE.sprint("%d", light.specular & 255));
-            }
-            Object lp = find(lightPanel, "l" + i + "p");
-            if(lp != null){
-                setString(lp, "text", FILE.sprint("%d", (int)light.power));
-            }
-            Object l = find(lightPanel, "l" + i);
-            if(l != null){
-                setBoolean(l, "selected", light.on);
-            }
-        }
-    }
-
     /** Hashtable of component names to objects. */
     private Hashtable<String, Object> components = null;
 
@@ -1444,7 +757,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
      * Look up a cached object name.
      * Don't use this if the object may change.
      */
-    public Object findComponent(String name){
+    private Object findComponent(String name){
         if(components == null){
             components = new Hashtable<String, Object>(11);
         }

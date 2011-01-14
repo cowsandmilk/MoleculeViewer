@@ -21,37 +21,37 @@ import astex.*;
 
 public class Torus {
     /** Index of first atom. */
-    int i;
+    public int i;
 
     /** Index of second atom. */
-    int j;
+    public int j;
 
     /** Torus center. */
-    double tij[] = new double[3];
+    public double tij[] = new double[3];
 
     /** Torus axis unit vector. */
-    double uij[] = new double[3];
+    public double uij[] = new double[3];
 
     /** Contact circle on i. */
-    double cij[] = new double[3];
+    public double cij[] = new double[3];
 
     /** Contact circle on j. */
-    double cji[] = new double[3];
+    public double cji[] = new double[3];
 
     /** Radius of contact circle on i. */
-    double rcij = 0.0;
+    public double rcij = 0.0;
 
     /** Radius of contact circle on j. */
-    double rcji = 0.0;
+    public double rcji = 0.0;
 
     /** Torus radius. */
-    double rij = 0.0;
+    public double rij = 0.0;
 
     /** Perpendicular to torus axis. */
-    double uijnorm[] = new double[3];
+    public double uijnorm[] = new double[3];
 
     /** Second perpendicular to torus axis. */
-    double uijnorm2[] = new double[3];
+    public double uijnorm2[] = new double[3];
 
     /** Constructor. */
     public Torus(int ai, int aj){
@@ -59,15 +59,9 @@ public class Torus {
 	j = aj;
     }
 
-    /** List of probe placements that are on this torus. */
-    DynamicArray probes = new DynamicArray(2);
-
     /** List of faces for this torus. */
-    DynamicArray faces = new DynamicArray(10);
-
-    /** List of faces for this torus. */
-    DynamicArray edges = new DynamicArray(10);
+    public DynamicArray edges = new DynamicArray(10);
 
     /** Does the torus self intersect. */
-    boolean selfIntersects = false;
+    public boolean selfIntersects = false;
 }

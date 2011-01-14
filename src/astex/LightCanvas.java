@@ -21,9 +21,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
-    MoleculeViewer moleculeViewer = null;
-    MoleculeRenderer moleculeRenderer  = null;
-    Renderer renderer = null;
+    private MoleculeViewer moleculeViewer;
+    private MoleculeRenderer moleculeRenderer;
+    private Renderer renderer;
 
     public LightCanvas(MoleculeViewer mv){
 	moleculeViewer = mv;
@@ -41,24 +41,24 @@ public class LightCanvas extends Canvas implements MouseListener, MouseMotionLis
 	paint(g);
     }
 
-    int width = 0;
-    int height = 0;
-    int w2 = 0;
-    int h2 = 0;
+    private int width;
+    private int height;
+    private int w2;
+    private int h2;
 
-    public int l2cx(double x){
+    private int l2cx(double x){
 	return (int)(w2 + x * w2);
     }
 
-    public int l2cy(double y){
+    private int l2cy(double y){
 	return (int)(height - (h2 + y * h2));
     }
 
-    public double c2lx(int x){
+    private double c2lx(int x){
 	return (double)(x - w2)/(double)w2;
     }
 
-    public double c2ly(int y){
+    private double c2ly(int y){
 	return (double)(h2 - y)/(double)h2;
     }
 
@@ -92,7 +92,7 @@ public class LightCanvas extends Canvas implements MouseListener, MouseMotionLis
 	}
     }
 
-    int activeLight = -1;
+    private int activeLight = -1;
 
     public void mousePressed(MouseEvent e) {
 	activeLight = -1;

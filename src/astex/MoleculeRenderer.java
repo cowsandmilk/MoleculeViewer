@@ -99,9 +99,6 @@ public class MoleculeRenderer {
     /** The list of selected atoms. */
     private DynamicArray selectedAtoms = new DynamicArray();
 
-    /** The list of labelled atoms. */
-    //private DynamicArray labelledAtoms = new DynamicArray();
-
     /** The list of atoms that are bumped. */
     private DynamicArray bumpAtoms = new DynamicArray();
 
@@ -170,35 +167,35 @@ public class MoleculeRenderer {
     private boolean displaySolvent = true;
 
     /** Normal picking mode. */
-    public static int NORMAL_PICK = 1;
+    public static final int NORMAL_PICK = 1;
 
     /** Distance picking mode. */
-    public static int DISTANCE_PICK = 2;
+    public static final int DISTANCE_PICK = 2;
 
     /** Angle picking mode. */
-    public static int ANGLE_PICK = 3;
+    public static final int ANGLE_PICK = 3;
 
     /** Angle picking mode. */
-    public static int TORSION_PICK = 4;
+    public static final int TORSION_PICK = 4;
 
     /** The current pick mode. */
     public int pickMode = NORMAL_PICK;
 
-    boolean allowFastDraw = true;
+    public boolean allowFastDraw = true;
 
-    boolean fastDraw = false;
+    private boolean fastDraw = false;
 
     private boolean selectCount = true;
 
     /** Are we debugging. */
-    public boolean debug = false;
+    private final boolean debug = false;
 
     /**
      * The current contour grid size.
      * The number of grid points we contour around
      * the map center.
      */
-    public int contourSize = 24;
+    private int contourSize = 24;
 
     public boolean hersheyFonts = false;
 
@@ -208,9 +205,9 @@ public class MoleculeRenderer {
 
 	// set up the default contour levels
 	resetContourLevels();
-	addContourLevel(3.0, Color32.red, true, Map.Surface);
-	addContourLevel(2.0, Color32.orange, false, Map.Lines);
-	addContourLevel(-2.0, Color32.blue, false, Map.Lines);
+	addContourLevel();
+	addContourLevel();
+	addContourLevel();
 
 	hersheyFonts = Settings.getBoolean("fonts", "hershey.fonts");
 	shadows      = Settings.getBoolean("config", "shadows");
@@ -273,7 +270,7 @@ public class MoleculeRenderer {
     }
 
     /** Actually delete an atom. */
-    public void deleteAtom(Atom atom){
+    private void deleteAtom(Atom atom){
 	int bondCount = atom.getBondCount();
 	Molecule mol = atom.getMolecule();
 
@@ -447,11 +444,11 @@ public class MoleculeRenderer {
 	    // load the class and try and create one.
 	    String userMethodName = args.getString("-method", "handleCommand");
 
-	    Class userClass = Class.forName(className);
+	    Class<?> userClass = Class.forName(className);
 
 	    Object userObject = userClass.newInstance();
 
-	    Class userMethodParams[] = {
+	    Class<?> userMethodParams[] = {
 		MoleculeViewer.class,
 		MoleculeRenderer.class,
 		Arguments.class
@@ -495,7 +492,6 @@ public class MoleculeRenderer {
 	String moleculeString = args.getString("-molecule", null);
 	String parameterName  = args.getString("-parameter", "pdb");
 	boolean selected  = args.getBoolean("-selected", true);
-	boolean debugConnect  = args.getBoolean("-debug", true);
 	Molecule mol          = null;
 	String type           = null;
 
@@ -533,10 +529,9 @@ public class MoleculeRenderer {
 	type = MoleculeIO.getTypeFromExtension(typeString);
 
 	if(urlString != null){
-	    writeMoleculeToUrl(mol, urlString, debugConnect, type,
-			       parameterName);
+	    writeMoleculeToUrl(mol, urlString, type, parameterName);
 	}else if(fileString != null){
-	    writeMoleculeToFile(mol, fileString, debugConnect, type);
+	    writeMoleculeToFile(mol, fileString, type);
 	}else{
 	    Log.error("you must specify -file or -url");
 	}
@@ -545,8 +540,7 @@ public class MoleculeRenderer {
     /**
      * Write the molecule to the specified file.
      */
-    public void writeMoleculeToFile(Molecule mol, String fileString,
-				    boolean debugConnect, String type){
+    private void writeMoleculeToFile(Molecule mol, String fileString, String type){
 	FILE file = FILE.write(fileString);
 
 	if(file == null){
@@ -575,9 +569,8 @@ public class MoleculeRenderer {
      * URLConnection methods unless you know much more about
      * this than I do.
      */
-    public String writeMoleculeToUrl(Molecule mol, String urlString,
-				     boolean debugConnect, String type,
-				     String parameterName){
+    private String writeMoleculeToUrl(Molecule mol, String urlString,
+				      String type, String parameterName){
 	String result = "";
 
 	try {
@@ -640,9 +633,8 @@ public class MoleculeRenderer {
 	    br.close();
 	} catch (Throwable t) {
 	    t.printStackTrace();
-	}finally{
-	    return result;
 	}
+	return result;
     }
 
     /** Handle a distance command. */
@@ -784,11 +776,6 @@ public class MoleculeRenderer {
 
     /** Configure the settings of a distance object. */
     private void configureDistance(Distance d, Arguments args){
-	//d.radius = args.getDouble("-radius", d.radius);
-	//d.on     = args.getDouble("-on",     d.on);
-	//d.off    = args.getDouble("-off",    d.off);
-	//d.format = args.getString("-format", d.format);
-	//d.name   = args.getString("-name",   d.name);
 	d.setBoolean(Distance.Visible, true);
 	d.setDouble(Distance.Radius, args.getDouble("-radius", 0.0));
 	d.setDouble(Distance.On,     args.getDouble("-on",     0.0));
@@ -823,7 +810,7 @@ public class MoleculeRenderer {
     }
 
     /** Calculate hydrogen bonds. */
-    public void calculateHbonds(DynamicArray atoms, Arguments args){
+    private void calculateHbonds(DynamicArray atoms, Arguments args){
 	Lattice l             = new Lattice(5.5);
 	int atomCount         = atoms.size();
 	double hbondConstant  = args.getDouble("hbond.constant", -999.0);
@@ -1105,7 +1092,7 @@ public class MoleculeRenderer {
     }
 
     /** Map the colors of a set of atoms to the object. */
-    public void mapAtomColors(Tmesh tmesh, DynamicArray mapAtoms,
+    private void mapAtomColors(Tmesh tmesh, DynamicArray mapAtoms,
 			      int defaultColor, double dmax, double wmax){
 	double maxRadius = 0.0;
 
@@ -1221,14 +1208,14 @@ public class MoleculeRenderer {
     }
 
     /** Name of properties resource for the MoleculeRenderer class. */
-    private static String moleculeRendererProperties =
+    private static final String moleculeRendererProperties =
 	"MoleculeRenderer.properties";
 
     /** The properties for the moleculerenderer. */
     private Properties properties = null;
 
     /** Initialise the MoleculeRenderer. */
-    public void initialise(){
+    private void initialise(){
 	properties =
 	    FILE.loadProperties(moleculeRendererProperties);
 
@@ -1253,19 +1240,6 @@ public class MoleculeRenderer {
 	if(value != null){
 	    setupContourLevels(value);
 	}
-
-	/*
-	  value = properties.getProperty(standardAminoacidsProperty);
-	  if(value != null){
-	  String aminoacids[] = FILE.split(value, ",");
-
-	  for(int i = 0; i < aminoacids.length; i++){
-	  aminoacids[i] = aminoacids[i].trim();
-	  }
-
-	  Residue.setStandardAminoAcids(aminoacids);
-	  }
-	*/
     }
 
     /** The default status string. */
@@ -1284,16 +1258,6 @@ public class MoleculeRenderer {
 	return atom.generateLabel(defaultStatusLabelFormat);
     }
 
-    /** Set the status label format. */
-    public void setStatusLabelFormat(String s){
-	defaultStatusLabelFormat = s;
-    }
-
-    /** Get the status label format. */
-    public String getStatusLabelFormat(){
-	return defaultStatusLabelFormat;
-    }
-
     /** Set the atom that will produce the status label. */
     public void setStatusAtom(Atom a){
 	if(a == null){
@@ -1301,11 +1265,6 @@ public class MoleculeRenderer {
 	}else{
 	    renderer.setStatusString(generateStatusLabel(a));
 	}
-    }
-
-    /** Should we display status strings. */
-    public void setDisplayStatusString(boolean b){
-	renderer.setDisplayStatusString(b);
     }
 
     /** Set the radius allowing for minimum value for renderer. */
@@ -1324,16 +1283,10 @@ public class MoleculeRenderer {
 	if(distance < minimumClipDistance){
 	    distance = minimumClipDistance;
 	}
-
-	//System.out.println("setClip " + distance);
-
-	//Exception e = new Exception();
-	//e.printStackTrace();
-
 	renderer.setClip(distance);
     }
 
-    public void removeGraphicalObjectsBeginningWith(String prefix){
+    private void removeGraphicalObjectsBeginningWith(String prefix){
 	renderer.removeGraphicalObjectsBeginningWith(prefix);
     }
 
@@ -1346,7 +1299,7 @@ public class MoleculeRenderer {
     }
 
     /** Setup the contour levels from the passed string. */
-    public void setupContourLevels(String contourLevels){
+    private void setupContourLevels(String contourLevels){
 	resetContourLevels();
 
 	String levels[] = FILE.split(contourLevels, ",");
@@ -1354,21 +1307,7 @@ public class MoleculeRenderer {
 	for(int i = 0; i < levels.length; i++){
 	    String attributes[] = FILE.split(levels[i], ":");
 
-	    double level = FILE.readDouble(attributes[0].trim());
-	    int color = Color32.white;
-
-	    if(attributes.length >= 2){
-		color = Color32.getColorFromName(attributes[1].trim());
-	    }
-
-	    boolean display = false;
-
-	    if(attributes.length >= 3 &&
-	       attributes[2].equals("display")){
-		display = true;
-	    }
-
-	    addContourLevel(level, color, display, Map.Lines);
+	    addContourLevel();
 	}
     }
 
@@ -1384,7 +1323,7 @@ public class MoleculeRenderer {
     }
 
     /** Remove the stored space group information. */
-    public void removeSpaceGroup(){
+    private void removeSpaceGroup(){
 	symmetry = null;
     }
 
@@ -1429,7 +1368,7 @@ public class MoleculeRenderer {
     }
 
     /** Fire a distance added event. */
-    public void fireGenericAddedEvent(Generic generic){
+    private void fireGenericAddedEvent(Generic generic){
 	if(moleculeRendererListeners != null){
 	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
 		MoleculeRendererListener l =
@@ -1441,7 +1380,7 @@ public class MoleculeRenderer {
     }
 
     /** Fire a generic removed event. */
-    public void fireGenericRemovedEvent(Generic generic){
+    private void fireGenericRemovedEvent(Generic generic){
 	if(moleculeRendererListeners != null){
 	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
 		MoleculeRendererListener l =
@@ -1452,7 +1391,7 @@ public class MoleculeRenderer {
     }
 
     /** Fire a map added event. */
-    public void fireMapAddedEvent(Map map){
+    private void fireMapAddedEvent(Map map){
 	if(moleculeRendererListeners != null){
 	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
 		MoleculeRendererListener l =
@@ -1463,20 +1402,8 @@ public class MoleculeRenderer {
 	}
     }
 
-    /** Fire a map added event. */
-    public void fireMapRemovedEvent(Map map){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
-
-		l.mapRemoved(this, map);
-	    }
-	}
-    }
-
     /** Fire an atom selected event. */
-    public void fireAtomSelectedEvent(Atom atom){
+    private void fireAtomSelectedEvent(Atom atom){
 	if(moleculeRendererListeners != null){
 	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
 		MoleculeRendererListener l =
@@ -1500,8 +1427,6 @@ public class MoleculeRenderer {
 
 	fireMoleculeAddedEvent(molecule);
     }
-
-    public boolean displayAsCylinders = false;
 
     /** Add a molecule to the scene. */
     public void addMolecule(String filename, String name){
@@ -1648,7 +1573,7 @@ public class MoleculeRenderer {
 	}
     }
 
-    public boolean moleculeMatches(String pattern, Molecule mol){
+    private boolean moleculeMatches(String pattern, Molecule mol){
 	if(pattern.startsWith("#")){
 	    int moleculeCount = getMoleculeCount();
 
@@ -1666,38 +1591,17 @@ public class MoleculeRenderer {
 	return false;
     }
 
-    /** Return the name for the next molecule. */
-    public String getNextMoleculeName(){
-	int mol = getMoleculeCount();
-	String molName = null;
-
-	do {
-	    molName = "mol" + mol;
-	    mol++;
-	} while(getMolecule(molName) != null);
-
-	//System.out.println("returning molecule name " + molName);
-
-	return molName;
-    }
-
     /** Remove maps. */
     public void removeMap(String pattern){
-	//System.out.println("removeMolecule pattern is " + pattern);
-
 	int mapCount = getMapCount();
 	for(int m = mapCount - 1; m >= 0; m--){
 	    Map map = getMap(m);
 	    String mapName = map.getName();
 
-	    //System.out.println("checking map |" + mapName + "|");
 	    if(match.matches(pattern, mapName)){
 		String mapPrefix = mapName;
 		maps.remove(map);
 		removeGraphicalObjectsBeginningWith(mapPrefix);
-		//System.out.println("matched " + mapName);
-
-		//fireMoleculeRemovedEvent(molecule);
 	    }
 	}
     }
@@ -1826,21 +1730,6 @@ public class MoleculeRenderer {
 	}
 
 	fireMapAddedEvent(map);
-    }
-
-    /** Return the name for the next molecule. */
-    public String getNextMapName(){
-	int map = getMapCount();
-	String mapName = null;
-
-	do {
-	    mapName = "map" + map;
-	    map++;
-	} while(getMolecule(mapName) != null);
-
-	//System.out.println("returning map name " + mapName);
-
-	return mapName;
     }
 
     /** Change the line width. */
@@ -1985,11 +1874,6 @@ public class MoleculeRenderer {
 	return new ResidueIterator(this);
     }
 
-    /** Get a bond iterator. */
-    public BondIterator getBondIterator(){
-	return new BondIterator(this);
-    }
-
     /** Get a atom iterator. */
     public AtomIterator getAtomIterator(){
 	return new AtomIterator(this);
@@ -1998,50 +1882,17 @@ public class MoleculeRenderer {
     /** Should we display the atom label. */
     private boolean displayAtomLabel = true;
 
-    /** Set whether we should display the atom label. */
-    public void setDisplayAtomLabel(boolean b){
-	displayAtomLabel = b;
-    }
-
-    /** Add a labelled atom. */
-    public void addLabelledAtom(Atom atom){
-	if(atom.isLabelled()){
-	    atom.setLabelled(false);
-	}else{
-	    atom.setLabelled(true);
-	}
-	//if(labelledAtoms.contains(atom) == false){
-	//	labelledAtoms.add(atom);
-	//}else{
-	//	labelledAtoms.remove(atom);
-	//}
-    }
-
-    /** Do we already have a label for this atom. */
-    public boolean labelledAtomsContains(Atom atom){
-	//return labelledAtoms.contains(atom);
-	return false;
-    }
-
     /** Add a selected atom. */
     public void addSelectedAtom(Atom atom){
-	//if(atom.isSelected()){
-	//	atom.setSelected(false);
-	//}else{
-	//	atom.setSelected(true);
-	//}
 	String atomSelect = atom.selectStatement();
 
 	if(selectedAtoms.contains(atom) == false){
 	    selectedAtoms.add(atom);
-	    //atom.setSelected(true);
-	    //System.out.println("|" + atomSelect + "|");
 	    execute("append " + atomSelect + ";");
 	    fireAtomSelectedEvent(atom);
 
 	}else{
 	    selectedAtoms.remove(atom);
-	    //atom.setSelected(false);
 	    execute("exclude " + atomSelect + ";");
 	}
 
@@ -2053,7 +1904,7 @@ public class MoleculeRenderer {
     }
 
     /** Add a pair of bump atoms. */
-    public void addBumpPair(Atom atom1, Atom atom2){
+    private void addBumpPair(Atom atom1, Atom atom2){
 	// only add if they are in the same molecule
 	if((bumpInSameMolecule && atom1.getMolecule() == atom2.getMolecule()) ||
 	   bumpInSameMolecule == false){
@@ -2105,7 +1956,7 @@ public class MoleculeRenderer {
     }
 
     /** Add a distance monitor to the list. */
-    public void addDistance(Distance d){
+    private void addDistance(Distance d){
 	distances.add(d);
 	fireGenericAddedEvent((Generic)d);
     }
@@ -2144,21 +1995,12 @@ public class MoleculeRenderer {
 	distance.group1.add(secondAtom);
 
 	addDistance(distance);
-	//distances.add(distance);
-    }
-
-    /** Add a pair of atoms to the distance list. */
-    public void addDistance2(Atom firstAtom, Atom secondAtom){
-	// reuse bond for maintaining a distance.
-	Bond distance = new Bond(firstAtom, secondAtom);
-
-	distances.add(distance);
     }
 
     private DynamicArray angles = new DynamicArray();
 
     /** Add a set of atoms to the angle list. */
-    public void addAngle(Atom firstAtom, Atom secondAtom,
+    private void addAngle(Atom firstAtom, Atom secondAtom,
 			 Atom thirdAtom){
 	angles.add(firstAtom);
 	angles.add(secondAtom);
@@ -2166,7 +2008,7 @@ public class MoleculeRenderer {
     }
 
     /** Add a set of atoms to the angle list. */
-    public void addTorsion(Atom firstAtom, Atom secondAtom,
+    private void addTorsion(Atom firstAtom, Atom secondAtom,
 			   Atom thirdAtom, Atom fourthAtom){
 	torsions.add(firstAtom);
 	torsions.add(secondAtom);
@@ -2195,7 +2037,6 @@ public class MoleculeRenderer {
 
     /** Remove all the distance monitors. */
     public void removeAllDistances(){
-	//distances.removeAllElements();
 	deleteDistances("*");
     }
 
@@ -2212,18 +2053,10 @@ public class MoleculeRenderer {
 	    Atom atom = atomIterator.getNextAtom();
 	    atom.setLabelled(false);
 	}
-	//labelledAtoms.removeAllElements();
     }
 
     /** Remove all selected atoms. */
     public void removeAllSelectedAtoms(){
-	//AtomIterator atomIterator = getAtomIterator();
-
-	//while(atomIterator.hasMoreElements()){
-	//    Atom atom = atomIterator.getNextAtom();
-	//    atom.setSelected(false);
-	//}
-
 	execute("select none;");
 
 	selectedAtoms.removeAllElements();
@@ -2232,17 +2065,17 @@ public class MoleculeRenderer {
     }
 
     /** Remove all bump atoms. */
-    public void removeAllBumpAtoms(){
+    private void removeAllBumpAtoms(){
 	bumpAtoms.removeAllElements();
     }
 
     /** Get the bump atoms. */
-    public DynamicArray getBumpAtoms(){
+    private DynamicArray getBumpAtoms(){
 	return bumpAtoms;
     }
 
     /** Generate symmetry for the molecules we are displaying. */
-    public Molecule generateSymmetry(Point3d center, double radius){
+    private Molecule generateSymmetry(Point3d center, double radius){
 	Molecule symmetryMolecule = null;
 
 	if(displaySymmetry == true &&
@@ -2259,8 +2092,8 @@ public class MoleculeRenderer {
 	return symmetryMolecule;
     }
 
-    /** Acutally generate the symmetry atoms. */
-    public Molecule generateSymmetryMolecule(Point3d center, double radius){
+    /** Actually generate the symmetry atoms. */
+    private Molecule generateSymmetryMolecule(Point3d center, double radius){
 	Molecule symmetryMolecule = new Molecule();
 	symmetryMolecule.setName("Symmetry");
 	symmetryMolecule.setMoleculeType(Molecule.SymmetryMolecule);
@@ -2294,8 +2127,6 @@ public class MoleculeRenderer {
 	Matrix fractionalToCartesian =
 	    symmetry.getFractionalToCartesianMatrix();
 
-	//cartesianToFractional.print("cartesianToFractional");
-
 	// figure out where the molecule was located in
 	// fractional unit cells.
 	fractionalCenter.transform(cartesianToFractional);
@@ -2307,10 +2138,6 @@ public class MoleculeRenderer {
 	if(fractionalCenter.y < 0.0) originy -= 1;
 	int originz = (int)fractionalCenter.z;
 	if(fractionalCenter.z < 0.0) originz -= 1;
-
-	//System.out.println("fractional center " + fractionalCenter);
-
-	//System.out.println("origin " + originx + " " + originy + " " + originz);
 
 	// the symmetry operators
 	DynamicArray symmetryOperators = symmetry.getSymmetryOperators();
@@ -2341,21 +2168,14 @@ public class MoleculeRenderer {
 			Matrix operator = (Matrix)symmetryOperators.get(s);
 
 			currentTransform.setIdentity();
-			//currentTransform.print("identity");
 			currentTransform.transform(cartesianToFractional);
-			//currentTransform.print("cartesianToFractional");
 			// shift to origin
 			currentTransform.translate(-originx, -originy, -originz);
-			//currentTransform.print("after -origin");
 			currentTransform.transform(operator);
-			//currentTransform.print("after symm op");
 			currentTransform.translate(ix, iy, iz);
-			//currentTransform.print("after cell shift");
 			// and shift back to original unit cell
 			currentTransform.translate(originx, originy, originz);
-			//currentTransform.print("after +origin");
 			currentTransform.transform(fractionalToCartesian);
-			//currentTransform.print("fractionalToCartesian");
 
 			currentCenter.set(moleculeCenter);
 
@@ -2364,8 +2184,6 @@ public class MoleculeRenderer {
 			double d = currentCenter.distance(center);
 
 			if(d < radius + moleculeRadius){
-			    //System.out.println("ix " + ix + " iy " + iy + " iz " + iz);
-			    //System.out.println("Symmetry operator "+ s);
 			    addSymmetryAtoms(molecule, center, radius,
 					     currentTransform,
 					     symmetryMolecule);
@@ -2387,7 +2205,7 @@ public class MoleculeRenderer {
     }
 
     /** Add the symmetry atoms that overlap. */
-    public void addSymmetryAtoms(Molecule molecule, Point3d center,
+    private void addSymmetryAtoms(Molecule molecule, Point3d center,
 				 double radius, Matrix transform,
 				 Molecule symmetryMolecule){
 	int atomCount   = molecule.getAtomCount();
@@ -2505,7 +2323,7 @@ public class MoleculeRenderer {
     }
 
     /** Expand the selected atoms to include the whole residue. */
-    public void expandSelection(Molecule molecule, int inSphere[]){
+    private void expandSelection(Molecule molecule, int inSphere[]){
 	int atomCount = molecule.getAtomCount();
 	for(int a = 0; a < atomCount; a++){
 	    Atom atom = molecule.getAtom(a);
@@ -2522,40 +2340,8 @@ public class MoleculeRenderer {
 	}
     }
 
-    /** Expand the selected atoms to include the whole residue. */
-    public void expandSelection1(Molecule molecule, int inSphere[]){
-
-	for(int c = 0; c < molecule.getChainCount(); c++){
-	    Chain chain = molecule.getChain(c);
-	    int residueCount = chain.getResidueCount();
-
-	    for(int r = 0; r < residueCount; r++){
-		Residue residue = chain.getResidue(r);
-		int atomCount = residue.getAtomCount();
-		boolean residueSelected = false;
-
-		for(int a = 0; a < atomCount; a++){
-		    Atom atom = residue.getAtom(a);
-		    int id = atom.getId();
-		    if(inSphere[id] != 0){
-			residueSelected = true;
-			break;
-		    }
-		}
-
-		if(residueSelected){
-		    for(int a = 0; a < atomCount; a++){
-			Atom atom = residue.getAtom(a);
-			int id = atom.getId();
-			inSphere[id] = 1;
-		    }
-		}
-	    }
-	}
-    }
-
     /** Determine the set of symmetry operators. */
-    public void determineSymmetry(){
+    private void determineSymmetry(){
 	// this is more difficult than it appears as the
 	// molecules may not have a spacegroup specified.
 
@@ -2563,7 +2349,6 @@ public class MoleculeRenderer {
 	    for(int m = 0; m < getMapCount(); m++){
 		Map map = getMap(m);
 
-		//System.out.println("map " + map);
 		if(map.getMapType() != Map.O_BINARY &&
 		   map.getMapType() != Map.INSIGHT_ASCII){
 		    // we don't want symmetry if its p1
@@ -2590,15 +2375,9 @@ public class MoleculeRenderer {
 		}
 	    }
 	}
-
-	//System.out.println("after determineSymmetry "+ symmetry);
     }
 
     /* Methods for performing various kinds of atom selections. */
-
-    /** Handle a selection stack command. */
-    public void handleSelectionCommand(String command, Arguments args){
-    }
 
     private DynamicArray selectionStack = new DynamicArray();
 
@@ -2668,7 +2447,7 @@ public class MoleculeRenderer {
     }
 
     /** Return the atoms in a particular residue. */
-    public DynamicArray getAtomsInResidue(String residueSpecification){
+    private DynamicArray getAtomsInResidue(String residueSpecification){
 	DynamicArray selectedAtoms = new DynamicArray();
 	String chainName = null;
 	int stopResidueNumber[] = null;
@@ -2909,7 +2688,7 @@ public class MoleculeRenderer {
     }
 
     /** Return the atoms in the specified sphere. */
-    public DynamicArray getAtomsInSphere(Point3d c, double r){
+    private DynamicArray getAtomsInSphere(Point3d c, double r){
 	DynamicArray selectedAtoms = new DynamicArray();
 
 	double rSq = r * r;
@@ -2931,7 +2710,7 @@ public class MoleculeRenderer {
     }
 
     /** Return atoms in a shell around the specified selection. */
-    public DynamicArray getAtomsAroundSelection(DynamicArray selection,
+    private DynamicArray getAtomsAroundSelection(DynamicArray selection,
 						double radius,
 						boolean include){
 	DynamicArray newSelection = new DynamicArray();
@@ -2971,7 +2750,7 @@ public class MoleculeRenderer {
     }
 
     /** Get atoms that are part of ligands. */
-    public void getAtomsInLigands(DynamicArray selectedAtoms){
+    private void getAtomsInLigands(DynamicArray selectedAtoms){
 
 	AtomIterator atomIterator = getAtomIterator();
 
@@ -3001,7 +2780,7 @@ public class MoleculeRenderer {
     }
 
     /** Return the number of selected atoms. */
-    public int getSelectedAtomCount(){
+    private int getSelectedAtomCount(){
 	AtomIterator iterator = getAtomIterator();
 
 	int selectedAtomCount = 0;
@@ -3020,18 +2799,13 @@ public class MoleculeRenderer {
 	return getSomeAtoms(true, false);
     }
 
-    /** Return the atoms that are currently labelled. */
-    public DynamicArray getLabelledAtoms(){
-	return getSomeAtoms(false, true);
-    }
-
     /** Return the atoms that are currently labelled or selected. */
     public DynamicArray getSelectedOrLabelledAtoms(){
 	return getSomeAtoms(true, true);
     }
 
     /** Return the atoms that are currently labelled. */
-    public DynamicArray getSomeAtoms(boolean selected, boolean labelled){
+    private DynamicArray getSomeAtoms(boolean selected, boolean labelled){
 	DynamicArray selectedAtoms = new DynamicArray();
 	AtomIterator atomIterator = getAtomIterator();
 
@@ -3045,27 +2819,6 @@ public class MoleculeRenderer {
 	}
 
 	return selectedAtoms;
-    }
-
-    /** Return the residues that are currently selected. */
-    public DynamicArray getSelectedResidues(){
-	DynamicArray selectedResidues = new DynamicArray();
-	AtomIterator atomIterator = getAtomIterator();
-	Residue lastResidue = null;
-
-	while(atomIterator.hasMoreElements()){
-	    Atom atom = atomIterator.getNextAtom();
-
-	    if(atom.isSelected()){
-		Residue residue = atom.getResidue();
-		if(residue != lastResidue){
-		    selectedResidues.add(residue);
-		    lastResidue = residue;
-		}
-	    }
-	}
-
-	return selectedResidues;
     }
 
     /** Set the specified atoms as selected. */
@@ -3120,7 +2873,7 @@ public class MoleculeRenderer {
     }
 
     /** Return the radius of the atoms in the selection. */
-    public double getRadius(DynamicArray selection, Point3d center){
+    private double getRadius(DynamicArray selection, Point3d center){
 	double radius = 0.0;
 	int atomCount = selection.size();
 
@@ -3155,26 +2908,6 @@ public class MoleculeRenderer {
 	}
     }
 
-    /** Are the two atoms in the same planar ring. */
-    public boolean inSameplanarRing(Atom atom1, Atom atom2){
-	int moleculeCount = getMoleculeCount();
-	for(int m = 0; m < moleculeCount; m++){
-	    Molecule molecule = getMolecule(m);
-	    int ringCount = molecule.getRingCount();
-	    for(int r = 0; r < ringCount; r++){
-		Ring ring = molecule.getRing(r);
-
-		if(ring.getBondCount() == 6 &&
-		   ring.contains(atom1) && ring.contains(atom2) &&
-		   ring.isPlanar()){
-		    return true;
-		}
-	    }
-	}
-
-	return false;
-    }
-
     /** Set the center for the renderer. */
     public void setCenter(double x, double y, double z){
 	Point3d newCenter = new Point3d(x, y, z);
@@ -3187,17 +2920,12 @@ public class MoleculeRenderer {
 
     /** Set the center for the renderer. */
     public void setCenter(Point3d newCenter, boolean setClipping){
-	//System.out.println("boolean setClipping " + setClipping);
 	renderer.setCenter(newCenter);
-
-	//super.setRadius(displayRadius);
-	//setClip(mapRadius);
 
 	if(setClipping){
 	    setRadius(displayRadius);
 	    setClip(displayRadius);
 	}
-	//setClip(displayRadius);
 
 	// recontour any maps that we might be displaying
 	generateMaps();
@@ -3224,21 +2952,20 @@ public class MoleculeRenderer {
     }
 
     /** Generate the map display. */
-    public void generateMaps(){
+    private void generateMaps(){
 	if(displayMaps){
 	    readMaps();
-	    //setClip(displayRadius);
 	    contourMaps();
 	}
     }
 
     /** Remove the displayed maps. */
-    public void removeContourLevels(){
+    private void removeContourLevels(){
 	removeGraphicalObjectsBeginningWith("Map");
     }
 
     /** Remove the maps rather than the contour levels. */
-    public void removeMaps(){
+    private void removeMaps(){
 	removeGraphicalObjectsBeginningWith("Map");
 	maps.removeAllElements();
     }
@@ -3281,39 +3008,9 @@ public class MoleculeRenderer {
 	return displayDistances;
     }
 
-    /** Return the state of bump display. */
-    public boolean getDisplayBumps(){
-	return displayBumps;
-    }
-
     /** Set whether we display solvent. */
     public void setDisplaySolvent(boolean state){
 	displaySolvent = state;
-    }
-
-    /** Set which bonds are drawn wide. */
-    public void setWideBonds(){
-	double mapRadiusSq = mapRadius * mapRadius;
-	Point3d rendererCenter = renderer.getCenter();
-	int moleculeCount = getMoleculeCount();
-
-	for(int m = 0; m < moleculeCount; m++){
-	    Molecule molecule = getMolecule(m);
-	    int bondCount = molecule.getBondCount();
-
-	    for(int b = 0; b < bondCount; b++){
-		Bond bond = molecule.getBond(b);
-		Atom firstAtom = bond.getFirstAtom();
-		Atom secondAtom = bond.getSecondAtom();
-
-		if(firstAtom.distanceSq(rendererCenter) < mapRadiusSq &&
-		   secondAtom.distanceSq(rendererCenter) < mapRadiusSq){
-		    bond.setWideBond(true);
-		}else{
-		    bond.setWideBond(false);
-		}
-	    }
-	}
     }
 
     /** Return bonds where both atoms are in selectedAtoms. */
@@ -3388,8 +3085,7 @@ public class MoleculeRenderer {
     private int contourLevelCount = 0;
 
     /** Add a contour level. */
-    public void addContourLevel(double level, int color,
-				boolean display, int style){
+    private void addContourLevel(){
 	if(contourLevelCount == MaximumContourLevels){
 	    System.out.println("maximum number of contour levels exceeded");
 	    return;
@@ -3399,12 +3095,12 @@ public class MoleculeRenderer {
     }
 
     /** Reset the contour levels. */
-    public void resetContourLevels(){
+    private void resetContourLevels(){
 	contourLevelCount = 0;
     }
 
     /** Generate the symmetry copies of the molecules. */
-    public void generateSymmetry(){
+    private void generateSymmetry(){
 	removeSymmetry();
 
 	Molecule symmetry = 
@@ -3417,12 +3113,12 @@ public class MoleculeRenderer {
     }
 
     /** Remove the symmetry molecule if there is one. */
-    public void removeSymmetry(){
+    private void removeSymmetry(){
 	removeMolecule("Symmetry");
     }
 
     /** Assign atom colors. */
-    public void assignSymmetryAtomColors(Molecule molecule){
+    private void assignSymmetryAtomColors(Molecule molecule){
 	int atomCount = molecule.getAtomCount();
 	for(int a = 0; a < atomCount; a++){
 	    Atom atom = molecule.getAtom(a);
@@ -3433,13 +3129,12 @@ public class MoleculeRenderer {
     }
 
     /** Read the maps that we are displaying. */
-    public void readMap(Map map){
+    private void readMap(Map map){
 	map.setCenter(renderer.getCenter());
 	map.setRadius(mapRadius);
-	//determineRegion(map);
     }
 
-    public void readMaps(){
+    private void readMaps(){
 	for(int i = 0; i < getMapCount(); i++){
 	    Map map = getMap(i);
 	    if(map.hasContoursDisplayed()){
@@ -3449,10 +3144,7 @@ public class MoleculeRenderer {
     }
 
     /** Contour the maps that we are displaying. */
-    public void contourMaps(){
-	// blow away the old maps
-	//removeContourLevels();
-
+    private void contourMaps(){
 	for(int i = 0; i < getMapCount(); i++){
 	    Map map = getMap(i);
 
@@ -3463,7 +3155,7 @@ public class MoleculeRenderer {
     }
 
     /** Get name of contour for particular map. */
-    public String getContourGraphicalObjectName(Map map, int contour){
+    private String getContourGraphicalObjectName(Map map, int contour){
 	return map.getName() + "_" + contour;
     }
 
@@ -3480,14 +3172,8 @@ public class MoleculeRenderer {
     public void contourMap(Map map, int contour){
 	String contourName = getContourGraphicalObjectName(map, contour);
 
-	//System.out.println("contour map " + map + " contour " + contour);
-
-	//removeGraphicalObjectsBeginningWith(contourName);
-
 	if(map.getContourDisplayed(contour) == true){
-	    //System.out.println("is displayed");
 	    if(map.needsReading()){
-		//System.out.println("needs reeding");
 		determineRegion(map);
 
 		map.setNeedsReading(false);
@@ -3503,21 +3189,14 @@ public class MoleculeRenderer {
 	    contourObject.setName(contourName);
 
 	    contourObject.setVisible(true);
-
-	    //addGraphicalObject(contourObject);
 	}else{
 	    Tmesh contourObject = getContourGraphicalObject(map, contour);
 	    contourObject.setVisible(false);
 	}
-
-
-	//generateMapBoundingBox(map);
     }
 
     /** Figure out the region of the map we will contour. */
-    public void determineRegion(Map map){
-	//print.f("contourSize " + contourSize);
-
+    private void determineRegion(Map map){
 	map.read();
 	if(map.getMapType() == Map.CCP4_BINARY ||
 	   map.getMapType() == Map.O_BINARY){
@@ -3525,7 +3204,6 @@ public class MoleculeRenderer {
 	    Matrix cartesianToFractional =
 		map.getCartesianToFractionalMatrix();
 	    Point3d mapCenter = renderer.getCenter();
-	    //Symmetry.transformPoint(mapCenter, cartesianToFractional);
 	    mapCenter.transform(cartesianToFractional);
 
 	    mapCenter.x *= map.nv[0];
@@ -3565,17 +3243,15 @@ public class MoleculeRenderer {
     }
 
     /** Contour the data that is in stored in the map. */
-    public Tmesh contourRegion(Map map, int contourNumber, int style){
+    private Tmesh contourRegion(Map map, int contourNumber, int style){
 	int nx =0, ny=0, nz=0;
 	int mapType = map.getMapType();
-	//Tmesh contour = new Tmesh();
 	double level = map.getContourLevel(contourNumber);
 	Tmesh contour = getContourGraphicalObject(map, contourNumber);
 
 	// remove all the old points from the object.
 	contour.empty();
 
-	//style = Map.Surface;
 	if(style == Map.Lines){
 	    contour.style = Tmesh.LINES;
 	}else if(style == Map.Surface){
@@ -3586,8 +3262,6 @@ public class MoleculeRenderer {
 	    nx = map.maximumGrid[0] - map.minimumGrid[0];
 	    ny = map.maximumGrid[1] - map.minimumGrid[1];
 	    nz = map.maximumGrid[2] - map.minimumGrid[2];
-	    //Log.info("z min %d", map.minimumGrid[2]);
-	    //Log.info("z max %d", map.maximumGrid[2]);
 	}else{
 	    nx = map.ngrid[0];
 	    ny = map.ngrid[1];
@@ -3596,19 +3270,13 @@ public class MoleculeRenderer {
 
 	double rmsLevel = map.rms * level;
 
-	//Log.info("nx %d", nx);
-	//Log.info("ny %d", ny);
-	//Log.info("nz %d", nz);
-
 	// make sure we weren't contouring
 	// off edge of grid
 	if(nx > 0 && ny > 0 && nz > 0){
 
 	    if(style == Map.Lines){
-		//System.out.println("about to contour nx "+nx+" ny "+ ny + " nz " + nz);
 		March.generateTriangles = false;
 		March.surface(map.data, nx, ny, nz, (float)rmsLevel, false, contour);
-		//Contour.contour(map.data, nx, ny, nz, rmsLevel, contour);
 	    }else if(style == Map.Surface){
 		boolean invert = (rmsLevel < 0.0)?true:false;
 
@@ -3617,8 +3285,6 @@ public class MoleculeRenderer {
 	    }
 	}
 
-	//System.out.println("contour.np " + contour.np);
-
 	// ok we got the contour back contoured on unit grid
 	// now transform all the coordinates into real space
 	transformContourPoints(map, contour);
@@ -3626,28 +3292,8 @@ public class MoleculeRenderer {
 	return contour;
     }
 
-    /** Clip the contour object to the molecule. */
-    public void clipContour(Tmesh contour, double radius){
-	/*
-	// fix
-	Point3d p = new Point3d();
-	Point3d center = renderer.getCenter();
-	int pointCount = contour.pointCount;
-	double radiusSq = radius * radius;
-	for(int i = 0; i < pointCount; i++){
-	p.set(contour.x[i], contour.y[i], contour.z[i]);
-
-	if(center.distanceSq(p) > radiusSq){
-	contour.setClipped(i, true);
-	}else{
-	contour.setClipped(i, false);
-	}				
-	}
-	*/
-    }
-
     /** Transform the contour points into real space. */
-    public void transformContourPoints(Map map, Tmesh contour){
+    private void transformContourPoints(Map map, Tmesh contour){
 	int pointCount = contour.np;
 	Point3d p = new Point3d();
 	int mapType = map.getMapType();
@@ -3696,7 +3342,7 @@ public class MoleculeRenderer {
     }
 
     /** Map the point coordinates back into the map ordering. */
-    public void swapAxes(Point3d p, Map map){
+    private void swapAxes(Point3d p, Map map){
 	double x = p.x, y = p.y, z = p.z;
 
 	if     (map.axis[0] == 0) p.x = x;
@@ -3712,23 +3358,13 @@ public class MoleculeRenderer {
 	else if(map.axis[2] == 2) p.z = z;
     }
 
-    /** Clip around center point. */
-    public void clipMaps(){
-	DynamicArray atomsInSphere =
-	    getAtomsInSphere(renderer.getCenter(), displayRadius);
-
-	clipMaps(null, atomsInSphere, false);
-    }
-
     /** Clip any maps we are displaying to show only unoccupied density. */
     public void clipMaps(String namePattern, DynamicArray selection, boolean inside){
-
 	// reset the last atom to clip as we currently dont have one
 	lastAtom = null;
 	lastAtomClips = 0;
 	lastAtomBondedClips = 0;
 	clips = 0;
-	//System.out.println("atoms in sphere " + selection.size());
 
 	for(int i = 0; i < getMapCount(); i++){
 	    Map map = getMap(i);
@@ -3742,14 +3378,12 @@ public class MoleculeRenderer {
 	System.out.println("last atom clips " + lastAtomClips);
 	System.out.println("last atom bonded clips " + lastAtomBondedClips);
 
-	//findMaximaInMaps();
-
 	// recontour the maps we just clipped.
 	contourMaps();
     }
 
     /** Clip this map. */
-    public void clipMap(Map map, DynamicArray selection, boolean inside){
+    private void clipMap(Map map, DynamicArray selection, boolean inside){
 	Point3d p = new Point3d();
 	float data[] = map.data;
 	int point = 0;
@@ -3760,14 +3394,12 @@ public class MoleculeRenderer {
 		int gridStop = map.maximumGrid[0];
 
 		for(int ix = gridStart; ix < gridStop; ix++){
-		    //map.absoluteGridToCartesian(ix, iy, iz, p);
 		    map.absoluteGridToCartesian(ix + map.nu[0],
 						iy + map.nu[1],
 						iz + map.nu[2], p);
 
 		    if(clipped(p, selection) != inside){
 			data[point] = 0.0f;
-			//System.out.println("clipped");
 		    }
 
 		    point++;
@@ -3784,7 +3416,7 @@ public class MoleculeRenderer {
     private int lastAtomBondedClips = 0;
 
     /** Is this point inside an atom in the molecule. */
-    public boolean clipped(Point3d p, DynamicArray selection){
+    private boolean clipped(Point3d p, DynamicArray selection){
 	double dSq = clipDistance * clipDistance;
 
 	// first check the last atom that clipped.
@@ -3793,27 +3425,12 @@ public class MoleculeRenderer {
 		lastAtomClips ++;
 		return true;
 	    }
-	    /*
-	    // now check atoms that were bonded to the last atom
-	    int bondCount = lastAtom.getBondCount();
-	    for(int b = 0; b < bondCount; b++){
-	    Atom bondedAtom = lastAtom.getBondedAtom(b);
-	    if(p.distanceSq(bondedAtom) < dSq){
-	    lastAtom = bondedAtom;
-	    lastAtomBondedClips ++;
-	    return true;
-	    }
-	    }
-	    */
-
 	    lastAtom = null;
 	}
 
-	int atomCount = selection.size();
-	Object atoms[] = selection.getArray();
+	Atom select_atoms[] = (Atom []) selection.getArray();
 
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)atoms[a];
+	for(Atom atom : select_atoms){
 	    double dx = 0.0;
 
 	    if(atom.x > p.x){
@@ -3879,17 +3496,9 @@ public class MoleculeRenderer {
 	}
 
 	dirty = false;
-
-	/*
-	  if(renderer.triangleRaysCast > 0 ||
-	  renderer.triangleRaysIntersected > 0){
-	  FILE.out.print("rays cast %10d\n", renderer.triangleRaysCast);
-	  FILE.out.print("rays int  %10d\n", renderer.triangleRaysIntersected);
-	  }
-	*/
     }
 
-    public void drawMaps(){
+    private void drawMaps(){
 	int mapCount = getMapCount();
 
 	for(int m = 0; m < mapCount; m++){
@@ -3904,7 +3513,7 @@ public class MoleculeRenderer {
 
     private double s[] = {0., 0., 0.};
 
-    public void drawMap(Map map){
+    private void drawMap(Map map){
 	int gp = 0;
 
 	double overallScale = renderer.getOverallScale();
@@ -3923,18 +3532,14 @@ public class MoleculeRenderer {
 	    splatKernel = new int[splatSize * splatSize];
 	}
 
-	//print.f("pixels " + pixels);
-
 	int index = 0;
 
 	for(int iy = -pixels; iy <= pixels; iy++){
 	    for(int ix = -pixels; ix <= pixels; ix++){
 		splatKernel[index] =
 		    (int)(255.0 * Math.exp(- ( (ix*ix)/(double)pixels2 + (iy*iy)/(double)pixels2)));
-		//print.f("%3d ", splatKernel[index]);
 		index++;
 	    }
-	    //print.f("\n");
 	}
 
 	double emax = map.volumeMax * map.getSigma();
@@ -4002,7 +3607,7 @@ public class MoleculeRenderer {
     }
 
     /** Figure out the molecule center and scale to make it just fit. */
-    public void initialiseCenter(){
+    private void initialiseCenter(){
 	if(renderer.getCenter() == null || true){
 	    double xmin = Double.MAX_VALUE;
 	    double xmax = -Double.MAX_VALUE;
@@ -4062,7 +3667,7 @@ public class MoleculeRenderer {
     }
 
     /** Reset the transformation matrix. */
-    public void resetTransformationMatrix(){
+    private void resetTransformationMatrix(){
 	renderer.rotationMatrix.setIdentity();
     }
 
@@ -4098,7 +3703,7 @@ public class MoleculeRenderer {
 	command += FILE.sprint("%g", p.z);
 	command += "\"\n";
 
-	command += FILE.sprint("\t-radius\t\t%g\n", (renderer.width/renderer.zoom));
+	command += FILE.sprint("\t-radius\t\t%g\n", (renderer.width/renderer.getZoom()));
 	command += FILE.sprint("\t-clipfront\t%g\n", renderer.front);
 	command += FILE.sprint("\t-clipback\t%g\n", renderer.back);
 	command += "\t-steps\t\t10\n";
@@ -4116,12 +3721,10 @@ public class MoleculeRenderer {
     DynamicArray sphereAtoms = new DynamicArray(512);
 
     /** Apply the current transform to the molecule. */
-    public void transformMolecule(){
+    private void transformMolecule(){
 	renderer.buildOverallMatrix();
 
 	int crossPixels = (int)(crossLength * renderer.getOverallScale());
-
-	//renderer.center.print("center");
 
 	int boxPixels = (int)(boxSize * renderer.getOverallScale());
 	if(boxPixels == 0){
@@ -4139,8 +3742,6 @@ public class MoleculeRenderer {
 	    if(molecule.getDisplayed()){
 		int style = molecule.getDisplayStyle();
 		boolean normal = (style & Molecule.Normal) > 0;
-		//int atomCount = molecule.getAtomCount();
-		//Object atomArray[] = molecule.getAtomArray();
 
 		int chainCount = molecule.getChainCount();
 		for(int c = 0; c < chainCount; c++){
@@ -4154,9 +3755,6 @@ public class MoleculeRenderer {
 
 			    if(displayHydrogens ||
 			       atom.getElement() != PeriodicTable.HYDROGEN){
-
-				//for(int a = 0; a < atomCount; a++){
-				//Atom atom = (Atom)atomArray[a];
 
 				atom.transformToScreen(renderer.overallMatrix);
 
@@ -4249,38 +3847,10 @@ public class MoleculeRenderer {
 	Object satoms[] = sphereAtoms.getArray();
     }
 
-    private double radiusColor(Object o){
-	Atom a = (Atom)o;
-	return a.getVDWRadius();
-    }
-
-    private void sortRadiiAndColors(Object sArray[], int L, int R) {
-	double m=(radiusColor(sArray[L])+radiusColor(sArray[R]))/2;
-	int i=L;
-	int j=R;
-	Object temp;
-
-	do {
-	    while (radiusColor(sArray[i])>m) i++;
-	    while (radiusColor(sArray[j])<m) j--;
-
-	    if (i<=j) {
-		temp=sArray[i];
-		sArray[i]=sArray[j];
-		sArray[j]=temp;
-		i++;
-		j--;
-	    }
-	} while (j>=i);
-
-	if (L<j) sortRadiiAndColors(sArray,L,j);
-	if (R>i) sortRadiiAndColors(sArray,i,R);
-    }
-
     private Molecule currentMolecule = null;
 
     /** Draw the molecule. */
-    public void drawMolecules(){
+    private void drawMolecules(){
 	transformMolecule();
 
 	for(int m = 0; m < getMoleculeCount(); m++){
@@ -4352,11 +3922,6 @@ public class MoleculeRenderer {
 	    }
 	}
 
-
-	//drawLabelledAtoms();
-
-	//drawSelectedAtoms();
-
 	drawBumpPairs();
 
 	drawDistances();
@@ -4369,29 +3934,6 @@ public class MoleculeRenderer {
     }
 
     Atom atoms[] = new Atom[4];
-
-    /*
-      private void drawTorsions(Residue res){
-      astex.xmt.ResidueDictionary rd =
-      astex.xmt.XMT.getResidueDictionary(res);
-
-      for(int t = 0; t < rd.torsionNames.size(); t++){
-      StringArray torsionAtoms = (StringArray)rd.torsionAtoms.get(t);
-      boolean allDefined = true;
-      for(int a = 0; a < 4; a++){
-      atoms[a] = res.findAtom(torsionAtoms.get(a));
-      if(atoms[a] == null){
-      allDefined = false;
-      break;
-      }
-      }
-
-      if(allDefined){
-      drawTorsion(res, rd.torsionNames.get(t), atoms[0], atoms[1], atoms[2], atoms[3]);
-      }
-      }
-      }
-    */
 
     private Point3d ta01 = new Point3d();
     private Point3d ta12 = new Point3d();
@@ -4501,7 +4043,7 @@ public class MoleculeRenderer {
     }
 
     /** Draw the molecule as a trace. */
-    public void drawTrace(Molecule molecule){
+    private void drawTrace(Molecule molecule){
 	int atomCount = molecule.getAtomCount();
 	Atom previous = null;
 
@@ -4516,18 +4058,10 @@ public class MoleculeRenderer {
 		    int width = 2;
 
 		    if(previousColor == atomColor){
-			// one line
-			//renderer.drawLine(previous.xs, previous.ys, previous.zs,
-			//		  a.xs, a.ys, a.zs,
-			//		  previousColor, previousColor, width);
 			drawLine(previous.xs, previous.ys, previous.zs,
 				 a.xs, a.ys, a.zs,
 				 previousColor, previousColor, -width);
 		    }else{
-			//renderer.drawLine(previous.xs, previous.ys, a.zs,
-			//		  a.xs, a.ys, a.zs,
-			//		  previousColor, atomColor,
-			//		  width);
 			drawLine(previous.xs, previous.ys, a.zs,
 				 a.xs, a.ys, a.zs,
 				 previousColor, atomColor,
@@ -4541,7 +4075,7 @@ public class MoleculeRenderer {
     }
 
     /** Draw the distance markers. */
-    public void drawDistances(){
+    private void drawDistances(){
 	if(displayDistances){
 
 	    int distanceCount = distances.size();
@@ -4559,7 +4093,7 @@ public class MoleculeRenderer {
      * to give a half off gap at each end of the
      * line.
      */
-    public void drawDistanceObject(Distance distance){
+    private void drawDistanceObject(Distance distance){
 	if(distance.getBoolean(Distance.Visible, true) == false) return;
 
 	if(distance.getInteger(Distance.Mode, -1) == Distance.Centroids){
@@ -4574,8 +4108,6 @@ public class MoleculeRenderer {
 			       distance.getDouble(Distance.Off, 0.2),
 			       distance.getDouble(Distance.Radius, -1.0),
 			       ((Color)distance.get(Distance.Color, Color.white)).getRGB());
-		//distance.on, distance.off, distance.radius,
-		//distance.color);
 
 		drawDistanceMarker(g0, g1, distance);
 	    }
@@ -4593,8 +4125,6 @@ public class MoleculeRenderer {
 				   distance.getDouble(Distance.Off, 0.2),
 				   distance.getDouble(Distance.Radius, -1.0),
 				   ((Color)distance.get(Distance.Color, Color.white)).getRGB());
-		    //distance.on, distance.off, distance.radius,
-		    //               distance.color);
 		    drawDistanceMarker(g0, g1, distance);
 		}
 	    }
@@ -4607,8 +4137,6 @@ public class MoleculeRenderer {
 
     /** Draw distance marker. */
     private void drawDistanceMarker(Point3d g0, Point3d g1, Distance d){
-
-	//if(d.format != null){
 	String label = d.getString(Distance.Format, null);
 	if(label != null){
 
@@ -4630,7 +4158,7 @@ public class MoleculeRenderer {
     }
 
     /** Draw the distance marker line. */
-    public void drawDashedLine(double ax, double ay, double az,
+    private void drawDashedLine(double ax, double ay, double az,
 			       double bx, double by, double bz,
 			       double on, double off, double radius,
 			       int color){
@@ -4644,8 +4172,8 @@ public class MoleculeRenderer {
 	double totalDash = on + off;
 	double scale     = (len/totalDash)/(int)(len / totalDash);
 
-	on  = on * scale;
-	off = off * scale;
+	on *= scale;
+	off *= scale;
 	double d = 0.5 * off;
 
 	if(Math.abs(off) < 1.e-3 || Math.abs(on) < 1.e-3){
@@ -4662,37 +4190,13 @@ public class MoleculeRenderer {
 	}
     }
 
-
-    /** Draw the distance markers. */
-    public void drawDistances2(){
-	if(displayDistances){
-	    int distanceCount = distances.size();
-
-	    for(int i = 0; i < distanceCount; i++){
-		Bond distance = (Bond)distances.get(i);
-		Atom firstAtom = distance.getFirstAtom();
-		Atom secondAtom = distance.getSecondAtom();
-
-		if(firstAtom.isDisplayed() && secondAtom.isDisplayed()){
-		    Molecule firstMolecule = firstAtom.getMolecule();
-		    Molecule secondMolecule = secondAtom.getMolecule();
-
-		    if(firstMolecule.getDisplayed() == true &&
-		       secondMolecule.getDisplayed() == true){
-			drawDistance(firstAtom, secondAtom, true);
-		    }
-		}
-	    }
-	}
-    }
-
     /** Format for angles. */
     private Format angleFormat = new Format("%.1f");
 
     private final Generic dummyGeneric = new Generic("dummy");
 
     /** Draw the angle markers. */
-    public void drawTorsions(){
+    private void drawTorsions(){
 	int count = torsions.size();
 
 	for(int i = 0; i < count; i += 4){
@@ -4721,27 +4225,8 @@ public class MoleculeRenderer {
 	}
     }
 
-    /**
-     * Draw a torsion marker.
-     * Very simple initial implementation.
-     */
-    public void drawTorsion(Atom a1, Atom a2, Atom a3, Atom a4){
-	//int xm = (a1.xs + a2.xs + a3.xs + a4.xs)/4;
-	//int ym = (a1.ys + a2.ys + a3.ys + a4.ys)/4;
-	//int zm = (a1.zs + a2.zs + a3.zs + a4.zs)/4;
-	double xm = (a1.x + a2.x + a3.x + a4.x)/4;
-	double ym = (a1.y + a2.y + a3.y + a4.y)/4;
-	double zm = (a1.z + a2.z + a3.z + a4.z)/4;
-
-	double torsion = Point3d.torsionDegrees(a1, a2, a3, a4);
-
-	String label = angleFormat.format(torsion);
-
-	renderer.drawString(xm, ym, zm, Color32.white, label);
-    }
-
     /** Draw the angle markers. */
-    public void drawAngles(){
+    private void drawAngles(){
 	int count = angles.size();
 
 	for(int i = 0; i < count; i += 3){
@@ -4773,7 +4258,7 @@ public class MoleculeRenderer {
      * Draw an angle marker.
      * Very simple initial implementation.
      */
-    public void drawAngle(Atom a1, Atom a2, Atom a3){
+    private void drawAngle(Atom a1, Atom a2, Atom a3){
 	double xm = (a1.x + a2.x + a3.x)/3.0;
 	double ym = (a1.y + a2.y + a3.y)/3.0;
 	double zm = (a1.z + a2.z + a3.z)/3.0;
@@ -4786,7 +4271,7 @@ public class MoleculeRenderer {
     }
 
     /** Draw the bump atoms. */
-    public void drawBumpPairs(){
+    private void drawBumpPairs(){
 	DynamicArray bumpPairs = getBumpAtoms();
 	int bumpCount = bumpPairs.size();
 
@@ -4816,7 +4301,7 @@ public class MoleculeRenderer {
     private Format distanceFormat = new Format("%.2fA");
 
     /** Draw a distance between two atoms. */
-    public void drawDistance(Atom atom1, Atom atom2, boolean displayDistance){
+    private void drawDistance(Atom atom1, Atom atom2, boolean displayDistance){
 	Molecule molecule1 = atom1.getMolecule();
 	Molecule molecule2 = atom2.getMolecule();
 
@@ -4845,7 +4330,7 @@ public class MoleculeRenderer {
     private Atom dummyAtom = Atom.create();
 
     /** Draw a dotted line. */
-    public void drawDottedLine(Atom atom1, Atom atom2,
+    private void drawDottedLine(Atom atom1, Atom atom2,
 			       double gap, int color){
 	double d = atom1.distance(atom2);
 	double current = gap;
@@ -4866,9 +4351,8 @@ public class MoleculeRenderer {
     }
 
     /** Draw a dotted line. */
-    public void drawTwinColourDottedLine(Atom atom1, Atom atom2,
-					 double gap,
-					 int color1, int color2){
+    private void drawTwinColourDottedLine(Atom atom1, Atom atom2,
+					 double gap){
 	double d = atom1.distance(atom2);
 	double current = gap;
 
@@ -4889,50 +4373,14 @@ public class MoleculeRenderer {
 	}
     }
 
-    /** Draw all of the labelled atoms. */
-    public void drawLabelledAtoms(){
-	DynamicArray labelledAtoms = getLabelledAtoms();
-
-	for(int i = 0; i < labelledAtoms.size(); i++){
-	    Atom atom = (Atom)labelledAtoms.get(i);
-	    String label = generateAtomLabel(atom);
-
-	    renderer.drawString(atom.x, atom.y, atom.z,
-				Color32.white, label);
-
-	    /*
-	      if(hersheyFonts){
-	      double zoff = atom.getBiggestDisplayedRadius();
-	      renderer.drawHersheyString(atom.x, atom.y, atom.z,
-	      zoff,
-	      0.5,
-	      Color32.white, label);
-	      }else{
-	      renderer.drawString(atom.xs, atom.ys, atom.zs,
-	      Color32.white, label);
-	      }
-	    */
-	}
-    }
-
     /** Size of box for selected atoms in Angstroms. */
-    private static double boxSize = 0.05;
+    private static final double boxSize = 0.05;
 
     /** Default format for short atom labels. */
     private static String defaultShortFormat = null;
 
-    /** Set the label format that is used for atoms on screen. */
-    public void setAtomLabelFormat(String s){
-	defaultShortFormat = s;
-    }
-
-    /** Get the atom label format. */
-    public String getAtomLabelFormat(){
-	return defaultShortFormat;
-    }
-
     /** Generate the atom label. */
-    public String generateAtomLabel(Atom atom){
+    private String generateAtomLabel(Atom atom){
 	if(defaultShortFormat == null){
 	    defaultShortFormat = Settings.getString("config", "atom.short.format");
 	    if(defaultShortFormat == null){
@@ -4948,31 +4396,23 @@ public class MoleculeRenderer {
     public void generateAtomLabels(String format, DynamicArray selectedAtoms){
 	for(int i = 0; i < selectedAtoms.size(); i++){
 	    Atom a = (Atom)selectedAtoms.get(i);
-
-	    //String label = a.generateLabel(format);
-
 	    a.setCustomLabel(format);
 	}
     }
 
     /** Draw one atom. */
-    public void drawAtom(Atom atom, int crossPixels){
+    private void drawAtom(Atom atom, int crossPixels){
 	if(displaySolvent || atom.isSolvent() == false){
 	    int z = atom.zs;
 	    int atomColor = atom.getColor();
 
 	    if(crossPixels == 1){
-		//int shade = getShade(atomColor, z);
 		renderer.drawDot(atom.xs, atom.ys, z, atomColor);
 	    }else{
 		crossPixels <<= Renderer.FixedBits;
 		crossPixels /= 2;
 		int x = atom.xs;
 		int y = atom.ys;
-		//renderer.drawLine(x - crossPixels, y, z,
-		//		  x + crossPixels, y, z, atomColor, atomColor, 1);
-		//renderer.drawLine(x, y - crossPixels, z,
-		//		  x, y + crossPixels, z, atomColor, atomColor, 1);
 		drawLine(x - crossPixels, y, z,
 			 x + crossPixels, y, z, atomColor, atomColor, -1);
 		drawLine(x, y - crossPixels, z,
@@ -4982,7 +4422,7 @@ public class MoleculeRenderer {
     }
 
     /** Draw one bond. */
-    public void drawBond(Bond bond, double w){
+    private void drawBond(Bond bond, double w){
 	if(fastDraw || bond.getBondOrder() == Bond.SingleBond){
 	    drawSimpleBond(bond, w);
 	}else{
@@ -5047,13 +4487,8 @@ public class MoleculeRenderer {
 	    if(bond.getBondOrder() == Bond.AromaticBond){
 		dummyAtom1.set(first2Center);
 		dummyAtom2.set(second2Center);
-		drawTwinColourDottedLine(dummyAtom1, dummyAtom2, aromaticBondDotGap,
-					 firstAtomColor, secondAtomColor);
+		drawTwinColourDottedLine(dummyAtom1, dummyAtom2, aromaticBondDotGap);
 	    }else{
-		//renderer.drawLine(first2Center.x, first2Center.y, first2Center.z,
-		//		  second2Center.x, second2Center.y, second2Center.z,
-		//		  firstAtomColor, secondAtomColor,
-		//		  width);
 		drawLine(first2Center.x, first2Center.y, first2Center.z,
 			 second2Center.x, second2Center.y, second2Center.z,
 			 firstAtomColor, secondAtomColor, w);
@@ -5061,7 +4496,6 @@ public class MoleculeRenderer {
 	}else{
 	    Point3d first2second = Point3d.unitVector(firstAtom, secondAtom);
 	    first2second.normalise();
-	    //	    Point3d normal = Point3d.normalToLine(first2second);
 	    Point3d normal = getDoubleBondOffsetVector(firstAtom, secondAtom);
 	    normal.scale(doubleBondOffset);
 	    first2second.scale(0.1);
@@ -5081,13 +4515,8 @@ public class MoleculeRenderer {
 	    if(bond.getBondOrder() == Bond.AromaticBond){
 		dummyAtom1.set(firstEnd);
 		dummyAtom2.set(secondEnd);
-		drawTwinColourDottedLine(dummyAtom1, dummyAtom2, aromaticBondDotGap,
-					 firstAtomColor, secondAtomColor);
+		drawTwinColourDottedLine(dummyAtom1, dummyAtom2, aromaticBondDotGap);
 	    }else{
-		//renderer.drawLine(firstEnd.x, firstEnd.y, firstEnd.z,
-		//		  secondEnd.x, secondEnd.y, secondEnd.z,
-		//		  firstAtomColor, secondAtomColor,
-		//		  width);
 		drawLine(firstEnd.x, firstEnd.y, firstEnd.z,
 			 secondEnd.x, secondEnd.y, secondEnd.z,
 			 firstAtomColor, secondAtomColor, w);
@@ -5105,11 +4534,6 @@ public class MoleculeRenderer {
 		if(secondAtom.getBondCount() > 1){
 		    secondEnd.subtract(first2second);
 		}
-
-		//renderer.drawLine(firstEnd.x, firstEnd.y, firstEnd.z,
-		//		  secondEnd.x, secondEnd.y, secondEnd.z,
-		//		  firstAtomColor, secondAtomColor,
-		//		  width);
 
 		drawLine(firstEnd.x, firstEnd.y, firstEnd.z,
 			 secondEnd.x, secondEnd.y, secondEnd.z,
@@ -5163,10 +4587,6 @@ public class MoleculeRenderer {
 
 	int firstAtomColor = firstAtom.getColor();
 	int secondAtomColor = secondAtom.getColor();
-
-	//renderer.drawLine(firstAtom.xs, firstAtom.ys, firstAtom.zs,
-	//		  secondAtom.xs, secondAtom.ys, secondAtom.zs,
-	//		  firstAtomColor, secondAtomColor, width);
 
 	if(w < 0.0){
 	    if(renderer.shadowMode != Renderer.ShadowsOff){
@@ -5269,18 +4689,6 @@ public class MoleculeRenderer {
 	return nearestAtom;
     }
 
-    /** Move an atom in the plane of the screen. */
-    public void moveAtom(Atom atom, int dx, int dy){
-	// the on screen direction
-	Point3d direction = new Point3d(dx, -dy, 0);
-
-	renderer.rotationMatrix.transformByInverse(direction);
-
-	direction.divide(renderer.getOverallScale());
-
-	atom.add(direction);
-    }
-
     /** Translate the center of the view. */
     public void translateCenter(int dx, int dy){
 	Point3d direction = new Point3d(-dx, dy, 0);
@@ -5364,21 +4772,6 @@ public class MoleculeRenderer {
 	}
     }
 
-    /** Color by bFactor. */
-    public void colorBySpecifiedColor(int color){
-	boolean all = (getSelectedAtomCount() == 0);
-
-	AtomIterator atomIterator = getAtomIterator();
-
-	while(atomIterator.hasMoreElements()){
-	    Atom atom = atomIterator.getNextAtom();
-
-	    if(all || atom.isSelected()){
-		atom.setColor(color);
-	    }
-	}
-    }
-
     /**
      * Color by bFactor.
      * This method uses a fixed range to set the b-factor
@@ -5425,7 +4818,7 @@ public class MoleculeRenderer {
     private static int predefinedColors[]  = null;
     private static final int ColorRampSize = 512;
 
-    public void ensureColorRampDefined(){
+    private void ensureColorRampDefined(){
 	if(predefinedColors == null){
 	    predefinedColors = new int[ColorRampSize];
 	    int ColorRampSize2 = ColorRampSize/2;
@@ -5445,13 +4838,6 @@ public class MoleculeRenderer {
 	    }
 	}
     }
-
-    /*
-      private static int predefinedColors[] = {
-      Color32.rwb7, Color32.rwb6, Color32.rwb5, Color32.rwb4,
-      Color32.rwb3, Color32.rwb2, Color32.rwb1, Color32.rwb0,
-      };
-    */
 
     /** 
      * Color by b-factor but bin the colors according to range.
@@ -5490,9 +4876,6 @@ public class MoleculeRenderer {
 	if(property == Atom.B){
 	    max = 2. * rms;
 	}
-	//System.out.println("rms " + rms);
-	//System.out.println("min " + min);
-	//System.out.println("max " + max);
 
 	atomIterator = getAtomIterator();
 
@@ -5543,7 +4926,6 @@ public class MoleculeRenderer {
 	for(int i = 0; i < atomCount; i++){
 	    Atom a = (Atom)selectedAtoms.get(i);
 	    hsvtmp[0] = hue;
-	    //System.out.println("hue "+ hue);
 	    int c = Color32.hsv2packed(hsvtmp);
 	    a.setColor(c);
 	    hue -= step;
@@ -5597,51 +4979,10 @@ public class MoleculeRenderer {
 	}
     }
 
-    transient parser astexViewerParser = new parser();
-    transient Yylex lexer = new Yylex((java.io.BufferedReader)null);
-
     /** The buffer of commands we executed. */
     transient StringBuffer commandLog = new StringBuffer(65536);
 
-    /**
-     * Main interface for command processing.
-     * Not used... the below stack based method is used now.
-     */
-    public synchronized void execute2(String command){
-	parser.setMoleculeRenderer(this);
-
-	if(debug){
-	    System.out.println("MoleculeRenderer.execute() command:");
-	    System.out.println("|" + command + "|");
-	    System.out.println("fancy");
-	}
-
-	StringReader sr = new StringReader(command);
-	try {
-
-	    astexViewerParser.setScanner(lexer);
-	    lexer.setInput(sr);
-	    astexViewerParser.parse();
-	    commandLog.append(command);
-	    //System.gc();
-	    //System.runFinalization();
-	    //new parser(new Yylex(new StringReader(command))).parse();
-	}catch(Exception e){
-	    System.out.println("error processing command: ");
-	    System.out.println(command);
-
-	    e.printStackTrace();
-	}finally{
-	    sr.close();
-	}
-    }
-
-    public synchronized void execute22(String command){
-	executeInternal(command);
-    }
-
     public synchronized void execute(String command){
-	//CommandThread.execute(this, "main", command);
 	executeInternal(command);
     }
 
@@ -5687,43 +5028,7 @@ public class MoleculeRenderer {
 	}
     }
 
-    /*
-      private synchronized boolean parse2(java.io.Reader reader){
-      Object parseInfo[] = null;
-
-      synchronized(parseStack){
-      if(false && parseStack.empty() == false){
-      parseInfo = (Object[])parseStack.pop();
-      //print.f("#### resusing");
-      }else{
-      parseInfo = new Object[2];
-      parseInfo[0] = new parser();
-      parseInfo[1] = new Yylex((java.io.BufferedReader)null);
-      //print.f("#### creating");
-      }
-      }
-
-      //print.f("parseInfo "+ parseInfo);
-
-      parser p = (parser)parseInfo[0];
-      p.setMoleculeRenderer(this);
-
-      Yylex y  = (Yylex)parseInfo[1];
-
-      p.setScanner(y);
-      y.setInput(reader);
-
-      CommandThread t = new CommandThread(p, parseStack, parseInfo);
-
-      t.start();
-
-      return true;
-      }    
-    */
-
-    public synchronized void executeInternal(String command){
-	//Log.info("command: " + command);
-
+    private synchronized void executeInternal(String command){
 	StringReader sr = new StringReader(command);
 
 	if(parse(sr) == false){
@@ -5740,7 +5045,7 @@ public class MoleculeRenderer {
     }
 
     /** The last script we executed. */
-    public String lastScriptFile = null;
+    private String lastScriptFile = null;
 
     public synchronized void reExecute(){
 	if(lastScriptFile != null){

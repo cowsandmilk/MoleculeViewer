@@ -32,10 +32,6 @@ public class ResidueIterator implements Enumeration<Residue> {
 	/** The scene that we will enumerate the residues of. */
 	private MoleculeRenderer renderer = null;
 
-	/** Private default constructor. */
-	private ResidueIterator(){
-	}
-
 	/** The number of residues in the scene. */
 	private int residueCount = 0;
 

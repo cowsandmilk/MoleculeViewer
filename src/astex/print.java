@@ -43,28 +43,4 @@ public class print {
     public static void f(String output){
         System.out.println(output);
     }
-    
-    public static void f(Object o){
-        System.out.println(o.toString());
-    }
-    
-    public static void f(String s, double d){
-        FILE.out.print(s, d);
-    }
-    
-    public static void f(String s, float f){
-        FILE.out.print(s, f);
-    }
-    
-    public static void f(String s, int i){
-        FILE.out.print(s, i);
-    }
-    
-    public static void f(String s, char c){
-        FILE.out.print(s, c);
-    }
-    
-    public static void f(String s, String a){
-        FILE.out.print(s, a);
-    }
 }

@@ -36,7 +36,6 @@ public class Face extends DynamicArray {
     public int intersection = 0;
 
     public static final int ProbeIntersection = 1;
-    public static final int TorusIntersection = 2;
 
     /** Possible types of face. */
     public static final int Convex  = 1;
@@ -77,10 +76,6 @@ public class Face extends DynamicArray {
 	    iij = new double[3];
 	    iji = new double[3];
 	}
-    }
-
-    /** Must specify type in constructor. */
-    private Face(){
     }
 
     public void add(Edge e){

@@ -35,7 +35,7 @@ public class Texture {
     /** Data for the texture maps. */
     int pixels[] = null;
 
-    public Texture(int w, int h){
+    private Texture(int w, int h){
 	width = w;
 	height = h;
 
@@ -55,27 +55,6 @@ public class Texture {
     public static Texture simpleTexture(){
 	Texture t = new Texture(256, 256);
 	int entry = 0;
-
-	/*
-	int colors[] = {
-	    Color32.pack(255,   0,   0),
-	    Color32.pack(255,   0,   0),
-	    Color32.pack(255,  64,  64),
-	    Color32.pack(255,  64,  64),
-	    Color32.pack(255, 128, 128),
-	    Color32.pack(255, 128, 128),
-	    Color32.pack(255, 192, 192),
-	    Color32.pack(255, 192, 192),
-	    Color32.pack(192, 192, 255),
-	    Color32.pack(192, 192, 255),
-	    Color32.pack(128, 128, 255),
-	    Color32.pack(128, 128, 255),
-	    Color32.pack( 64,  64, 255),
-	    Color32.pack( 64,  64, 255),
-	    Color32.pack(  0,   0, 255),
-	    Color32.pack(  0,   0, 255),
-	};
-	*/
 
 	int colors[] = {
 	    Color32.pack(255,   0,   0),
@@ -128,7 +107,7 @@ public class Texture {
     }
 
     /** Resample the texture to the specified size. */
-    public void setSize(int w, int h) {
+    private void setSize(int w, int h) {
 	System.out.println("Texture.setSize: original width " + width +
 			   " height " + height);
 	int offset=w*h;
@@ -234,32 +213,5 @@ public class Texture {
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
-    }
-
-    /** Load texture from url. */
-    public Texture(URL docURL, String filename) {
-
-	int pos = 0;
-	String temp = docURL.toString();
-	while (temp.indexOf('/', pos) > 0){
-	    pos = temp.indexOf('/', pos) + 1;
-	}
-	temp = temp.substring(0, pos) + filename;
-	while (temp.indexOf('/', pos) > 0){
-	    pos = temp.indexOf('/', pos) + 1;
-	}
-	String file = temp.substring(pos);
-	String base = temp.substring(0, pos);
-
-	try{
-	    loadPixels(Toolkit.getDefaultToolkit().getImage(new URL(base + file)));
-	} catch (Exception e){
-	    System.err.println(e + "");
-	}
-    }
-
-    /** Load texture from a file. */
-    public Texture(String filename) {
-	System.out.println("about to load " + filename);
     }
 }

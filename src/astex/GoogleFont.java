@@ -33,14 +33,13 @@ public class GoogleFont {
 
     public static void setComponent(Component c){
         component = c;
-        //component.setSize(maxWidth, maxHeight);
     }
 
-    private static Font imageFont = null;
-    private static PixelGrabber pg = null;
+    private static Font imageFont;
+    private static PixelGrabber pg;
 
-    private static int maxWidth  = 200;
-    private static int maxHeight =  80;
+    private static final int maxWidth  = 200;
+    private static final int maxHeight =  80;
 
     private static final int matteColor = 0x00ffff;
     private static int pix[] = null;
@@ -97,7 +96,6 @@ public class GoogleFont {
 
         Color foreground = component.getForeground();
         int actualfg = foreground.getRGB() & 0xffffff;
-        //print.f("foreground " + actualfg);
 
         // now get the boundary of the font.
         int xmin = maxWidth;
@@ -228,10 +226,6 @@ public class GoogleFont {
             }
         }
 
-        //size[0] = maxWidth;
-        //size[1] = maxHeight;
-        //size[0] = w/2;
-        //size[1] = h/2;
         size[0] = w/2;
         size[1] = h/2;
 

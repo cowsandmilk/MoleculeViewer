@@ -35,14 +35,10 @@ import java.util.*;
  */
 
 public class Bond extends Generic {
-    public static final String BondOrder = "bondorder";
+    private static final String BondOrder = "bondorder";
 
     /** Default constructor. */
     public Bond(Atom a1, Atom a2){
-    public Object getClassname(){
-        return getClass().getName();
-    }
-
 	setBondOrder(SingleBond);
 	setBondColor(Color32.white);
 	setBondWidth(1);
@@ -51,6 +47,10 @@ public class Bond extends Generic {
 	attributes = 0;
 	firstAtom = a1;
 	secondAtom = a2;
+    }
+
+    public Object getClassname(){
+        return getClass().getName();
     }
 
     public Object set(Object key, Object property){
@@ -68,7 +68,7 @@ public class Bond extends Generic {
 
     public Object get(Object key, Object def){
         if(key.equals(BondOrder)){
-            return new Integer(getBondOrder());
+            return new Integer(bondOrder);
         }else{
             return super.get(key, def);
         }
@@ -123,7 +123,7 @@ public class Bond extends Generic {
     /** Constant that defines any bond. */
     public static final int AnyBond = 9;
 
-    public static final double bondScale = 2./128.;
+    private static final double bondScale = 2./128.;
 
     /* Various attributes of the bond. */
 	
@@ -131,20 +131,20 @@ public class Bond extends Generic {
     public int attributes          = 0;
 
     /** Is the bond to be drawn wide. */
-    public static int wideBond     = 1;
+    private static int wideBond     = 1;
 
     /** Is the bond in a ring of any description. */
-    public static int ringBond     = 2;
+    private static int ringBond     = 2;
 
     /** Did the bond come from a CONECT record. */
-    public static int ExplicitBond = 4;
+    private static int ExplicitBond = 4;
 
     /** Is bond an explicit bond. */
     public boolean isExplicitBond(){
 	return (attributes & ExplicitBond) != 0;
     }
 
-    /** Set whehter this bond was an explicit bond. */
+    /** Set whether this bond was an explicit bond. */
     public void setExplicitBond(boolean e){
 	if(e){
 	    attributes |= ExplicitBond;
@@ -263,23 +263,11 @@ public class Bond extends Generic {
 
     /** Is the bond a query bond. */
     public boolean isQueryBond(){
-	int order = getBondOrder();
-
-	if(order > TripleBond && order <= AnyBond){
+	if(bondOrder > TripleBond && bondOrder <= AnyBond){
 	    return true;
 	}else{
 	    return false;
 	}
-    }
-
-    /**
-     * A method that will create a new Bond.
-     *
-     * This may in the future reuse bonds from a list of those
-     * that are no longer in use.
-     */
-    public static Bond create(){
-	return new Bond();
     }
 
     /** Set the first atom in the bond. */
@@ -330,15 +318,13 @@ public class Bond extends Generic {
 
     /** Return a smiles style symbol for the bond. */
     public String getBondSymbol(){
-	int order = getBondOrder();
-
-	if(order == SingleBond){
+	if(bondOrder == SingleBond){
 	    return "-";
-	}else if(order == DoubleBond){
+	}else if(bondOrder == DoubleBond){
 	    return "=";
-	}else if(order == TripleBond){
+	}else if(bondOrder == TripleBond){
 	    return "#";
-	}else if(order == AromaticBond){
+	}else if(bondOrder == AromaticBond){
 	    return ":";
 	}else{
 	    return "-";
@@ -347,13 +333,9 @@ public class Bond extends Generic {
 
     /** Is this a terminal bond. */
     public boolean isTerminalBond(){
-	Atom firstAtom = getFirstAtom();
-
 	if(firstAtom.getBondCount() == 1){
 	    return true;
 	}else{
-	    Atom secondAtom = getSecondAtom();
-
 	    if(secondAtom.getBondCount() == 1){
 		return true;
 	    }
@@ -364,8 +346,6 @@ public class Bond extends Generic {
 
     /** Is this bond non rotatable. */
     public boolean isNonRotatable(){
-	int bondOrder = getBondOrder();
-
 	if(bondOrder == Bond.DoubleBond ||
 	   bondOrder == Bond.AromaticBond){
 	    return true;
@@ -399,8 +379,6 @@ public class Bond extends Generic {
 
     /** String representation of the bond. */
     public String toString(){
-	Atom firstAtom = getFirstAtom();
-	Atom secondAtom = getSecondAtom();
 	int firstId = firstAtom.getId();
 	int secondId = secondAtom.getId();
 
@@ -412,9 +390,6 @@ public class Bond extends Generic {
 
     /** Get unit vector. */
     public Point3d getUnitVector(){
-	Atom firstAtom = getFirstAtom();
-	Atom secondAtom = getSecondAtom();
-
 	return Point3d.unitVector(firstAtom, secondAtom);
     }
 

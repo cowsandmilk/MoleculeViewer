@@ -21,14 +21,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ColorButton extends ImageButton {
-    /**
-     * Default constructor.
-     * Create a ColorButton that is white and 16x16 pixels.
-     */
-    public ColorButton(){
-	this(Color.white, 16);
-    }
-
     private Frame colorChooserFrame = null;
     private Dialog colorChooserDialog = null;
     private ColorChooser colorChooser = null;
@@ -38,7 +30,7 @@ public class ColorButton extends ImageButton {
      * so that a JavaScript interface can use it for
      * picking colours.
      */
-    public String getColor(int x, int y){
+    private String getColor(int x, int y){
 
 	if(colorChooserDialog == null){
 	    if(colorChooserFrame == null){
@@ -63,7 +55,7 @@ public class ColorButton extends ImageButton {
     /**
      * Show the dialog at the position.
      */
-    private static void showAt(Dialog d, int x, int y){
+    private void showAt(Dialog d, int x, int y){
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 	// change the screen height to reflect possible toolbar
@@ -109,7 +101,6 @@ public class ColorButton extends ImageButton {
 
 	ActionListener cbal = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-		    //JCButton b = (JCButton)e.getSource();
 		    Point location = getLocationOnScreen();
 		    Dimension bsize = getSize();
 	    
@@ -121,9 +112,7 @@ public class ColorButton extends ImageButton {
 			int newColor =
 			    Color32.getColorFromName(newColorString);
 
-			//setForeground(new Color(newColor));
 			setBackground(new Color(newColor));
-			//setLabel(null);
 			colorString = Color32.formatNoQuotes(newColor);
 			cancelled = false;
 		    }else{
@@ -134,18 +123,15 @@ public class ColorButton extends ImageButton {
 
 	setForeground(color);
 	setBackground(color);
-	//setLabel("");
-	//setSize(size, size);
-	//setInsets(new Insets(0,0,0,0));
 	addActionListener(cbal);
 
 	colorString = Color32.formatNoQuotes(color.getRGB());
     }
 
-    /** Was the action cancelled. */
+    /** Was the action canceled. */
     private boolean cancelled = false;
 
-    /** Was the button cancelled. */
+    /** Was the button canceled. */
     public boolean wasCancelled(){
 	return cancelled;
     }

@@ -175,7 +175,6 @@ public class ViewCommand {
 	}
 
 	if(zrot != Double.NEGATIVE_INFINITY){
-	    //Log.info("zrot %.1f", zrot);
 	    mr.renderer.rotateY(zrot);
 	}
 
@@ -230,7 +229,7 @@ public class ViewCommand {
 	mv.dirtyRepaint();
     }
 
-    public static void doAntialias(int pbuffer[], int w, int h, int sample){
+    private static void doAntialias(int pbuffer[], int w, int h, int sample){
 	int wa = w / sample;
 	int ha = h / sample;
 	int pa = wa * ha;

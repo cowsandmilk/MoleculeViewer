@@ -35,29 +35,7 @@ import java.awt.Color;
  */
 public class Residue extends Generic implements Selectable {
     /** Default constructor. */
-    private Residue(){
-	atoms = new DynamicArray(6);
-	initialise();
-    }
-
-    /** Dynmamic array of atoms. */
-    public DynamicArray atoms = null;
-
-    /** Undefined residue number. */
-    public static int undefinedResidueNumber = -9999;
-
-    /** Undefined resiude name. */
-    public static String undefinedResidueName = "XXX";
-
-    /** Initialise a residue object. */
-    private void initialise(){
-	name = null;
-	number = undefinedResidueNumber;
-	sequentialNumber = undefinedResidueNumber;
-	parent = null;
-	insertionCode = ' ';
-	atoms.removeAllElements();
-
+    public Residue(){
         set(ResidueColor, Color.white);
         set(Torsions, Boolean.FALSE);
         set(TorsionRadius, new Double(0.4));
@@ -65,12 +43,14 @@ public class Residue extends Generic implements Selectable {
         set(TorsionFormat, "<3d=true,size=0.3>%t %.1f");
     }
 
-    /**
-     * Public interface for creating residues.
-     */
-    public static Residue create(){
-	return new Residue();
-    }
+    /** Dynamic array of atoms. */
+    private DynamicArray atoms = new DynamicArray(6);
+
+    /** Undefined residue number. */
+    public static final int undefinedResidueNumber = -9999;
+
+    /** Undefined residue name. */
+    private static final String undefinedResidueName = "XXX";
 
     /** Parent chain. */
     private Chain parent = null;
@@ -114,20 +94,6 @@ public class Residue extends Generic implements Selectable {
         set(ResidueColor, color);
     }
 
-    public boolean hasSelectedAtoms(){
-        int atomCount = getAtomCount();
-
-        for(int a = 0; a < atomCount; a++){
-            Atom atom = getAtom(a);
-
-            if(atom.isSelected()){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /** Get the residue name. */
     public String getName(){
 	if(name == null){
@@ -156,7 +122,7 @@ public class Residue extends Generic implements Selectable {
     public static final int Coil = 5;
 
     /** The secondary structure type. */
-    int secondaryStructure = Coil;
+    private int secondaryStructure = Coil;
     
     /**
      * Get the value of secondaryStructure.
@@ -175,10 +141,10 @@ public class Residue extends Generic implements Selectable {
     }
     
     /** Residue number. */
-    private int number;
+    private int number = undefinedResidueNumber;
 
     /** Sequential sequence number. */
-    private int sequentialNumber;
+    private int sequentialNumber = undefinedResidueNumber;
 
     public void setSequentialNumber(int sNumber){
 	sequentialNumber = sNumber;
@@ -223,34 +189,6 @@ public class Residue extends Generic implements Selectable {
 	}
     }
 
-    /** Remove this residue. */
-    public void delete(){
-	Chain chain = getParent();
-	Molecule mol = chain.getParent();
-	
-	//Log.info("molecule " + mol);
-
-	// first remove the bonds...
-	int atomCount = getAtomCount();
-	//Log.info("atomCount %d", atomCount);
-	for(int a = atomCount - 1; a >= 0; a--){
-	    Atom atom = getAtom(a);
-	    //Log.info("atom %d " + atom, a);
-	    int bondCount = atom.getBondCount();
-	    for(int b = 0; b < bondCount; b++){
-		//Log.info("bond %d", b);
-		Bond bond = atom.getBond(b);
-		//Log.info("removing from molecule");
-		mol.removeBond(bond);
-	    }
-	    
-	    //Log.info("removing from residue");
-	    removeAtom(atom);
-	    //Log.info("removing from molecule");
-	    mol.removeAtom(atom);
-	}
-    }
-
     /**
      * Return the number of atoms in the molecule.
      */
@@ -271,7 +209,7 @@ public class Residue extends Generic implements Selectable {
     }
 
     /** Return the atom with the given name. */
-    public Atom getAtom(String nm, char code){
+    private Atom getAtom(String nm, char code){
 	int atomCount = getAtomCount();
 	for(int i = 0; i < atomCount; i++){
 	    Atom a = getAtom(i);
@@ -303,7 +241,7 @@ public class Residue extends Generic implements Selectable {
      * with + or -. This method is only used by torsion
      * angle search functions.
      */
-    public Atom findAtom(String name, char code){
+    private Atom findAtom(String name, char code){
 	// atom is in previous or next residue
 	// we need to go up to the chain and find the
 	// relevant residue
@@ -347,11 +285,6 @@ public class Residue extends Generic implements Selectable {
 	}
     }
 
-    /** Return the DynamicArray of atoms. */
-    public DynamicArray getAtoms(){
-	return atoms;
-    }
-
     /** Is this residue a standard amino acid. */
     public boolean isStandardAminoAcid(){
 	return isStringInArray(name, Selection.aminoacidNames);
@@ -386,26 +319,6 @@ public class Residue extends Generic implements Selectable {
 	}
 
 	return false;
-    }
-
-    /** Does this residue contain bonds to atoms in any other residues. */
-    public boolean isIsolated(){
-	int atomCount = getAtomCount();
-
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-	    int bondCount = atom.getBondCount();
-	    for(int b = 0; b < bondCount; b++){
-		Bond bond = atom.getBond(b);
-		Atom otherAtom = bond.getOtherAtom(atom);
-		Residue otherResidue = otherAtom.getResidue();
-		if(otherResidue != this){
-		    return false;
-		}
-	    }
-	}
-
-	return true;
     }
 
     public String selectStatement(){
@@ -443,19 +356,14 @@ public class Residue extends Generic implements Selectable {
     }
 
     public static final String ResidueColor  = "color";
-    public static final String Torsions      = "torsions";
-    public static final String TorsionRadius = "torsionRadius";
+    private static final String Torsions      = "torsions";
+    private static final String TorsionRadius = "torsionRadius";
     public static final String TorsionGreek  = "torsionGreek";
     public static final String TorsionFormat = "torsionFormat";
 
 
     public Enumeration<String> getProperties(){
         Vector<String> v = new Vector<String>(1);
-
-        //v.addElement(Torsions);
-        //v.addElement(TorsionRadius);
-        //v.addElement(TorsionGreek);
-        //v.addElement(TorsionFormat);
         v.addElement(ResidueColor);
 
         return v.elements();

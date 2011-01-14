@@ -51,14 +51,6 @@ public class Matrix {
 	x20 = 0.0; x21 = 0.0; x22 = 1.0; x23 = 0.0;
 	x30 = 0.0; x31 = 0.0; x32 = 0.0; x33 = 1.0;
     }
-    
-    /** Set the matrix to the zero matrix. */
-    public void zero(){
-	x00 = 0.0; x01 = 0.0; x02 = 0.0; x03 = 0.0;
-	x10 = 0.0; x11 = 0.0; x12 = 0.0; x13 = 0.0;
-	x20 = 0.0; x21 = 0.0; x22 = 0.0; x23 = 0.0;
-	x30 = 0.0; x31 = 0.0; x32 = 0.0; x33 = 0.0;
-    }
 
     /** Set matrix from another. */
     public void set(Matrix m){
@@ -67,42 +59,7 @@ public class Matrix {
 	x20 = m.x20; x21 = m.x21; x22 = m.x22; x23 = m.x23;
 	x30 = m.x30; x31 = m.x31; x32 = m.x32; x33 = m.x33;
     }
-    
-    public void set(int i, int j, double val){
-	if(i < 0 || i > 3 || j < 0 || j > 3){
-	    Log.error("trying to set element " + i + "," + j + " to %g", val);
-	    return;
-	}
-	if(i == 0){
-	    if(j == 0)      x00 = val;
-	    else if(j == 1) x01 = val;
-	    else if(j == 2) x02 = val;
-	    else if(j == 3) x03 = val;
-	}else if(i == 1){
-	    if(j == 0)      x10 = val;
-	    else if(j == 1) x11 = val;
-	    else if(j == 2) x12 = val;
-	    else if(j == 3) x13 = val;
-	}else if(i == 2){
-	    if(j == 0)      x20 = val;
-	    else if(j == 1) x21 = val;
-	    else if(j == 2) x22 = val;
-	    else if(j == 3) x23 = val;
-	}else if(i == 3){
-	    if(j == 0)      x30 = val;
-	    else if(j == 1) x31 = val;
-	    else if(j == 2) x32 = val;
-	    else if(j == 3) x33 = val;
-	}else{
-	    Log.error("trying to set row %d", i);
-	}
-    }
 
-    /** Scale the transformation matrix. */
-    public void scale(double s){
-	scale(s, s, s);
-    }
-    
     /** Apply non uniform scale. */
     public void scale(double sx, double sy, double sz){ 
 	x00 *= sx; x01 *= sy; x02 *= sz;
@@ -117,13 +74,6 @@ public class Matrix {
 	x10 += x13*tx; x11 += x13*ty; x12 += x13*tz;
 	x20 += x23*tx; x21 += x23*ty; x22 += x23*tz;
 	x30 += x33*tx; x31 += x33*ty; x32 += x33*tz;
-    }
-
-    /** Translate the transformation matrix the other way. */
-    public void pretranslate(double tx, double ty, double tz){
-	x30 = tx*x00 + ty*x10 + tz*x20;
-	x31 = tx*x01 + ty*x11 + tz*x21;
-	x32 = tx*x02 + ty*x12 + tz*x22;
     }
     
     /** Rotate around x in degrees. */
@@ -159,13 +109,6 @@ public class Matrix {
 	Matrix m = new Matrix();
 	m.rotateAroundVector(0., 0., 1., r);
 	transform(m);
-	
-	// this is wrong...
-	//double t = 0.0;
-	//t = x00; x00 = t*c + x01*s; x01 = t*s - x01*c;
-	//t = x10; x10 = t*c + x11*s; x11 = t*s - x11*c;
-	//t = x20; x20 = t*c + x21*s; x21 = t*s - x21*c;
-	//t = x30; x30 = t*c + x31*s; x31 = t*s - x31*c;
     }
 
     /** Transform by another matrix. */
@@ -214,11 +157,6 @@ public class Matrix {
     }
     
     /** Rotate around a line. */
-    public void rotateAroundVector(Point3d p, double theta){
-	rotateAroundVector(p.x, p.y, p.z, theta);
-    }
-    
-    /** Rotate around a line. */
     public void rotateAroundVector(double x, double y, double z,
 				   double theta){
 	double d = x*x + y*y + z*z;
@@ -255,11 +193,6 @@ public class Matrix {
     
     /** A format object for printing matrices. */
     private static Format f6 = new Format("%11.6f");
-    
-    /** Print a default message with the matrix. */
-    public void print(){
-	print("-----------------");
-    }
     
     /** Print the matrix. */
     public void print(String message){
@@ -308,11 +241,6 @@ public class Matrix {
 	if(Math.abs(x33 - m.x33) > TOL) return false;
 
 	return true;
-    }
-
-    /** Does this matrix equal another matrix. */
-    public boolean isIdentity(){
-	return isIdentity(TOL);
     }
 
     public boolean isIdentity(double tol){
@@ -417,7 +345,7 @@ public class Matrix {
      *    The matrix B = (b  ) is the adjoint of A
      *                     ij
      */
-    public static void adjoint(Matrix in, Matrix out){
+    private static void adjoint(Matrix in, Matrix out){
 	double a1, a2, a3, a4, b1, b2, b3, b4;
 	double c1, c2, c3, c4, d1, d2, d3, d4;
 
@@ -533,12 +461,10 @@ public class Matrix {
     }
 
     /** Interpolate a new matrix. */
-    public static void interpolate(Matrix MS, Matrix MF, double frac, Matrix MI){
+    private static void interpolate(Matrix MS, Matrix MF, double frac, Matrix MI){
 	double qS[] = new double[4];
 	double qF[] = new double[4];
 	double qI[] = new double[4];
-
-	//MS.print("start");
 
 	MS.toQuaternion(qS);
 	MF.toQuaternion(qF);
@@ -546,14 +472,10 @@ public class Matrix {
 	slerp(qS, qF, frac, qI);
 
 	MI.fromQuaternion(qI);
-
-	//System.out.println("frac " + frac);
-	//MI.print("interpolated");
-	//MF.print("final");
     }
 
     /** Convert a matrix to a quaternion. */
-    public void toQuaternion(double q[]){
+    private void toQuaternion(double q[]){
 	double trace = x00 + x11 + x22 + 1.0;
 
 	if( trace > 1.e-7 ) {
@@ -594,8 +516,7 @@ public class Matrix {
     }
 
     /** Generate rotation matrix from quaternion. */
-    public void fromQuaternion(double q[]){
-	//fromQuaternion(q[3], q[0], q[1], q[2]);
+    private void fromQuaternion(double q[]){
 	double X = q[0];
 	double Y = q[1];
 	double Z = q[2];
@@ -622,21 +543,6 @@ public class Matrix {
 	x20  =     2 * ( xz - yw );
 	x21  =     2 * ( yz + xw );
 	x22  = 1 - 2 * ( xx + yy );
-	//mat[3]  = mat[7] = mat[11] = mat[12] = mat[13] = mat[14] = 0;
-	//mat[15] = 1;
-	/*
-	mat[0]  = 1 - 2 * ( yy + zz );
-	mat[1]  =     2 * ( xy - zw );
-	mat[2]  =     2 * ( xz + yw );
-	mat[4]  =     2 * ( xy + zw );
-	mat[5]  = 1 - 2 * ( xx + zz );
-	mat[6]  =     2 * ( yz - xw );
-	mat[8]  =     2 * ( xz - yw );
-	mat[9]  =     2 * ( yz + xw );
-	mat[10] = 1 - 2 * ( xx + yy );
-	mat[3]  = mat[7] = mat[11] = mat[12] = mat[13] = mat[14] = 0;
-	mat[15] = 1;
-	*/
     }
 
     /**
@@ -664,8 +570,7 @@ public class Matrix {
     }
 
     /** The famous quaternion slerp. */
-    public static void slerp(double Q0[], double Q1[], double T, double Result[]) {
-	//double CosTheta = Q0.DotProd(Q1);
+    private static void slerp(double Q0[], double Q1[], double T, double Result[]) {
 	double CosTheta = Q0[3]*Q1[3] - (Q0[0]*Q1[0] + Q0[1]*Q1[1] + Q0[2]*Q1[2]);
 	double Theta = Math.acos(CosTheta);
 	double SinTheta = Math.sqrt(1.0-CosTheta*CosTheta);
@@ -680,8 +585,6 @@ public class Matrix {
 	double Sin_T_Theta = Math.sin(T*Theta)/SinTheta;
 	double Sin_OneMinusT_Theta = Math.sin((1.0-T)*Theta)/SinTheta;
 
-	//Result = Q0*Sin_OneMinusT_Theta;
-	//Result += (Q1*Sin_T_Theta);
 	for(int i = 0; i < 4; i++){
 	    Result[i] = Q0[i]*Sin_OneMinusT_Theta + Q1[i]*Sin_T_Theta;
 	}
@@ -696,6 +599,5 @@ public class Matrix {
 	for(int i = 0; i < 4; i++){
 	    Result[i] /= len;
 	}
-
     }
 }

@@ -25,16 +25,16 @@ import java.awt.*;
 
 public class Color32 {
     /** Alpha bits. */
-    public static final int Alpha = 0xFF000000;
+    private static final int Alpha = 0xFF000000;
 
     /** Red bits. */
-    public static final int Red = 0xFF0000;
+    private static final int Red = 0xFF0000;
 
     /** Green bits. */
-    public static final int Green = 0xFF00;
+    private static final int Green = 0xFF00;
 
     /** Blue bits. */
-    public static final int Blue = 0xFF;
+    private static final int Blue = 0xFF;
 
     public static int getComponent(int c, int comp){
 	if(comp == 0) return getRed(c);
@@ -60,8 +60,6 @@ public class Color32 {
     }
 
     public static int getIntensity(int c){
-	//print("color ", c);
-
 	int r = getRed(c);
 	int g = getGreen(c);
 	int b = getBlue(c);
@@ -72,8 +70,6 @@ public class Color32 {
     }
 
     public static int getMaximumIntensity(int c){
-	//print("color ", c);
-
 	int r = getRed(c);
 	int g = getGreen(c);
 	int b = getBlue(c);
@@ -86,8 +82,6 @@ public class Color32 {
 	if(b > max){
 	    max = b;
 	}
-
-	//System.out.println("getIntensity " + intensity);
 
 	return max;
     }
@@ -166,7 +160,7 @@ public class Color32 {
 
     // blend alpha's worth of c1 and 255-alpha's worth of c2
     // I'm sure there are faster ways of doing this...
-    public static final int blend(int c1, int c2, int alpha) {
+    public static int blend(int c1, int c2, int alpha) {
 	if (alpha==0) return c2;
 	if (alpha==255) return c1;
 
@@ -378,7 +372,7 @@ public class Color32 {
     public static final int undefinedColor = white;
 
     /** Hashtable for storing color name -> rgb values. */
-    private static Hashtable<String,Integer> colorHash = null;
+    private static Hashtable<String,Integer> colorHash;
 
     /** Valid digits for a hex format number. */
     private static String hexDigits = "0123456789abcdefABCDEFx";

@@ -157,8 +157,6 @@ public class MoleculeIO {
     public static Molecule read(String filename){
 	String type = PDBFile;
 
-	//System.out.println("filename " + filename);
-
 	type = getTypeFromExtension(filename);
 
 	if(type != null){
@@ -187,7 +185,7 @@ public class MoleculeIO {
     /**
      * Main entry point for reading a molecule file.
      */
-    public static Molecule read(String type, FILE file){
+    private static Molecule read(String type, FILE file){
 	Molecule molecule = null;
 
 	if(type.equals(MDLMol)){
@@ -230,33 +228,25 @@ public class MoleculeIO {
     /**
      * Read the Sybyl atom block.
      */
-    public static void readBondBlock(FILE file, int bondCount,
+    private static void readBondBlock(FILE file, int bondCount,
 				     Molecule molecule,
 				     boolean atomsInOrder){
 	for(int i = 0; i < bondCount; i++){
 	    file.nextLine();
-	    //int firstAtom = file.readInteger(6, 5);
-	    //int secondAtom = file.readInteger(11, 5);
 	    int firstAtom = file.readIntegerFromField(1);
 	    int secondAtom = file.readIntegerFromField(2);
 	    int bondOrder = 0;
 
-	    //String bondOrderToken = file.getField(3);
 	    int field3start = file.getFieldStart(3);
 	    char char17 = file.getChar(field3start);
 	    char char18 = 0;
 	    if(file.getFieldLength(3) > 1){
-		//char18 = bondOrderToken.charAt(1);
 		char18 = file.getChar(field3start+1);
 	    }
 
 	    if(char17 == 'a' && char18 == 'r'){
-				//System.out.println("saw aromatic bond");
-
 		bondOrder = Bond.AromaticBond;
 	    }else if(char17 == 'a' && char18 == 'm'){
-				//System.out.println("saw amide bond");
-
 				// for now store as aromatic
 		bondOrder = Bond.AmideBond;
 	    }else{
@@ -282,7 +272,7 @@ public class MoleculeIO {
     /**
      * Read the Sybyl atom block.
      */
-    public static boolean readAtomBlock(FILE file, int atomCount,
+    private static boolean readAtomBlock(FILE file, int atomCount,
 					Molecule molecule){
 	StringBuilder elementBuffer = new StringBuilder(2);
 	boolean atomsInOrder = true;
@@ -324,25 +314,15 @@ public class MoleculeIO {
 		atomsInOrder = false;
 	    }
 
-	    //String atomLabel = file.getSubstring(8, 8);
 	    // seem to have to keep the label as a string
 	    String atomLabel = file.getField(1);
-
-	    //atomLabel = atomLabel.trim();
-
-	    //System.out.println("atomLabel " + atomLabel);
 
 	    newAtom.setAtomLabel(atomLabel);
 
 	    // grab the atomic coordinates
-	    //double x = file.readDouble(16, 10);
-	    //double y = file.readDouble(26, 10);
-	    //double z = file.readDouble(36, 10);
 	    double x = file.readDoubleFromField(2);
 	    double y = file.readDoubleFromField(3);
 	    double z = file.readDoubleFromField(4);
-
-	    //System.out.println("x " + x + " y " + y + " z " + z);
 			
 	    newAtom.set(x, y, z);
 
@@ -351,12 +331,9 @@ public class MoleculeIO {
                 newAtom.setAtomType(file.getField(5));
 
                 // figure out the element type.
-                //String elementString = file.getField(5);
                 int field5start = file.getFieldStart(5);
                 elementBuffer.setLength(0);
 
-                //char char0 = file.getChar(47);
-                //char char1 = file.getChar(48);
                 char char0 = file.getChar(field5start);
 
                 elementBuffer.append(char0);
@@ -367,13 +344,9 @@ public class MoleculeIO {
                         elementBuffer.append(char1);
                     }
                 }
-
-                //System.out.println("elementBuffer <" + elementBuffer + ">");
                 
                 int element =
                     PeriodicTable.getElementFromSymbol(elementBuffer.toString());
-
-                //System.out.println("element " + element);
 
                 newAtom.setElement(element);
             }
@@ -384,15 +357,13 @@ public class MoleculeIO {
 
 	}
 
-	//System.out.println("atomsInOrder " + atomsInOrder);
-
 	return atomsInOrder;
     }
 
     /**
      * Read a SYBYL mol file.
      */
-    public static Molecule readMol2(FILE file){
+    private static Molecule readMol2(FILE file){
 	Molecule molecule = new Molecule();
 	int atomCount = 0, bondCount = 0;
 	double averageDenstiy = -1.0;
@@ -416,18 +387,11 @@ public class MoleculeIO {
 			System.err.println("error reading molecule header");
 		    }
 
-		    //oldway
-		    //oldway broken by files that use different formats
-		    //oldway atomCount = file.readInteger(0, 5);
-		    //oldway bondCount = file.readInteger(6, 5);
-
 		    String line = file.getCurrentLineAsString();
 		    String tokens[] = FILE.split(line);
 
 		    atomCount = FILE.readInteger(tokens[0]);
 		    bondCount = FILE.readInteger(tokens[1]);
-		    //System.out.println("atomCount = " + atomCount);
-		    //System.out.println("bondCount = " + bondCount);
 
 		}else if(char9 == 'A' &&
 			 file.currentLineContains("@<TRIPOS>ATOM", 0)){
@@ -446,15 +410,12 @@ public class MoleculeIO {
 		    String line = file.getCurrentLineAsString();
 		    if(line.startsWith("# Number_Of_Central_Group_Atoms:")){
 			int ncentral = file.getInteger(2);
-			//Log.info("central group atoms %d", ncentral);
 			molecule.setCentralAtomCount(ncentral);
 		    }
 		}else if(c1 == ' ' && c2 == 'A'){
 		    String line = file.getCurrentLineAsString();
 		    if(line.startsWith("# Average_Density:")){
 			averageDenstiy = file.getDouble(2);
-			//System.out.println("average density " +
-			//		   averageDenstiy);
 		    }
 		}else if(c1 == 'E' && c2 == 'L'){
 		    // should hold a matrix
@@ -471,13 +432,8 @@ public class MoleculeIO {
 
 		    symmetryElements++;
 
-		    //symmetry.print("symmetry matrix");
-
 		    int ncentral = molecule.getCentralAtomCount();
 		    Point3d p = new Point3d();
-
-		    //Log.info("initial atomCount %5d",
-		    //molecule.getAtomCount());
 
 		    int currentAtomCount = molecule.getAtomCount();
 
@@ -490,8 +446,6 @@ public class MoleculeIO {
 			newAtom.setId(currentAtomCount++);
 			newAtom.setElement(atom.getElement());
 		    }
-
-		    //Log.info("final atomCount %5d", molecule.getAtomCount());
 		}
 	    }
 	}
@@ -521,19 +475,7 @@ public class MoleculeIO {
 	return molecule;
     }
 
-    /**
-     * Summarise the contents of a molecule.
-     */
-    public static void summariseMolecule(Molecule molecule){
-		
-	System.out.println("name " + molecule.getName());
-	int atomCount = molecule.getAtomCount();
-	int bondCount = molecule.getBondCount();
-
-	System.out.println("" + atomCount + " atoms " + bondCount + " bonds ");
-    }
-
-    public static Molecule readTmesh(FILE file){
+    private static Molecule readTmesh(FILE file){
 	Molecule molecule = new Molecule();
 	int acount = 0;
 
@@ -550,7 +492,6 @@ public class MoleculeIO {
 	    double y = file.readDoubleFromField(1);
 	    double z = file.readDoubleFromField(2);
 
-	    //atom.setCoordinates(x, y, z);
 	    atom.set(x, y, z);
 
 	    atom.setElement(1);
@@ -585,7 +526,7 @@ public class MoleculeIO {
 	return molecule;
     }
 
-    public static Molecule readXyzr(FILE file){
+    private static Molecule readXyzr(FILE file){
 	Molecule molecule = new Molecule();
 	int acount = 0;
 
@@ -622,7 +563,7 @@ public class MoleculeIO {
     /**
      * Read an an MDL mol file.
      */
-    public static Molecule readSimple(FILE file){
+    private static Molecule readSimple(FILE file){
 	Molecule molecule = new Molecule();
 
 	// read the molcule name.
@@ -646,7 +587,6 @@ public class MoleculeIO {
 	    double y = file.readDoubleFromField(2);
 	    double z = file.readDoubleFromField(3);
 
-	    //atom.setCoordinates(x, y, z);
 	    atom.set(x, y, z);
 	}
 
@@ -661,8 +601,6 @@ public class MoleculeIO {
 	    int secondAtom = file.readIntegerFromField(1);
 	    int bondOrder = file.readIntegerFromField(2);
 
-	    //System.out.println("firstAtom " + firstAtom);
-	    //System.out.println("secondAtom " + secondAtom);
 	    molecule.addBond(firstAtom - 1, secondAtom - 1,
 					 bondOrder);
 	}
@@ -693,8 +631,6 @@ public class MoleculeIO {
 
 	int atomCount = file.readInteger(0, 3);
 	int bondCount = file.readInteger(3, 3);
-
-	//System.out.println("atoms " + atomCount + " bonds " + bondCount);
 		
 	// next is the atom block
 
@@ -746,14 +682,6 @@ public class MoleculeIO {
 	    }
 	}
 
-        /*
-        for(int r = 0; r < molecule.getRingCount(); r++){
-            Ring ring = molecule.getRing(r);
-
-            System.out.println(r + " size " + ring.getAtomCount());
-        }
-        */
-
 	return molecule;
     }
 
@@ -791,7 +719,7 @@ public class MoleculeIO {
     }
 
     /** Do we need a new residue? */
-    public static boolean needNewResidue(int currentResidueNumber,
+    private static boolean needNewResidue(int currentResidueNumber,
 					 char currentInsertionCode,
 					 char currentResidueA,
 					 char currentResidueB,
@@ -817,7 +745,7 @@ public class MoleculeIO {
     /**
      * Read a PDB file from the input.
      */
-    public static Molecule readPDB(FILE file){
+    private static Molecule readPDB(FILE file){
 	Molecule molecule = new Molecule();
         boolean seenENDMDL = false;
 
@@ -826,13 +754,6 @@ public class MoleculeIO {
 
 	// each line is identified with its type.
 	while(file.nextLine()){
-	    //System.out.println("line: " + file.getCurrentLineAsString());
-
-	    // work around bug in mac io...
-	    //if(file.getLineLength() == 0){
-	    //	break;
-	    //}
-
 	    char c0 = file.getChar(0);
 	    char c1 = file.getChar(1);
 	    char c2 = file.getChar(2);
@@ -908,13 +829,8 @@ public class MoleculeIO {
                         Atom secondAtom = molecule.getAtomWithId(secondId);
 
                         if(secondAtom != null){
-
-                            //secondAtom.attributes |= Atom.ConectRecords;
-                            
                             Bond bond = firstAtom.getBond(secondAtom);
-                            
-			    //System.out.println("addBond " + firstId + " " + secondId);
-			
+
 			    if(bond != null){
 				bond.setBondOrder(bond.getBondOrder()+ 1);
 			    }else{
@@ -934,21 +850,16 @@ public class MoleculeIO {
 
 	if(symmetry != null){
 	    symmetry.prepareSymmetry();
-
-	    //System.out.println("finished preparing symmetry");
 	}
 
 	// pdb files don't usually have explicit connectivity
-
-	//molecule.connect();
 	molecule.connect2();
-	//System.out.println("finished connect");
 
 	return molecule;
     }
 
     /** Read a scale record from the input file. */
-    public static void readScaleRecord(Molecule molecule, FILE file){
+    private static void readScaleRecord(Molecule molecule, FILE file){
 	Symmetry symmetry = molecule.getSymmetry();
 
 	if(symmetry == null){
@@ -989,7 +900,7 @@ public class MoleculeIO {
     }
 
     /** Read the unit cell info from the current line. */
-    public static void readUnitCell(Molecule molecule, FILE file){
+    private static void readUnitCell(Molecule molecule, FILE file){
 	//Symmetry symmetry = molecule.getSymmetry();
 	Symmetry symmetry = new Symmetry();
 
@@ -1048,7 +959,7 @@ public class MoleculeIO {
     /**
      * Read a pdb atom from the current record.
      */
-    public static Atom readPDBAtom(FILE file, Molecule molecule){
+    private static Atom readPDBAtom(FILE file, Molecule molecule){
 	Atom atom = molecule.addAtom();
 
 	// atom name
@@ -1058,7 +969,6 @@ public class MoleculeIO {
 	char c15 = file.getChar(15);
 	String atomLabel = getAtomName(c12, c13, c14, c15);
 		
-	//System.out.println("label <" + atomLabel + ">");
 	atom.setAtomLabel(atomLabel);
 
 	// record if the atom had a left justified name...
@@ -1121,7 +1031,7 @@ public class MoleculeIO {
     }
 
     /** Is the atom label a solvent label. */
-    public static boolean isSolventAtom(){
+    private static boolean isSolventAtom(){
 	if((lastResidueA == 'H' &&
 	    lastResidueB == 'O' &&
 	    lastResidueC == 'H') ||
@@ -1181,7 +1091,7 @@ public class MoleculeIO {
     }
 
     /** Look up the residue name. */
-    public static String getResidueName(char a, char b, char c){
+    private static String getResidueName(char a, char b, char c){
 	int sum = a + 256*b + 256*256*c;
 	switch(sum){
 	case 4268064: return "A";
@@ -1220,7 +1130,7 @@ public class MoleculeIO {
     }
 
     /** Look up the atom name. If it is a standard PDB one we will use it. */
-    public static String getAtomName(char a, char b, char c, char d){
+    private static String getAtomName(char a, char b, char c, char d){
 
 	int sum = a + 256*b + 65536*c + 16777216*d;
 	switch(sum){
@@ -1296,7 +1206,6 @@ public class MoleculeIO {
 	    tmp[2] = c;
 	    tmp[3] = d;
 	    String string = new String(tmp, 0, 4);
-	    //System.out.println("building string "+string);
 	    return string.trim();
 	}
     }
@@ -1325,7 +1234,7 @@ public class MoleculeIO {
     }
 
     /** Write a molecule out as a PDB file. */
-    public static void writePDB(Molecule molecule, FILE output){
+    private static void writePDB(Molecule molecule, FILE output){
 	Symmetry symmetry = molecule.getSymmetry();
 
 	output.println("REMARK Written by AstexViewer " + Version.getVersion());
@@ -1489,7 +1398,7 @@ public class MoleculeIO {
     }
 
     /** Write an Sybyl mol2 file to the output stream. */
-    public static void writeMol2(Molecule molecule, FILE output){
+    private static void writeMol2(Molecule molecule, FILE output){
         output.println("# Sybyl Mol2 file written by AstexViewer " + Version.getVersion());
         output.println("@<TRIPOS>MOLECULE");
         output.println(molecule.getName());
@@ -1571,11 +1480,11 @@ public class MoleculeIO {
     }
 
     /** Write an MDL mol file to the output stream. */
-    public static void writeMDLMol(Molecule molecule, FILE output){
+    private static void writeMDLMol(Molecule molecule, FILE output){
         writeMDLMol(molecule, output, true);
     }
 
-    public static void writeMDLMol(Molecule molecule, FILE output, boolean dollars){
+    private static void writeMDLMol(Molecule molecule, FILE output, boolean dollars){
 	output.println(molecule.getName());
 	output.println("AstexViewer");
 	output.println("");
@@ -1644,10 +1553,5 @@ public class MoleculeIO {
         if(dollars){
             output.println("$$$$");
         }
-    }
-	
-    /** Write a molecule separator to the output stream. */
-    public static void writeMDLMolSeparator(FILE output){
-	output.println("$$$$");
     }
 }

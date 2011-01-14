@@ -21,15 +21,15 @@ import java.awt.*;
 import java.awt.image.*;
 
 public class ColorSpace extends Canvas {
-    int width = -1;
-    int height = -1;
-    int pixels[] = null;
+    private int width = -1;
+    private int height = -1;
+    private int pixels[];
 
     /** The image that we will use. */
     private Image awtImage = null;
     
     /** The pixel buffer that will produce the image. */
-    MemoryImageSource memoryImageSource = null;
+    private MemoryImageSource memoryImageSource = null;
 
     private double hsv[] = new double[3];
     private double rgb[] = new double[3];
@@ -57,18 +57,12 @@ public class ColorSpace extends Canvas {
 
 	    for(int j = 0; j < height; j++){
 		for(int i = 0; i < width; i++){
-                    //if((i%16) == 0 && (j%16) == 0){
-                    //  System.out.println("<button width=\"12\" height=\"12\" background=\"0x" + Integer.toHexString(0xff000000 | getRGB(i,j)).substring(2, 8) + "\"/>");
-                    //}
-
 		    pixels[p++] = getRGB(i, j);
 		}
 	    }
 	}
 
 	memoryImageSource.newPixels();
-
-	//awtImage.flush();
 
 	gr.drawImage(awtImage, 0, 0, null);
     }
@@ -134,7 +128,6 @@ public class ColorSpace extends Canvas {
 		db = calc (1, j, 240) - b;
 
 		for(int i = 0; i < width; i++){
-		    //for (x = 0; x < IMAGE_SIZE; x++) {
 		    int ir = Color32.clamp ((int) r);
 		    int ig = Color32.clamp ((int) g);
 		    int ib = Color32.clamp ((int) b);
@@ -151,8 +144,6 @@ public class ColorSpace extends Canvas {
 	}
 
 	memoryImageSource.newPixels();
-
-	//awtImage.flush();
 
 	gr.drawImage(awtImage, 0, 0, null);
     }

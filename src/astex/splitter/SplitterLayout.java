@@ -128,25 +128,21 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 
 	private int lastW=-1, lastH=-1;
 	private boolean newComponentAdded=false;
-	private Hashtable<Component,Integer> relations=null;
+	private Hashtable<Component,Integer> relations = new Hashtable<Component,Integer>(11);
 	
 	private static final long serialVersionUID = -8658291919501921765L;
 	private int fieldOrientation = VERTICAL;
 
-
-	/** Create a new SplitterLayout -- default orientation is VERTICAL */
-	public SplitterLayout() {this(VERTICAL);}
 	/** Create a new SplitterLayout
 		@param orientation -- VERTICAL or HORIZONTAL
 	*/
 	public SplitterLayout(int orientation) {
 		setOrientation(orientation);
-		relations = new Hashtable<Component,Integer>(11);
 		}
 	/** Adds a component w/ constraints to the layout.  This should only
 		be called by java.awt.Container's add method.
 	*/
-	public final void addLayoutComponent(Component comp, Object constraints) {
+	public void addLayoutComponent(Component comp, Object constraints) {
 		if (constraints == null) constraints = "1";
 		if (constraints instanceof Integer) {
 			relations.put(comp, (Integer) constraints);
@@ -158,7 +154,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 	/** Adds a component w/ a String constraint to the layout.  This should
 		only be called by java.awt.Container's add method.
 	*/
-	public final void addLayoutComponent(String name, Component comp) {
+	public void addLayoutComponent(String name, Component comp) {
 		newComponentAdded = true;
 		if (comp instanceof SplitterBar) {
 			((SplitterBar)comp).setOrientation(getOrientation());
@@ -173,7 +169,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 			}	
 			}
 		}
-	public final Dimension checkLayoutSize(Container target, boolean getPrefSize) {
+	private Dimension checkLayoutSize(Container target, boolean getPrefSize) {
 		Dimension dim = new Dimension(0, 0);
 		Component c[] = target.getComponents();
 		
@@ -201,24 +197,24 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 		return dim;
 	}
 	/** Tells the caller that we prefer to be centered */
-	public final float getLayoutAlignmentX(Container parent) {return 0.5f;}
+	public float getLayoutAlignmentX(Container parent) {return 0.5f;}
 	/** Tells the caller that we prefer to be centered */
-	public final float getLayoutAlignmentY(Container parent) {return 0.5f;}
+	public float getLayoutAlignmentY(Container parent) {return 0.5f;}
 /**
  * Gets the orientation property (int) value.
  * @return The orientation property value.
  * @see #setOrientation
  */
-public int getOrientation() {
+private int getOrientation() {
 	/* Returns the orientation property value. */
 	return fieldOrientation;
 }
 	/** Does not have any effect (overridden to null the effect) */
-	public final void  invalidateLayout(Container target)     {}
+	public void  invalidateLayout(Container target)     {}
 	/** Lays out the components in the specified container by telling
 		then what their size will be
 	*/
-	public final void layoutContainer(Container target) {
+	public void layoutContainer(Container target) {
 		Insets insets = target.getInsets();
 		Dimension dim = target.getSize();
 		int top = insets.top;
@@ -350,7 +346,7 @@ public int getOrientation() {
 		when laying out the components in the specified container.
 		@param -- the container being laid out
 	*/
-	public final Dimension maximumLayoutSize(Container target) {
+	public Dimension maximumLayoutSize(Container target) {
 		return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		}
 	/** Determines the minimum amount of room requested for the layout
@@ -358,18 +354,18 @@ public int getOrientation() {
 		@param target -- the Container being laid out
 	*/
 //    public final Dimension minimumLayoutSize(Container target)   {return checkLayoutSize(target, false);}
-	public final Dimension minimumLayoutSize(Container target)   {return checkLayoutSize(target, true);}
+	public Dimension minimumLayoutSize(Container target)   {return checkLayoutSize(target, true);}
 	// TEMP -- CHECK TO SEE HOW minsize==prefsize seems
 
 	/** Determines the preferred amount of room requested for the layout
 		of components contained in the specified container.
 		@param target -- the Container being laid out
 	*/
-	public final Dimension preferredLayoutSize(Container target) {return checkLayoutSize(target, true);}
+	public Dimension preferredLayoutSize(Container target) {return checkLayoutSize(target, true);}
 	/** Removes a component from the layout.  This should
 		only be called by java.awt.Container's remove method.
 	*/
-	public final void removeLayoutComponent(Component comp) {
+	public void removeLayoutComponent(Component comp) {
 		relations.remove(comp);
 		newComponentAdded = true; // so layout gets re-adjusted
 	    }
@@ -378,22 +374,11 @@ public int getOrientation() {
  * @param orientation The new value for the property.
  * @see #getOrientation
  */
-public void setOrientation(int orientation) {
+private void setOrientation(int orientation) {
 	fieldOrientation = orientation;
 }
-	public void swapOrientation(Container container) {
-		setOrientation((getOrientation() == HORIZONTAL)?VERTICAL:HORIZONTAL);
-		Component comps[] = container.getComponents();
-		for(int i = container.getComponentCount()-1; i>-1; i--) {
-			if (comps[i] instanceof SplitterBar)
-				((SplitterBar)comps[i]).swapOrientation();
-			comps[i].invalidate();
-		}	
-		newComponentAdded = true; // to force re-position of splitter bars
-		container.validate();
-	}
 	/** Returns a String representation of the Layout */
-	public final String toString() {
+	public String toString() {
 		if (getOrientation() == VERTICAL)
 			return getClass().getName() + "[orientation=VERTICAL]";
 		else

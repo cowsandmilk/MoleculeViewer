@@ -65,10 +65,6 @@ public class AtomIterator implements Enumeration<Atom> {
 		if(currentMolecule == null){
 			return false;
 		}
-		
-		//System.out.println("currentAtomIndex " + currentAtomIndex);
-		//System.out.println("currentMoleculeAtomCount " +
-		//				   currentMoleculeAtomCount);
 
 		if(currentAtomIndex < currentMoleculeAtomCount){
 			return true;

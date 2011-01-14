@@ -104,21 +104,12 @@ public class Selection {
 
     private static Atom atomArray[] = null;
 
-    /** Cache for DynamicArray that will return selected atoms. */
-    public static DynamicArray dynamicArrayCache =
-	new DynamicArray();
-
     /** The stored selection expression. */
     private static DynamicArray storedExpression = null;
 
     /** Store the result of a selection expression. */
     public static void store(DynamicArray sel){
 	storedExpression = sel;
-    }
-
-    /** Retrieve the result of a selection expression. */
-    public static DynamicArray retrieve(){
-	return storedExpression;
     }
 
     /** Return a DynamicArray from a selection mask. */
@@ -160,8 +151,6 @@ public class Selection {
 	for(int i = 0; i < atomArrayCount; i++){
 	    selected.add(atomArray[i]);
 	}
-
-	//selectionMaskCache.add(mask);
 
 	return selected;
     }
@@ -258,50 +247,6 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] residue2(MoleculeRenderer r, Vector<?> ids){
-	int minId = 1000000;
-	int maxId = -1000000;
-	int idCount = ids.size();
-
-	for(int i = 0; i < idCount; i++){
-	    int range[] = (int[])ids.elementAt(i);
-	    if(range[0] < minId){
-		minId = range[0];
-	    }
-	    if(range[1] > maxId){
-		maxId = range[1];
-	    }
-	}
-
-	byte[] mask = generateSelectionMask(r);
-	AtomIterator iterator = r.getAtomIterator();
-	int count = 0;
-
-	// this can be done much more efficiently
-	// by going through residues and setting blocks
-	while(iterator.hasMoreElements()){
-	    Atom atom = iterator.getNextAtom();
-	    Residue res = atom.getResidue();
-	    int number = res.getNumber();
-	    if(number >= minId && number <= maxId){
-		// it could match
-		for(int i = 0; i < idCount; i++){
-		    int range[] = (int[])ids.elementAt(i);
-		    if(number >= range[0] &&
-		       number <= range[1]){
-			mask[count] = 1;
-			break;
-		    }
-		}
-	    }
-
-	    count++;
-	}
-
-	return mask;
-    }
-
-    /** Select a set of atoms on the basis of ids. */
     public static byte[] residue(MoleculeRenderer r, Vector<?> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
@@ -325,23 +270,14 @@ public class Selection {
 	for(int m = 0; m < r.getMoleculeCount(); m++){
 	    Molecule mol = r.getMolecule(m);
 	    int chainCount = mol.getChainCount();
-	    //Log.info("molecule " + mol.getName());
-	    //Log.info("chainCount %d", chainCount);
 
 	    for(int c = 0; c < chainCount; c++){
 		Chain chain = mol.getChain(c);
 		int resCount = chain.getResidueCount();
 
-		//Log.info("chain " + chain.getName());
-		//Log.info("resCount %d", resCount);
-
 		for(int rid = 0; rid < resCount; rid++){
 		    Residue res = chain.getResidue(rid);
 		    int number = res.getNumber();
-		    //if(number == 255){
-		    //	Log.info("residue " + res);
-		    //	Log.info("residue atomCount %d", res.getAtomCount());
-		    //}
 		    int match = 0;
 		    if(number >= minId && number <= maxId){
 			// it could match
@@ -382,15 +318,10 @@ public class Selection {
 	for(int m = 0; m < r.getMoleculeCount(); m++){
 	    Molecule mol = r.getMolecule(m);
 	    int chainCount = mol.getChainCount();
-	    //Log.info("molecule " + mol.getName());
-	    //Log.info("chainCount %d", chainCount);
 
 	    for(int c = 0; c < chainCount; c++){
 		Chain chain = mol.getChain(c);
 		int resCount = chain.getResidueCount();
-
-		//Log.info("chain " + chain.getName());
-		//Log.info("resCount %d", resCount);
 
 		for(int rid = 0; rid < resCount; rid++){
 		    Residue res = chain.getResidue(rid);
@@ -417,21 +348,6 @@ public class Selection {
 
 	return mask;
     }
-
-    /** Select a set of atoms on the basis of hierarchy like PyMol. */
-    /*
-    public static byte[] hierarchy(MoleculeRenderer r, Vector ids){
-	int idCount = ids.size();
-
-	byte[] mask = generateSelectionMask(r);
-	int count = 0;
-
-	Stack selectionStack = new Stack();
-
-	for(int i = 0; i < idCount; i++){
-	}
-    }
-    */
 
     /** Select a set of atoms on the basis of ids. */
     public static byte[] composite(MoleculeRenderer r, Vector<?> ids){
@@ -469,10 +385,6 @@ public class Selection {
 		    break;
 		}
 	    }
-
-	    //System.out.println("chainBuffer " + chainBuffer);
-	    //System.out.println("residueBuffer " + residueBuffer);
-	    //System.out.println("insertionBuffer " + insertionBuffer);
 
 	    if(residueBuffer.length() == 0){
 		return mask;
@@ -1022,7 +934,6 @@ public class Selection {
 
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
-	    //System.out.println("atom.attributes " + (atom.attributes & Atom.Selected));
 	    if(atom.isSelected()){
 		mask[count] = 1;
 	    }else{
@@ -1075,15 +986,11 @@ public class Selection {
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
 
-	    //if(mol.getDisplayed()){
 		if(atom.isDisplayed()){
 		    mask[count] = 1;
 		}else{
 		    mask[count] = 0;
 		}
-		//}else{
-		//mask[count] = 0;
-		//}
 
 	    count++;
 	}
@@ -1256,9 +1163,6 @@ public class Selection {
 	    
 	    count++;
 	}
-	 
-	// save the mask
-	//selectionMaskCache.add(sphereMask);
 
 	return mask;
     }
@@ -1317,19 +1221,6 @@ public class Selection {
 	}
     }
 
-    /** Composite specification. */
-    public static byte[]
-	compositeSelection(MoleculeRenderer r, Vector<?> molecules,
-			   Vector<?> chains, Vector<?> residues, Vector<?> atoms){
-	byte mask1[] = molecule(r, molecules);
-	byte mask2[] = chain(r, molecules);
-	mask1 = and(mask1, mask2);
-	mask2 = residue(r, residues);
-	mask1 = and(mask1, mask2);
-	mask2 = atom(r, atoms);
-	return and(mask1, mask2);
-    }
-
     /** And two selection masks together. */
     public static byte[] and(byte mask1[], byte mask2[]){
 	int count = Math.min(mask1.length, mask2.length);
@@ -1341,9 +1232,6 @@ public class Selection {
 		mask1[i] = 0;
 	    }
 	}
-
-	// save the mask
-	//selectionMaskCache.add(mask2);
 
 	// mask2 can just be garbage collected
 	return mask1;
@@ -1384,7 +1272,7 @@ public class Selection {
     }
 
     /** Evaluate a builtin expression against residue names. */
-    public static byte[] builtin(MoleculeRenderer r, DynamicArray names){
+    private static byte[] builtin(MoleculeRenderer r, DynamicArray names){
 	Vector<Object> ids = new Vector<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
 	    ids.addElement(names.get(i));
@@ -1394,17 +1282,7 @@ public class Selection {
     }
 
     /** Evaluate a builtin expression atom names. */
-    public static byte[] builtin2(MoleculeRenderer r, DynamicArray names){
-	Vector<Object> ids = new Vector<Object>(names.size());
-	for(int i = 0; i < names.size(); i++){
-	    ids.addElement(names.get(i));
-	}
-
-	return atom(r, ids);
-    }
-
-    /** Evaluate a builtin expression atom names. */
-    public static byte[] builtin3(MoleculeRenderer r, DynamicArray names){
+    private static byte[] builtin3(MoleculeRenderer r, DynamicArray names){
 	Vector<Object> ids = new Vector<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
 	    ids.addElement(names.get(i));

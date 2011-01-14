@@ -72,15 +72,10 @@ public class NeighbourGrid2D {
 	ny = 1 + (int)((ymax - ymin) / dmin);
 
 	if(nx > MaxDim || ny > MaxDim){
-	    //System.out.println("resetting spacing from " + spacing);
-
 	    double biggest = xmax - xmin;
 	    if(ymax - ymin > biggest) biggest = ymax - ymin;
 	    
 	    spacing = biggest / (MaxDim + 1);
-
-	    //System.out.println("setting dmin to     " + spacing);
-	    //System.out.println("nx = " + nx + " ny = " + ny);
 
 	    nx = 1 + (int)((xmax - xmin) / spacing);
 	    ny = 1 + (int)((ymax - ymin) / spacing);
@@ -163,7 +158,6 @@ public class NeighbourGrid2D {
 				    // don't put ourselves
 				    // in the list of neighbours
 				    if(iobj != id){
-					//System.out.println(".add");
 					neighbours.add(iobj);
 				    }
 				    iobj = l[iobj];
@@ -174,7 +168,6 @@ public class NeighbourGrid2D {
 				// don't put things less than us
 				// in the list of neighbours
 				if(iobj > id){
-				    //System.out.println(".add");
 				    neighbours.add(iobj);
 				}
 				iobj = l[iobj];

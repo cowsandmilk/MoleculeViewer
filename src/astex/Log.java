@@ -57,9 +57,6 @@ public class Log {
     /** The current global log level. */
     private static int         level    = INFO;
 
-    /** Is the class database initialised. */
-    private static boolean     initialised = false;
-
     /** Is the logging to show whole class name. */
     private static boolean     fullClass = false;
 
@@ -229,7 +226,7 @@ public class Log {
     }
 
     /** Get the logging level. */
-    public static int getLoggingLevel(int l){
+    private static int getLoggingLevel(int l){
 	String methodName = getMethodName(l);
 
 	Integer il = methodLevels.get(methodName);
@@ -378,12 +375,10 @@ public class Log {
 		}
 	    }
 	}
-
-	initialised = true;
     }
 
     /** Map a string level name to the corresponding int. */
-    public static int string2level(String s){
+    private static int string2level(String s){
 	for(int i = 0; i < logStrings.length; i++){
 	    if(s.equals(logStrings[i])){
 		return i;
