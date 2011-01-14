@@ -248,15 +248,15 @@ public class AnimationObject {
 	    double clipf = scf + frac * (fcf - scf);
 	    double clipb = scb + frac * (fcb - scb);
 
-	    String command = "center";
-	    command += FILE.sprint(" %g", cx);
-	    command += FILE.sprint(" %g", cy);
-	    command += FILE.sprint(" %g; ", cz);
+	    final StringBuilder command = new StringBuilder("center");
+	    command.append(FILE.sprint(" %g", cx));
+	    command.append(FILE.sprint(" %g", cy));
+	    command.append(FILE.sprint(" %g; ", cz));
 
-	    command += FILE.sprint("radius %g;", cr);
+	    command.append(FILE.sprint("radius %g;", cr));
 
-	    command += FILE.sprint("clip %g ", clipf);
-	    command += FILE.sprint("%g;", clipb);
+	    command.append(FILE.sprint("clip %g ", clipf));
+	    command.append(FILE.sprint("%g;", clipb));
 	    
 	    if(startMatrix != null){
 		Matrix m = Matrix.interpolate(startMatrix, finishMatrix, frac);
@@ -265,14 +265,14 @@ public class AnimationObject {
                     System.out.println(m.returnScript());
                 }
 
-		command += m.returnScript();
+		command.append(m.returnScript());
 	    }
 
             if(!interactive){
                 System.out.println("command |" + command +"|");
             }
 
-	    moleculeRenderer.execute(command);
+	    moleculeRenderer.execute(command.toString());
 
 	}else{
 	    System.out.println("executeAnimationFunction: unknown animation mode " +
