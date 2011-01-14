@@ -45,14 +45,14 @@ public class ThinletUI extends Thinlet implements WindowListener,
             execute(init);
         }
 
-        String commands[] = { "precommand", "command", "postcommand" };
+        final String commands[] = { "precommand", "command", "postcommand" };
 
         for(int i = 0; i < commands.length; i++){
             String command = (String)getProperty(component, commands[i]);
 
             if(command == null && !"table".equals(getClass(component))){
                 if("checkbox".equals(getClass(component))){
-                    boolean selected = getBoolean(component, "selected");
+                    final boolean selected = getBoolean(component, "selected");
                     if(selected){
                         command = (String)getProperty(component, "commandon");
                     }else{
@@ -73,16 +73,16 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 }
             }else if(command != null && ("table".equals(getClass(component)) || "tree".equals(getClass(component))) && i == 1){
 		// only preprocess the pertable command
-		Object rows[] = getSelectedItems(component);
+		final Object rows[] = getSelectedItems(component);
 
-		String wholeCommand = "";
+		final StringBuilder wholeCommand = new StringBuilder();
 
 		for(int r = 0; r < rows.length; r++){
-		    wholeCommand += preprocess(rows[r], command);
+		    wholeCommand.append(preprocess(rows[r], command));
 		}
 		// do this per row...
 
-		command = wholeCommand;
+		command = wholeCommand.toString();
             }
 
             if(command != null){
@@ -99,7 +99,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
     /** Actually execute a command and repaint. */
     private void execute(String command){
-        if(command.endsWith(";") == false){
+        if(!command.endsWith(";")){
             command += ";";
         }
 
@@ -112,7 +112,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
      * get the cell from the selected row that has
      * the specified columnName property.
      */
-    private String getCellValueWithName(Object table, String name){
+    private String getCellValueWithName(Object table, final String name){
         Object row = null;
 
         if(getClass(table).equals("row")){
@@ -121,13 +121,13 @@ public class ThinletUI extends Thinlet implements WindowListener,
             table = getParent(row);
         }
 
-        Object header = getWidget(table, "header");
+        final Object header = getWidget(table, "header");
 
         int columnId = -1;
 
         for(int i = 0; i < getCount(header); i++){
-            Object column = getItem(header, i);
-            String text = getString(column, "text");
+            final Object column = getItem(header, i);
+            final String text = getString(column, "text");
             if(text != null && text.equalsIgnoreCase(name)){
                 columnId = i;
                 break;
@@ -144,29 +144,27 @@ public class ThinletUI extends Thinlet implements WindowListener,
             row = getSelectedItem(table);
         }
 
-        Object cell = getItem(row, columnId);
+        final Object cell = getItem(row, columnId);
 
         return getString(cell, "text");
     }
 
-    private String getValue(Object component, String s){
+    private String getValue(Object component, final String s){
         if("table".equals(getClass(component)) || "row".equals(getClass(component))){
 
-            String field = s.substring(1);
+            final String field = s.substring(1);
 
-            String value = getCellValueWithName(component, field);
+            final String value = getCellValueWithName(component, field);
 
             return value;
         }
 
         if("$o".equals(s)){
-            boolean selected = getBoolean(component, "selected");
-            return selected ? "on" : "off";
+            return getBoolean(component, "selected") ? "on" : "off";
         }
 
         if("$b".equals(s)){
-            boolean selected = getBoolean(component, "selected");
-            return selected ? "true" : "false";
+            return getBoolean(component, "selected") ? "true" : "false";
         }
 
         if("$t".equals(s)){
@@ -174,29 +172,29 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
 
         if("$d".equals(s)){
-            return "" + getInteger(component, "value");
+            return Integer.toString(getInteger(component, "value"));
         }
 
         if("$V".equals(s)){
-            return "" + getInteger(component, "value") * 0.1;
+            return Double.toString(getInteger(component, "value") * 0.1);
         }
 
         if("$v".equals(s)){
-            return "" + getInteger(component, "value") * 0.01;
+            return Double.toString(getInteger(component, "value") * 0.01);
         }
 
         if("$c".equals(s)){
-            Color color = getColor(component, "background");
+            final Color color = getColor(component, "background");
             return Color32.format(color.getRGB());
         }
 
         if("$C".equals(s)){
-            Color color = getColor(component, "background");
+            final Color color = getColor(component, "background");
             return Color32.formatNoQuotes(color.getRGB());
         }
 
         if("$f".equals(s)){
-            Color color = getColor(component, "foreground");
+            final Color color = getColor(component, "foreground");
             return Color32.formatNoQuotes(color.getRGB());
         }
 
@@ -204,19 +202,17 @@ public class ThinletUI extends Thinlet implements WindowListener,
             if("combobox".equals(getClass(component))){
                 component = getSelectedItem(component);
             }
-            String name = getString(component, "name");
-            return name;
+            return getString(component, "name");
         }
 
         if("$h".equals(s)){
             double hsv[] = { 0.0, 1.0, 1.0 };
-            int value = getInteger(component, "value");
-            hsv[0] = (double)value;
-	    int c = Color32.hsv2packed(hsv);
+            hsv[0] = (double) getInteger(component, "value");
+	    final int c = Color32.hsv2packed(hsv);
             return Color32.format(c);
         }
 
-        String property = (String)getProperty(component, s.substring(1));
+        final String property = (String)getProperty(component, s.substring(1));
 
         if(property != null){
             return property;
@@ -227,34 +223,34 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return null;
     }
 
-    private String preprocess(Object component, String origCommand){
+    private String preprocess(final Object component, final String origCommand){
         return preprocess(component, origCommand, true);
     }
 
-    private String preprocess(Object component, String origCommand, boolean replacePipe){
+    private String preprocess(final Object component, final String origCommand, final boolean replacePipe){
         String command = origCommand;
 
         if(replacePipe){
             command = origCommand.replace('|', ';');
         }
 
-        StringBuilder newCommand = new StringBuilder(origCommand.length());
+        final StringBuilder newCommand = new StringBuilder(origCommand.length());
 
         try {
             // now do the values from other objects.
-            int len = command.length();
+            final int len = command.length();
             for(int i = 0; i < len; i++){
                 if(command.charAt(i) == '$'){
                     Object comp = component;
                     String attribute = null;
                     
                     if(command.charAt(++i) == '{'){
-                        StringBuilder sb = new StringBuilder(16);
+                        final StringBuilder sb = new StringBuilder(16);
                         while(command.charAt(++i) != '}'){
                             sb.append(command.charAt(i));
                         }
 
-                        String bits[] = FILE.split(sb.toString(), ".");
+                        final String bits[] = FILE.split(sb.toString(), ".");
                         if(bits.length != 2){
                             System.out.println("no . character");
                             System.out.println(origCommand);
@@ -302,18 +298,18 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
 
-    public void windowClosing(WindowEvent e){
+    public void windowClosing(final WindowEvent e){
 	close(e.getWindow());
     }
 
-    public void windowActivated(WindowEvent e){ }
-    public void windowClosed(WindowEvent e){ }
-    public void windowDeactivated(WindowEvent e){ }
-    public void windowDeiconified(WindowEvent e){ }
-    public void windowIconified(WindowEvent e){ }
-    public void windowOpened(WindowEvent e){ }
+    public void windowActivated(final WindowEvent e){ }
+    public void windowClosed(final WindowEvent e){ }
+    public void windowDeactivated(final WindowEvent e){ }
+    public void windowDeiconified(final WindowEvent e){ }
+    public void windowIconified(final WindowEvent e){ }
+    public void windowOpened(final WindowEvent e){ }
 
-    private void close(Window window){
+    private void close(final Window window){
         window.setVisible(false);
         window.dispose();
     }
@@ -322,7 +318,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return false;
     }
 
-    private void setContent(String xml){
+    private void setContent(final String xml){
         try{
             add(parse(xml));
         }catch(Exception e){
@@ -330,13 +326,13 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    public ThinletUI(MoleculeViewer mv, String xml){
+    public ThinletUI(final MoleculeViewer mv, final String xml){
         this(mv);
 
         setContent(xml);
     }
 
-    private ThinletUI(MoleculeViewer mv){
+    private ThinletUI(final MoleculeViewer mv){
         System.out.println("Thinlet GUI toolkit - www.thinlet.com");
         System.out.println("Copyright (C) 2002-2003 Robert Bajzat (robert.bajzat@thinlet.com)");
 
@@ -349,13 +345,13 @@ public class ThinletUI extends Thinlet implements WindowListener,
 	setFont(new Font("Arial", Font.PLAIN, 12));
     }
 
-    public String readTemplate(String xmlFile) {
+    public String readTemplate(final String xmlFile) {
         try {
-            FILE f = FILE.open(xmlFile);
+            final FILE f = FILE.open(xmlFile);
 
-            InputStream fis = f.getInputStream();
+            final InputStream fis = f.getInputStream();
             
-            StringBuffer sb = new StringBuffer(1024);
+            final StringBuilder sb = new StringBuilder(1024);
             
             int c = 0;
             
@@ -375,14 +371,14 @@ public class ThinletUI extends Thinlet implements WindowListener,
     /** MoleculeRendererListener interface. */
 
     /** A molecule was added. */
-    public void moleculeAdded(MoleculeRenderer renderer, Molecule molecule){
-        Object moleculeTree = findComponent("molecule_tree");
+    public void moleculeAdded(final MoleculeRenderer renderer, final Molecule molecule){
+        final Object moleculeTree = findComponent("molecule_tree");
 
         addMolecule(moleculeTree, molecule);
 
         if(molecule.getMoleculeType() != Molecule.SymmetryMolecule){
-            Object resnode = findComponent("residuelist");
-            Object atomnode = findComponent("atomlist");
+            final Object resnode = findComponent("residuelist");
+            final Object atomnode = findComponent("atomlist");
             
             if(resnode != null){
                 populateResidues(resnode, atomnode);
@@ -390,20 +386,20 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    private void addMolecule(Object tree, Molecule mol){
+    private void addMolecule(final Object tree, final Molecule mol){
         if(tree != null){
-            Object node = createNode(mol.getName(), false, mol);
+            final Object node = createNode(mol.getName(), false, mol);
 
-            int chainCount = mol.getChainCount();
+            final int chainCount = mol.getChainCount();
 
             for(int c = 0; c < chainCount; c++){
-                Chain chain = mol.getChain(c);
+                final Chain chain = mol.getChain(c);
 
                 String name = chain.getName();
-                name.replace(' ', 'X');
+                name = name.replace(' ', 'X');
 
-                Object chainNode = createNode(name, false, chain);
-                Object dummyNode = createNode("dummy", false, null);
+                final Object chainNode = createNode(name, false, chain);
+                final Object dummyNode = createNode("dummy", false, null);
                 
                 add(chainNode, dummyNode);
                 add(node, chainNode);
@@ -418,21 +414,21 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     /** A molecule was removed. */
-    public void moleculeRemoved(MoleculeRenderer renderer, Molecule molecule){
+    public void moleculeRemoved(final MoleculeRenderer renderer, final Molecule molecule){
 
         removeMolecule(molecule);
     }
 
-    private void removeMolecule(Molecule molecule){
-        Object moleculeTree = find("molecule_tree");
+    private void removeMolecule(final Molecule molecule){
+        final Object moleculeTree = find("molecule_tree");
 
-        Object molNode = find(moleculeTree, molecule.getName());
+        final Object molNode = find(moleculeTree, molecule.getName());
 
         remove(molNode);
 
         if(molecule.getMoleculeType() != Molecule.SymmetryMolecule){
-            Object resnode = findComponent("residuelist");
-            Object atomnode = findComponent("atomlist");
+            final Object resnode = findComponent("residuelist");
+            final Object atomnode = findComponent("atomlist");
             
             if(resnode != null){
                 populateResidues(resnode, atomnode);
@@ -440,25 +436,25 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    private void populateResidues(Object resnode, Object atomnode){
+    private void populateResidues(final Object resnode, final Object atomnode){
         removeAll(resnode);
         removeAll(atomnode);
         final TreeSet<String> resnames = new TreeSet<String>();
         final TreeSet<String> atomnames = new TreeSet<String>();
 
         for(int m = 0; m < moleculeRenderer.getMoleculeCount(); m++){
-            Molecule mol = moleculeRenderer.getMolecule(m);
+            final Molecule mol = moleculeRenderer.getMolecule(m);
             for(int c = 0; c < mol.getChainCount(); c++){
-                Chain chain = mol.getChain(c);
+                final Chain chain = mol.getChain(c);
                 for(int r = 0; r < chain.getResidueCount(); r++){
-                    Residue res = chain.getResidue(r);
-                    String resname = res.getName();
+                    final Residue res = chain.getResidue(r);
+                    final String resname = res.getName();
                     if(resnames.contains(resname) == false){
                         resnames.add(resname);
                     }
                     for(int a = 0; a < res.getAtomCount(); a++){
-                        Atom atom = res.getAtom(a);
-                        String atomname = atom.getAtomLabel();
+                        final Atom atom = res.getAtom(a);
+                        final String atomname = atom.getAtomLabel();
                         if(atomnames.contains(atomname) == false){
                             atomnames.add(atomname);
                         }
@@ -475,7 +471,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
             final char c = name.charAt(0);
             if(c != lastChar){
                 folder = create("node");
-                setString(folder, "text", "" + c);
+                setString(folder, "text", String.valueOf(c));
                 setBoolean(folder, "expanded", false);
 
                 add(resnode, folder);
@@ -483,7 +479,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 lastChar = c;
             }
 
-            Object node = create("node");
+            final Object node = create("node");
             setString(node, "text", name);
             putProperty(node, "selection", "name '" + name + "'");
             add(folder, node);
@@ -498,7 +494,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
             final char c = name.charAt(0);
             if(c != lastChar){
                 folder = create("node");
-                setString(folder, "text", "" + c);
+                setString(folder, "text", String.valueOf(c));
                 setBoolean(folder, "expanded", false);
 
                 add(atomnode, folder);
@@ -506,7 +502,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 lastChar = c;
             }
 
-            Object node = create("node");
+            final Object node = create("node");
             setString(node, "text", name);
             putProperty(node, "selection", "atom '" + name + "'");
             add(folder, node);
@@ -514,84 +510,84 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
     }
 
-    public void genericAdded(MoleculeRenderer renderer, Generic generic){
+    public void genericAdded(final MoleculeRenderer renderer, final Generic generic){
 
         System.out.println("generic added " + generic);
 
         if(generic instanceof Distance){
-            Object list = findComponent("distance_list");
+            final Object list = findComponent("distance_list");
 
             addDistance(list, (Distance)generic);
         }
     }
 
-    private void addDistance(Object list, Distance distance){
+    private void addDistance(final Object list, final Distance distance){
         
         if(list == null){
             return;
         }
 
-        String name = distance.getString(Generic.Name, "generic");
+        final String name = distance.getString(Generic.Name, "generic");
 
-        String itemString = "<item name=\"" + name + "\" text=\"" + name + "\"/>";
+        final String itemString = "<item name=\"" + name + "\" text=\"" + name + "\"/>";
 
-        Object item = safeParse(itemString);
+        final Object item = safeParse(itemString);
 
         putProperty(item, "reference", distance);
 
         add(list, item);
     }
 
-    private String getColorString(int rgb){
+    private String getColorString(final int rgb){
         return "#" + Integer.toHexString(rgb|0xff000000).substring(2);
     }
 
-    private String getColorString2(int rgb){
+    private String getColorString2(final int rgb){
         return "0x" + Integer.toHexString(rgb|0xff000000).substring(2);
     }
 
-    public void genericRemoved(MoleculeRenderer renderer, Generic generic){
+    public void genericRemoved(final MoleculeRenderer renderer, final Generic generic){
         System.out.println("generic removed " + generic);
 
-        Object list = findComponent("distance_list");
-        Object item = find(list, (String)generic.get(Generic.Name, "generic"));
+        final Object list = findComponent("distance_list");
+        final Object item = find(list, (String)generic.get(Generic.Name, "generic"));
 
         remove(item);
     }
 
     /** A map was added. */
-    public void mapAdded(MoleculeRenderer renderer, astex.Map map){
+    public void mapAdded(final MoleculeRenderer renderer, final astex.Map map){
         System.out.println("mapAdded " + map);
 
-        Object mapComponent = findComponent("map_panel");
+        final Object mapComponent = findComponent("map_panel");
 
         addMap(mapComponent, map);
     }
 
     /** A map was removed. */
-    public void mapRemoved(MoleculeRenderer renderer, astex.Map map){
+    public void mapRemoved(final MoleculeRenderer renderer, final astex.Map map){
         System.out.println("mapRemoved " + map);
 
-        Object mapComponent = findComponent("map_panel");
+        final Object mapComponent = findComponent("map_panel");
 
-        Object mapObject = find(mapComponent, map.getName());
+        final Object mapObject = find(mapComponent, map.getName());
 
         remove(mapObject);
 
         addMap(mapComponent, map);
     }
 
-    private void addMap(Object component, astex.Map map){
+    private void addMap(final Object component, final astex.Map map){
         String mapTemplate = readTemplate("/astex/thinlet/maptemplate.xml.properties");
 
         for(int i = 0; i < astex.Map.MaximumContourLevels; i++){
             String contourTemplate = readTemplate("/astex/thinlet/contourtemplate.xml.properties");
-            int color = map.getContourColor(i);
-            String scolor = getColorString(color);
+            final int color = map.getContourColor(i);
+            final String scolor = getColorString(color);
 
-            contourTemplate = Util.replace(contourTemplate, "%contour", "" + i);
+            contourTemplate = Util.replace(contourTemplate, "%contour", Integer.toString(i));
             contourTemplate = Util.replace(contourTemplate, "%color" + i, scolor);
-            contourTemplate = Util.replace(contourTemplate, "%display" + i, "" + map.getContourDisplayed(i));
+            contourTemplate = Util.replace(contourTemplate, "%display" + i, Boolean.toString(map.getContourDisplayed(i)));
 
             String solid = "false";
 
@@ -600,21 +596,21 @@ public class ThinletUI extends Thinlet implements WindowListener,
             }
             contourTemplate = Util.replace(contourTemplate, "%solid" + i, solid);
 
-            contourTemplate = Util.replace(contourTemplate, "%level" + i, "" + map.getContourLevel(i));
+            contourTemplate = Util.replace(contourTemplate, "%level" + i, Double.toString(map.getContourLevel(i)));
 
-	    Tmesh contourObject =
+	    final Tmesh contourObject =
 		moleculeRenderer.getContourGraphicalObject(map, i);
 
-            contourTemplate = Util.replace(contourTemplate, "%width" + i, "" + contourObject.getLineWidth());
+            contourTemplate = Util.replace(contourTemplate, "%width" + i, Double.toString(contourObject.getLineWidth()));
 
             mapTemplate = Util.replace(mapTemplate, "%c" + i, contourTemplate);
         }
 
         mapTemplate = Util.replace(mapTemplate, "%n", map.getName());
         // stupid, stupid, stupid, needs doing in loop above
-        mapTemplate = Util.replace(mapTemplate, "%max", "" + Math.max(map.getContourLevel(0), map.getContourLevel(1)));
-        mapTemplate = Util.replace(mapTemplate, "%min", "" + Math.min(map.getContourLevel(0), map.getContourLevel(1)));
-        mapTemplate = Util.replace(mapTemplate, "%level2", "" + map.getContourLevel(2));
+        mapTemplate = Util.replace(mapTemplate, "%max", Double.toString(Math.max(map.getContourLevel(0), map.getContourLevel(1))));
+        mapTemplate = Util.replace(mapTemplate, "%min", Double.toString(Math.min(map.getContourLevel(0), map.getContourLevel(1))));
+        mapTemplate = Util.replace(mapTemplate, "%level2", Double.toString(map.getContourLevel(2)));
         mapTemplate = Util.replace(mapTemplate, "%color0", getColorString2(map.getContourColor(0)));
         mapTemplate = Util.replace(mapTemplate, "%color1", getColorString2(map.getContourColor(1)));
         mapTemplate = Util.replace(mapTemplate, "%color2", getColorString2(map.getContourColor(2)));
@@ -623,44 +619,44 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     /** An atom was selected. */
-    public void atomSelected(MoleculeRenderer renderer, Atom atom){
+    public void atomSelected(final MoleculeRenderer renderer, final Atom atom){
         if(atom == null){
-            Object moleculeTree = findComponent("molecule_tree");
-            Object items[] = getSelectedItems(moleculeTree);
+            final Object moleculeTree = findComponent("molecule_tree");
+            final Object items[] = getSelectedItems(moleculeTree);
 
-            for(int i = 0; i < items.length; i++){
-                setBoolean(items[i], "selected", false);
+            for(Object item: items){
+                setBoolean(item, "selected", false);
             }
 
             repaint();
         }
     }
 
-    public boolean handleRendererEvent(RendererEvent re){
+    public boolean handleRendererEvent(final RendererEvent re){
         if(re.getType() == RendererEvent.ObjectAdded){
-            Tmesh tmesh = (Tmesh)re.getItem();
-            Object objectList = findComponent("object_list");
+            final Tmesh tmesh = (Tmesh)re.getItem();
+            final Object objectList = findComponent("object_list");
 
             addObject(objectList, tmesh);
         }else if(re.getType() == RendererEvent.ObjectRemoved){
-            Tmesh tmesh = (Tmesh)re.getItem();
+            final Tmesh tmesh = (Tmesh)re.getItem();
 
             remove(find(tmesh.getName()));
 	}else if(re.getType() == RendererEvent.FrontClipMoved){
-	    Double d = (Double)re.getItem();
+	    final Double d = (Double)re.getItem();
 	    if(d != null){
-		double val = d.doubleValue();
-                Object clip = findComponent("frontclip");
+		final double val = d.doubleValue();
+                final Object clip = findComponent("frontclip");
 
                 if(clip != null){
                     setString(clip, "text", FILE.sprint("%.1f", val));
                 }
             }
 	}else if(re.getType() == RendererEvent.BackClipMoved){
-	    Double d = (Double)re.getItem();
+	    final Double d = (Double)re.getItem();
 	    if(d != null){
-		double val = d.doubleValue();
-                Object clip = findComponent("backclip");
+		final double val = d.doubleValue();
+                final Object clip = findComponent("backclip");
                 if(clip != null){
                     setString(clip, "text", FILE.sprint("%.1f", val));
                 }
@@ -670,7 +666,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         return true;
     }
 
-    private void addObject(Object component, Tmesh object){
+    private void addObject(final Object component, final Tmesh object){
         if(component != null){
             String objectString =
                 readTemplate("/astex/thinlet/objecttemplate.xml.properties");
@@ -682,18 +678,18 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
     }
 
-    private Object createNode(String name, boolean expanded, Object ref){
-        String nodeString =
+    private Object createNode(final String name, final boolean expanded, final Object ref){
+        final String nodeString =
             "<node text=\"" + name + "\" name=\"" + name + "\" expanded=\"" + expanded + "\" font=\"courier\"/>";
 
-        Object node = safeParse(nodeString);
+        final Object node = safeParse(nodeString);
 
         putProperty(node, "reference", ref);
 
         return node;
     }
 
-    public Object safeParse(String xml){
+    public Object safeParse(final String xml){
         try {
             return parse(new StringReader(xml));
         }catch(Exception e){
@@ -714,7 +710,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
      * Look up a cached object name.
      * Don't use this if the object may change.
      */
-    private Object findComponent(String name){
+    private Object findComponent(final String name){
         if(components == null){
             components = new HashMap<String, Object>(11);
         }
