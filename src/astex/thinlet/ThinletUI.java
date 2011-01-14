@@ -18,7 +18,6 @@
 package astex.thinlet;
 
 import astex.*;
-import astex.splitter.*;
 import astex.generic.*;
 import thinlet.*;
 import java.awt.*;
