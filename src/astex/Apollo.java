@@ -212,7 +212,7 @@ public class Apollo {
 //       ENDDO
 	double rt1 = rv[0];
 	for(int i = 0; i < 3; i++){
-	    rt1 = rt1+xt1[i]*xv[i][0];
+	    rt1 += xt1[i] * xv[i][0];
 	}
 // C      PRINT '(A,3F8.3,F12.6)','XT1',XT1,RT1
 // C
@@ -231,7 +231,7 @@ public class Apollo {
 	
 	double rt = rv[0];
 	for(int i = 0; i < 3; i++){
-	    rt = rt+xt[i]*xv[i][0];
+	    rt += xt[i] * xv[i][0];
 	}
 
 	//C      PRINT '(A,3F8.3,F12.6)','XT2',XT,RT
