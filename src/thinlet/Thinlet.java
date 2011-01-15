@@ -2734,12 +2734,10 @@ public class Thinlet extends Canvas
 
 	/**
 	 * This component can be traversed using Tab or Shift-Tab keyboard focus traversal,
-	 * although 1.4 replaced this method by <i>isFocusable</i>,
-	 * so 1.4 compilers write deprecation warning
 	 *
-	 * @return true as focus-transverable component, overwrites the default false value
+	 * @return true as focusable component, overwrites the default false value
 	 */
-	public boolean isFocusTraversable() {
+	public boolean isFocusable() {
 		return true;
 	}
 
