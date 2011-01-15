@@ -343,17 +343,12 @@ public class PeriodicTable {
     public static String getAtomSymbolFromElement(int num ) {
 	String sym = null;
 
-	switch (num) {
-	case UNKNOWN:
+	if (num == UNKNOWN) {
 	    sym = "?";
-	    break;
-	default:
-	    if (num > 0 && num < elements.length) {
-		sym = elements[num].symbol;
-	    } else {
-		sym = "";
-	    }
-	    break;
+	}else if (num > 0 && num < elements.length) {
+	    sym = elements[num].symbol;
+	} else {
+	    sym = "";
 	}
 	return sym;
     }
