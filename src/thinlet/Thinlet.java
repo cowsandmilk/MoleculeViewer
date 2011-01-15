@@ -5587,7 +5587,6 @@ public class Thinlet extends Canvas
             integers[i] = integer;
         }
 
-        //System.out.println("integer " +integer);
         return integer;
     }
 
@@ -5618,13 +5617,11 @@ public class Thinlet extends Canvas
                 set(component, ":slot", getInteger(v.size()));
                 v.add(component);
             }else{
-                //set(component, ":slot", new Integer(index));
                 set(component, ":slot", getInteger(index));
                 v.add(index, component);
                 int len = v.size();
                 for(int i = 0; i < len; i++){
                     Object child = v.get(i);
-                    //set(child, ":slot", new Integer(i));
                     set(child, ":slot", getInteger(i));
                 }
             }
@@ -5683,7 +5680,6 @@ public class Thinlet extends Canvas
                 // where component was removed
                 for(int i = 0; i < len; i++){
                     Object child = v.get(i);
-                    //set(child, ":slot", new Integer(i));
                     set(child, ":slot", getInteger(i));
                 }
             }
@@ -6115,9 +6111,6 @@ public class Thinlet extends Canvas
 									characters(text.toString());
 								}
 							}
-							// else {
-								//addContent(current, text.toString());
-							//}
 							text.setLength(0);
 						}
 						String tagname = (String) parentlist[2]; //getClass(current);
