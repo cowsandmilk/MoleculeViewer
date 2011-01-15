@@ -72,14 +72,6 @@ public class Generic implements GenericInterface {
         return oldValue;
     }
 
-    public Enumeration<String> getProperties(){
-        if(properties == null){
-            return emptyHashtable.keys();
-        }else{
-            return properties.keys();
-        }
-    }
-
     public void setClassname(String c){
         set(ClassName, c);
     }

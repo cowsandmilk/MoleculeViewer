@@ -74,14 +74,6 @@ public class Bond extends Generic {
         }
     }
 
-    public Enumeration<String> getProperties(){
-        Vector<String> v = new Vector<String>(1);
-
-        v.addElement(BondOrder);
-
-        return v.elements();
-    }
-
     /** The first atom in the bond. */
     private Atom firstAtom;
 

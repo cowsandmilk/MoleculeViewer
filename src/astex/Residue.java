@@ -362,12 +362,4 @@ public class Residue extends Generic implements Selectable {
     private static final String TorsionRadius = "torsionRadius";
     public static final String TorsionGreek  = "torsionGreek";
     public static final String TorsionFormat = "torsionFormat";
-
-
-    public Enumeration<String> getProperties(){
-        Vector<String> v = new Vector<String>(1);
-        v.addElement(ResidueColor);
-
-        return v.elements();
-    }
 }

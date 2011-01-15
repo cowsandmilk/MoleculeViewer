@@ -1136,16 +1136,4 @@ public class Molecule extends Generic implements Selectable {
 
         return super.get(key, def);
     }
-
-    public Enumeration<String> getProperties(){
-        Vector<String> v = new Vector<String>(3);
-
-        v.addElement(Displayed);
-        v.addElement(DisplayHydrogens);
-        v.addElement(DisplayBondDetails);
-
-        return v.elements();
-    }
-
-
 }

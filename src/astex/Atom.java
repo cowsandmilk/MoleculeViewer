@@ -1318,24 +1318,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public static final String Opacity = "opacity";
     public static final String Element = "element";
 
-    /** Return an enumeration of our properties. */
-    public Enumeration<String> getProperties(){
-        Vector<String> v = new Vector<String>(10);
-
-        v.addElement(XAttribute);
-        v.addElement(YAttribute);
-        v.addElement(ZAttribute);
-        v.addElement(BAttribute);
-        v.addElement(OAttribute);
-        v.addElement(QAttribute);
-        v.addElement(Element);
-        v.addElement(Color);
-        v.addElement(Opacity);
-        v.addElement(Radius);
-
-        return v.elements();
-    }
-
     /** Arbitrary properties. */
     Hashtable<Object,Object> properties = null;
 

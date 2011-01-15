@@ -23,9 +23,6 @@ public interface GenericInterface {
     /** Some defined property constants. */
     public static final String Name = "name";
 
-    /** Return an enumeration of our properties. */
-    public Enumeration<String> getProperties();
-
     /** Get Object representing key. */
     public Object get(Object key, Object def);
 
