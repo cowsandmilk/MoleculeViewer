@@ -267,7 +267,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private boolean animating(){
 	if(animationThread != null &&
 	   animationThread.isAlive() &&
-	   animationThread.getInteractive() == false){
+	   !animationThread.getInteractive()){
 	    return true;
 	}else{
 	    return false;
@@ -380,7 +380,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	Enumeration objects = xml.enumerateChildren();
 
-	if("keymap".equals(xml.getName()) == false){
+	if(!"keymap".equals(xml.getName())){
 	    System.out.println("keymap.properties has invalid format");
 	    return;
 	}
@@ -862,7 +862,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Set whether we should use the popup menu. */
     public void setUsePopupMenu(boolean state){
-	if(state == true){
+	if(state){
 	    popup = new PopupMenu();
 	}else{
 	    popup = null;
@@ -909,7 +909,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    showPopupMenu(e);
 	}else{
 	    if(pickedAtom != null){
-		if(dragged == false){
+		if(!dragged){
 					
 		    if(e.isShiftDown()){
 			moleculeRenderer.setCenter(pickedAtom);
@@ -941,7 +941,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		    }
 		}
 	    }else{
-		if(dragged == false){
+		if(!dragged){
 		    moleculeRenderer.removeAllSelectedAtoms();
 		// fix
                     moleculeRenderer.setStatusAtom(null);
@@ -2089,7 +2089,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	moleculeRenderer.dirty = true;
 	repaint();
 
-        if(viewChangeOnly == false && repaintListeners != null){
+        if(!viewChangeOnly && repaintListeners != null){
             notifyRepaintListeners();
         }
 
@@ -2297,9 +2297,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	while(iterator.hasMoreElements()){
 	    Residue residue = iterator.getNextResidue();
-	    if(residue.isStandardAminoAcid() == false &&
-	       residue.isIon() == false &&
-	       residue.isSolvent() == false){
+	    if(!residue.isStandardAminoAcid() && !residue.isIon() &&
+	       !residue.isSolvent()){
 		String residueName = residue.getName();
 		int number = residue.getNumber();
 		Chain chain = residue.getParent();

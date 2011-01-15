@@ -449,13 +449,13 @@ public class ThinletUI extends Thinlet implements WindowListener,
                 for(int r = 0; r < chain.getResidueCount(); r++){
                     final Residue res = chain.getResidue(r);
                     final String resname = res.getName();
-                    if(resnames.contains(resname) == false){
+                    if(!resnames.contains(resname)){
                         resnames.add(resname);
                     }
                     for(int a = 0; a < res.getAtomCount(); a++){
                         final Atom atom = res.getAtom(a);
                         final String atomname = atom.getAtomLabel();
-                        if(atomnames.contains(atomname) == false){
+                        if(!atomnames.contains(atomname)){
                             atomnames.add(atomname);
                         }
                     }

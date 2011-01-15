@@ -522,7 +522,7 @@ public class MoleculeRenderer {
 	    return;
 	}
 
-	if(typeString != null && typeString.startsWith(".") == false){
+	if(typeString != null && !typeString.startsWith(".")){
 	    typeString = "." + typeString;
 	}
 
@@ -677,7 +677,7 @@ public class MoleculeRenderer {
 
 		    if(dist < dmax && froma != toa &&
 		       dist < (toa.getVDWRadius() + fromr + contact) &&
-		       froma.connected121314(toa) == false){
+		       !froma.connected121314(toa)){
 			d.group0.add(froma);
 			d.group1.add(toa);
 		    }
@@ -736,7 +736,7 @@ public class MoleculeRenderer {
 
 			if(dist < dmax && froma != toa &&
 			   dist < (toa.getVDWRadius() + fromr + contact) &&
-			   allowBonded || froma.connected121314(toa) == false){
+			   allowBonded || !froma.connected121314(toa)){
 			    d.group0.add(froma);
 			    d.group1.add(toa);
 			}
@@ -891,8 +891,7 @@ public class MoleculeRenderer {
 				     double fq1q2){
 	if((n != null && h != null &&
 	   o != null && c != null) &&
-	   (c.hasBond(n) == false ||
-	    c.hasBond(o) == false)){
+	   (!c.hasBond(n) || !c.hasBond(o))){
 
 	    double rON = o.distance(n);
 	    double rCH = c.distance(h);
@@ -1433,7 +1432,7 @@ public class MoleculeRenderer {
 
 	// only implement this file loading semantics
 	// for applications, its too confusing in an applet.
-	if(moleculeViewer.isApplication() == false){
+	if(!moleculeViewer.isApplication()){
 	    sdf = false;
 	}
 
@@ -1886,7 +1885,7 @@ public class MoleculeRenderer {
     public void addSelectedAtom(Atom atom){
 	String atomSelect = atom.selectStatement();
 
-	if(selectedAtoms.contains(atom) == false){
+	if(!selectedAtoms.contains(atom)){
 	    selectedAtoms.add(atom);
 	    execute("append " + atomSelect + ";");
 	    fireAtomSelectedEvent(atom);
@@ -1907,7 +1906,7 @@ public class MoleculeRenderer {
     private void addBumpPair(Atom atom1, Atom atom2){
 	// only add if they are in the same molecule
 	if((bumpInSameMolecule && atom1.getMolecule() == atom2.getMolecule()) ||
-	   bumpInSameMolecule == false){
+	   !bumpInSameMolecule){
 	    bumpAtoms.add(atom1);
 	    bumpAtoms.add(atom2);
 	}
@@ -1940,11 +1939,11 @@ public class MoleculeRenderer {
 		    Atom atom = (Atom)bumpAtoms.get(a);
 		    double atomVDWRadius = atom.getVDWRadius();
 		    if(sphereAtom != atom &&
-		       atom.hasBond(sphereAtom) == false &&
-		       atom.connected13(sphereAtom) == false &&
-		       atom.connected14(sphereAtom) == false){
+		       !atom.hasBond(sphereAtom) &&
+		       !atom.connected13(sphereAtom) &&
+		       !atom.connected14(sphereAtom)){
 			double dSq = atomVDWRadius + vdwRadius;
-			dSq = dSq * dSq;
+			dSq *= dSq;
 
 			if(atom.distanceSq(sphereAtom) < dSq){
 			    addBumpPair(atom, sphereAtom);
@@ -2078,7 +2077,7 @@ public class MoleculeRenderer {
     private Molecule generateSymmetry(Point3d center, double radius){
 	Molecule symmetryMolecule = null;
 
-	if(displaySymmetry == true &&
+	if(displaySymmetry &&
 	   getMoleculeCount() > 0){
 	    // figure out which symmetry we want to use
 	    determineSymmetry();
@@ -2732,8 +2731,7 @@ public class MoleculeRenderer {
 	    for(int i = 0; i < sphereSelectionCount; i++){
 		Atom atom = (Atom)sphereSelection.get(i);
 
-		if(include == false ||
-		   selection.contains(atom) == false){
+		if(!include || !selection.contains(atom)){
 		    for(int a = 0; a < selectionCount; a++){
 			Atom selectedAtom = (Atom)selectionArray[a];
 
@@ -2759,10 +2757,8 @@ public class MoleculeRenderer {
 
 	    Residue residue = atom.getResidue();
 
-	    if(residue.isStandardAminoAcid() == false &&
-	       residue.isIon() == false &&
-	       residue.isNucleicAcid() == false &&
-	       residue.isSolvent() == false &&
+	    if(!residue.isStandardAminoAcid() && !residue.isIon() &&
+	       !residue.isNucleicAcid() && !residue.isSolvent() &&
 	       atom.getBondCount() > 0){
 
 		selectedAtoms.add(atom);
@@ -2974,7 +2970,7 @@ public class MoleculeRenderer {
     public void setDisplayMaps(boolean state){
 	displayMaps = state;
 
-	if(displayMaps == false){
+	if(!displayMaps){
 	    removeContourLevels();
 	}else{
 	    generateMaps();
@@ -2985,7 +2981,7 @@ public class MoleculeRenderer {
     public void setDisplayBumps(boolean state){
 	displayBumps = state;
 
-	if(displayBumps == false){
+	if(!displayBumps){
 	    removeAllBumpAtoms();
 	}else{
 	    DynamicArray selectedAtoms = getSelectedAtoms();
@@ -3172,7 +3168,7 @@ public class MoleculeRenderer {
     public void contourMap(Map map, int contour){
 	String contourName = getContourGraphicalObjectName(map, contour);
 
-	if(map.getContourDisplayed(contour) == true){
+	if(map.getContourDisplayed(contour)){
 	    if(map.needsReading()){
 		determineRegion(map);
 
@@ -3503,7 +3499,7 @@ public class MoleculeRenderer {
 
 	for(int m = 0; m < mapCount; m++){
 	    Map map = getMap(m);
-	    if(map.volumeRender == true){
+	    if(map.volumeRender){
 		drawMap(map);
 	    }
 	}
@@ -3620,7 +3616,7 @@ public class MoleculeRenderer {
 		Molecule molecule = getMolecule(m);
 		for(int a = 0; a < molecule.getAtomCount(); a++){
 		    Atom atom = molecule.getAtom(a);
-		    if(atom.isSolvent() == false){
+		    if(!atom.isSolvent()){
 			double x = atom.getX();
 			double y = atom.getY();
 			double z = atom.getZ();
@@ -3651,7 +3647,7 @@ public class MoleculeRenderer {
 		Molecule molecule = getMolecule(m);
 		for(int a = 0; a < molecule.getAtomCount(); a++){
 		    Atom atom = molecule.getAtom(a);
-		    if(atom.isSolvent() == false){
+		    if(!atom.isSolvent()){
 			double distance = atom.distance(moleculeCenter);
 			if(distance > radius){
 			    radius = distance;
@@ -4088,7 +4084,7 @@ public class MoleculeRenderer {
      * line.
      */
     private void drawDistanceObject(Distance distance){
-	if(distance.getBoolean(Distance.Visible, true) == false) return;
+	if(!distance.getBoolean(Distance.Visible, true)) return;
 
 	if(distance.getInteger(Distance.Mode, -1) == Distance.Centroids){
 	    if(distance.valid() &&
@@ -4202,8 +4198,7 @@ public class MoleculeRenderer {
 		Atom aa = (Atom)torsions.get(i + j);
 		Molecule mol = aa.getMolecule();
 
-		if(aa.isDisplayed() == false ||
-		   mol.getDisplayed() == false){
+		if(!aa.isDisplayed() || !mol.getDisplayed()){
 		    drawTorsion = false;
 		}
 	    }
@@ -4232,8 +4227,7 @@ public class MoleculeRenderer {
 		Atom aa = (Atom)angles.get(i + j);
 		Molecule mol = aa.getMolecule();
 
-		if(aa.isDisplayed() == false ||
-		   mol.getDisplayed() == false){
+		if(!aa.isDisplayed() || !mol.getDisplayed()){
 		    drawAngle = false;
 		}
 	    }
@@ -4301,8 +4295,8 @@ public class MoleculeRenderer {
 
 	if(molecule1.getDisplayStyle(Molecule.Normal) &&
 	   molecule2.getDisplayStyle(Molecule.Normal) &&
-	   molecule1.getDisplayed() == true &&
-	   molecule2.getDisplayed() == true &&
+	   molecule1.getDisplayed() &&
+	   molecule2.getDisplayed() &&
 	   atom1.isDisplayed() && atom2.isDisplayed()){
 	    drawDottedLine(atom1, atom2, 0.2, Color32.white);
 
@@ -4396,7 +4390,7 @@ public class MoleculeRenderer {
 
     /** Draw one atom. */
     private void drawAtom(Atom atom, int crossPixels){
-	if(displaySolvent || atom.isSolvent() == false){
+	if(displaySolvent || !atom.isSolvent()){
 	    int z = atom.zs;
 	    int atomColor = atom.getColor();
 
@@ -5025,7 +5019,7 @@ public class MoleculeRenderer {
     private synchronized void executeInternal(String command){
 	StringReader sr = new StringReader(command);
 
-	if(parse(sr) == false){
+	if(!parse(sr)){
 	    System.err.println("Syntax error in command:");
 	    System.err.println(command);
 	}else{

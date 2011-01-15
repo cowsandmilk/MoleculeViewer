@@ -271,7 +271,7 @@ public class PASS {
                                                         }
                                                     }
 						
-                                                    if(probeClashed == false){
+                                                    if(!probeClashed){
                                                         int np = newProbes.size();
                                                         Probe weedProbe = null;
 

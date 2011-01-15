@@ -939,45 +939,39 @@ public class FILE extends InputStream {
     private static boolean shuffleVersions(String file){
 	File f = new File(file);
 
-	if(f.exists() == false){
+	if(!f.exists()){
 	    return true;
-	}else{
-	    int version = 99;
-
-	    boolean found = false;
-
-	    do {
-		String fileVersion = file + String.format("_%02d", version);
-		File vf = new File(fileVersion);
-
-		if(vf.exists()){
-		    found = true;
-		}else{
-		    version--;
-		}
-
-	    } while(!found && version >= 0);
-
-	    version++;
-
-	    String fileVersion = file + String.format("_%02d", version);
-	    //String fileVersion = prefix + String.format(".%02d", version) + suffix;
-
-	    File newf = new File(fileVersion);
-
-	    if(f.renameTo(newf) == false){
-		return false;
-	    }
 	}
-	
-	return true;
+	int version = 99;
+
+	boolean found = false;
+
+	do {
+	    String fileVersion = file + String.format("_%02d", version);
+	    File vf = new File(fileVersion);
+
+	    if(vf.exists()){
+		found = true;
+	    }else{
+		version--;
+	    }
+
+	} while(!found && version >= 0);
+
+	version++;
+
+	String fileVersion = file + String.format("_%02d", version);
+
+	File newf = new File(fileVersion);
+
+	return f.renameTo(newf);
     }
 
     /** Opens outputstream for writing. */
     public static FILE write(String file){
 	// see if we could shuffle the files
 	// if not we can't open the file
-	if(shuffleVersions(file) == false){
+	if(!shuffleVersions(file)){
 	    return null;
 	}
 
@@ -1521,7 +1515,7 @@ public class FILE extends InputStream {
 
     /** Return the number of fields on the current line. */
     public int getFieldCount(){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 
@@ -1530,7 +1524,7 @@ public class FILE extends InputStream {
 
     /** Get the start position of the field. */
     public int getFieldStart(int f){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 
@@ -1543,7 +1537,7 @@ public class FILE extends InputStream {
 	
     /** Get the start position of the field. */
     public int getFieldLength(int f){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 
@@ -1556,7 +1550,7 @@ public class FILE extends InputStream {
 
     /** Get the field as a string. */
     public String getField(int f){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 
@@ -1571,7 +1565,7 @@ public class FILE extends InputStream {
 
     /** Get the specified character from the field. */
     public byte getFieldChar(int f, int c){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 
@@ -1732,7 +1726,7 @@ public class FILE extends InputStream {
 	    }
 	}
 		
-	if(input == null && tryFiles == true){
+	if(input == null && tryFiles){
 	    try {
 		if(debug){
 		    System.out.println("attempting to open as file");
@@ -1773,7 +1767,7 @@ public class FILE extends InputStream {
 	// we were asked to open
 	// i.e. we were asked to open 1abc.pdb, but it
 	// didn't exist. Does 1abc.pdb.gz exist instead?
-	if(input == null && resource.endsWith(".gz") == false){
+	if(input == null && !resource.endsWith(".gz")){
 	    input = open(resource + ".gz");
 
 	    if(input != null){
@@ -1996,7 +1990,7 @@ public class FILE extends InputStream {
 
     /** Read an integer from the specified field. */
     public int readIntegerFromField(int f){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 
@@ -2014,7 +2008,7 @@ public class FILE extends InputStream {
 
     /** Read a double from the specified field. */
     public double readDoubleFromField(int f){
-	if(fieldsDetermined == false){
+	if(!fieldsDetermined){
 	    determineFields();
 	}
 

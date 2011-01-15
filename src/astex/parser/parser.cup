@@ -752,7 +752,7 @@ display_command ::=
 		:}
 	| SURFACE arguments:args STRING:name STRING:colour selection:selectedAtoms
 		{:
-			if(args.getBoolean("-lazy", false) == false ||
+			if(!args.getBoolean("-lazy", false) ||
                            parser.renderer.renderer.getGraphicalObject(name) == null){
 				parser.renderer.removeGraphicalObjects(name);
 				Surface.setProbeRadius(args.getDouble("probe", 1.5));

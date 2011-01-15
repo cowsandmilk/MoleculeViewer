@@ -32,7 +32,7 @@ public class ImageIO {
 				boolean compress){
 	if(name.endsWith(".gz")){
 	    compress = true;
-	}else if(compress && name.endsWith(".gz") == false){
+	}else if(compress && !name.endsWith(".gz")){
 	    name += ".gz";
 	}
 

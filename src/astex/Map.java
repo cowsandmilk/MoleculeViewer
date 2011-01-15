@@ -210,7 +210,7 @@ public class Map extends Symmetry {
 	    file = null;
 	}
 
-	if(headerInitialised == false){
+	if(!headerInitialised){
 	    file = FILE.open(filename);
 	    readHeader();
 	}

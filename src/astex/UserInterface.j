@@ -755,7 +755,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	       .append(" -name '").append(nameTF.getText()).append("' -colour '")
 	       .append(distanceColorButton.getValue()).append("' -from { peek 0 }");
 
-	if(mode.equals("bumps") == false){
+	if(!mode.equals("bumps")){
 	    command.append(" -to { peek 1 }");
 	}
 
@@ -1107,7 +1107,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	JCOutlinerFolderNode root =
 	    new JCOutlinerFolderNode(null, "Builtins");
 	
-	if(xml.getName().equals("builtins") == false){
+	if(!"builtins".equals(xml.getName())){
 	    System.out.println(properties + " has invalid format");
 	    return null;
 	}
@@ -1245,20 +1245,20 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	if(ev.getSource() == labelChoices){
 	    String labelFormat = labelChoices.getSelectedItem();
 
-	    if(labelFormat.equals("clear") == false){
+	    if(!"clear".equals(labelFormat)){
 		labelFormat = "'" + labelFormat + "'";
 	    }
 
 	    moleculeRenderer.execute("label " + labelFormat + " current;");
 
 	}else if(ev.getSource() == cartoonCB){
-	    if(cartoonCB.getState() == false){
+	    if(!cartoonCB.getState()){
 		moleculeRenderer.execute("view -lightingmodel normal;");
 	    }else{
 		moleculeRenderer.execute("view -lightingmodel cartoon;");
 	    }
 	}else if(ev.getSource() == lightOnOff){
-	    if(lightOnOff.getState() == false){
+	    if(!lightOnOff.getState()){
 		moleculeRenderer.execute("light " + activeLight + " -on false;");
 	    }else{
 		moleculeRenderer.execute("light " + activeLight + " -on true;");
@@ -1674,7 +1674,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    
 	    JCOutlinerNode node = oc.eventToNode(e);
 
-	    if(oc.eventInShortcut(e, node) == false){
+	    if(!oc.eventInShortcut(e, node)){
 		Object userData = node.getUserData();
 		
 		int mode = selectMode.getValue();

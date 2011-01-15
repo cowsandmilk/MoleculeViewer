@@ -673,7 +673,7 @@ public class Renderer {
     public void applyTexture(String pattern, String texName){
 	Texture tex = null;
 
-	if(texName != null && texName.equals("off") == false){
+	if(texName != null && !texName.equals("off")){
 
 	    tex = textures.get(texName);
 
@@ -1623,7 +1623,7 @@ public class Renderer {
 		    vertexD.u = ut[v2]; vertexD.v = vt[v2];
 		}
 
-		if(phong != true){
+		if(!phong){
 		    // wrong ... needs doing in transform loop
 		    lightVertex(vertexA);
 		    lightVertex(vertexB);
@@ -1855,7 +1855,7 @@ public class Renderer {
 	    shadowed = true;
 	}
 
-	if(shadowed == false){
+	if(!shadowed){
 	    c = Color32.multiply(c, diffuseMap[lutID]);
 	    int s = highlightMap[lutID];
 	    // if we need transparency put it in here
@@ -2778,8 +2778,7 @@ public class Renderer {
 				int c = Color32.multiply(rgb, diffuseMap[lutID]);
 				
 				if(shadowMode == ShadowsOn){
-				   if(sol == -1 ||
-				      ShadowCache.pointShadowed(i, j, zp) == true){
+				   if(sol == -1 || ShadowCache.pointShadowed(i, j, zp)){
 				    
 				       c = Color32.multiply(rgb, shadowMap[lutID]);
 				   }else{
@@ -2927,11 +2926,11 @@ public class Renderer {
 			   int color, String string){
 	setupString(string, charOffsets);
 
-	if(colorDefined == false){
+	if(!colorDefined){
 	    stringColor = color;
 	}
 
-	if(string3d == true){
+	if(string3d){
 	    drawHersheyString(x, y, z, zoff, string);
 	}else{
 	    applyTransform(x, y, z, tix);
@@ -3448,7 +3447,7 @@ public class Renderer {
 	    }
 	}
 
-	if(string3d == false){
+	if(!string3d){
 	    // we need to setup bitmap fonts.
 	    romanBitmapFont = getFont("arial." + stringPoints);
 	    greekBitmapFont = getFont("symbol." + stringPoints);

@@ -4561,7 +4561,7 @@ public class Thinlet extends Canvas
                 if(seenDot && ++actualDps == dp){
                     break;
                 }
-            }else if(c == '.' && seenDot == false){
+            }else if(c == '.' && !seenDot){
                 seenDot = true;
             }else{
                 throw new NumberFormatException("illegal character " + c);

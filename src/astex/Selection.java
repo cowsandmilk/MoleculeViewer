@@ -1182,7 +1182,7 @@ public class Selection {
 
 	for(int i = 0; i < graphSelectionCount; i++){
 	    Atom atom = (Atom)graphSelection.get(i);
-	    if(atom.isTemporarilySelected() == false){
+	    if(!atom.isTemporarilySelected()){
 		propagateGraph(atom);
 	    }
 	}
@@ -1215,7 +1215,7 @@ public class Selection {
 
 	for(int i = 0; i < bondCount; i++){
 	    Atom otherAtom = a.getBondedAtom(i);
-	    if(otherAtom.isTemporarilySelected() == false){
+	    if(!otherAtom.isTemporarilySelected()){
 		propagateGraph(otherAtom);
 	    }
 	}

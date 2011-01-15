@@ -1213,7 +1213,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public int select(int state){
 	switch(state){
 	case 1: setSelected(true); break;
-	case 2: if(isSelected() == false) setSelected(true); break;
+	case 2: if(!isSelected()) setSelected(true); break;
 	case 3: setSelected(false); break;
 	}
 

@@ -376,14 +376,14 @@ public class MoleculeIO {
 		char char9 = file.getChar(9);
 		if(char9 == 'M' &&
 		   file.currentLineContains("@<TRIPOS>MOLECULE", 0)){
-		    if(file.nextLine() == false){
+		    if(!file.nextLine()){
 			System.err.println("error reading molecule header");
 		    }
 					
 		    // this line contains the molecule name.
 		    molecule.setName(file.getCurrentLineAsString());
 					
-		    if(file.nextLine() == false){
+		    if(!file.nextLine()){
 			System.err.println("error reading molecule header");
 		    }
 
@@ -613,7 +613,7 @@ public class MoleculeIO {
      */
     public static Molecule readMDLMol(FILE file){
 	// read the molcule name.
-	if(file.nextLine() == false){
+	if(!file.nextLine()){
 	    return null;
 	}
 
@@ -764,7 +764,7 @@ public class MoleculeIO {
             }
 
 	    // its an atom.
-	    if(seenENDMDL == false &&
+	    if(!seenENDMDL &&
                ((c0 == 'A' && c1 == 'T' && c2 == 'O' && c3 == 'M') ||
                 (c0 == 'H' && c1 == 'E' && c2 == 'T' && c3 == 'A'))){
 

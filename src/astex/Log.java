@@ -189,7 +189,7 @@ public class Log {
     private static void logAssert(String intro, String s){
 	String methodName = getMethodName(3);
 
-	if(fullClass == false){
+	if(!fullClass){
 	    int lastDot = methodName.lastIndexOf('.');
 	    methodName = methodName.substring(lastDot + 1,
 					      methodName.length());
@@ -209,7 +209,7 @@ public class Log {
     private static void log(String intro, String s){
 	String methodName = getMethodName(3);
 
-	if(fullClass == false){
+	if(!fullClass){
 	    int lastDot = methodName.lastIndexOf('.');
 	    methodName = methodName.substring(lastDot + 1,
 					      methodName.length());

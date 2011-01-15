@@ -184,7 +184,7 @@ public class Schematic {
 
 	// calculate out of plane normals
 	for(int r = 1; r < guideCount - 1; r++){
-	    if(widthInitialised[r] == false){
+	    if(!widthInitialised[r]){
 		Point3d ab = Point3d.unitVector(guides[r-1], guides[r]);
 		Point3d bc = Point3d.unitVector(guides[r], guides[r+1]);
 		Point3d.cross(width[r], ab, bc);
@@ -193,10 +193,10 @@ public class Schematic {
 
 	// assign end points.
 	if(guideCount > 2){
-	    if(widthInitialised[0] == false){
+	    if(!widthInitialised[0]){
 		width[0].set(width[1]);
 	    }
-	    if(widthInitialised[guideCount - 1] == false){
+	    if(!widthInitialised[guideCount - 1]){
 		width[guideCount-1].set(width[guideCount-2]);
 	    }
 	}

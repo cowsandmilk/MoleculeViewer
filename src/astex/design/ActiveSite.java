@@ -855,7 +855,7 @@ public class ActiveSite {
 			}
 		    }
 
-		    if(addit == true){
+		    if(addit){
 			// check for whether we are looking
 			// for neighbours in the same cell
 			// as before.

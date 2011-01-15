@@ -143,7 +143,7 @@ public class ViewCommand {
 		mr.paint();
 	    }
 
-	    if(compress == false && defaultCompress == true){
+	    if(!compress && defaultCompress){
 		compress = true;
 	    }
 

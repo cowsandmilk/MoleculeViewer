@@ -63,7 +63,7 @@ public class ObjectControl extends Panel implements JCItemListener, JCActionList
 		public void actionPerformed(ActionEvent e){
 		    ColorButton b = (ColorButton)e.getSource();
 		    MoleculeRenderer mr = userInterface.moleculeViewer.getMoleculeRenderer();
-		    if(b.wasCancelled() == false){
+		    if(!b.wasCancelled()){
 			String command =
 			    "object '" + tmesh.getName() +
 			    "' color '" + b.getValue() + "';";

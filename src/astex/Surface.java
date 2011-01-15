@@ -961,7 +961,7 @@ public class Surface {
 		    }
 		}
 		
-		if(clipped == false){
+		if(!clipped){
 		    for(int b = 0; b < neighbourCount; b++){
 			Atom atom2 = (Atom)selectedAtoms.get(neighbours[b]);
 			double r2 = atom2.getVDWRadius();

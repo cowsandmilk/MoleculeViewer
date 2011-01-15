@@ -105,7 +105,7 @@ public class Distance extends Generic {
 
 	/** Is this distance valid. */
 	public boolean valid(){
-		if(getBoolean(Visible, false) == false){
+		if(!getBoolean(Visible, false)){
 			return false;
 		}
 
@@ -120,11 +120,11 @@ public class Distance extends Generic {
 		// and all atoms are displayed
 		for(int i = 0; i < ngroup0; i++){
 			Atom a = (Atom)group0.get(i);
-			if(a.isDisplayed() == false){
+			if(!a.isDisplayed()){
 				return false;
 			}else{
 				Molecule mol = a.getMolecule();
-				if(mol.getDisplayed() == false){
+				if(!mol.getDisplayed()){
 					return false;
 				}
 			}
@@ -132,11 +132,11 @@ public class Distance extends Generic {
 
 		for(int i = 0; i < ngroup1; i++){
 			Atom a = (Atom)group1.get(i);
-			if(a.isDisplayed() == false){
+			if(!a.isDisplayed()){
 				return false;
 			}else{
 				Molecule mol = a.getMolecule();
-				if(mol.getDisplayed() == false){
+				if(!mol.getDisplayed()){
 					return false;
 				}
 			}
