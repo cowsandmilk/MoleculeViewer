@@ -2856,9 +2856,9 @@ public class Thinlet extends Canvas
 				Rectangle bounds = getRectangle(mouseinside, "bounds");	
 				try { // mouse wheel is supported since 1.4 thus it use reflection
 					if (wheelrotation == null) {
-						wheelrotation = e.getClass().getMethod("getWheelRotation", null);
+						wheelrotation = e.getClass().getMethod("getWheelRotation", new Class[0]);
 					}
-					int rotation = ((Integer) wheelrotation.invoke(e, null)).intValue();
+					int rotation = ((Integer) wheelrotation.invoke(e, new Object[0])).intValue();
 					
 					if (port.x + port.width < bounds.width) { // has vertical scrollbar
 						processScroll(mouseinside, (rotation > 0) ? "down" : "up"); //TODO scroll panels too
@@ -2895,7 +2895,7 @@ public class Thinlet extends Canvas
 							transferFocus();
 						}
 						else { try {
-								getClass().getMethod("transferFocusBackward", null). invoke(this, null);
+								getClass().getMethod("transferFocusBackward", new Class[0]). invoke(this, new Object[0]);
 						} catch (Exception exc) { /* never */ } }
 					}
 					repaint(focusowner);
@@ -6292,7 +6292,7 @@ public class Thinlet extends Canvas
             }
 
             if(paintMethod == null){
-                Class parametertypes[] = new Class[5];
+                Class<?> parametertypes[] = new Class<?>[5];
                 parametertypes[0] = Thinlet.class;
                 parametertypes[1] = Object.class;
                 parametertypes[2] = Graphics.class;
@@ -6496,7 +6496,7 @@ public class Thinlet extends Canvas
 		}
 		else if ("bean" == definition[0]) {
 			try {
-                            Class cl = Class.forName(value);
+                            Class<?> cl = Class.forName(value);
                             Object beanObject = cl.newInstance();
 				if(beanObject instanceof CustomComponent) {
 					CustomComponent bean = (CustomComponent) beanObject;
