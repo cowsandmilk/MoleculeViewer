@@ -1990,8 +1990,6 @@ public class Thinlet extends Canvas
 			}
 		}
 		else if ("bean".equals(classname)) {
-                    //set(component, "__clipx__", new Integer(clipx));
-                    //set(component, "__clipy__", new Integer(clipy));
                     try {
 				((Component) get(component, "bean")).paint(g);
                     }catch(Exception e){
@@ -5555,30 +5553,21 @@ public class Thinlet extends Canvas
     private Integer integers[] = null;
 
     private Integer getInteger(int i){
-        //System.out.println("i " + i);
 
         if(integers == null){
             integers = new Integer[i + 1];
-            //integers.setSize(i + 1);
-            //System.out.println("initial size " + integers.length);
-
         }else{
             int size = integers.length;
 
             while(i >= size){
                 size *= 2;
-                //System.out.println("realloc " + size);
                 Integer newIntegers[] = new Integer[size];
 		System.arraycopy(integers, 0, newIntegers, 0, size / 2);
                 integers = newIntegers;
             }
         }
 
-        //System.out.println("size " + integers.length);
-
         Integer integer = integers[i];
-
-        //System.out.println("integer " +integer);
 
         if(integer == null){
             integer = Integer.valueOf(i);
@@ -5611,7 +5600,6 @@ public class Thinlet extends Canvas
             }
 
             if(index == -1){
-                //set(component, ":slot", new Integer(v.size()));
                 set(component, ":slot", getInteger(v.size()));
                 v.add(component);
             }else{
@@ -7223,7 +7211,6 @@ public class Thinlet extends Canvas
 			try {
 				mediatracker.waitForID(1, 5000);
 			} catch (InterruptedException ie) { }
-			//imagepool.put(path, image);
 		} 
 		return image;
 	}
