@@ -73,9 +73,9 @@ public class ViewCommand {
 	if(args.get("-lightingmodel") != null){
 	    String model = args.getString("-lightingmodel", "normal");
 
-	    if(model.equals("normal")){
+	    if("normal".equals(model)){
 		mr.renderer.setLightingModel(Renderer.DefaultLightingModel);
-	    }else if(model.equals("cartoon")){
+	    }else if("cartoon".equals(model)){
 		mr.renderer.setLightingModel(Renderer.CartoonLightingModel);
 	    }else{
 		Log.error("unknown lighting model: " + model);
@@ -108,7 +108,7 @@ public class ViewCommand {
 	    int oldWidth  = -1;
 	    int oldHeight = -1;
 
-	    if(image.equals("default")){
+	    if("default".equals(image)){
 		image = defaultImage;
 	    }
 

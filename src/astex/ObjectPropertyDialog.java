@@ -309,7 +309,7 @@ public class ObjectPropertyDialog extends Dialog
 	boolean needTexture   = true;
 	StringBuilder command        = new StringBuilder(100);
 
-	if(actionCommand.equals("distance")){
+	if("distance".equals(actionCommand)){
 	    command.append("object ").append(name).append(" texture distance ")
 		   .append(texCoord).append(" default;object ").append(name)
 		   .append(" texture ").append(texCoord).append("div 8.0;");
@@ -321,7 +321,7 @@ public class ObjectPropertyDialog extends Dialog
 
 	    needTexture = false;
 
-	}else if(actionCommand.equals("electrostatic")){
+	}else if("electrostatic".equals(actionCommand)){
 	    if(applyCharges.getState() == 1){
 		command.append("run 'charge.properties';");
 	    }
@@ -331,7 +331,7 @@ public class ObjectPropertyDialog extends Dialog
 		   .append(" 12.0 default;texture load rwb 'images/textures/rwb.jpg';")
 		   .append("object ").append(name).append(" texture rwb;");
 	    needTexture = false;
-	}else if(actionCommand.equals("lipophilicity")){
+	}else if("lipophilicity".equals(actionCommand)){
 	    if(applyMlp.getState() == 1){
 		command.append("run 'lipophilicity.properties';");
 	    }
@@ -341,16 +341,16 @@ public class ObjectPropertyDialog extends Dialog
 		   .append(" 7.0 default;texture load molcad 'images/textures/red2blue.jpg';object ")
 		   .append(name).append(" texture molcad;");
 	    needTexture = false;
-	}else if(actionCommand.equals("curvature")){
+	}else if("curvature".equals(actionCommand)){
 	    command.append("object ").append(name).append(" texture curvature ")
 		    .append(texCoord).append(" 6 default;object ").append(name)
 		    .append(" texture ").append(texCoord)
 		    .append("div 1.0;texture load rwb 'images/textures/rwb.jpg';object ")
 		    .append(name).append(" texture rwb;");
 	    needTexture = false;
-	}else if(actionCommand.equals("atom_colors")){
+	}else if("atom_colors".equals(actionCommand)){
 	    command.append("object ").append(name).append(" -map { current };");
-	}else if(actionCommand.equals("clip_object")){
+	}else if("clip_object".equals(actionCommand)){
 	    command.append("object ").append(name).append(" clip ").append(texCoord).append(";");
 	    needTexture = false;
 	}else{

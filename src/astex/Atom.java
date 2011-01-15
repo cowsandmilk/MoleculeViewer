@@ -1008,34 +1008,34 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	}else{
 	    String resname = parentResidue.getName();
 
-	    if(name.equals("N")){
+	    if("N".equals(name)){
 		if("PRO".equals(resname)){
 		    return false;
 		}else{
 		    return true;
 		}
-	    }else if(name.equals("NE1") && "TRP".equals(resname)){
+	    }else if("NE1".equals(name) && "TRP".equals(resname)){
 		return true;
-	    }else if(name.equals("OG") && "SER".equals(resname)){
+	    }else if("OG".equals(name) && "SER".equals(resname)){
 		return true;
-	    }else if(name.equals("OG1") && "THR".equals(resname)){
+	    }else if("OG1".equals(name) && "THR".equals(resname)){
 		return true;
-	    }else if(name.equals("ND2") && "ASN".equals(resname)){
+	    }else if("ND2".equals(name) && "ASN".equals(resname)){
 		return true;
-	    }else if(name.equals("NE2") && "GLN".equals(resname)){
+	    }else if("NE2".equals(name) && "GLN".equals(resname)){
 		return true;
-	    }else if(name.equals("OH") && "TYR".equals(resname)){
+	    }else if("OH".equals(name) && "TYR".equals(resname)){
 		return true;
-	    }else if(name.equals("NE1") && "HIS".equals(resname)){
+	    }else if("NE1".equals(name) && "HIS".equals(resname)){
 		return true;
-	    }else if((name.equals("NE2") || name.equals("ND1")) &&
+	    }else if(("NE2".equals(name) || "ND1".equals(name)) &&
 		     "HIS".equals(resname)){
 		return true;
-	    }else if(name.equals("NZ") && "LYS".equals(resname)){
+	    }else if("NZ".equals(name) && "LYS".equals(resname)){
 		return true;
-	    }else if((name.equals("NE") ||
-		      name.equals("NH1") || 
-		      name.equals("NH2")) &&
+	    }else if(("NE".equals(name) ||
+		      "NH1".equals(name) ||
+		      "NH2".equals(name)) &&
 		     "ARG".equals(resname)){
 		return true;
 	    }else{
@@ -1055,32 +1055,32 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	    return true;
 	}else if(!parentResidue.isStandardAminoAcid()){
 	    return false;
-	}else if(name.equals("O")){
+	}else if("O".equals(name)){
 	    return true;
 	}else{
 	    String resname = parentResidue.getName();
 
-	    if(name.equals("NE1") && "TRP".equals(resname)){
+	    if("NE1".equals(name) && "TRP".equals(resname)){
 		return true;
-	    }else if(name.equals("OG") && "SER".equals(resname)){
+	    }else if("OG".equals(name) && "SER".equals(resname)){
 		return true;
-	    }else if(name.equals("OG1") && "THR".equals(resname)){
+	    }else if("OG1".equals(name) && "THR".equals(resname)){
 		return true;
-	    }else if(name.equals("OD1") && "ASN".equals(resname)){
+	    }else if("OD1".equals(name) && "ASN".equals(resname)){
 		return true;
-	    }else if(name.equals("OE1") && "GLN".equals(resname)){
+	    }else if("OE1".equals(name) && "GLN".equals(resname)){
 		return true;
-	    }else if(name.equals("OH") && "TYR".equals(resname)){
+	    }else if("OH".equals(name) && "TYR".equals(resname)){
 		return true;
-	    }else if(name.equals("NE1") && "HIS".equals(resname)){
+	    }else if("NE1".equals(name) && "HIS".equals(resname)){
 		return true;
-	    }else if((name.equals("NE2") || name.equals("ND1")) &&
+	    }else if(("NE2".equals(name) || "ND1".equals(name)) &&
 		     "HIS".equals(resname)){
 		return true;
-	    }else if((name.equals("OD1") || name.equals("OD2")) &&
+	    }else if(("OD1".equals(name) || "OD2".equals(name)) &&
 		     "ASP".equals(resname)){
 		return true;
-	    }else if((name.equals("OE1") || name.equals("OE2")) &&
+	    }else if(("OE1".equals(name) || "OE2".equals(name)) &&
 		     "GLU".equals(resname)){
 		return true;
 	    }else{

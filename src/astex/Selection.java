@@ -768,7 +768,7 @@ public class Selection {
 	    String name = chain.getName();
 	    for(int i = 0; i < idCount; i++){
 		String chainId = (String)ids.get(i);
-		if(chainId.equals("_")){
+		if("_".equals(chainId)){
 		    chainId = " ";
 		}
 		if(match.matches(chainId, name)){

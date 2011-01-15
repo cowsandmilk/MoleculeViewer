@@ -348,13 +348,13 @@ public class Log {
 	    String value = (String)logProperties.get(property);
 	    value = value.toUpperCase();
 
-	    if(property.equals("classname")){
-		if(value.equals("FULL")){
+	    if("classname".equals(property)){
+		if("FULL".equals(value)){
 		    fullClass = true;
-		}else if(value.equals("METHOD")){
+		}else if("METHOD".equals(value)){
 		    fullClass = false;
 		}
-	    }else if(property.equals("level")){
+	    }else if("level".equals(property)){
 		int l = string2level(value);
 
 		if(l != -1){

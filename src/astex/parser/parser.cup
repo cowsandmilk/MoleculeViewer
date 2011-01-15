@@ -414,10 +414,10 @@ map_command ::=
 
 			for(int i = 0; i < maps.size(); i++){
 				astex.Map map = (astex.Map)maps.get(i);
-				if(onoff.equals("wire")){
+				if("wire".equals(onoff)){
 					map.setContourStyle(contour.intValue(), astex.Map.Lines);
 					parser.renderer.contourMap(map, contour.intValue());
-				}else if(onoff.equals("solid")){
+				}else if("solid".equals(onoff)){
 					map.setContourStyle(contour.intValue(), astex.Map.Surface);
 					parser.renderer.contourMap(map, contour.intValue());
 				}else{
@@ -445,7 +445,7 @@ map_command ::=
 
 			for(int i = 0; i < maps.size(); i++){
 				astex.Map map = (astex.Map)maps.get(i);
-				if(value.equals("on")){
+				if("on".equals(value)){
 					map.setContourStyle(contour.intValue(), astex.Map.Surface);
 				}else{
 					map.setContourStyle(contour.intValue(), astex.Map.Lines);
@@ -477,11 +477,11 @@ map_command ::=
 			
 			astex.Map map = parser.renderer.getMap(name);
 
-			if(onoff.equals("toggle")){
+			if("toggle".equals(onoff)){
 			  displayed = 2;
-			}else if(onoff.equals("on")){
+			}else if("on".equals(onoff)){
 			  displayed = 1;
-			}else if(onoff.equals("off")){
+			}else if("off".equals(onoff)){
 			  displayed = 0;
 			}
 
@@ -558,9 +558,9 @@ display_command ::=
 			int displayBit = mode.intValue();;
 			int on = 0;
 
-			if(onoff.equals("on")){
+			if("on".equals(onoff)){
 				on = 1;
-			}else if(onoff.equals("off")){
+			}else if("off".equals(onoff)){
 				on = 0;
 				displayBit = ~displayBit;
 			}else{
@@ -927,11 +927,11 @@ distance_command ::=
 		{: parser.renderer.removeAllDistances(); :}
 	| DISTANCE STRING:state
 		{:
-			if(state.equals("on")){
+			if("on".equals(state)){
 				parser.renderer.setDisplayDistances(true);
-			}else if(state.equals("off")){
+			}else if("off".equals(state)){
 				parser.renderer.setDisplayDistances(false);
-			}else if(state.equals("toggle")){
+			}else if("toggle".equals(state)){
 				boolean bumps =
 					parser.renderer.getDisplayDistances();
 				parser.renderer.setDisplayDistances(!bumps);
@@ -951,20 +951,20 @@ view_command ::=
 miscellaneous_command ::=
 	  SET STRING:name on_off:value
 		{:
-			if(name.equals("bondtypes")){
-				boolean b = value.equals("on") ? true : false;
+			if("bondtypes".equals(name)){
+				boolean b = "on".equals(value);
 				parser.renderer.displayBondTypes(b);
-			}else if(name.equals("bump_in_same_molecule")){
-				boolean b = value.equals("on") ? true : false;
+			}else if("bump_in_same_molecule".equals(name)){
+				boolean b = "on".equals(value);
 				parser.renderer.setBumpInSameMolecule(b);
-			}else if(name.equals("symmetry")){
-				boolean b = value.equals("on") ? true : false;
+			}else if("symmetry".equals(name)){
+				boolean b = "on".equals(value);
 				parser.renderer.setSymmetry(b);
-			}else if(name.equals("bumps")){
-				boolean b = value.equals("on") ? true : false;
+			}else if("bumps".equals(name)){
+				boolean b = "on".equals(value);
 				parser.renderer.setDisplayBumps(b);
-			}else if(name.equals("selectcount")){
-				boolean b = value.equals("on") ? true : false;
+			}else if("selectcount".equals(name)){
+				boolean b = "on".equals(value);
 				parser.renderer.setSelectCount(b);
 			}else{
 				System.out.println("invalid parameter " + name);
@@ -980,21 +980,21 @@ miscellaneous_command ::=
 		:}
 	| SET STRING:name STRING:value
 		{:
-			if(name.equals("arraycopy")){
-				boolean b = value.equals("true") ? true : false;
+			if("arraycopy".equals(name)){
+				boolean b = "true".equals(value);
 				// fix
 				//parser.renderer.setArrayCopy(b);
-			}else if(name.equals("minimumspacing")){
+			}else if("minimumspacing".equals(name)){
 				double d = FILE.readDouble(value);
 				Surface.setMinimumSpacing(d);
-			}else if(name.equals("contoursize")){
+			}else if("contoursize".equals(name)){
 				int d = FILE.readInteger(value);
 				parser.renderer.setContourSize(d);
-			}else if(name.equals("pick")){
+			}else if("pick".equals(name)){
 				int pickMode = -1;
-				if(value.equals("distances")){
+				if("distances".equals(value)){
 					pickMode = parser.renderer.DISTANCE_PICK;
-				}else if(value.equals("angles")){
+				}else if("angles".equals(value)){
 					pickMode = parser.renderer.ANGLE_PICK;
 				}else{
 					System.out.println("invalid pick mode " + value);
@@ -1140,11 +1140,11 @@ schematic_command ::=
 				}
 			}else{
 				int sstype = -1;
-				if(type.equals("helix")){
+				if("helix".equals(type)){
 					sstype = Residue.Helix;
-				}else if(type.equals("sheet")){
+				}else if("sheet".equals(type)){
 					sstype = Residue.Sheet;
-				}else if(type.equals("coil")){
+				}else if("coil".equals(type)){
 					sstype = Residue.Coil;
 				}
 
@@ -1191,11 +1191,11 @@ object_command ::=
 		{:
 			MoleculeRenderer r = parser.renderer;
 
-			if(state.equals("off")){
+			if("off".equals(state)){
 				r.renderer.setGraphicalObjectsVisibility(pattern, 0);
-			}else if(state.equals("on")){
+			}else if("on".equals(state)){
 				r.renderer.setGraphicalObjectsVisibility(pattern, 1);
-			}else if(state.equals("toggle")){
+			}else if("toggle".equals(state)){
 				r.renderer.setGraphicalObjectsVisibility(pattern, 2);
 			}else{
 				// otherwise assume it is a colour name.
@@ -1208,11 +1208,11 @@ object_command ::=
 		{:
 			MoleculeRenderer r = parser.renderer;
 
-			if(state.equals("off")){
+			if("off".equals(state)){
 				r.renderer.setGraphicalObjectsVisibility(pattern, 0);
-			}else if(state.equals("on")){
+			}else if("on".equals(state)){
 				r.renderer.setGraphicalObjectsVisibility(pattern, 1);
-			}else if(state.equals("toggle")){
+			}else if("toggle".equals(state)){
 				r.renderer.setGraphicalObjectsVisibility(pattern, 2);
 			}else{
 				// otherwise assume it is a colour name.
@@ -1223,9 +1223,9 @@ object_command ::=
 		:}
 	| OBJECT STRING:name BACKFACE on_off:state
 		{:
-			if(state.equals("on")){
+			if("on".equals(state)){
 				parser.renderer.renderer.setBackface(name, true);
-			}else if(state.equals("off")){
+			}else if("off".equals(state)){
 				parser.renderer.renderer.setBackface(name, false);
 			}else{
 				System.out.println("object backface: illegal state " + state);
@@ -1233,7 +1233,7 @@ object_command ::=
 		:}
 	| OBJECT STRING:name TEXTURE STRING:texture
 		{:
-			if(texture.equals("off")){
+			if("off".equals(texture)){
 				parser.renderer.renderer.applyTexture(name, null);
 			}else{
 				parser.renderer.renderer.applyTexture(name, texture);
@@ -1243,9 +1243,9 @@ object_command ::=
 		{:
 			int uv = 0;
 	
-			if(range.equals("urange")){
+			if("urange".equals(range)){
 				uv = Tmesh.UTexture;
-			}else if(range.equals("vrange")){
+			}else if("vrange".equals(range)){
 				uv = Tmesh.VTexture;
 			}else{
 				System.out.println("texture command not recognised: " + range);
@@ -1272,19 +1272,19 @@ object_command ::=
 		{:
 			double val = value.doubleValue();
 			int att = 0;
-    			if(attribute.equals("vscale")){
+    			if("vscale".equals(attribute)){
 				att = Tmesh.VScale;
-    			}else if(attribute.equals("uscale")){
+    			}else if("uscale".equals(attribute)){
 				att = Tmesh.UScale;
-    			}else if(attribute.equals("vdiv")){
+    			}else if("vdiv".equals(attribute)){
 				att = Tmesh.VScale;
 				val = 1.0/val;
-    			}else if(attribute.equals("udiv")){
+    			}else if("udiv".equals(attribute)){
 				att = Tmesh.UScale;
 				val = 1.0/val;
-    			}else if(attribute.equals("voffset")){
+    			}else if("voffset".equals(attribute)){
 				att = Tmesh.VOffset;
-    			}else if(attribute.equals("uoffset")){
+    			}else if("uoffset".equals(attribute)){
 				att = Tmesh.UOffset;
 			}else{
 				System.out.println("unknown texture attribute " + attribute);
@@ -1298,9 +1298,9 @@ object_command ::=
 		 STRING:uvspec selection:selectedAtoms
 		{:
 			int uv = -1;
-			if(uvspec.equals("u")){
+			if("u".equals(uvspec)){
 				uv = Tmesh.UTexture;
-			}else if(uvspec.equals("v")){
+			}else if("v".equals(uvspec)){
 				uv = Tmesh.VTexture;
 			}
 
@@ -1318,9 +1318,9 @@ object_command ::=
 		 STRING:uvspec number:dmax selection:selectedAtoms
 		{:
 			int uv = -1;
-			if(uvspec.equals("u")){
+			if("u".equals(uvspec)){
 				uv = Tmesh.UTexture;
-			}else if(uvspec.equals("v")){
+			}else if("v".equals(uvspec)){
 				uv = Tmesh.VTexture;
 			}
 
@@ -1339,9 +1339,9 @@ object_command ::=
 		 STRING:uvspec number:dmax selection:selectedAtoms
 		{:
 			int uv = -1;
-			if(uvspec.equals("u")){
+			if("u".equals(uvspec)){
 				uv = Tmesh.UTexture;
-			}else if(uvspec.equals("v")){
+			}else if("v".equals(uvspec)){
 				uv = Tmesh.VTexture;
 			}
 
@@ -1361,9 +1361,9 @@ object_command ::=
 		 STRING:uvspec number:dmax selection:selectedAtoms
 		{:
 			int uv = -1;
-			if(uvspec.equals("u")){
+			if("u".equals(uvspec)){
 				uv = Tmesh.UTexture;
-			}else if(uvspec.equals("v")){
+			}else if("v".equals(uvspec)){
 				uv = Tmesh.VTexture;
 			}
 

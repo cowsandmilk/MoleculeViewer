@@ -657,7 +657,7 @@ public class MoleculeRenderer {
 		}
 	    }
 
-	}else if(from != null && mode.equals("bumps")){
+	}else if(from != null && "bumps".equals(mode)){
 	    Distance d = new Distance();
 	    configureDistance(d, args);
 	    d.setInteger(Distance.Mode, Distance.Pairs);
@@ -690,7 +690,7 @@ public class MoleculeRenderer {
 	    System.out.println("toCount   "+ to.size());
 
 	    // create a distance object
-	    if(mode.equals("centroid")){
+	    if("centroid".equals(mode)){
 		Distance d = new Distance();
 		d.setInteger(Distance.Mode, Distance.Centroids);
 		//d.setMode(Distance.Centroids);
@@ -709,9 +709,9 @@ public class MoleculeRenderer {
 		    addDistance(d);
 		    //distances.add(d);
 		}
-	    }else if(mode.equals("pairs") || mode.equals("nbpairs")){
+	    }else if("pairs".equals(mode) || "nbpairs".equals(mode)){
 		boolean allowBonded = true;
-		if(mode.equals("nbpairs")){
+		if("nbpairs".equals(mode)){
 		    allowBonded = false;
 		}
 
@@ -820,7 +820,7 @@ public class MoleculeRenderer {
 	for(int i = 0; i < atomCount; i++){
 	    Atom a = (Atom)atoms.get(i);
 
-	    if(a.getAtomLabel().equals("O")){
+	    if("O".equals(a.getAtomLabel())){
 		l.add(i, a.x, a.y, a.z);
 	    }
 	}
@@ -831,7 +831,7 @@ public class MoleculeRenderer {
 	for(int i = 0; i < atomCount; i++){
 	    Atom a = (Atom)atoms.get(i);
 
-	    if(a.getAtomLabel().equals("N")){
+	    if("N".equals(a.getAtomLabel())){
 		Atom n = a;
 		Point3d h = getAmideHydrogen(a);
 
@@ -973,9 +973,9 @@ public class MoleculeRenderer {
 	int tc = 0;
 
 	if(coord != null){
-	    if(coord.equals("u")){
+	    if("u".equals(coord)){
 		tc = 0;
-	    }else if(coord.equals("v")){
+	    }else if("v".equals(coord)){
 		tc = 1;
 	    }else{
 		tc = -1;
@@ -1673,7 +1673,7 @@ public class MoleculeRenderer {
 		String displayString = (String)properties.get(displayLabel);
 		boolean display = false;
 		if(displayString != null &&
-		   displayString.equals("true")){
+		   "true".equals(displayString)){
 		    display = true;
 		}
 
@@ -1683,9 +1683,9 @@ public class MoleculeRenderer {
 		String styleString = (String)properties.get(styleLabel);
 		int style = Map.Lines;
 		if(styleString != null){
-		    if(styleString.equals("solid")){
+		    if("solid".equals(styleString)){
 			style = Map.Surface;
-		    }else if(styleString.equals("lines")){
+		    }else if("lines".equals(styleString)){
 			style = Map.Lines;
 		    }
 		}
@@ -2298,17 +2298,17 @@ public class MoleculeRenderer {
 	for(int i = 0; i < moleculeCount; i++){
 	    Molecule m = getMolecule(i);
 	    if(moleculeMatches(pattern, m)){
-		if(action.equals("off")){
+		if("off".equals(action)){
 		    m.setDisplayed(0);
-		}else if(action.equals("on")){
+		}else if("on".equals(action)){
 		    m.setDisplayed(1);
-		}else if(action.equals("toggle")){
+		}else if("toggle".equals(action)){
 		    m.setDisplayed(2);
-		}else if(action.equals("trace")){
+		}else if("trace".equals(action)){
 		    m.setDisplayStyle(Molecule.Trace);
-		}else if(action.equals("tracealways")){
+		}else if("tracealways".equals(action)){
 		    m.setDisplayStyle(Molecule.TraceAlways);
-		}else if(action.equals("normal")){
+		}else if("normal".equals(action)){
 		    m.setDisplayStyle(Molecule.Normal);
 		}else{
 		    System.out.println("molecule display: unknown option " +
@@ -2564,7 +2564,7 @@ public class MoleculeRenderer {
 	}
 
 	if((residueString != null) &&
-	   (!(residueString.equals("*") || residueString.equals("")))){
+	   (!("*".equals(residueString) || residueString.length() == 0))){
 	    String residueRanges[] = FILE.split(residueString, ",");
 	    residueRangeCount = residueRanges.length;
 	    startResidueNumber = new int[residueRangeCount];
@@ -2585,7 +2585,7 @@ public class MoleculeRenderer {
 	if(chainName != null){
 	    // replace ^ characters with space
 	    chainName = chainName.replace('^', ' ');
-	    if(chainName.equals("*") || chainName.isEmpty()){
+	    if("*".equals(chainName) || chainName.isEmpty()){
 		chainName = null;
 	    }
 	}
@@ -4039,7 +4039,7 @@ public class MoleculeRenderer {
 
 	for(int i = 0; i < atomCount; i++){
 	    Atom a = molecule.getAtom(i);
-	    if(a.getAtomLabel().equals("CA")){
+	    if("CA".equals(a.getAtomLabel())){
 		if(previous != null && previous.distance(a) < 4.1 &&
 		   previous.isDisplayed() && a.isDisplayed()){
 		    int previousColor = previous.getColor();
@@ -4659,7 +4659,7 @@ public class MoleculeRenderer {
 		    Atom atom = molecule.getAtom(a);
 		    int az = atom.zs;
 		    if(atom.isDisplayed() &&
-		       atom.getAtomLabel().equals("CA") &&
+		       "CA".equals(atom.getAtomLabel()) &&
 		       az >= renderer.backClip && az <= renderer.frontClip){
 			int ax = atom.xs >> Renderer.FixedBits;
 			int ay = atom.ys >> Renderer.FixedBits;

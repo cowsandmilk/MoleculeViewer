@@ -5595,7 +5595,7 @@ public class Thinlet extends Canvas
      */
     private void insertItem(Object parent, Object key, Object component, int index) {
         // mjh
-        if(useArrayLists && key.equals(":comp")){
+        if(useArrayLists && ":comp".equals(key)){
             ArrayList<Object> v = (ArrayList<Object>)get(parent, ":children");
             if(v == null){
                 String childCountHint = (String)getProperty(parent, "childCount");

@@ -208,8 +208,7 @@ public class Texgen {
 	    Atom a = (Atom)atoms.get(i);
 	    String name = a.getAtomLabel();
 
-	    if(func == Electrostatic &&
-	       name != null && name.equals("N")){
+	    if(func == Electrostatic && "N".equals(name)){
 		Point3d nh = getAmideHydrogen(a);
 		// nh will be null if we already had an nh
 		if(nh != null){

@@ -247,7 +247,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	FILE.setTryFiles(false);
 	
 	String arraycopy = getParameter("arraycopy");
-	if(arraycopy != null && arraycopy.equals("true")){
+	if("true".equals(arraycopy)){
 	    moleculeViewer.setArrayCopy(true);
 	}
 	

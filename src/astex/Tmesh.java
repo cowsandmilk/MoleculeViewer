@@ -616,17 +616,17 @@ public class Tmesh {
 	while(f.nextLine()){
 	    int fieldCount = f.getFieldCount();
 	    if(fieldCount == 3 &&
-	       f.getField(0).equals("element")){
-		if(f.getField(1).equals("vertex")){
+	       "element".equals(f.getField(0))){
+		if("vertex".equals(f.getField(1))){
 		    vcount = f.getInteger(2);
 		    tmesh.setPointCapacity(vcount);
 		    System.out.println("vertex count " + vcount);
-		}else if(f.getField(1).equals("face")){
+		}else if("face".equals(f.getField(1))){
 		    fcount = f.getInteger(2);
 		    tmesh.setTriangleCapacity(fcount);
 		    System.out.println("face count " + fcount);
 		}
-	    }else if(fieldCount == 1 && f.getField(0).equals("end_header")){
+	    }else if(fieldCount == 1 && "end_header".equals(f.getField(0))){
 		System.out.println("seen end of header");
 		break;
 	    }

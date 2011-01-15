@@ -673,7 +673,7 @@ public class Renderer {
     public void applyTexture(String pattern, String texName){
 	Texture tex = null;
 
-	if(texName != null && !texName.equals("off")){
+	if(texName != null && !"off".equals(texName)){
 
 	    tex = textures.get(texName);
 
@@ -3390,7 +3390,7 @@ public class Renderer {
 			    String bits[] = FILE.split(tokens[i], "=");
 			    String option = bits[0];
 
-			    if(option.equals("justify")){
+			    if("justify".equals(option)){
 				stringJustification = 0;
 
 				if(bits[1].indexOf('l') != -1){
@@ -3411,24 +3411,24 @@ public class Renderer {
 				if(bits[1].indexOf('h') != -1){
 				    stringJustification |= JustifyHorizontal;
 				}
-			    }else if(option.equals("color") || option.equals("colour")){
+			    }else if("color".equals(option) || "colour".equals(option)){
 				stringColor = Color32.getColorFromName(bits[1]);
 				colorDefined = true;
-			    }else if(option.equals("points")){
+			    }else if("points".equals(option)){
 				stringPoints = FILE.readInteger(bits[1]);
-			    }else if(option.equals("size")){
+			    }else if("size".equals(option)){
 				stringSize = FILE.readDouble(bits[1]);
-			    }else if(option.equals("radius")){
+			    }else if("radius".equals(option)){
 				stringRadius = FILE.readDouble(bits[1]);
-			    }else if(option.equals("xoff")){
+			    }else if("xoff".equals(option)){
 				charOffsets[0] = FILE.readDouble(bits[1]);
-			    }else if(option.equals("yoff")){
+			    }else if("yoff".equals(option)){
 				charOffsets[1] = FILE.readDouble(bits[1]);
-			    }else if(option.equals("zoff")){
+			    }else if("zoff".equals(option)){
 				charOffsets[2] = FILE.readDouble(bits[1]);
-			    }else if(option.equals("font")){
+			    }else if("font".equals(option)){
 				
-			    }else if(option.equals("3d")){
+			    }else if("3d".equals(option)){
 				string3d = bits[1].startsWith("t");
 			    }else{
 				Log.error("unrecognized font keyword " + tokens[i]);
@@ -3465,7 +3465,7 @@ public class Renderer {
     /** Look up a font from the bitmapfont properties. */
     private byte[] getFont(String name){
 	// special case for default font
-	if(name.equals("default")){
+	if("default".equals(name)){
 	    name = Settings.getString("fonts", "default");
 	}
 	

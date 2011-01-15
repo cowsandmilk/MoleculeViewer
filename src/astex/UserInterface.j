@@ -500,7 +500,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	ItemListener lil = new ItemListener(){
 		public void itemStateChanged(ItemEvent e){
 		    String s = (String)e.getItem();
-		    if(s.equals("clear")){
+		    if("clear".equals(s)){
 			moleculeRenderer.execute("label clear current;");
 			moleculeRenderer.repaint();
 		    }else{
@@ -755,7 +755,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	       .append(" -name '").append(nameTF.getText()).append("' -colour '")
 	       .append(distanceColorButton.getValue()).append("' -from { peek 0 }");
 
-	if(!mode.equals("bumps")){
+	if(!"bumps".equals(mode)){
 	    command.append(" -to { peek 1 }");
 	}
 
@@ -1137,7 +1137,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	while(objects.hasMoreElements()){
 	    XMLElement child = (XMLElement)objects.nextElement();
-	    if(child.getName().equals("node")){
+	    if("node".equals(child.getName())){
 		String label = child.getStringAttribute("LABEL");
 		String selection = child.getStringAttribute("SELECTION");
 
@@ -1146,7 +1146,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		node.setLabel(label);
 		node.setUserData(selection);
 		node.setStyle(style);
-	    }else if(child.getName().equals("folder")){
+	    }else if("folder".equals(child.getName())){
 		String label = child.getStringAttribute("LABEL");
 
 		JCOutlinerFolderNode newParent =
@@ -1191,7 +1191,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 		    for(int c = 0; c < mol.getChainCount(); c++){
 			Chain chain = mol.getChain(c);
 			String chainName = chain.getName();
-			if(chainName.equals(" ")){
+			if(" ".equals(chainName)){
 			    chainName = "_";
 			}
 			JCOutlinerFolderNode chainFolder =
@@ -1357,7 +1357,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    if(newColor != undefinedColor){
 		surfaceBackgroundColor = newColor;
 	    }
-	}else if(command.equals("build_surface")){
+	}else if("build_surface".equals(command)){
 	    double r = FILE.readDouble(probeRadius.getValue());
 	    String name = surfaceName.getText();
 
@@ -1366,12 +1366,12 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	    mr.execute("surface -probe " + r + " -solid true " +
 		       name + " " + colorString + " current;");
-	}else if(command.equals("build_schematic")){
+	}else if("build_schematic".equals(command)){
 	    buildSchematic();
 	    
-	}else if(command.equals("center")){
+	}else if("center".equals(command)){
 	    mr.execute("center default;");
-	}else if(command.equals("reset")){
+	}else if("reset".equals(command)){
 	    mr.resetView();
 	}else if(!command.startsWith("display")){
 	    DynamicArray selectedObjects = getSelectedObjects();

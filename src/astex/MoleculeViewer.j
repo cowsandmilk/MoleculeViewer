@@ -106,7 +106,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	boolean interactive = args.getBoolean("-interactive", false);
 
 	// if state is start we just play the animation objects.
-	if(state.equals("start")){
+	if("start".equals(state)){
 	    animationThread = new Animate();
 	    animationThread.setMoleculeViewer(this);
 	    animationThread.setStages(stages);
@@ -114,7 +114,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    animationThread.start();
 
 	    return;
-	}else if(state.equals("delete")){
+	}else if("delete".equals(state)){
 	    stages.clear();
 	    return;
 	}
@@ -140,7 +140,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	stage.setSleepDuration(d);
 	stage.setCommand(command);
 
-	if(mode.equals("rock")){
+	if("rock".equals(mode)){
 	    double a = args.getDouble("-angle", 7.5);
 	    //double r = args.getDouble("-rate", 7.5);
 
@@ -148,16 +148,16 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    //stage.setRockRate(r);
 
 	    stage.setMode(AnimationObject.Rock);
-	}else if(mode.equals("roll")){
+	}else if("roll".equals(mode)){
 	    double a = args.getDouble("-angle", 360.0);
 	    stage.setRockAngle(a);
 	    
 	    stage.setMode(AnimationObject.Roll);
-	}else if(mode.equals("command")){
+	}else if("command".equals(mode)){
 
 	    stage.setMode(AnimationObject.Command);
 
-	}else if(mode.equals("recenter")){
+	}else if("recenter".equals(mode)){
 	    String matrix = args.getString("-matrix", null);
 
 	    Point3d center = null;
@@ -708,7 +708,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	// then the renderer should use arraycopy to clear
 	// its buffers rather than brute force
 	String arraycopy = System.getProperty("arraycopy");
-	if(arraycopy != null && arraycopy.equals("true")){
+	if("true".equals(arraycopy)){
 	    moleculeViewer.setArrayCopy(true);
 	}
 
@@ -1675,13 +1675,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 		System.out.println("finished writing image");
 	    }
-	}else if(command.equals("Clear distances")){
+	}else if("Clear distances".equals(command)){
 	    moleculeRenderer.removeAllDistances();
 
-	}else if(command.equals("Clear angles")){
+	}else if("Clear angles".equals(command)){
 	    moleculeRenderer.removeAllAngles();
 
-	}else if(command.equals("Clear torsions")){
+	}else if("Clear torsions".equals(command)){
 	    moleculeRenderer.removeAllTorsions();
 
 	}else{
@@ -1964,9 +1964,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    extension = f.substring(dot+1, f.length());
 	}
     
-	if(extension != null &&
-	   (extension.equals("pdb") || extension.equals("mol") ||
-	    extension.equals("sdf"))){
+	if("pdb".equals(extension) || "mol".equals(extension) ||
+	   "sdf".equals(extension)){
 	    // its ok
 	    return f;
 	}else{
@@ -2027,7 +2026,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    }else if(command.equals(ExcludeString)){
 				
 		excludeFromSelection = state;
-	    }else if(command.equals("Torsions")){
+	    }else if("Torsions".equals(command)){
 		if(state){
 		    moleculeRenderer.setPickMode(MoleculeRenderer.TORSION_PICK);
 		}else{
@@ -2036,7 +2035,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		angleCheckbox.setState(false);
 		distancesCheckbox.setState(false);
 		nothingCheckbox.setState(false);
-	    }else if(command.equals("Angles")){
+	    }else if("Angles".equals(command)){
 		if(state){
 		    moleculeRenderer.setPickMode(MoleculeRenderer.ANGLE_PICK);
 		}else{
@@ -2045,7 +2044,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		torsionsCheckbox.setState(false);
 		distancesCheckbox.setState(false);
 		nothingCheckbox.setState(false);
-	    }else if(command.equals("Distances")){
+	    }else if("Distances".equals(command)){
 		if(state){
 		    moleculeRenderer.setPickMode(MoleculeRenderer.DISTANCE_PICK);
 		}else{
@@ -2054,7 +2053,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		torsionsCheckbox.setState(false);
 		angleCheckbox.setState(false);
 		nothingCheckbox.setState(false);
-	    }else if(command.equals("Nothing")){
+	    }else if("Nothing".equals(command)){
 		if(state){
 		    moleculeRenderer.setPickMode(MoleculeRenderer.NORMAL_PICK);
 		}

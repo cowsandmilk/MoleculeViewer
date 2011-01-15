@@ -115,7 +115,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
     private String getCellValueWithName(Object table, final String name){
         Object row = null;
 
-        if(getClass(table).equals("row")){
+        if("row".equals(getClass(table))){
             // it was a row really...
             row = table;
             table = getParent(row);

@@ -676,7 +676,7 @@ public class ActiveSite {
 
 	String atomSelection[] = FILE.split(pdbMap.get(0), ".");
 
-	if(atomSelection[0].equals("*")){
+	if("*".equals(atomSelection[0])){
 	    atomSelection[0] = null;
 	}
 

@@ -2899,19 +2899,19 @@ public class AnaSurface {
 	boolean faceType = false;
 
 	for(int i = 0; i < args.length; i++){
-	    if(args[i].equals("-r")){
+	    if("-r".equals(args[i])){
 		if(i < lastArg){
 		    probeRadius = FILE.readDouble(args[++i]);
 		}
-	    }else if(args[i].equals("-e")){
+	    }else if("-e".equals(args[i])){
 		if(i < lastArg){
 		    edgeLength = FILE.readDouble(args[++i]);
 		}
-	    }else if(args[i].equals("-d")){
+	    }else if("-d".equals(args[i])){
 		if(i < lastArg){
 		    subdivisions = FILE.readInteger(args[++i]);
 		}
-	    }else if(args[i].equals("-q")){
+	    }else if("-q".equals(args[i])){
 		if(i < lastArg){
 		    int quality = FILE.readInteger(args[++i]);
 		    if(quality > 0 && quality < qLength.length){
@@ -2919,16 +2919,16 @@ public class AnaSurface {
 			edgeLength = qLength[quality];
 		    }
 		}
-	    }else if(args[i].equals("-o")){
+	    }else if("-o".equals(args[i])){
 		if(i < lastArg){
 		    tmeshFile = args[++i];
-		    if(tmeshFile.equals("none")){
+		    if("none".equals(tmeshFile)){
 			tmeshFile = null;
 		    }
 		}
-	    }else if(args[i].equals("-t")){
+	    }else if("-t".equals(args[i])){
 		faceType = true;
-	    }else if(args[i].equals("-p")){
+	    }else if("-p".equals(args[i])){
 		if(i < lastArg){
 		    probesFilename = args[++i];
 		}
