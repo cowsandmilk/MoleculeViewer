@@ -98,8 +98,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         }else{
             setLayout(new BorderLayout());
 
-            //print.f("addLayout");
-
             add(moleculeViewer, BorderLayout.CENTER);
         }
 
@@ -503,15 +501,11 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 						   urlString.length());
         }
 
-        //System.out.println(urlSection);
-        //System.out.println(parameterSection);
-
         try {
             
             URL url = new URL(urlSection);
 
             URLConnection con = url.openConnection();
-            //System.out.println("Received a : " + con.getClass().getName());
 
             con.setDoInput(true);
             con.setDoOutput(true);

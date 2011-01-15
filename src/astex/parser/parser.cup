@@ -1028,11 +1028,8 @@ miscellaneous_command ::=
 				parser.urlContentsBuffer.setLength(0);
 
 				while((line = br.readLine()) != null){
-					//contents += line;
-					//contents += lineSeparator;
 					parser.urlContentsBuffer.append(line);
 					parser.urlContentsBuffer.append(lineSeparator);
-					//System.out.println("saw line <" + line + ">");
 				}
 
 				br.close();

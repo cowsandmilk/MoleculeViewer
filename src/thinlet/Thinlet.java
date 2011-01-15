@@ -7370,9 +7370,6 @@ public class Thinlet extends Canvas
                         { "string", "maximum", null, Integer.toString(Integer.MAX_VALUE) },
                         { "string", "step", null, "1" },
                         { "integer", "decimals", null, integer0 },
-                        //{ "integer", "minimum", null, new Integer(Integer.MIN_VALUE) },
-                        //{ "integer", "maximum", null, new Integer(Integer.MAX_VALUE) },
-                        //{ "integer", "step", null, integer1 },
 				{ "integer", "value", null, integer0 } }, // == text? deprecated
 			"progressbar", "component", new Object[][] {
 				{ "choice", "orientation", "validate", orientation },
