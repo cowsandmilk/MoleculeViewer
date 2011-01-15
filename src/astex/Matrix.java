@@ -208,14 +208,14 @@ public class Matrix {
     }
 
     public String returnScript(){
-	String command = "matrix ";
-	command += String.format(" %g", x00) + String.format(" %g", x01) + String.format(" %g", x02) + String.format(" %g", x03);
-	command += String.format(" %g", x10) + String.format(" %g", x11) + String.format(" %g", x12) + String.format(" %g", x13);
-	command += String.format(" %g", x20) + String.format(" %g", x21) + String.format(" %g", x22) + String.format(" %g", x23);
-	command += String.format(" %g", x30) + String.format(" %g", x31) + String.format(" %g", x32) + String.format(" %g", x33);
-	command += ";";
+	StringBuilder command = new StringBuilder("matrix ");
+	command.append(String.format(" %g %g %g %g", x00, x01, x02, x03));
+	command.append(String.format(" %g %g %g %g", x10, x11, x12, x13));
+	command.append(String.format(" %g %g %g %g", x20, x21, x22, x23));
+	command.append(String.format(" %g %g %g %g", x30, x31, x32, x33));
+	command.append(";");
 
-	return command;
+	return command.toString();
     }
 
     /** Small number for matrix equivalence. */

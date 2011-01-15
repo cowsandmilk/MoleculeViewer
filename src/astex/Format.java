@@ -297,15 +297,15 @@ public class Format {
 		double fr = d - whole; // fractional part
 		if (fr >= 1 || fr < 0) return exp_format(d);
 		double factor = 1;
-		String leading_zeroes = "";
+		StringBuilder leading_zeroes = new StringBuilder(precision);
 		for (int i = 1; i <= precision && factor <= 0x7FFFFFFFFFFFFFFFL; i++)  {
 			factor *= 10; 
-			leading_zeroes += "0";
+			leading_zeroes.append('0');
 		}
 		long l = (long) (factor * fr + 0.5);
 		if (l >= factor) { l = 0; whole++; } // CSH 10-25-97
       
-		String z = leading_zeroes + l;
+		String z = leading_zeroes.toString() + l;
 		z = "." + z.substring(z.length() - precision, z.length());
 		if (removeTrailing) {
 			int t = z.length() - 1;
@@ -316,7 +316,7 @@ public class Format {
 		return whole + z;
 	}
 	private String exp_format(double d) {
-		String f = "";
+		StringBuilder f = new StringBuilder(16);
 		int e = 0;
 		double dd = d;
 		double factor = 1;
@@ -328,20 +328,20 @@ public class Format {
 			return fixed_format(d);
       
 		d *= factor;
-		f += fixed_format(d);
+		f.append(fixed_format(d));
       
 		if (fmt == 'e' || fmt == 'g')
-			f += "e";
+			f.append('e');
 		else
-			f += "E";
-		String p = "000";      
+			f.append('E');
+		StringBuilder p = new StringBuilder("000");
 		if (e >= 0)  {
-			f += "+";
-			p += e;
+			f.append('+');
+			p.append(e);
 		}
 		else {
-			f += "-";
-			p += (-e);
+			f.append('-');
+			p.append(-e);
 		}
          
 		return f + p.substring(p.length() - 3, p.length());

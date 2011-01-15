@@ -571,7 +571,7 @@ public class MoleculeRenderer {
      */
     private String writeMoleculeToUrl(Molecule mol, String urlString,
 				      String type, String parameterName){
-	String result = "";
+	StringBuilder result = new StringBuilder(16);
 
 	try {
 	    URL url = new URL(urlString);
@@ -597,13 +597,13 @@ public class MoleculeRenderer {
 						       urlString.length());
 	    }
 
-	    String msg = "";
+	    StringBuilder msg = new StringBuilder(16);
 
 	    if(parameterSection != null){
-		msg += parameterSection + "&";
+		msg.append(parameterSection).append("&");
 	    }
 
-	    msg += parameterName + "=" + baos.toString();
+	    msg.append(parameterName).append("=").append(baos);
 
 	    con.setRequestProperty("CONTENT_LENGTH", Integer.toString(msg.length())); 
 
@@ -611,7 +611,7 @@ public class MoleculeRenderer {
 	    OutputStream os = con.getOutputStream();
 
 	    OutputStreamWriter osw = new OutputStreamWriter(os);
-	    osw.write(msg);
+	    osw.write(msg.toString());
 	    osw.flush();
 	    osw.close();
 
@@ -627,14 +627,14 @@ public class MoleculeRenderer {
 		    System.out.println(line);
 		}
 
-		result += line;
+		result.append(line);
 	    }
 
 	    br.close();
 	} catch (Throwable t) {
 	    t.printStackTrace();
 	}
-	return result;
+	return result.toString();
     }
 
     /** Handle a distance command. */
@@ -1472,16 +1472,17 @@ public class MoleculeRenderer {
 
 	    int finish = getMoleculeCount();
 
-	    String sel = "molecule";
+	    StringBuilder sel = new StringBuilder("molecule");
 
 	    for(int m = start; m < finish; m++){
-		sel += " '#" + m + "'";
+		sel.append(" '#").append(m).append("'");
 	    }
 
-	    String command = "cylinder_radius 0.09 " + sel + ";";
-	    command += "display cylinders on " + sel + ";";
+	    StringBuilder command = new StringBuilder(100);
+	    command.append("cylinder_radius 0.09 ").append(sel).append(";");
+	    command.append("display cylinders on ").append(sel).append(";");
 
-	    execute(command);
+	    execute(command.toString());
 
 	    if(finish - start == 1){
 		// added a single mol from the sd file
@@ -3683,31 +3684,25 @@ public class MoleculeRenderer {
     public void printMatrix(){
 	renderer.rotationMatrix.print("matrix");
 
-	String command = "animate\n\t-mode\t\trecenter\n\t-matrix\t\t\"";
+	StringBuffer command = new StringBuffer(200);
+	command.append("animate\n\t-mode\t\trecenter\n\t-matrix\t\t\"");
 	Matrix m = renderer.rotationMatrix;
 
-	command += String.format("%g", m.x00) + String.format(",%g", m.x01);
-	command += String.format(",%g", m.x02) + String.format(",%g", m.x03);
-	command += String.format(",%g", m.x10) + String.format(",%g", m.x11);
-	command += String.format(",%g", m.x12) + String.format(",%g", m.x13);
-	command += String.format(",%g", m.x20) + String.format(",%g", m.x21); 
-	command += String.format(",%g", m.x22) + String.format(",%g", m.x23);
-	command += String.format(",%g", m.x30) + String.format(",%g", m.x31);
-	command += String.format(",%g", m.x32) + String.format(",%g", m.x33);
+	command.append(String.format("%g,%g,%g,%g", m.x00, m.x01, m.x02, m.x03));
+	command.append(String.format(",%g,%g,%g,%g", m.x10, m.x11, m.x12, m.x13));
+	command.append(String.format(",%g,%g,%g,%g", m.x20, m.x21, m.x22, m.x23));
+	command.append(String.format(",%g,%g,%g,%g", m.x30, m.x31, m.x32, m.x33));
 
 	Point3d p = renderer.getCenter();
 
-	command += "\"\n\t-center\t\t\"";
-	command += String.format("%g,", p.x);
-	command += String.format("%g,", p.y);
-	command += String.format("%g", p.z);
-	command += "\"\n";
+	command.append("\"\n\t-center\t\t\"");
+	command.append(String.format("%g,%g,%g", p.x, p.y, p.z));
+	command.append("\"\n");
 
-	command += String.format("\t-radius\t\t%g\n", (renderer.width/renderer.getZoom()));
-	command += String.format("\t-clipfront\t%g\n", renderer.front);
-	command += String.format("\t-clipback\t%g\n", renderer.back);
-	command += "\t-steps\t\t10\n";
-	command += "\t;\n";
+	command.append(String.format("\t-radius\t\t%g\n", (renderer.width/renderer.getZoom())));
+	command.append(String.format("\t-clipfront\t%g\n", renderer.front));
+	command.append(String.format("\t-clipback\t%g\n", renderer.back));
+	command.append("\t-steps\t\t10\n\t;\n");
 
 	System.out.println("\nCut and paste the command below to recreate the current view");
 	System.out.println("Make sure you include the ;\n");

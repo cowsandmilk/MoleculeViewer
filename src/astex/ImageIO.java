@@ -39,21 +39,21 @@ public class ImageIO {
 	int posw = name.indexOf("%w");
 
 	if(posw != -1){
-	    String newname = name.substring(0, posw);
-	    newname += String.format("%d", width);
-	    newname += name.substring(posw + 2, name.length());
+	    StringBuilder newname = new StringBuilder(name.substring(0, posw));
+	    newname.append(String.format("%d", width));
+	    newname.append(name.substring(posw + 2, name.length()));
 
-	    name = newname;
+	    name = newname.toString();
 	}
 
 	int posh = name.indexOf("%h");
 
 	if(posh != -1){
-	    String newname = name.substring(0, posh);
-	    newname += String.format("%d", height);
-	    newname += name.substring(posh + 2, name.length());
+	    StringBuilder newname = new StringBuilder(name.substring(0, posh));
+	    newname.append(String.format("%d", height));
+	    newname.append(name.substring(posh + 2, name.length()));
 
-	    name = newname;
+	    name = newname.toString();
 	}
 
 	if(name.indexOf('%') != -1){

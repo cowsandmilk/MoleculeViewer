@@ -426,7 +426,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
         // or no url substitution character return as well
 	if(format.indexOf('%') == -1 && format.indexOf('`') == -1) return format;
 
-	String s = "";
+	StringBuilder s = new StringBuilder(16);
 	int len = format.length();
 
 	for(int i = 0; i < len; i++){
@@ -439,28 +439,28 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 		}else{
 		    char nc = format.charAt(i + 1);
 		    if(nc == '%'){
-			s += '%';
+			s.append('%');
 		    }else if(nc == 'x'){
-			s += String.format("%.3f", getX());
+			s.append(String.format("%.3f", getX()));
 		    }else if(nc == 'y'){
-			s += String.format("%.3f", getY());
+			s.append(String.format("%.3f", getY()));
 		    }else if(nc == 'z'){
-			s += String.format("%.3f", getZ());
+			s.append(String.format("%.3f", getZ()));
 		    }else if(nc == 'e'){
 			double v = 0.0;
-			s += String.format("%.2f", v);
+			s.append(String.format("%.2f", v));
 		    }else if(nc == 'b'){
-			s += String.format("%.1f", getBFactor());
+			s.append(String.format("%.1f", getBFactor()));
 		    }else if(nc == 'B'){
-			s += String.format("%d", (int)getBFactor());
+			s.append(String.format("%d", (int)getBFactor()));
 		    }else if(nc == 'o'){
-			s += String.format("%.2f", getOccupancy());
+			s.append(String.format("%.2f", getOccupancy()));
 		    }else if(nc == 'q'){
-			s += String.format("%.2f", getPartialCharge());
+			s.append(String.format("%.2f", getPartialCharge()));
 		    }else if(nc == 'i'){
-			s += String.format("%-4d", getId());
+			s.append(String.format("%-4d", getId()));
 		    }else if(nc == 'I'){
-			s += getInsertionCode();
+			s.append(getInsertionCode());
 		    }else if(nc == 'A'){
 			Residue res = getResidue();
 			label = getAtomLabel();
@@ -471,47 +471,45 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 				// put the escape code for the 
 				// greek letter
 				if(l == 1){
-				    s += '\\';
-				    s += Character.toLowerCase(lc);
+				    s.append('\\');
+				    s.append(Character.toLowerCase(lc));
 				}else{
-				    s += lc;
+				    s.append(lc);
 				}
 			    }
 			}else{
-			    s += label;
+			    s.append(label);
 			}
 		    }else if(nc == 'a'){
-			s += getAtomLabel();
+			s.append(getAtomLabel());
 		    }else if(nc == 'r'){
 			Residue res = getResidue();
 			if(res != null){
-			    s += String.format("%d", res.getNumber());
+			    s.append(String.format("%d", res.getNumber()));
 			    if(res.getInsertionCode() != 0 &&
 			       res.getInsertionCode() != ' '){
-				s += res.getInsertionCode();
+				s.append(res.getInsertionCode());
 			    }
 			}
 		    }else if(nc == 'R'){
 			Residue res = getResidue();
 			if(res != null){
-			    s += res.getName();
+			    s.append(res.getName());
 			}
 		    }else if(nc == 'f'){
 			// fancy residue name. Capital followed by lower case
 			Residue res = getResidue();
 			if(res != null){
 			    String name = res.getName();
-			    s += name.charAt(0);
-			    for(int j = 1; j < name.length(); j++){
-				s += Character.toLowerCase(name.charAt(j));
-			    }
+			    s.append(name.charAt(0));
+			    s.append(name.toLowerCase().substring(1));
 			}
 		    }else if(nc == 'c'){
 			Residue res = getResidue();
 			if(res != null){
 			    Chain chain = res.getParent();
 			    if(chain != null && !" ".equals(chain.getName())){
-				s += chain.getName();
+				s.append(chain.getName());
 			    }
 			}
 		    }else if(nc == 'm'){
@@ -521,7 +519,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 			    if(chain != null){
 				Molecule mol = chain.getParent();
 				if(mol != null){
-				    s += mol.getName();
+				    s.append(mol.getName());
 				}
 			    }
 			}
@@ -530,12 +528,12 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
 		i++;
 	    }else{
-		s += c;
+		s.append(c);
 	    }
 	}
 
-        format = s;
-	s = "";
+        format = s.toString();
+	s.setLength(0);
 	len = format.length();
 
         // substitue url enclosed within ` characters
@@ -546,33 +544,33 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
             if(c == '`'){
                 // its a url to call
-                String url = "";
+                StringBuilder url = new StringBuilder(16);
 
                 ++i;
                 for( ; i < len; i++){
                     c = format.charAt(i);
                     if(c == '`') break;
                     
-                    url += c;
+                    url.append(c);
                 }
 
-                FILE f = FILE.openURL(url);
+                FILE f = FILE.openURL(url.toString());
 
                 if(f == null){
-                    s += "invalid_url";
+                    s.append("invalid_url");
                 }else{
 
                     while(f.nextLine()){
                         String contents = f.getCurrentLineAsString();
-                        s += contents;
+                        s.append(contents);
                     }
                 }
             }else{
-                s += c;
+                s.append(c);
             }
         }
 
-	return s;
+	return s.toString();
     }
 
     /** Get the atom symbol for the element. */

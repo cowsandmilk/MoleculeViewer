@@ -324,17 +324,19 @@ public class Residue extends Generic implements Selectable {
     public String selectStatement(){
 	Chain chain = getParent();
 	String chainSelect = chain.selectStatement();
-	String command = "residue " + getNumber();
+	StringBuilder command = new StringBuilder(16);
 
-	command += " and name '" + getName() + "'";
+	command.append("residue ").append(getNumber());
+
+	command.append(" and name '").append(getName()).append("'");
 
 	char insertionCode = getInsertionCode();
 
 	if(insertionCode != ' '){
-	    command += " and insertion '" + insertionCode + "'";
+	    command.append(" and insertion '").append(insertionCode).append("'");
 	}
 
-	return command += " and " + chainSelect;
+	return command.append(" and ").append(chainSelect).toString();
     }
 
     /** Apply a selection recursively. */

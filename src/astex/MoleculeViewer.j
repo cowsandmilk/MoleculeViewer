@@ -419,16 +419,17 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private void loadMolecule(String filename){
 	filename = FILE.getRelativePath(filename);
 
-	String command =
-	    "molecule load '" + filename + "' '" + filename + "';";
+	StringBuilder command = new StringBuilder(16);
+	command.append("molecule load '").append(filename).append("' '")
+	       .append(filename).append("';");
 
         if(filename.toLowerCase().indexOf(".sdf") != -1 ||
            filename.toLowerCase().indexOf(".mol") != -1){
-            command += "cylinder_radius 0.09 molexact '" + filename + "';";
-            command += "display cylinders on molexact '" + filename + "';";
+            command.append("cylinder_radius 0.09 molexact '").append(filename).append("';")
+		   .append("display cylinders on molexact '").append(filename).append("';");
         }
 
-	moleculeRenderer.execute(command);
+	moleculeRenderer.execute(command.toString());
     }
 
     private void executeScript(String filename){
@@ -1695,11 +1696,11 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 		System.out.println("starting offscreen render");
 
-		String s = writeBMPHash.get(command);
-		
-		s += " -writeimage '" + bitmapFileName + "';";
-		
-		moleculeRenderer.execute(s);
+		StringBuilder s = new StringBuilder(writeBMPHash.get(command));
+
+		s.append(" -writeimage '").append(bitmapFileName).append("';");
+
+		moleculeRenderer.execute(s.toString());
 
 		System.out.println("finished writing image");
 	    }
@@ -2362,26 +2363,26 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Return scripting description of the view. */
     public String getView(){
-	String viewString = "matrix\n";
+	StringBuilder viewString = new StringBuilder(100);
 	Renderer r = getMoleculeRenderer().renderer;
 	Matrix m = r.rotationMatrix;
-	viewString += " " + m.x00 + " " + m.x01 + " " + m.x02 + " " + m.x03 + "\n";
-	viewString += " " + m.x10 + " " + m.x11 + " " + m.x12 + " " + m.x13 + "\n";
-	viewString += " " + m.x20 + " " + m.x21 + " " + m.x22 + " " + m.x23 + "\n";
-	viewString += " " + m.x30 + " " + m.x31 + " " + m.x32 + " " + m.x33 + "\n";
-	viewString += ";";
+	viewString.append("matrix\n ")
+		  .append(m.x00).append(" ").append(m.x01).append(" ").append(m.x02).append(" ").append(m.x03).append("\n ")
+		  .append(m.x10).append(" ").append(m.x11).append(" ").append(m.x12).append(" ").append(m.x13).append("\n ")
+		  .append(m.x20).append(" ").append(m.x21).append(" ").append(m.x22).append(" ").append(m.x23).append("\n ")
+		  .append(m.x30).append(" ").append(m.x31).append(" ").append(m.x32).append(" ").append(m.x33).append("\n;");
 
 	Point3d center = r.getCenter();
 
-	viewString +=
-	    "center " + center.getX() + " " +
-	    center.getY() + " " + center.getZ() + ";";
+	viewString.append("center ").append(center.getX())
+		  .append(' ').append(center.getY()).append(' ')
+		  .append(center.getZ()).append(";");
 
-	viewString += "radius " + (r.width/r.getZoom()) + ";";
+	viewString.append("radius ").append(r.width / r.getZoom()).append(";");
 
-	viewString += "clip " + r.front + " " + r.back + ";";
+	viewString.append("clip ").append(r.front).append(" ").append(r.back).append(";");
 
-	return viewString;
+	return viewString.toString();
     }
 
     /** Save this molecule. */

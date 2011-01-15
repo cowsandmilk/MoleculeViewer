@@ -54,25 +54,25 @@ public class GenericEvent extends Generic {
     }
 
     public String toString(){
-        String s = Class + ": ";
+        StringBuilder s = new StringBuilder(Class + ": ");
  
         Object type = get(Type, null);
 
-        s += Type + "=" + type + " ";
-        s += Target + "=" + get(Target, null) + " ";
+        s.append(Type + "=").append(type).append(" ");
+        s.append(Target + "=").append(get(Target, null)).append(" ");
 
         if(PropertyChanged == type){
-            s += get(Name, null) + "=" + get(Value, null);
+            s.append(get(Name, null)).append("=").append(get(Value, null));
         }else if(ChildAdded == type){
-            s += Child + "=" + get(Child, null);
+            s.append(Child + "=").append(get(Child, null));
         }else if(ChildRemoved == type){
-            s += Child + "=" + get(Child, null);
+            s.append(Child + "=").append(get(Child, null));
         }else if(ParentAdded == type){
-            s += Parent + "=" + get(Parent, null);
+            s.append(Parent + "=").append(get(Parent, null));
         }else if(ParentRemoved == type){
-            s += Parent + "=" + get(Parent, null);
+            s.append(Parent + "=").append(get(Parent, null));
         }
 
-        return s;
+        return s.toString();
     }
 }

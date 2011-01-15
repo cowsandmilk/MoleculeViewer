@@ -741,38 +741,37 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
     /** Central method for adding distances in the user interface. */
     private void addDistances(){
-	String command = "distance -delete '" + nameTF.getText() + "'; ";
-	command += "distance";
+	StringBuffer command = new StringBuffer(100);
+	command.append("distance -delete '").append(nameTF.getText())
+		.append("'; distance");
 
 	String mode = modeChoice.getSelectedItem();
-	command += " -mode "    + mode;
-	command += " -dmax "    + dmaxSB.getValue();
-	command += " -contact " + contactSB.getValue();
-	command += " -on "      + dashSB.getValue();
-	command += " -off "     + gapSB.getValue();
-	command += " -radius "  + radiusSB.getValue();
-	command += " -name '"  + nameTF.getText() +"'";
-	command += " -colour '"  + distanceColorButton.getValue() +"'";
-	command += " -from { peek 0 }";
+	command.append(" -mode ").append(mode)
+	       .append(" -dmax ").append(dmaxSB.getValue())
+	       .append(" -contact ").append(contactSB.getValue())
+	       .append(" -on ").append(dashSB.getValue())
+	       .append(" -off ").append(gapSB.getValue())
+	       .append(" -radius ").append(radiusSB.getValue())
+	       .append(" -name '").append(nameTF.getText()).append("' -colour '")
+	       .append(distanceColorButton.getValue()).append("' -from { peek 0 }");
 
 	if(mode.equals("bumps") == false){
-	    command += " -to { peek 1 }";
+	    command.append(" -to { peek 1 }");
 	}
 
 	String prefix = buildLabelPrefix();
 	String format = labelTF.getText();
 
-	command += " -format '" + prefix + format + "'";
+	command.append(" -format '").append(prefix).append(format).append("';");
 
-	command += ";";
-
-	moleculeRenderer.execute(command);
+	moleculeRenderer.execute(command.toString());
 	moleculeRenderer.repaint();
     }
 
     /** Build label prefix. */
     private String buildLabelPrefix(){
-	String prefix = "<";
+	StringBuilder prefix = new StringBuilder(100);
+	prefix.append('<');
 
 	String justifyString = "bl";
 	JCCheckbox selectedCB = null;
@@ -789,25 +788,25 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	if(selectedCB != null){
 	    justifyString = (String)selectedCB.getUserData();
-	    prefix += "justify=" + justifyString + ",";
+	    prefix.append("justify=").append(justifyString).append(",");
 	}
 
 	if(threedLabels.getState() == 1){
-	    prefix += "3d=true,";
+	    prefix.append("3d=true,");
 	}
 
-	prefix += "points=" + stringPoints.getValue() + ",";
+	prefix.append("points=").append(stringPoints.getValue()).append(",");
 
-	prefix += "size=" + stringSize.getValue() + ",";
+	prefix.append("size=").append(stringSize.getValue()).append(",");
 
-	prefix += "radius=" + stringRadius.getValue() + ",";
+	prefix.append("radius=").append(stringRadius.getValue()).append(",");
 
-	prefix += "xoff=" + stringXOff.getValue() + ",";
-	prefix += "yoff=" + stringYOff.getValue() + ",";
-	prefix += "colour=" + stringColorButton.getValue() + ",";
-	prefix += "zoff=" + stringZOff.getValue() + ">";
+	prefix.append("xoff=").append(stringXOff.getValue()).append(',')
+	      .append("yoff=").append(stringYOff.getValue()).append(',')
+	      .append("colour=").append(stringColorButton.getValue()).append(',')
+	      .append("zoff=").append(stringZOff.getValue()).append('>');
 
-	return prefix;
+	return prefix.toString();
     }
 
     /** Add labels according to current settings. */
@@ -1399,32 +1398,32 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     /** Build the schematic using all the options. */
     private void buildSchematic(){
 	String name = schematicName.getText();
-	String command = "";
+	StringBuilder command = new StringBuilder(100);
 	if(allTube.getState() == 0){
-	    command += "secstruc current; ";
+	    command.append("secstruc current; ");
 	}
-	command += "schematic -name " + name;
-	command += " -quality " + schematicQuality.getValue();
-	command += " -ribbonwidth " + ribbonWidth.getValue();
-	command += " -ribbonthickness " + ribbonThickness.getValue();
-	command += " -ribbonminwidth " + ribbonMinWidth.getValue();
-	command += " -arrowwidth " + arrowWidth.getValue();
-	command += " -arrowheadwidth " + arrowHeadWidth.getValue();
-	command += " -arrowthickness " + arrowThickness.getValue();
-	command += " -arrowsmoothing " + arrowSmoothing.getValue();
-	command += " -tuberadius " + tubeWidth.getValue();
-	command += " -tubetaperradius " + tubeTaper.getValue();
-	command += " -tubesmoothing " + tubeSmoothing.getValue();
-	command += " -tubetaper true ";
-	command += " -ribboncylinders " +
-	    ((ribbonCylinders.getState() == 1) ? "true" : "false");
-	command += " -ribbonellipse " +
-	    ((ribbonEllipse.getState() == 1) ? "true" : "false");
-	command += " -alltube " +
-	    ((allTube.getState() == 1) ? "true" : "false");
-	command += " default and aminoacid;";
+	command.append("schematic -name ").append(name)
+	       .append(" -quality ").append(schematicQuality.getValue())
+	       .append(" -ribbonwidth ").append(ribbonWidth.getValue())
+	       .append(" -ribbonthickness ").append(ribbonThickness.getValue())
+	       .append(" -ribbonminwidth ").append(ribbonMinWidth.getValue())
+	       .append(" -arrowwidth ").append(arrowWidth.getValue())
+	       .append(" -arrowheadwidth ").append(arrowHeadWidth.getValue())
+	       .append(" -arrowthickness ").append(arrowThickness.getValue())
+	       .append(" -arrowsmoothing ").append(arrowSmoothing.getValue())
+	       .append(" -tuberadius ").append(tubeWidth.getValue())
+	       .append(" -tubetaperradius ").append(tubeTaper.getValue())
+	       .append(" -tubesmoothing ").append(tubeSmoothing.getValue())
+	       .append(" -tubetaper true ")
+	       .append(" -ribboncylinders ")
+	       .append((ribbonCylinders.getState() == 1) ? "true" : "false")
+	       .append(" -ribbonellipse ")
+	       .append((ribbonEllipse.getState() == 1) ? "true" : "false")
+	       .append(" -alltube ")
+	       .append((allTube.getState() == 1) ? "true" : "false")
+	       .append(" default and aminoacid;");
 
-	moleculeRenderer.execute(command);
+	moleculeRenderer.execute(command.toString());
 	moleculeViewer.dirtyRepaint();
     }
 
@@ -1754,9 +1753,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	    prefix = "exclude ";
 	}
 
-	String command = sel.selectStatement();
-
-	command = prefix + command + ";";
+	String command = prefix + sel.selectStatement() +";";
 
 	return command;
     }

@@ -210,13 +210,12 @@ public class ObjectPropertyDialog extends Dialog
 		    String texture = imageHash.get(e.getSource());
 		    String textureName = Settings.getString("config", texture);
 		    String textureImage = Settings.getString("config", texture + ".image");
-		    String command =
-			"texture load '" + textureName + "' '" + textureImage + "';";
-		    command += 
-			"object '" + object.getName() + "' texture '" + textureName +"';";
+		    StringBuilder command = new StringBuilder(16);
+		    command.append("texture load '").append(textureName).append("' '").append(textureImage).append("';");
+		    command.append("object '").append(object.getName()).append("' texture '").append(textureName).append("';");
 
 		    System.out.println("command " + command);
-		    moleculeRenderer.execute(command);
+		    moleculeRenderer.execute(command.toString());
 		    moleculeRenderer.repaint();
 		}
 	    };
@@ -275,26 +274,24 @@ public class ObjectPropertyDialog extends Dialog
 
 	boolean handled = true;
 	Object source   = e.getSource();
-	String command  = "";
+	StringBuilder command  = new StringBuilder(16);
 
 	if(source == uminSB || source == umaxSB ||
 	   source == vminSB || source == vmaxSB){
-	    command += "object '" +object.getName() + "' texture ";
+	    command.append("object '").append(object.getName()).append("' texture ");
 	    if(source == uminSB || source == umaxSB){
-		command +=
-		    "urange " + uminSB.getValue() + " " + umaxSB.getValue();
+		command.append("urange ").append(uminSB.getValue()).append(' ').append(umaxSB.getValue());
 	    }else{
-		command +=
-		    "vrange " + vminSB.getValue() + " " + vmaxSB.getValue();
+		command.append("vrange ").append(vminSB.getValue()).append(' ').append(vmaxSB.getValue());
 	    }
 
-	    command += ";";
+	    command.append(';');
 	}else{
 	    handled = false;
 	}
 
 	if(handled){
-	    moleculeRenderer.execute(command);
+	    moleculeRenderer.execute(command.toString());
 	    moleculeRenderer.moleculeViewer.dirtyRepaint();
 	}
     }
@@ -310,57 +307,51 @@ public class ObjectPropertyDialog extends Dialog
 	int tc                = textureCoordinate.getValue();
 	String texCoord       = textureCoords[tc];
 	boolean needTexture   = true;
-	String command        = "";
+	StringBuilder command        = new StringBuilder(100);
 
 	if(actionCommand.equals("distance")){
-	    command += "object " + name + " texture distance " +
-		       texCoord + " default;";
-	    command += "object " + name + " texture " +
-		       texCoord + "div 8.0;";
+	    command.append("object ").append(name).append(" texture distance ")
+		   .append(texCoord).append(" default;object ").append(name)
+		   .append(" texture ").append(texCoord).append("div 8.0;");
 
 	    if(tc == 0){
-		command += "texture load white 'white.jpg';";
-		command += "object " + name + " texture white;";
+		command.append("texture load white 'white.jpg';object ")
+		       .append(name).append(" texture white;");
 	    }
 
 	    needTexture = false;
 
 	}else if(actionCommand.equals("electrostatic")){
 	    if(applyCharges.getState() == 1){
-		command += "run 'charge.properties';";
+		command.append("run 'charge.properties';");
 	    }
 
-	    command += "object " + name + 
-		       " texture electrostatic " +
-		       texCoord + " 12.0 default;";
-	    command += "texture load rwb 'images/textures/rwb.jpg';";
-	    command += "object " + name + " texture rwb;";
+	    command.append("object ").append(name)
+		   .append(" texture electrostatic ").append(texCoord)
+		   .append(" 12.0 default;texture load rwb 'images/textures/rwb.jpg';")
+		   .append("object ").append(name).append(" texture rwb;");
 	    needTexture = false;
 	}else if(actionCommand.equals("lipophilicity")){
 	    if(applyMlp.getState() == 1){
-		command += "run 'lipophilicity.properties';";
+		command.append("run 'lipophilicity.properties';");
 	    }
 
-	    command += "object " + name + 
-		       " texture lipophilicity " +
-		       texCoord + " 7.0 default;";
-	    
-	    command += "texture load molcad 'images/textures/red2blue.jpg';";
-
-	    command += "object " + name + " texture molcad;";
+	    command.append("object ").append(name)
+		   .append(" texture lipophilicity ").append(texCoord)
+		   .append(" 7.0 default;texture load molcad 'images/textures/red2blue.jpg';object ")
+		   .append(name).append(" texture molcad;");
 	    needTexture = false;
 	}else if(actionCommand.equals("curvature")){
-	    command += "object " + name + " texture curvature " +
-		texCoord + " 6 default;";
-	    command += "object " + name + " texture " +
-		texCoord + "div 1.0;";
-	    command += "texture load rwb 'images/textures/rwb.jpg';";
-	    command += "object " + name + " texture rwb;";
+	    command.append("object ").append(name).append(" texture curvature ")
+		    .append(texCoord).append(" 6 default;object ").append(name)
+		    .append(" texture ").append(texCoord)
+		    .append("div 1.0;texture load rwb 'images/textures/rwb.jpg';object ")
+		    .append(name).append(" texture rwb;");
 	    needTexture = false;
 	}else if(actionCommand.equals("atom_colors")){
-	    command += "object " + name + " -map { current };";
+	    command.append("object ").append(name).append(" -map { current };");
 	}else if(actionCommand.equals("clip_object")){
-	    command += "object " + name + " clip " + texCoord + ";";
+	    command.append("object ").append(name).append(" clip ").append(texCoord).append(";");
 	    needTexture = false;
 	}else{
 	    handled = false;
@@ -372,7 +363,7 @@ public class ObjectPropertyDialog extends Dialog
 	}
 
 	if(handled){
-	    moleculeRenderer.execute(command);
+	    moleculeRenderer.execute(command.toString());
 
 	    setMinMax();
 

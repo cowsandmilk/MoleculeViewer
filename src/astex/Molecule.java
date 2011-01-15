@@ -172,19 +172,19 @@ public class Molecule extends Generic implements Selectable {
 
     /** Generate a string representation. */
     public String toString(){
-	String ret = getName();
+	StringBuilder ret = new StringBuilder(getName());
 	int atomCount = getAtomCount();
 	int bondCount = getBondCount();
 	int chainCount = getChainCount();
 
 	if(chainCount > 1){
-	    ret += (" " + chainCount + " chains");
+	    ret.append(" ").append(chainCount).append(" chains");
 	}
 
-	ret += (" " + atomCount + " atoms");
-	ret += (" " + bondCount + " bonds");
+	ret.append(" ").append(atomCount).append(" atoms");
+	ret.append(" ").append(bondCount).append(" bonds");
 
-	return ret; 
+	return ret.toString();
     }
 
     /** Set Display style. */
