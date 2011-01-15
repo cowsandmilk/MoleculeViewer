@@ -605,7 +605,7 @@ public class MoleculeRenderer {
 
 	    msg += parameterName + "=" + baos.toString();
 
-	    con.setRequestProperty("CONTENT_LENGTH", "" + msg.length()); 
+	    con.setRequestProperty("CONTENT_LENGTH", Integer.toString(msg.length())); 
 
 
 	    OutputStream os = con.getOutputStream();

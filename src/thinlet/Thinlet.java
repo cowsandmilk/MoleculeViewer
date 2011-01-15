@@ -4495,8 +4495,8 @@ public class Thinlet extends Canvas
             String step = getString(component, "step", "1");
             String value =
                 (part == "up") ?
-                acceptChange(text, step, getString(component, "maximum", "" + Integer.MAX_VALUE), decimals,  1) :
-                acceptChange(text, step, getString(component, "minimum", "" + Integer.MIN_VALUE), decimals, -1);
+                acceptChange(text, step, getString(component, "maximum", Integer.toString(Integer.MAX_VALUE)), decimals,  1) :
+                acceptChange(text, step, getString(component, "minimum", Integer.toString(Integer.MIN_VALUE)), decimals, -1);
             
             if(value != null){
                 setString(component, "text", value, null);
@@ -7366,8 +7366,8 @@ public class Thinlet extends Canvas
 				{ "boolean", "maximizable", "paint", Boolean.FALSE },
 				{ "boolean", "iconifiable", "paint", Boolean.FALSE } },
 			"spinbox", "textfield", new Object[][] {
-                        { "string", "minimum", null, "" + Integer.MIN_VALUE },
-                        { "string", "maximum", null, "" + Integer.MAX_VALUE },
+                        { "string", "minimum", null, Integer.toString(Integer.MIN_VALUE) },
+                        { "string", "maximum", null, Integer.toString(Integer.MAX_VALUE) },
                         { "string", "step", null, "1" },
                         { "integer", "decimals", null, integer0 },
                         //{ "integer", "minimum", null, new Integer(Integer.MIN_VALUE) },

@@ -197,13 +197,13 @@ public class Matrix {
     /** Print the matrix. */
     public void print(String message){
 	System.out.println(message);
-	System.out.println("" + f6.format(x00) + " " + f6.format(x01) +
+	System.out.println(f6.format(x00) + " " + f6.format(x01) +
 			   " " + f6.format(x02) + " " + f6.format(x03));
-	System.out.println("" + f6.format(x10) + " " + f6.format(x11) +
+	System.out.println(f6.format(x10) + " " + f6.format(x11) +
 			   " " + f6.format(x12) + " " + f6.format(x13));
-	System.out.println("" + f6.format(x20) + " " + f6.format(x21) +
+	System.out.println(f6.format(x20) + " " + f6.format(x21) +
 			   " " + f6.format(x22) + " " + f6.format(x23));
-	System.out.println("" + f6.format(x30) + " " + f6.format(x31) + 
+	System.out.println(f6.format(x30) + " " + f6.format(x31) + 
 			   " " + f6.format(x32) + " " + f6.format(x33));
     }
 

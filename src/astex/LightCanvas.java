@@ -87,7 +87,7 @@ public class LightCanvas extends Canvas implements MouseListener, MouseMotionLis
 		g.setColor(Color.blue);
 	    }
 
-	    g.drawString("" + l , lx, ly);
+	    g.drawString(Integer.toString(l) , lx, ly);
 	    //g.fillOval(lx - 4, ly - 4, lx + 4, ly + 4);
 	}
     }

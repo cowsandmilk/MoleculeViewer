@@ -1041,7 +1041,7 @@ miscellaneous_command ::=
 
 			}catch(Exception e){
 				System.out.println("error opening url: " + urlName);
-				System.out.println("" + e);
+				System.out.println(e);
 			}
 		:}
 	| MATRIX

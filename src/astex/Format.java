@@ -236,11 +236,11 @@ public class Format {
 		int s = 0;
 		if (fmt == 'd' || fmt == 'i') {
 			if (x < 0)  {
-				r = ("" + x).substring(1);
+				r = Long.toString(x).substring(1);
 				s = -1; 
 			}
 			else  {
-				r = "" + x; 
+				r = Long.toString(x);
 				s = 1;
 			}
 		}
@@ -261,10 +261,10 @@ public class Format {
 	 * @return the formatted string 
 	 */
    
-	public String format(char c) {
+	private String format(char c) {
 		if (fmt != 'c')
 			throw new java.lang.IllegalArgumentException();
-		String r = "" + c;
+		String r = Character.toString(c);
 		return pad(r);
 	}
    

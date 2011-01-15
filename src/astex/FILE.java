@@ -1763,7 +1763,7 @@ public class FILE extends InputStream {
 		input = null;
 		if(debug){
 		    System.out.println("failed to open gzip'ed inputStream");
-		    System.out.println("" + e);
+		    System.out.println(e);
 		}
 	    }
 	}

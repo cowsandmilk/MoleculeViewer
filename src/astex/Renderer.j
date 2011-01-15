@@ -1270,7 +1270,7 @@ public class Renderer {
 	    zt[i] = (int)(zz * ZFixedBits);
 
 	    if(debug){
-		drawString(xlocal[i], ylocal[i], zlocal[i], 0.1, Color32.white, "" + i);
+		drawString(xlocal[i], ylocal[i], zlocal[i], 0.1, Color32.white, Integer.toString(i));
 	    }
 
 	    if(zt[i] < zmin){
@@ -3506,7 +3506,7 @@ public class Renderer {
 		bitmapFonts.put(name, font);
 	    }catch(Exception e){
 		System.out.println("failed to open gzip'ed font");
-		System.out.println("" + e);
+		System.out.println(e);
 	    }
 	}
 

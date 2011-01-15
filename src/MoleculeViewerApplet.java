@@ -518,7 +518,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
             con.setUseCaches(false);
 
             con.setRequestProperty("CONTENT_LENGTH", 
-				   "" + parameterSection.length()); 
+				   Integer.toString(parameterSection.length()));
 
             OutputStream os = con.getOutputStream();
 
@@ -578,7 +578,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         }catch(Exception e){
             System.out.println("URLFetch - fetchNormal(): " +
 			       "error opening url: " + urlString);
-            System.out.println("" + e);
+            System.out.println(e);
         }
 
         return contents.toString();
