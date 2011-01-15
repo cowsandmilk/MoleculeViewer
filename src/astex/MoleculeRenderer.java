@@ -577,7 +577,6 @@ public class MoleculeRenderer {
 	    URL url = new URL(urlString);
 
 	    URLConnection con = url.openConnection();
-	    //System.out.println("Received a : " + con.getClass().getName());
 
 	    con.setDoInput(true);
 	    con.setDoOutput(true);
