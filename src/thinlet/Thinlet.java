@@ -5253,8 +5253,8 @@ public class Thinlet extends Canvas
 		return false;
 	}
 
-    /** mjh, Should we use vectors for child lists. */
-    public static final boolean useVectors = true;
+    /** mjh, Should we use ArrayLists for child lists. */
+    public static final boolean useArrayLists = true;
 
     /**
      * Get a specified sub-component or component part. Key is e.g. "header"
@@ -5265,10 +5265,10 @@ public class Thinlet extends Canvas
     private static Object get(Object component, Object key) {
         // mjh
 
-        if(useVectors){
+        if(useArrayLists){
             if(key == ":comp"){
                 try {
-                    return ((Vector)get(component, ":children")).elementAt(0);
+                    return ((ArrayList<Object>)get(component, ":children")).get(0);
                 }catch(Exception e){
                     return null;
                 }
@@ -5281,7 +5281,7 @@ public class Thinlet extends Canvas
                     int nextSlot = ((Integer)get(component, ":slot")).intValue() + 1;
                     Object parent = get(component, ":parent");
                     try {
-                        return ((Vector)get(parent, ":children")).elementAt(nextSlot);
+                        return ((ArrayList<Object>)get(parent, ":children")).get(nextSlot);
                     }catch(Exception e){
                         return null;
                     }
@@ -5418,7 +5418,7 @@ public class Thinlet extends Canvas
 		if (get(component, ":comp") != null) {
 			set(component, ":comp", null);
             // mjh
-            if(useVectors){
+            if(useArrayLists){
                 set(component, ":children", null);
             }
 
@@ -5591,15 +5591,15 @@ public class Thinlet extends Canvas
         return integer;
     }
 
-    public int vectorsAllocated = 0;
+    public int ArrayListsAllocated = 0;
 
     /**
      * Referenced by DOM
      */
     private void insertItem(Object parent, Object key, Object component, int index) {
         // mjh
-        if(useVectors && key.equals(":comp")){
-            Vector v = (Vector)get(parent, ":children");
+        if(useArrayLists && key.equals(":comp")){
+            ArrayList<Object> v = (ArrayList<Object>)get(parent, ":children");
             if(v == null){
                 String childCountHint = (String)getProperty(parent, "childCount");
                 int size = 4;
@@ -5608,22 +5608,22 @@ public class Thinlet extends Canvas
                     //System.out.println("seen hint " + size);
                 }
                 // tune here
-                v = new Vector(size, 4);
-                vectorsAllocated++;
+                v = new ArrayList<Object>(size);
+                ArrayListsAllocated++;
                 set(parent, ":children", v);
             }
 
             if(index == -1){
                 //set(component, ":slot", new Integer(v.size()));
                 set(component, ":slot", getInteger(v.size()));
-                v.addElement(component);
+                v.add(component);
             }else{
                 //set(component, ":slot", new Integer(index));
                 set(component, ":slot", getInteger(index));
-                v.insertElementAt(component, index);
+                v.add(index, component);
                 int len = v.size();
                 for(int i = 0; i < len; i++){
-                    Object child = v.elementAt(i);
+                    Object child = v.get(i);
                     //set(child, ":slot", new Integer(i));
                     set(child, ":slot", getInteger(i));
                 }
@@ -5673,16 +5673,16 @@ public class Thinlet extends Canvas
      */
     private void removeItemImpl(Object parent, Object component) {
         // mjh
-        if(useVectors){
-            Vector v = (Vector)get(parent, ":children");
+        if(useArrayLists){
+            ArrayList<Object> v = (ArrayList<Object>)get(parent, ":children");
             if(v != null){
-                v.removeElement(component);
+                v.remove(component);
 
                 int len = v.size();
                 // rebuld slot list, should only do it from position
                 // where component was removed
                 for(int i = 0; i < len; i++){
-                    Object child = v.elementAt(i);
+                    Object child = v.get(i);
                     //set(child, ":slot", new Integer(i));
                     set(child, ":slot", getInteger(i));
                 }
@@ -6099,7 +6099,7 @@ public class Thinlet extends Canvas
 			Object[] parentlist = null;
 			Object current = null;
 			HashMap<String,String> attributelist = null;
-			Vector methods = (validate && !dom) ? new Vector() : null;
+			ArrayList<Object> methods = (validate && !dom) ? new ArrayList<Object>() : null;
 			StringBuilder text = new StringBuilder();
 			for (int c = reader.read(); c != -1;) {
 				if (c == '<') {
@@ -6325,12 +6325,12 @@ public class Thinlet extends Canvas
 	/**
 	 *
 	 */
-	private void finishParse(Vector methods, Object root, Object handler) {
+	private void finishParse(ArrayList<Object> methods, Object root, Object handler) {
 		if (methods != null) {
 			for (int i = 0; i < methods.size(); i += 3) {
-				Object component = methods.elementAt(i);
-				Object[] definition = (Object[]) methods.elementAt(i + 1);
-				String value = (String) methods.elementAt(i + 2);
+				Object component = methods.get(i);
+				Object[] definition = (Object[]) methods.get(i + 1);
+				String value = (String) methods.get(i + 2);
 
 				if ("method" == definition[0]) {
                                     if("paint" == definition[1]){
@@ -6416,7 +6416,7 @@ public class Thinlet extends Canvas
 	 *
 	 * @throws java.lang.IllegalArgumentException
 	 */
-	private void addAttribute(Object component, String key, String value, Vector lasts) {
+	private void addAttribute(Object component, String key, String value, ArrayList<Object> lasts) {
 		// replace value found in the bundle
 		if ((resourcebundle != null) && value.startsWith("i18n.")) {
 			value = resourcebundle.getString(value.substring(5));
@@ -6451,9 +6451,9 @@ public class Thinlet extends Canvas
 			set(component, key, getIcon(value));
 		}
 		else if (("method" == definition[0]) || ("component" == definition[0])) {
-			lasts.addElement(component);
-			lasts.addElement(definition);
-			lasts.addElement(value);
+			lasts.add(component);
+			lasts.add(definition);
+			lasts.add(value);
 		}
 		else if ("property" == definition[0]) {
 			StringTokenizer st = new StringTokenizer(value, ";");

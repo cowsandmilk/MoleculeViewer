@@ -40,10 +40,10 @@ public class ImageButton extends Canvas implements MouseListener {
 	addMouseListener(this);
     }
 
-    Vector<ActionListener> actionListeners = new Vector<ActionListener>(2);
+    ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>(8);
 
     public void addActionListener(ActionListener al){
-	actionListeners.addElement(al);
+	actionListeners.add(al);
     }
 
     private void fireActionEvent(){
@@ -53,7 +53,7 @@ public class ImageButton extends Canvas implements MouseListener {
 	    ActionEvent ev = new ActionEvent(this, 1, "changed");
 
 	    for(int i = 0; i < listenerCount; i++){
-		ActionListener al = actionListeners.elementAt(i);
+		ActionListener al = actionListeners.get(i);
 		al.actionPerformed(ev);
 	    }
 	}

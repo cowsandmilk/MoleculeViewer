@@ -22,7 +22,7 @@ import java.awt.event.*;
 // clashses with my Map class
 import java.util.HashMap;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import nanoxml.*;
 
@@ -84,7 +84,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private boolean animationThreadActive = false;
 
     /** The animation stages. */
-    private Vector<AnimationObject> stages = new Vector<AnimationObject>();
+    private ArrayList<AnimationObject> stages = new ArrayList<AnimationObject>();
 
     /** Is this MoleculeViewer running in an application. */
     private boolean application = false;
@@ -115,7 +115,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	    return;
 	}else if(state.equals("delete")){
-	    stages.removeAllElements();
+	    stages.clear();
 	    return;
 	}
 
@@ -248,7 +248,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    System.out.println("handleAnimation: unhandled animation mode " + mode);
 	}
 
-	stages.addElement(stage);
+	stages.add(stage);
     }
 
     /** Try and remove a thread after it has finished running. */

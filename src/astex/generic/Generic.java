@@ -23,7 +23,7 @@ public class Generic implements GenericInterface {
     
     private static final String ClassName   = "__class__";
 
-    private static final Vector<GenericInterface> emptyVector = new Vector<GenericInterface>(0);
+    private static final ArrayList<GenericInterface> emptyArrayList = new ArrayList<GenericInterface>(0);
 
     public Generic(String cl){
         setClassname(cl);
@@ -79,14 +79,14 @@ public class Generic implements GenericInterface {
         return get(ClassName, null);
     }
 
-    Vector<GenericInterface> children = null;
+    ArrayList<GenericInterface> children = null;
 
     public void addChild(GenericInterface child){
         if(children == null){
-            children = new Vector<GenericInterface>(2);
+            children = new ArrayList<GenericInterface>(10);
         }
 
-        children.addElement(child);
+        children.add(child);
 
         if(listeners != null){
             GenericEvent ge = new GenericEvent(GenericEvent.ChildAdded,
@@ -97,7 +97,7 @@ public class Generic implements GenericInterface {
 
     public void removeChild(GenericInterface child){
         if(children != null){
-            children.removeElement(child);
+            children.remove(child);
         }else{
             throw new RuntimeException("no such child: " + child);
         }
@@ -109,22 +109,22 @@ public class Generic implements GenericInterface {
         }
     }
 
-    public Enumeration<GenericInterface> getChildren(Object type){
+    public Iterator<GenericInterface> getChildren(Object type){
         if(children == null){
-            return emptyVector.elements();
+            return emptyArrayList.iterator();
         }else{
-            return children.elements();
+            return children.iterator();
         }
     }
 
-    Vector<GenericInterface> parents = null;
+    ArrayList<GenericInterface> parents = null;
 
     public void addParent(GenericInterface parent){
         if(parents == null){
-            parents = new Vector<GenericInterface>(2);
+            parents = new ArrayList<GenericInterface>(10);
         }
 
-        parents.addElement(parent);
+        parents.add(parent);
 
         if(listeners != null){
             GenericEvent ge = new GenericEvent(GenericEvent.ParentAdded,
@@ -135,7 +135,7 @@ public class Generic implements GenericInterface {
 
     public void removeParent(GenericInterface parent){
         if(parents != null){
-            parents.removeElement(parent);
+            parents.remove(parent);
         }else{
             throw new RuntimeException("no such parent: " + parent);
         }
@@ -147,38 +147,33 @@ public class Generic implements GenericInterface {
         }
     }
 
-    public Enumeration<GenericInterface> getParents(Object type){
+    public Iterator<GenericInterface> getParents(Object type){
         if(parents == null){
-            return emptyVector.elements();
+            return emptyArrayList.iterator();
         }else{
-            return parents.elements();
+            return parents.iterator();
         }
     }
 
-    Vector<GenericEventInterface> listeners = null;
+    ArrayList<GenericEventInterface> listeners = null;
 
     public void addListener(GenericEventInterface gei){
         if(listeners == null){
-            listeners = new Vector<GenericEventInterface>(2);
+            listeners = new ArrayList<GenericEventInterface>(2);
         }
 
-        listeners.addElement(gei);
+        listeners.add(gei);
     }
 
     public void removeListener(GenericEventInterface gei){
         if(listeners != null){
-            listeners.removeElement(gei);
+            listeners.remove(gei);
         }
     }
 
     private void notifyListeners(GenericEvent ge){
         if(listeners != null){
-            int listenersCount = listeners.size();
-            
-            for(int i = 0; i < listenersCount; i++){
-                GenericEventInterface listener =
-                    listeners.elementAt(i);
-                
+            for(GenericEventInterface listener: listeners){
                 listener.handleEvent(ge);
             }
         }

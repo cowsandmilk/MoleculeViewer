@@ -247,13 +247,13 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] residue(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] residue(MoleculeRenderer r, ArrayList<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
 
 	for(int i = 0; i < idCount; i++){
-	    int range[] = (int[])ids.elementAt(i);
+	    int range[] = (int[])ids.get(i);
 	    if(range[0] < minId){
 		minId = range[0];
 	    }
@@ -282,7 +282,7 @@ public class Selection {
 		    if(number >= minId && number <= maxId){
 			// it could match
 			for(int i = 0; i < idCount; i++){
-			    int range[] = (int[])ids.elementAt(i);
+			    int range[] = (int[])ids.get(i);
 			    if(number >= range[0] &&
 			       number <= range[1]){
 				match = 1;
@@ -350,7 +350,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] composite(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] composite(MoleculeRenderer r, ArrayList<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -359,7 +359,7 @@ public class Selection {
 	    StringBuilder chainBuffer = new StringBuilder(4);
 	    StringBuilder residueBuffer = new StringBuilder(4);
 	    StringBuilder insertionBuffer = new StringBuilder(1);
-	    String compositeString = (String)ids.elementAt(i);
+	    String compositeString = (String)ids.get(i);
 	    int j;
 	    for(j = 0; j < compositeString.length(); j++){
 		char c = compositeString.charAt(j);
@@ -393,11 +393,11 @@ public class Selection {
 	    byte chainMask[] = null;
 	    byte residueMask[] = null;
 	    byte insertionMask[] = null;
-	    Vector<Object> v = new Vector<Object>(1);
+	    ArrayList<Object> v = new ArrayList<Object>(1);
 
 	    if(chainBuffer.length() > 0){
-		v.removeAllElements();
-		v.addElement(chainBuffer.toString());
+		v.clear();
+		v.add(chainBuffer.toString());
 		chainMask = chain(r, v);
 	    }
 
@@ -405,8 +405,8 @@ public class Selection {
 		int res[] = new int[2];
 		int resValue = FILE.readInteger(residueBuffer.toString());
 		res[0] = resValue; res[1] = resValue;
-		v.removeAllElements();
-		v.addElement(res);
+		v.clear();
+		v.add(res);
 		residueMask = residue(r, v);
 	    }
 
@@ -435,13 +435,13 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] sequential(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] sequential(MoleculeRenderer r, ArrayList<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
 
 	for(int i = 0; i < idCount; i++){
-	    int range[] = (int[])ids.elementAt(i);
+	    int range[] = (int[])ids.get(i);
 	    if(range[0] < minId){
 		minId = range[0];
 	    }
@@ -468,7 +468,7 @@ public class Selection {
 		    if(number >= minId && number <= maxId){
 			// it could match
 			for(int i = 0; i < idCount; i++){
-			    int range[] = (int[])ids.elementAt(i);
+			    int range[] = (int[])ids.get(i);
 			    if(number >= range[0] &&
 			       number <= range[1]){
 				match = 1;
@@ -536,7 +536,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of molecule name. */
-    public static byte[] molecule(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] molecule(MoleculeRenderer r, ArrayList<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -548,7 +548,7 @@ public class Selection {
 	    Molecule mol = r.getMolecule(m);
 	    byte matched = 0;
 	    for(int i = 0; i < idCount; i++){
-                String id = (String)ids.elementAt(i);
+                String id = (String)ids.get(i);
 
                 if(id.charAt(0) == '#'){
                     int molNumber = Integer.parseInt(id.substring(1));
@@ -556,7 +556,7 @@ public class Selection {
                         matched = 1;
                         break;
                     }
-                }else if(match.matches((String)ids.elementAt(i), mol.getName())){
+                }else if(match.matches((String)ids.get(i), mol.getName())){
 		    matched = 1;
 		    break;
 		}
@@ -577,7 +577,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of molecule name. */
-    public static byte[] moleculeExact(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] moleculeExact(MoleculeRenderer r, ArrayList<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -589,7 +589,7 @@ public class Selection {
 	    Molecule mol = r.getMolecule(m);
 	    byte matched = 0;
 	    for(int i = 0; i < idCount; i++){
-		if(((String)ids.elementAt(i)).equals(mol.getName())){
+		if(((String)ids.get(i)).equals(mol.getName())){
 		    matched = 1;
 		    break;
 		}
@@ -708,7 +708,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of residue names. */
-    public static byte[] name(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] name(MoleculeRenderer r, ArrayList<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -728,7 +728,7 @@ public class Selection {
 		    int matched = 0;
 		    // it could match
 		    for(int i = 0; i < idCount; i++){
-			if(match.matches((String)ids.elementAt(i), name)){
+			if(match.matches((String)ids.get(i), name)){
 			    matched = 1;
 			    break;
 			}
@@ -752,7 +752,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of residue names. */
-    public static byte[] chain(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] chain(MoleculeRenderer r, ArrayList<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -767,7 +767,7 @@ public class Selection {
 	    Chain chain = res.getParent();
 	    String name = chain.getName();
 	    for(int i = 0; i < idCount; i++){
-		String chainId = (String)ids.elementAt(i);
+		String chainId = (String)ids.get(i);
 		if(chainId.equals("_")){
 		    chainId = " ";
 		}
@@ -783,7 +783,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of atom ids. */
-    public static byte[] atom(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] atom(MoleculeRenderer r, ArrayList<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -796,7 +796,7 @@ public class Selection {
 	    Atom atom = iterator.getNextAtom();
 	    String name = atom.getAtomLabel();
 	    for(int i = 0; i < idCount; i++){
-		if(match.matches((String)ids.elementAt(i), name)){
+		if(match.matches((String)ids.get(i), name)){
 		    mask[count] = 1;
 		    break;
 		}
@@ -842,13 +842,13 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] id(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] id(MoleculeRenderer r, ArrayList<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
 
 	for(int i = 0; i < idCount; i++){
-	    int range[] = (int[])ids.elementAt(i);
+	    int range[] = (int[])ids.get(i);
 	    if(range[0] < minId){
 		minId = range[0];
 	    }
@@ -867,7 +867,7 @@ public class Selection {
 	    if(number >= minId && number <= maxId){
 		// it could match
 		for(int i = 0; i < idCount; i++){
-		    int range[] = (int[])ids.elementAt(i);
+		    int range[] = (int[])ids.get(i);
 		    if(number >= range[0] &&
 		       number <= range[1]){
 			mask[count] = 1;
@@ -883,13 +883,13 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of elements. */
-    public static byte[] element(MoleculeRenderer r, Vector<?> ids){
+    public static byte[] element(MoleculeRenderer r, ArrayList<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
 
 	for(int i = 0; i < idCount; i++){
-	    int range[] = (int[])ids.elementAt(i);
+	    int range[] = (int[])ids.get(i);
 	    if(range[0] < minId){
 		minId = range[0];
 	    }
@@ -908,7 +908,7 @@ public class Selection {
 	    if(number >= minId && number <= maxId){
 		// it could match
 		for(int i = 0; i < idCount; i++){
-		    int range[] = (int[])ids.elementAt(i);
+		    int range[] = (int[])ids.get(i);
 		    if(number >= range[0] &&
 		       number <= range[1]){
 			mask[count] = 1;
@@ -1270,9 +1270,9 @@ public class Selection {
 
     /** Evaluate a builtin expression against residue names. */
     private static byte[] builtin(MoleculeRenderer r, DynamicArray names){
-	Vector<Object> ids = new Vector<Object>(names.size());
+	ArrayList<Object> ids = new ArrayList<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
-	    ids.addElement(names.get(i));
+	    ids.add(names.get(i));
 	}
 
 	return name(r, ids);
@@ -1280,9 +1280,9 @@ public class Selection {
 
     /** Evaluate a builtin expression atom names. */
     private static byte[] builtin3(MoleculeRenderer r, DynamicArray names){
-	Vector<Object> ids = new Vector<Object>(names.size());
+	ArrayList<Object> ids = new ArrayList<Object>(names.size());
 	for(int i = 0; i < names.size(); i++){
-	    ids.addElement(names.get(i));
+	    ids.add(names.get(i));
 	}
 
 	return name(r, ids);

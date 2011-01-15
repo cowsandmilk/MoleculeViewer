@@ -1388,7 +1388,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     }
 
     /** Get an Enumeration of our parents. */
-    public Enumeration<GenericInterface> getParents(Object type){
+    public Iterator<GenericInterface> getParents(Object type){
         return null;
     }
 
@@ -1401,7 +1401,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     }
 
     /** Get an enumeration of our children. */
-    public Enumeration<GenericInterface> getChildren(Object type){
+    public Iterator<GenericInterface> getChildren(Object type){
         return null;
     }
 

@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Animate extends Thread {
 	/** The list of animation objects. */
-	private Vector<AnimationObject> stages = null;
+	private ArrayList<AnimationObject> stages = null;
 
 	/** The MoleculeViewer we are associated with. */
 	private MoleculeViewer moleculeViewer = null;
@@ -45,7 +45,7 @@ public class Animate extends Thread {
 	}
 
 	/** Set the stages. */
-	public void setStages(Vector<AnimationObject> v){
+	public void setStages(ArrayList<AnimationObject> v){
 		stages = v;
 	}
 
@@ -57,7 +57,7 @@ public class Animate extends Thread {
 
 		for(int s = 0; s < stageCount; s++){
 
-			AnimationObject stage = stages.elementAt(s);
+			AnimationObject stage = stages.get(s);
 
 			stage.initialise();
 

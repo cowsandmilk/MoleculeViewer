@@ -164,10 +164,10 @@ terminal Double DOUBLE;
 terminal String STRING;
 
 non terminal byte[] statement;
-non terminal Vector id_list;
+non terminal ArrayList id_list;
 non terminal FloatArray number_list;
 non terminal int[] id;
-non terminal Vector string_list;
+non terminal ArrayList string_list;
 
 non terminal Object[] arg;
 non terminal Arguments arg_list;
@@ -1700,9 +1700,9 @@ statement ::=
 
 string_list ::=
 	  STRING:s
-		{: Vector<String> v = new Vector<String>(); v.addElement(s); RESULT = v; :}
+		{: ArrayList<String> v = new ArrayList<String>(); v.add(s); RESULT = v; :}
 	| string_list:v STRING:s
-		{: v.addElement(s); RESULT = v; :}
+		{: v.add(s); RESULT = v; :}
 	;
 
 number ::=
@@ -1714,9 +1714,9 @@ number ::=
 
 id_list ::=
 	  id:i
-		{: Vector v = new Vector(); v.addElement(i); RESULT = v; :}
+		{: ArrayList v = new ArrayList(); v.add(i); RESULT = v; :}
 	| id_list:v id:i
-		{: v.addElement(i); RESULT = v; :}
+		{: v.add(i); RESULT = v; :}
 	;
 
 number_list ::=

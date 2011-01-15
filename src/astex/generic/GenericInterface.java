@@ -36,7 +36,7 @@ public interface GenericInterface {
     public void setClassname(String classname);
 
     /** Get an Enumeration of our parents. */
-    public Enumeration<GenericInterface> getParents(Object type);
+    public Iterator<GenericInterface> getParents(Object type);
 
     /** Add a parent. */
     public void addParent(GenericInterface parent);
@@ -45,7 +45,7 @@ public interface GenericInterface {
     public void removeParent(GenericInterface parent);
 
     /** Get an enumeration of our children. */
-    public Enumeration<GenericInterface> getChildren(Object type);
+    public Iterator<GenericInterface> getChildren(Object type);
 
     /** Add a child. */
     public void addChild(GenericInterface child);
