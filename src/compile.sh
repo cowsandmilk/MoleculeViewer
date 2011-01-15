@@ -1,3 +1,4 @@
+export CLASSPATH=.:../lib
 javac -J-mx100m -target 1.6 java_cup/*.java java_cup/runtime/*.java JLex/*.java
 
 java -server -Xmx100000000 java_cup.Main < astex/parser/parser.cup
