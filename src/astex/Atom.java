@@ -1325,16 +1325,16 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public Object get(Object key, Object def){
         Object val = null;
 
-        if(key.equals(XAttribute)) val = new Double(getAttribute(X));
-        else if(key.equals(YAttribute)) val = new Double(getAttribute(Y));
-        else if(key.equals(ZAttribute)) val = new Double(getAttribute(Z));
-        else if(key.equals(BAttribute)) val = new Double(getAttribute(B));
-        else if(key.equals(OAttribute)) val = new Double(getAttribute(O));
-        else if(key.equals(QAttribute)) val = new Double(getAttribute(Q));
-        else if(key.equals(Element)) val = new Integer(element);
+        if(key.equals(XAttribute)) val = Double.valueOf(getAttribute(X));
+        else if(key.equals(YAttribute)) val = Double.valueOf(getAttribute(Y));
+        else if(key.equals(ZAttribute)) val = Double.valueOf(getAttribute(Z));
+        else if(key.equals(BAttribute)) val = Double.valueOf(getAttribute(B));
+        else if(key.equals(OAttribute)) val = Double.valueOf(getAttribute(O));
+        else if(key.equals(QAttribute)) val = Double.valueOf(getAttribute(Q));
+        else if(key.equals(Element)) val = Integer.valueOf(element);
         else if(key.equals(Color)) val = new Color(getColor());
-        else if(key.equals(Radius)) val = new Double(getVDWRadius());
-        else if(key.equals(Opacity)) val = new Integer(transparency);
+        else if(key.equals(Radius)) val = Double.valueOf(getVDWRadius());
+        else if(key.equals(Opacity)) val = Integer.valueOf(transparency);
         else {
             if(properties != null){
                 val = properties.get(key);

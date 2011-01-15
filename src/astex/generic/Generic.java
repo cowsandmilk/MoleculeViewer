@@ -235,14 +235,14 @@ public class Generic implements GenericInterface {
 
     /** Set a double. */
     public void setDouble(Object property, double val){
-        Double dval = new Double(val);
+        Double dval = Double.valueOf(val);
 
         set(property, dval);
     }
 
     /** Set an int. */
     public void setInteger(Object property, int val){
-        Integer ival = new Integer(val);
+        Integer ival = Integer.valueOf(val);
 
         set(property, ival);
     }

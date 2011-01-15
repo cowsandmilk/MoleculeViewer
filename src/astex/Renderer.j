@@ -337,7 +337,7 @@ public class Renderer {
 	if(fireEvent){
 	    RendererEvent re =
 		new RendererEvent(RendererEvent.FrontClipMoved,
-				  new Double(front));
+				  Double.valueOf(front));
 	    fireRendererEvent(re);
 	}
     }
@@ -360,7 +360,7 @@ public class Renderer {
 	if(fireEvent){
 	    RendererEvent re =
 		new RendererEvent(RendererEvent.BackClipMoved,
-				  new Double(back));
+				  Double.valueOf(back));
 	    fireRendererEvent(re);
 	}
     }

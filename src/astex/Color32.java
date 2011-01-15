@@ -496,7 +496,7 @@ public class Color32 {
 			String name = f.getField(0);
 			name = name.toLowerCase();
 			Integer colorValue =
-			    new Integer(pack(f.getInteger(1),
+			    Integer.valueOf(pack(f.getInteger(1),
 					     f.getInteger(2),
 					     f.getInteger(3)));
 			colorHash.put(name, colorValue);

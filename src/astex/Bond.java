@@ -68,7 +68,7 @@ public class Bond extends Generic {
 
     public Object get(Object key, Object def){
         if(key.equals(BondOrder)){
-            return new Integer(bondOrder);
+            return Integer.valueOf(bondOrder);
         }else{
             return super.get(key, def);
         }

@@ -367,7 +367,7 @@ public class Log {
 		int level = string2level(value);
 
 		if(level != -1){
-		    Integer ilevel = new Integer(level);
+		    Integer ilevel = Integer.valueOf(level);
 		    methodLevels.put(property, ilevel);
 		}else{
 		    System.out.println("Log.initialise: invalid log level " +

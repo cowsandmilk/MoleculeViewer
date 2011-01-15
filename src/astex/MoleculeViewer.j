@@ -1796,7 +1796,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	checkboxHashMap.put(contourScrollbar, checkbox);
 	mapHashMap.put(contourScrollbar, map);
 
-	Integer contour = new Integer(contourLevel);
+	Integer contour = Integer.valueOf(contourLevel);
 	contourLevelHashMap.put(contourScrollbar, contour);
 
 	mapHashMap.put(checkbox, map);

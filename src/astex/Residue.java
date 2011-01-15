@@ -38,7 +38,7 @@ public class Residue extends Generic implements Selectable {
     public Residue(){
         set(ResidueColor, Color.white);
         set(Torsions, Boolean.FALSE);
-        set(TorsionRadius, new Double(0.4));
+        set(TorsionRadius, Double.valueOf(0.4));
         set(TorsionGreek, Boolean.TRUE);
         set(TorsionFormat, "<3d=true,size=0.3>%t %.1f");
     }

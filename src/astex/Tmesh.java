@@ -1027,9 +1027,9 @@ public class Tmesh {
 	Integer hashVal = null;
 
 	if(v0 < v1){
-	    hashVal = new Integer(v0 + 1000000*v1);
+	    hashVal = Integer.valueOf(v0 + 1000000*v1);
 	}else{
-	    hashVal = new Integer(v1 + 1000000*v0);
+	    hashVal = Integer.valueOf(v1 + 1000000*v0);
 	}
 
 	Integer newVertex = clipHash.get(hashVal);
@@ -1038,7 +1038,7 @@ public class Tmesh {
 	    return newVertex.intValue();
 	}
 
-	newVertex = new Integer(np);
+	newVertex = Integer.valueOf(np);
 
 	double t0 = 0.0;
 	double t1 = 0.0;

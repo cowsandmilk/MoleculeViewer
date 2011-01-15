@@ -165,7 +165,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 				relations.put(comp, Integer.decode(name));
 			}	
 			catch (NumberFormatException e) {
-				relations.put(comp, new Integer(1));
+				relations.put(comp, Integer.valueOf(1));
 			}	
 			}
 		}

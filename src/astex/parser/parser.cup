@@ -1476,16 +1476,16 @@ texture_command ::=
 	;
 
 render_style ::=
-	  SPHERES	{: RESULT = new Integer(Atom.VDWSphere); :}
-	| CYLINDERS	{: RESULT = new Integer(Atom.Cylinder); :}
-	| STICKS	{: RESULT = new Integer(Atom.BallAndStick); :}
-	| LINES		{: RESULT = new Integer(Atom.Displayed); :}
+	  SPHERES	{: RESULT = Integer.valueOf(Atom.VDWSphere); :}
+	| CYLINDERS	{: RESULT = Integer.valueOf(Atom.Cylinder); :}
+	| STICKS	{: RESULT = Integer.valueOf(Atom.BallAndStick); :}
+	| LINES		{: RESULT = Integer.valueOf(Atom.Displayed); :}
 	;
 
 on_off ::=
-	  ON		{: RESULT = new String("on"); :}
-	| OFF		{: RESULT = new String("off"); :}
-	| TOGGLE	{: RESULT = new String("toggle"); :}
+	  ON		{: RESULT = "on"; :}
+	| OFF		{: RESULT = "off"; :}
+	| TOGGLE	{: RESULT = "toggle"; :}
 	;
 
 arguments ::=
@@ -1696,7 +1696,7 @@ string_list ::=
 
 number ::=
 	  INTEGER:i
-		{: RESULT = new Double((double)i.intValue()); :}
+		{: RESULT = Double.valueOf((double)i.intValue()); :}
 	| DOUBLE:d
 		{: RESULT = d; :}
 	;

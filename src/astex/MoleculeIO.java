@@ -1447,7 +1447,7 @@ public class MoleculeIO {
 
             output.print(" %8.3f\n", atom.getBFactor());
 
-            atomNumberHash.put(atom, new Integer(a + 1));
+            atomNumberHash.put(atom, Integer.valueOf(a + 1));
         }
 
 

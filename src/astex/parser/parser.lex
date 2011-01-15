@@ -15,22 +15,22 @@ import astex.*;
 "{"		{ return new Symbol(sym.LCURLY); }
 "}"		{ return new Symbol(sym.RCURLY); }
 
-">"		{ return new Symbol(sym.OPERATOR, new Integer(Selection.GT)); }
-">="		{ return new Symbol(sym.OPERATOR, new Integer(Selection.GE)); }
-"<"		{ return new Symbol(sym.OPERATOR, new Integer(Selection.LT)); }
-"<="		{ return new Symbol(sym.OPERATOR, new Integer(Selection.LE)); }
-"="		{ return new Symbol(sym.OPERATOR, new Integer(Selection.EQ)); }
-"!="		{ return new Symbol(sym.OPERATOR, new Integer(Selection.NE)); }
+">"		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.GT)); }
+">="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.GE)); }
+"<"		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.LT)); }
+"<="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.LE)); }
+"="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.EQ)); }
+"!="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.NE)); }
 
 "and"		{ return new Symbol(sym.AND); }
 "or"		{ return new Symbol(sym.OR); }
 "not"		{ return new Symbol(sym.NOT); }
 
-"x"		{ return new Symbol(sym.ATTRIBUTE, new Integer(Atom.X)); }
-"y"		{ return new Symbol(sym.ATTRIBUTE, new Integer(Atom.Y)); }
-"z"		{ return new Symbol(sym.ATTRIBUTE, new Integer(Atom.Z)); }
-"b"		{ return new Symbol(sym.ATTRIBUTE, new Integer(Atom.B)); }
-"o"		{ return new Symbol(sym.ATTRIBUTE, new Integer(Atom.O)); }
+"x"		{ return new Symbol(sym.ATTRIBUTE, Integer.valueOf(Atom.X)); }
+"y"		{ return new Symbol(sym.ATTRIBUTE, Integer.valueOf(Atom.Y)); }
+"z"		{ return new Symbol(sym.ATTRIBUTE, Integer.valueOf(Atom.Z)); }
+"b"		{ return new Symbol(sym.ATTRIBUTE, Integer.valueOf(Atom.B)); }
+"o"		{ return new Symbol(sym.ATTRIBUTE, Integer.valueOf(Atom.O)); }
 
 "active"	{ return new Symbol(sym.ACTIVE); }
 "active_site"	{ return new Symbol(sym.ACTIVE_SITE); }
@@ -166,12 +166,12 @@ import astex.*;
 
 -?[0-9]+ 	{
     //System.out.println("INTEGER " + yytext());
-    		    return new Symbol(sym.INTEGER, new Integer(yytext()));
+    		    return new Symbol(sym.INTEGER, Integer.valueOf(yytext()));
 		}
 
 -?[-0-9.eE]+ 	{
     //System.out.println("DOUBLE " + yytext());
-    		    return new Symbol(sym.DOUBLE, new Double(yytext()));
+    		    return new Symbol(sym.DOUBLE, Double.valueOf(yytext()));
 		}
 
 [^$ \}\{)(\t\r\n\f;:\'\",-]+

@@ -2634,8 +2634,8 @@ public class Thinlet extends Canvas
                     data[0] = this;
                     data[1] = component;
                     data[2] = paintGraphics;
-                    data[3] = new Integer(width-2);
-                    data[4] = new Integer(height-2);
+                    data[3] = Integer.valueOf(width-2);
+                    data[4] = Integer.valueOf(height-2);
                     
                     //Shape clipRect = g.getClip();
                     //g.translate(x+1, y+1);
@@ -4718,8 +4718,8 @@ public class Thinlet extends Canvas
 			}
 		}
 		else if ("bean".equals(classname)) {
-			set(component,":mousex",new Integer(x));
-			set(component,":mousey",new Integer(y));
+			set(component,":mousex", Integer.valueOf(x));
+			set(component,":mousey", Integer.valueOf(y));
 		}
 		else if (":combolist".equals(classname)) {
 			if (!findScroll(component, x, y)) {
@@ -5581,7 +5581,7 @@ public class Thinlet extends Canvas
         //System.out.println("integer " +integer);
 
         if(integer == null){
-            integer = new Integer(i);
+            integer = Integer.valueOf(i);
             integers[i] = integer;
         }
 
@@ -6747,7 +6747,7 @@ public class Thinlet extends Canvas
 						keycode = KeyEvent.class.getField("VK_" + token).getInt(null);
 					}
 				}
-				keystroke = new Long(((long) modifiers) << 32 | keycode);
+				keystroke = Long.valueOf(((long) modifiers) << 32 | keycode);
 			} catch (Exception exc) { throw new IllegalArgumentException(token); }
 		}
 		set(component, key, keystroke);
@@ -7100,7 +7100,7 @@ public class Thinlet extends Canvas
 	 */
 	private boolean setInteger(Object component,
 			String key, int value, int defaultvalue) {
-		return set(component, key, (value == defaultvalue) ? null : new Integer(value));
+		return set(component, key, (value == defaultvalue) ? null : Integer.valueOf(value));
 	}
 
 	/**
@@ -7240,9 +7240,9 @@ public class Thinlet extends Canvas
 
 	private static Object[] dtd;
 	static {
-		Integer integer_1 = new Integer(-1);
-		Integer integer0 = new Integer(0);
-		Integer integer1 = new Integer(1);
+		Integer integer_1 = Integer.valueOf(-1);
+		Integer integer0 = Integer.valueOf(0);
+		Integer integer1 = Integer.valueOf(1);
 		String[] orientation = { "horizontal", "vertical" };
 		String[] leftcenterright = { "left", "center", "right" };
 		String[] selections = { "single", "interval", "multiple" }; //+none
@@ -7361,12 +7361,12 @@ public class Thinlet extends Canvas
 			"progressbar", "component", new Object[][] {
 				{ "choice", "orientation", "validate", orientation },
 				{ "integer", "minimum", "paint", integer0 }, //...checkvalue
-				{ "integer", "maximum", "paint", new Integer(100) },
+				{ "integer", "maximum", "paint", Integer.valueOf(100) },
 				{ "integer", "value", "paint", integer0 } },
 				// change stringpainted
 			"slider", "progressbar", new Object[][] {
-				{ "integer", "unit", null, new Integer(5) },
-				{ "integer", "block", null, new Integer(25) },
+				{ "integer", "unit", null, Integer.valueOf(5) },
+				{ "integer", "block", null, Integer.valueOf(25) },
 				{ "method", "action" } },
 				// minor/majortickspacing
 				// inverted
@@ -7395,7 +7395,7 @@ public class Thinlet extends Canvas
 				// selection row column cell
 				// editing row/column
 			"column", "choice", new Object[][] {
-				{ "integer", "width", null, new Integer(DEFAULT_COLUMN_WIDTH) },
+				{ "integer", "width", null, Integer.valueOf(DEFAULT_COLUMN_WIDTH) },
 				{ "choice", "sort", null, new String[] { "none", "ascent", "descent" } },
 				{ "boolean", "selected", null, Boolean.FALSE } },
 			"row", null, new Object[][] {
