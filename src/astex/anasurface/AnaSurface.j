@@ -1484,8 +1484,6 @@ public class AnaSurface {
 	    }
 
 	    angles[ee] = angle(cij2v, t.uijnorm, t.uijnorm2);
-
-	    //System.out.println("angle "+ angles[ee]);
 	}
 
 	// sort them using bubble sort...
