@@ -33,11 +33,7 @@ public class Arguments extends Hashtable<Object,Object> {
     public boolean defined(String argument){
 	argument = addDash(argument);
 
-	if(get(argument) == null){
-	    return false;
-	}else{
-	    return true;
-	}
+	 return (get(argument) != null);
     }
 
     /** Lookup value of double arg or return default. */
