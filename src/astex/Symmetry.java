@@ -73,13 +73,7 @@ public class Symmetry {
 
 	// compact the original space group name
 	if(originalSpaceGroupName != null){
-	    compactedOriginalName = "";
-	    for(int i = 0; i < originalSpaceGroupName.length(); i++){
-		char c = originalSpaceGroupName.charAt(i);
-		if(c != ' '){
-		    compactedOriginalName += c;
-		}
-	    }
+	    compactedOriginalName = originalSpaceGroupName.replace(" ","");
 	}
 
 	while(file.nextLine()){
@@ -135,13 +129,8 @@ public class Symmetry {
     private static String getSpaceGroupName(String spaceGroupDescription){
 	int firstApostrophe = spaceGroupDescription.indexOf('\'');
 	int lastApostrophe = spaceGroupDescription.lastIndexOf('\'');
-	String spaceGroupName = "";
-	for(int i = firstApostrophe + 1; i < lastApostrophe; i++){
-	    char c = spaceGroupDescription.charAt(i);
-	    if(c != ' '){
-		spaceGroupName += c;
-	    }
-	}
+	String spaceGroupName = spaceGroupDescription.substring(firstApostrophe,lastApostrophe);
+	spaceGroupName = spaceGroupName.replace(" ","");
 
 	return spaceGroupName;
     }
