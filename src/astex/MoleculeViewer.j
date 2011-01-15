@@ -1106,37 +1106,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	boolean redraw = true;
 	int c = e.getKeyChar();
 
-	String key = "";
-
-	if(e.isControlDown()){
-	    if(key.length() > 0){
-		key += "+";
-		}
-	    key += "control";
-	}
-	
-	if(e.isShiftDown()){
-	    if(key.length() > 0){
-		key += "+";
-	    }
-	    key += "shift";
-	}
-
-	if(e.isAltDown()){
-	    if(key.length() > 0){
-		key += "+";
-	    }
-	    key += "alt";
-	}
-
-	if(key.length() > 0){
-	    key += "+";
-	}
-
-	key += (char)e.getKeyCode();
-
 	String modifiers = KeyEvent.getKeyModifiersText(e.getModifiers());
-	key       = KeyEvent.getKeyText(e.getKeyCode());
+	String key       = KeyEvent.getKeyText(e.getKeyCode());
 
 	if(modifiers.length() != 0){
 	    key = modifiers + "+" + key;
