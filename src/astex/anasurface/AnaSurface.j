@@ -418,8 +418,6 @@ public class AnaSurface {
     }
 
     private void processConvexFace(Face f){
-	//convexFace.print("convexFace");
-
 	vArray.removeAllElements();
 	eArray.removeAllElements();
 
