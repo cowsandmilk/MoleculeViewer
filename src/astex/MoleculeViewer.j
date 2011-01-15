@@ -142,10 +142,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	if("rock".equals(mode)){
 	    double a = args.getDouble("-angle", 7.5);
-	    //double r = args.getDouble("-rate", 7.5);
 
 	    stage.setRockAngle(a);
-	    //stage.setRockRate(r);
 
 	    stage.setMode(AnimationObject.Rock);
 	}else if("roll".equals(mode)){

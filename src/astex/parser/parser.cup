@@ -423,7 +423,6 @@ map_command ::=
 				}else{
 					int colour =
 						Color32.getColorFromName(onoff);
-					//System.out.println("color change to " + colour);
 					parser.renderer.setMapContourColour(name,
 							contour.intValue(),
 							colour);
@@ -434,7 +433,6 @@ map_command ::=
 		{:
 				int colour = Color32.getColorFromName(c);
 
-				//System.out.println("color change to " + colour);
 				parser.renderer.setMapContourColour(name,
 						contour.intValue(),
 						colour);
@@ -488,12 +486,9 @@ map_command ::=
 			parser.renderer.setMapContourDisplayed(name,
 				contour.intValue(),
 				displayed);
-
-			//map.setNeedsReading(true);
 		:}
 	| MAP STRING:name arguments:args
 		{:
-			//System.out.println("args " + args);
 			parser.renderer.handleMapCommand(name, args);
 		:}
 	;
@@ -581,8 +576,6 @@ display_command ::=
 			}else{
 				System.out.println("invalid display mode " + mode);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
         | DISPLAY WIDE selection:selectedAtoms
                 {:
@@ -608,8 +601,6 @@ display_command ::=
                                         bond.setBondWidth(2);
                                 }
                         }
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
                 :}
 	| CLIP number:c
 		{: parser.renderer.renderer.setClip(c.doubleValue()); :}
@@ -1376,8 +1367,6 @@ object_command ::=
 					dmax.doubleValue(), false,
 					Texgen.Lipophilicity);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| OBJECT STRING:name COLOR STRING:colorName
 		{:

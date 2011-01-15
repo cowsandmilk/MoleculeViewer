@@ -251,14 +251,11 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	    moleculeViewer.setArrayCopy(true);
 	}
 	
-	//System.out.println("**** codeBase " + getCodeBase());
-	
 	DynamicArray moleculeNames = getParameterList("molecule");
 	
 	for(int i = 0; i < moleculeNames.size(); i++){
 	    String moleculeName = (String)moleculeNames.get(i);
 
-	    //FILE file = FILE.open(moleculeName);
 	    Molecule molecule = MoleculeIO.read(moleculeName);
 	    moleculeViewer.addMolecule(molecule);
 	}

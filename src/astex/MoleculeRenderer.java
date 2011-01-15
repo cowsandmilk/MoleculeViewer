@@ -693,7 +693,6 @@ public class MoleculeRenderer {
 	    if("centroid".equals(mode)){
 		Distance d = new Distance();
 		d.setInteger(Distance.Mode, Distance.Centroids);
-		//d.setMode(Distance.Centroids);
 
 		for(int i = 0; i < from.size(); i++){
 		    d.group0.add(from.get(i));
@@ -707,7 +706,6 @@ public class MoleculeRenderer {
 		    configureDistance(d, args);
 
 		    addDistance(d);
-		    //distances.add(d);
 		}
 	    }else if("pairs".equals(mode) || "nbpairs".equals(mode)){
 		boolean allowBonded = true;
