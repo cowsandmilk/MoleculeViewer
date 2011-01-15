@@ -280,8 +280,7 @@ public class AnaSurface {
 	    Face f = (Face)faces.get(i);
 	    int edgeCount = f.size();
 
-	    if(!(edgeCount == 4 && f.type == Face.Saddle) &&
-		f.skip == false){
+	    if(!(edgeCount == 4 && f.type == Face.Saddle) && !f.skip){
 		processFace(f);
 	    }
 	}
@@ -404,9 +403,9 @@ public class AnaSurface {
 		
 		firstEdge = (Edge)convexFace.get(0);
 		lastEdge = (Edge)convexFace.getReverse(0);
-	    } while(lastEdge.v1.vi != firstEdge.v0.vi && addedEdge != false);
+	    } while(lastEdge.v1.vi != firstEdge.v0.vi && addedEdge);
 
-	    if(addedEdge == false){
+	    if(!addedEdge){
 		System.out.println("failed to extend contact face");
 		sphereFace.print("faulty sphere face");
 	    }else{
@@ -1725,7 +1724,7 @@ public class AnaSurface {
 	    return;
 	}
 
-	if(probeFace.contains(olde) == false){
+	if(!probeFace.contains(olde)){
 	    System.out.println("face didn't contain old edge...");
 	    return;
 	}
@@ -1748,7 +1747,7 @@ public class AnaSurface {
 	    }
 	}
 
-	if(probeFace.isValid() == false){
+	if(!probeFace.isValid()){
 	    System.out.println("new probeFace is not valid");
 	}
     }
@@ -2993,7 +2992,7 @@ public class AnaSurface {
 
 	Tmesh tmesh = s.construct();
 
-	if(faceType == false){
+	if(!faceType){
 	    for(int i = 0; i < tmesh.nt; i++){
 		tmesh.tcolor[i] = 0;
 	    }
