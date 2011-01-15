@@ -22,7 +22,7 @@ import java.util.*;
 public class Arguments extends Hashtable<Object,Object> {
     /** Add a dash to the argument if it doesn't exist. */
     public static String addDash(String argument){
-	if(argument != null && !argument.startsWith("-")){
+	if(argument != null && argument.charAt(0) != '-'){
 	    return "-" + argument;
 	}else{
 	    return argument;
@@ -202,7 +202,7 @@ public class Arguments extends Hashtable<Object,Object> {
     public static Object propertyGet(String argument){
 	ensureConfigurationFileLoaded();
 
-	if(argument.startsWith("-")){
+	if(argument.charAt(0) == '-'){
 	    argument = argument.substring(1, argument.length());
 	}
 

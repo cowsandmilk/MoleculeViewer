@@ -6239,7 +6239,7 @@ public class Thinlet extends Canvas
 										else if ("amp".equals(entity)) { text.append('&'); }
 										else if ("quot".equals(entity)) { text.append('"'); }
 										else if ("apos".equals(entity)) { text.append('\''); }
-										else if (entity.startsWith("#")) {
+										else if (entity.charAt(0) == '#') {
 											boolean hexa = (entity.charAt(1) == 'x');
 											text.append((char) Integer.parseInt(entity.substring(hexa ? 2 : 1), hexa ? 16 : 10));
 										}
@@ -6492,7 +6492,7 @@ public class Thinlet extends Canvas
 		}
 		else if ("color" == definition[0]) {
 			int color = 0;
-			if (value.startsWith("#")) { color = Integer.parseInt(value.substring(1), 16); }
+			if (value.charAt(0) == '#') { color = Integer.parseInt(value.substring(1), 16); }
 			else if (value.startsWith("0x")) { color = Integer.parseInt(value.substring(2), 16); }
 			else { // three separated integer including red, green, and blue
 				StringTokenizer st = new StringTokenizer(value, " \r\n\t,");

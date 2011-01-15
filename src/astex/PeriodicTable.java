@@ -299,7 +299,7 @@ public class PeriodicTable {
 	    
 	    // some cofactors have A as the first letter of the name.
 	    // this really confuses astexviewer so remove the leading a.
-	    if(symbol.startsWith("A")){
+	    if(symbol.charAt(0) == 'A'){
 		symbol = " " + symbol.substring(1);
 	    }
 	}

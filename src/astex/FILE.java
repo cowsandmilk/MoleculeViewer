@@ -1604,8 +1604,8 @@ public class FILE extends InputStream {
 		    // hmm, unix doesn't have trailing / on 
 		    // current dir canonical path, so remove any
 		    // that are left on the front of the path here.
-		    while(relativePath.startsWith("/") ||
-                          relativePath.startsWith("\\")){
+		    while(relativePath.charAt(0) == '/' ||
+                          relativePath.charAt(0) =='\\'){
 			relativePath = relativePath.substring(1);
 		    }
 

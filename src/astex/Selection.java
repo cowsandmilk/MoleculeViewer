@@ -550,7 +550,7 @@ public class Selection {
 	    for(int i = 0; i < idCount; i++){
                 String id = (String)ids.elementAt(i);
 
-                if(id.startsWith("#")){
+                if(id.charAt(0) == '#'){
                     int molNumber = Integer.parseInt(id.substring(1));
                     if(molNumber == m){
                         matched = 1;

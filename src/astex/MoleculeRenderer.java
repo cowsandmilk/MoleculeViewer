@@ -522,7 +522,7 @@ public class MoleculeRenderer {
 	    return;
 	}
 
-	if(typeString != null && !typeString.startsWith(".")){
+	if(typeString != null && typeString.charAt(0) != '.'){
 	    typeString = "." + typeString;
 	}
 
@@ -1573,7 +1573,7 @@ public class MoleculeRenderer {
     }
 
     private boolean moleculeMatches(String pattern, Molecule mol){
-	if(pattern.startsWith("#")){
+	if(pattern.charAt(0) == '#'){
 	    int moleculeCount = getMoleculeCount();
 
 	    int id = Integer.parseInt(pattern.substring(1)) % moleculeCount;

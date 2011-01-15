@@ -3376,7 +3376,7 @@ public class Renderer {
 	colorDefined        = false;
 	int stringPoints    = defaultBitmapFontSize;
 
-	if(s.startsWith("<")){
+	if(s.charAt(0) == '<'){
 	    int pos = s.indexOf('>');
 	    if(pos == -1){
 		Log.error("unterminated string intro: no matching >");
