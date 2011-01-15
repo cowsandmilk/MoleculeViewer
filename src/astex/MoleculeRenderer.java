@@ -115,7 +115,7 @@ public class MoleculeRenderer {
     private transient DynamicArray moleculeRendererListeners = new DynamicArray();
 
     /** The set of defined groups. */
-    public Hashtable<String,Hashtable<Atom, Atom>> groups = new Hashtable<String,Hashtable<Atom, Atom>>(11);
+    public HashMap<String,HashSet<Atom>> groups = new HashMap<String,HashSet<Atom>>(11);
 
     /** The symmetry we will use. */
     private Symmetry symmetry = null;

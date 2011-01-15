@@ -23,7 +23,7 @@ parser code {:
 		renderer = r;
 	}
 
-	public static Hashtable definitions = new Hashtable();
+	public static HashMap definitions = new HashMap();
 :}
 
 terminal SEMI, LPAREN, RPAREN, LCURLY, RCURLY;
@@ -296,13 +296,13 @@ selection_command ::=
 			System.out.println("storing definition " + name +
 				" atom count " + selectedAtoms.size());
 
-			Hashtable<Atom,Atom> h = new Hashtable<Atom,Atom>();
+			HashSet<Atom> h = new HashSet<Atom>(100);
 
 			int count = selectedAtoms.size();
 
 			for(int i = 0; i < count; i++){
 				Atom a = (Atom)selectedAtoms.get(i);
-				h.put(a, a);
+				h.add(a);
 			}
 
 			parser.renderer.groups.put(name, h); 
@@ -1452,7 +1452,7 @@ object_command ::=
 texture_command ::=
 	  TEXTURE LOAD STRING:name STRING:image
 		{:
-			Hashtable<String,Texture> textureHash =
+			HashMap<String,Texture> textureHash =
 				parser.renderer.renderer.textures;
 
 			if(textureHash.get(name) == null){
@@ -1671,8 +1671,8 @@ statement ::=
 		{: RESULT = Selection.composite(parser.renderer, v); :}
 	| GROUP STRING:definition
 		{:
-			Hashtable group =
-				(Hashtable)parser.renderer.groups.get(definition);
+			HashSet<Atom> group =
+				parser.renderer.groups.get(definition);
 			if(group == null){
 				System.out.println("attempt to use undefined group " + definition);
 				RESULT = Selection.none(parser.renderer);

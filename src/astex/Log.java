@@ -52,7 +52,7 @@ public class Log {
     };
 
     /** The maps of logging levels for the classes. */
-    private static Hashtable<String,Integer> methodLevels = new Hashtable<String,Integer>();
+    private static HashMap<String,Integer> methodLevels = new HashMap<String,Integer>(16);
 
     /** The current global log level. */
     private static int         level    = INFO;

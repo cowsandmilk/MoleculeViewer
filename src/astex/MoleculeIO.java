@@ -1417,7 +1417,7 @@ public class MoleculeIO {
         Residue prevRes = null;
         int resNumber = 0;
 
-        Hashtable<Atom, Integer> atomNumberHash = new Hashtable<Atom, Integer>(500);
+        HashMap<Atom, Integer> atomNumberHash = new HashMap<Atom, Integer>(500);
 
         output.println("@<TRIPOS>ATOM");
         for(int a = 0; a < atomCount; a++){

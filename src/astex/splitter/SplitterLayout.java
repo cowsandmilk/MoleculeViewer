@@ -22,7 +22,7 @@ package astex.splitter;
 // TODO: perhaps make most of this a percent layout and derive splitter layout from it?
 
 import java.awt.*;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /** SplitterLayout is a layout manager that will layout a container holding
 	other components and SplitterBars.
@@ -128,7 +128,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 
 	private int lastW=-1, lastH=-1;
 	private boolean newComponentAdded=false;
-	private Hashtable<Component,Integer> relations = new Hashtable<Component,Integer>(11);
+	private HashMap<Component,Integer> relations = new HashMap<Component,Integer>(11);
 	
 	private static final long serialVersionUID = -8658291919501921765L;
 	private int fieldOrientation = VERTICAL;

@@ -20,7 +20,7 @@ import java.awt.image.*;
 import java.awt.event.*;
 // only import specific classes to stop
 // clashses with my Map class
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -75,7 +75,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private boolean announce = false;
 
     /** Definition of key bindings. */
-    private Hashtable<String,String> keyDefinitions = new Hashtable<String,String>();
+    private HashMap<String,String> keyDefinitions = new HashMap<String,String>(120);
 
     /** The animation thread. */
     private Animate animationThread = null;
@@ -1354,7 +1354,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	return fileMenu;
     }
 
-    private Hashtable<String,String> writeBMPHash= new Hashtable<String,String>();
+    private HashMap<String,String> writeBMPHash= new HashMap<String,String>(16);
 
     private Menu createBMPMenu(){
 	Menu menu = new Menu(WriteBMPString);
@@ -1539,8 +1539,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	if(source instanceof ColorButton){
 	    ColorButton button = (ColorButton)source;
 
-	    Map map = mapHashtable.get(button);
-	    Integer contour = contourLevelHashtable.get(button);
+	    Map map = mapHashMap.get(button);
+	    Integer contour = contourLevelHashMap.get(button);
 
 	    String color = button.getValue();
 	    
@@ -1699,20 +1699,20 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     /** The contour level dialog. */
     private transient Dialog contourLevelDialog = null;
 
-    /** The hashtable to map from sliders to checkboxes. */
-    private Hashtable<Scrollbar,Checkbox> checkboxHashtable = new Hashtable<Scrollbar,Checkbox>();
+    /** The hashmap to map from sliders to checkboxes. */
+    private HashMap<Scrollbar,Checkbox> checkboxHashMap = new HashMap<Scrollbar,Checkbox>(4);
 
-    /** The hashtable to map from sliders to maps. */
-    private Hashtable<Object,Map> mapHashtable = new Hashtable<Object,Map>();
+    /** The hashmap to map from sliders to maps. */
+    private HashMap<Object,Map> mapHashMap = new HashMap<Object,Map>(12);
 
-    /** The hashtable to map from sliders to contourlevels. */
-    private Hashtable<Object,Integer> contourLevelHashtable = new Hashtable<Object,Integer>();
+    /** The hashmap to map from sliders to contourlevels. */
+    private HashMap<Object,Integer> contourLevelHashMap = new HashMap<Object,Integer>();
 
     /** Actually build the contour level. */
     private void buildContourLevelDialog(){
-	checkboxHashtable.clear();
-	mapHashtable.clear();
-	contourLevelHashtable.clear();
+	checkboxHashMap.clear();
+	mapHashMap.clear();
+	contourLevelHashMap.clear();
 
 	contourLevelDialog.setLayout(new GridBagLayout());
 
@@ -1795,16 +1795,16 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 			 GridBagConstraints.WEST,
 			 100., 0.);
 
-	checkboxHashtable.put(contourScrollbar, checkbox);
-	mapHashtable.put(contourScrollbar, map);
+	checkboxHashMap.put(contourScrollbar, checkbox);
+	mapHashMap.put(contourScrollbar, map);
 
 	Integer contour = new Integer(contourLevel);
-	contourLevelHashtable.put(contourScrollbar, contour);
+	contourLevelHashMap.put(contourScrollbar, contour);
 
-	mapHashtable.put(checkbox, map);
-	contourLevelHashtable.put(checkbox, contour);
-    	mapHashtable.put(label, map);
-	contourLevelHashtable.put(label, contour);
+	mapHashMap.put(checkbox, map);
+	contourLevelHashMap.put(checkbox, contour);
+    	mapHashMap.put(label, map);
+	contourLevelHashMap.put(label, contour);
     }
 
     /** Popup a dialog which allow us to alter contour levels. */
@@ -1836,8 +1836,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	Adjustable slider = e.getAdjustable();
 	int value = e.getValue();
 
-	Map map = mapHashtable.get(slider);
-	Integer contour = contourLevelHashtable.get(slider);
+	Map map = mapHashMap.get(slider);
+	Integer contour = contourLevelHashMap.get(slider);
 	double level = 0.01 * value;
 			
 	map.setContourLevel(contour.intValue(), level);
@@ -1848,7 +1848,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	int tidyValue = 5 * (value/5);
 	double tidyLevel = 0.01 * tidyValue;
 
-	Checkbox checkbox = checkboxHashtable.get(slider);
+	Checkbox checkbox = checkboxHashMap.get(slider);
 	checkbox.setLabel(contourFormat.format(tidyLevel));
 		
 	dirtyRepaint();
@@ -2067,8 +2067,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(source instanceof Checkbox){
 	    Checkbox checkbox = (Checkbox)source;
 	    boolean state = checkbox.getState();
-	    Map map = mapHashtable.get(checkbox);
-	    Integer contour = contourLevelHashtable.get(checkbox);
+	    Map map = mapHashMap.get(checkbox);
+	    Integer contour = contourLevelHashMap.get(checkbox);
 	    
 	    map.setContourDisplayed(contour.intValue(), state);
 

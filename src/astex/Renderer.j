@@ -149,7 +149,7 @@ public class Renderer {
     public DynamicArray lights = new DynamicArray(8);
 
     /** The list of textures. */
-    public Hashtable<String,Texture> textures = new Hashtable<String,Texture>(11);
+    public HashMap<String,Texture> textures = new HashMap<String,Texture>(11);
 
     /** The current texture. */
     private Texture texture = null;
@@ -3328,7 +3328,7 @@ public class Renderer {
     }
 
     /** Where the character data is stored. */
-    private Hashtable<String,DynamicArray> hersheyHash = new Hashtable<String,DynamicArray>();
+    private HashMap<String,DynamicArray> hersheyHash = new HashMap<String,DynamicArray>(4);
 
     /** Make sure we got the hershey fonts loaded. */
     private DynamicArray getHersheyFont(String name){
@@ -3460,7 +3460,7 @@ public class Renderer {
     }
 
     /** Hash of the bitmap fonts that we have loaded. */
-    private Hashtable<String,byte[]> bitmapFonts = new Hashtable<String,byte[]>();
+    private HashMap<String,byte[]> bitmapFonts = new HashMap<String,byte[]>();
 
     /** Look up a font from the bitmapfont properties. */
     private byte[] getFont(String name){

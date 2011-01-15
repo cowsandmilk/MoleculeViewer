@@ -90,7 +90,7 @@ public class ObjectPropertyDialog extends Dialog
     private JCSpinBox umaxSB        = null;
     private JCSpinBox vmaxSB        = null;
 
-    private Hashtable<JCButton, String> imageHash = new Hashtable<JCButton, String>(11);
+    private HashMap<JCButton, String> imageHash = new HashMap<JCButton, String>(11);
 
     /** Create the controls for this property editor. */
     private void createControls(){

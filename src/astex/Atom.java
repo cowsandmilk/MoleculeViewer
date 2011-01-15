@@ -1319,7 +1319,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public static final String Element = "element";
 
     /** Arbitrary properties. */
-    Hashtable<Object,Object> properties = null;
+    private HashMap<Object,Object> properties = null;
 
     /** Get Object representing key. */
     public Object get(Object key, Object def){
@@ -1366,7 +1366,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
         else if(key.equals(Opacity)) transparency = ((Integer)value).intValue();
         else{
             if(properties == null){
-                properties = new Hashtable<Object,Object>();
+                properties = new HashMap<Object,Object>(20);
             }
             if(value == null){
                 properties.remove(key);

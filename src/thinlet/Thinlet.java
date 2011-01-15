@@ -5921,12 +5921,12 @@ public class Thinlet extends Canvas
 		Object table = get(component, ":bind");
 		if (value != null) {
 			if (table == null) {
-				set(component, ":bind", table = new Hashtable());
+				set(component, ":bind", table = new HashMap<Object,Object>());
 			}
-			((Hashtable) table).put(key, value);
+			((HashMap<Object,Object>) table).put(key, value);
 		}
 		else if (table != null) {
-			((Hashtable) table).remove(key);
+			((HashMap<Object,Object>) table).remove(key);
 		}
 	}
 	
@@ -5939,12 +5939,8 @@ public class Thinlet extends Canvas
 	 */
 	public Object getProperty(Object component, Object key) {
 		Object table = get(component, ":bind");
-		return (table != null) ? ((Hashtable) table).get(key) : null;
+		return (table != null) ? ((HashMap<Object,Object>) table).get(key) : null;
 	}
-
-    public Hashtable getProperties(Object component){
-        return (Hashtable)get(component, ":bind");
-    }
 
 	// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -6018,7 +6014,7 @@ public class Thinlet extends Canvas
 	 * @param name of the tag
 	 * @param attributelist a list of attributes including keys and value pairs
 	 */
-	protected void startElement(String name, Hashtable attributelist) {}
+	protected void startElement(String name, HashMap<String,String> attributelist) {}
 
 	/**
 	 * The SAX-like parser calls this method, you have to overwrite it
@@ -6102,7 +6098,7 @@ public class Thinlet extends Canvas
 		try {
 			Object[] parentlist = null;
 			Object current = null;
-			Hashtable attributelist = null;
+			HashMap<String,String> attributelist = null;
 			Vector methods = (validate && !dom) ? new Vector() : null;
 			StringBuilder text = new StringBuilder();
 			for (int c = reader.read(); c != -1;) {
@@ -6253,7 +6249,7 @@ public class Thinlet extends Canvas
 									if (dom) {
 										set(current, key.intern(), text.toString());
 									} else {
-										if (attributelist == null) { attributelist = new Hashtable(); }
+										if (attributelist == null) { attributelist = new HashMap<String,String>(); }
 										attributelist.put(key, text.toString());
 									}
 								}
@@ -6285,7 +6281,7 @@ public class Thinlet extends Canvas
 	}
 
     /** Hash the paintmethods to make them faster to lookup. */
-    private Hashtable paintMethodHash = null;
+    private HashMap<String,Method> paintMethodHash = null;
 
     /**
      * Look for method that will paint this component.
@@ -6299,7 +6295,7 @@ public class Thinlet extends Canvas
             Method paintMethod = null;
 
             if(paintMethodHash != null){
-                paintMethod = (Method)paintMethodHash.get(methodName);
+                paintMethod = paintMethodHash.get(methodName);
             }
 
             if(paintMethod == null){
@@ -6313,7 +6309,7 @@ public class Thinlet extends Canvas
                 paintMethod = getClass().getMethod(methodName, parametertypes);
 
                 if(paintMethodHash == null){
-                    paintMethodHash = new Hashtable();
+                    paintMethodHash = new HashMap<String,Method>();
                 }
 
                 paintMethodHash.put(methodName, paintMethod);

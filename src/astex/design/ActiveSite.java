@@ -80,7 +80,7 @@ public class ActiveSite {
     private static double rmsdFailLevel    = 0.5;
 
     /** The hash of probe molecule names for this superstar map. */
-    private static Hashtable<String, Molecule> probeMolecules = null;
+    private static HashMap<String, Molecule> probeMolecules = null;
 
     /** Set up the radii from the superstar property file. */
     private static void setupRadii(){
@@ -130,7 +130,7 @@ public class ActiveSite {
 	setupRadii();
 
 	// hash for the istr molecules
-	probeMolecules = new Hashtable<String, Molecule>(11);
+	probeMolecules = new HashMap<String, Molecule>(200);
 	
 	// clear the visit flags on the superstar atoms.
 	int atomCount = superstar.size();
@@ -1152,7 +1152,7 @@ public class ActiveSite {
 
 	// build the type information
 	StringArray types = new StringArray();
-	Hashtable<String, DoubleArray> pmfs = new Hashtable<String, DoubleArray>(11);
+	HashMap<String, DoubleArray> pmfs = new HashMap<String, DoubleArray>(11);
 
 	for(int i = 0; i < exclusionCount; i++){
 	    Atom atom = (Atom)exclusion.get(i);
@@ -1230,7 +1230,7 @@ public class ActiveSite {
     /** Add in the potential of an atom. */
     private static void incorporatePotential(astex.Map map, int iatom,
 					    Atom atom, StringArray types,
-					    Hashtable<String,DoubleArray> pmfs, double maxd){
+					    HashMap<String,DoubleArray> pmfs, double maxd){
 	String type = types.get(iatom);
 	DoubleArray pmf = pmfs.get(type);
 
@@ -1298,7 +1298,7 @@ public class ActiveSite {
     }
 
     /** Try and load the pmf. */
-    private static void loadPmf(Hashtable<String, DoubleArray> pmfs, String location, String pmf){
+    private static void loadPmf(HashMap<String, DoubleArray> pmfs, String location, String pmf){
 	String filename = location + "/" + pmf + ".pmf";
 	DoubleArray values = new DoubleArray();
 

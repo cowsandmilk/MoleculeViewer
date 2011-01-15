@@ -808,7 +808,7 @@ public class Selection {
     }
 
     /** Select a set of atoms in a group. */
-    public static byte[] group(MoleculeRenderer r, Hashtable<Atom, Atom> group){
+    public static byte[] group(MoleculeRenderer r, HashSet<Atom> group){
 	byte[] mask = generateSelectionMask(r);
 
 	AtomIterator iterator = r.getAtomIterator();
@@ -818,10 +818,7 @@ public class Selection {
             atom.setTemporarilySelected(false);
         }
 
-        Enumeration<Atom> groupEnum = group.keys();
-
-        while(groupEnum.hasMoreElements()){
-            Atom atom = groupEnum.nextElement();
+        for (Atom atom: group){
             atom.setTemporarilySelected(true);
         }
 

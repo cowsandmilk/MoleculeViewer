@@ -372,7 +372,7 @@ public class Color32 {
     public static final int undefinedColor = white;
 
     /** Hashtable for storing color name -> rgb values. */
-    private static Hashtable<String,Integer> colorHash;
+    private static HashMap<String,Integer> colorHash;
 
     /** Valid digits for a hex format number. */
     private static String hexDigits = "0123456789abcdefABCDEFx";
@@ -482,7 +482,7 @@ public class Color32 {
     /** Make sure the color hash is defined and initialised. */
     private static void ensureColorHashDefined(){
 	if(colorHash == null){
-	    colorHash = new Hashtable<String,Integer>();
+	    colorHash = new HashMap<String,Integer>(500);
 
 	    FILE f = FILE.open("color.properties");
 

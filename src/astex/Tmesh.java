@@ -843,7 +843,7 @@ public class Tmesh {
 	output.close();
     }
 
-    private Hashtable<Integer, Integer> clipHash = null;
+    private HashMap<Integer, Integer> clipHash = null;
 
     /** 
      * Clip Tmesh to those triangles and points that have
@@ -854,7 +854,7 @@ public class Tmesh {
 	int used[] = new int[np];
 	int remainingPoints = 0;
 
-	clipHash = new Hashtable<Integer,Integer>(2*nt);
+	clipHash = new HashMap<Integer,Integer>((2*nt)*4/3); //loadfactor = 0.75
 
 	System.out.println("Tmesh.clip: clipping " + getName());
 

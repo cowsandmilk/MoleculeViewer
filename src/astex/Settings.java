@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Settings {
 	/** Hashtable of property objects. */
-	private static Hashtable<String,Properties> propertyObjects = new Hashtable<String,Properties>(11);
+	private static HashMap<String,Properties> propertyObjects = new HashMap<String,Properties>(8);
 
 	/** The main get method. */
 	public static Object get(String table, String property){

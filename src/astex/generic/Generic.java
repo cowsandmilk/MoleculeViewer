@@ -23,7 +23,6 @@ public class Generic implements GenericInterface {
     
     private static final String ClassName   = "__class__";
 
-    private static final Hashtable<String,Object> emptyHashtable = new Hashtable<String,Object>(0);
     private static final Vector<GenericInterface> emptyVector = new Vector<GenericInterface>(0);
 
     public Generic(String cl){
@@ -34,7 +33,7 @@ public class Generic implements GenericInterface {
         setClassname(getClass().getName());
     }
 
-    private Hashtable<String,Object> properties = null;
+    private HashMap<String,Object> properties = null;
 
     public Object get(Object key, Object def){
         if(properties == null){
@@ -51,7 +50,7 @@ public class Generic implements GenericInterface {
         Object oldValue = null;
 
         if(properties == null){
-            properties = new Hashtable<String,Object>();
+            properties = new HashMap<String,Object>();
         }else{
             oldValue = properties.get(name);
         }
