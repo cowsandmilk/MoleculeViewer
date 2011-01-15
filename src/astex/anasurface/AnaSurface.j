@@ -2466,10 +2466,10 @@ public class AnaSurface {
 
     /** Print a vector. */
     private static void print(String s, double x[]){
-	Format.print(System.out, "%-10s", s);
-	Format.print(System.out, " %8.3f,", x[0]);
-	Format.print(System.out, " %8.3f,", x[1]);
-	Format.print(System.out, " %8.3f\n", x[2]);
+	System.out.printf("%-10s", s);
+	System.out.printf(" %8.3f,", x[0]);
+	System.out.printf(" %8.3f,", x[1]);
+	System.out.printf(" %8.3f\n", x[2]);
     }
 
     private static int dotCount = 45;
@@ -2483,7 +2483,7 @@ public class AnaSurface {
 	    System.out.print(".");
 	}
 
-	Format.print(System.out, " %7d\n", i);
+	System.out.printf(" %7d\n", i);
     }
 
     /** Print a double. */
@@ -2495,7 +2495,7 @@ public class AnaSurface {
 	    System.out.print(".");
 	}
 
-	Format.print(System.out, " %10.2f\n", d);
+	System.out.printf(" %10.2f\n", d);
     }
 
     /** Print a String. */

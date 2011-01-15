@@ -157,44 +157,6 @@ public class Format {
 		if (i < length)
 			post = s.substring(i, length);
 	}      
-	/** 
-	 * prints a formatted number following printf conventions
-	 * @param s a PrintStream
-	 * @param fmt the format string
-	 * @param x the double to print
-	 */
-  
-	public static void print(java.io.PrintStream s, String fmt, double x) {
-		s.print(new Format(fmt).format(x));
-	}
-	/** 
-	 * prints a formatted number following printf conventions
-	 * @param s a PrintStream
-	 * @param fmt the format string
-	 * @param x the long to print
-	 */
-	public static void print(java.io.PrintStream s, String fmt, long x) {
-		s.print(new Format(fmt).format(x));
-	}
-	/** 
-	 * prints a formatted number following printf conventions
-	 * @param s a PrintStream
-	 * @param fmt the format string
-	 * @param x the character to 
-	 */
-  
-	public static void print(java.io.PrintStream s, String fmt, char x) {
-		s.print(new Format(fmt).format(x));
-	}
-	/** 
-	 * prints a formatted number following printf conventions
-	 * @param s a PrintStream, fmt the format string
-	 * @param x a string that represents the digits to print
-	 */
-  
-	public static void print(java.io.PrintStream s, String fmt, String x) {
-		s.print(new Format(fmt).format(x));
-	}
                
 	/** 
 	 * Formats a double into a string (like sprintf in C)
