@@ -525,7 +525,7 @@ display_command ::=
 		:}
 	| DISPLAY render_style:mode selection:selectedAtoms
 		{:
-			int displayBit = mode.intValue();;
+			int displayBit = mode.intValue();
 
 			if(displayBit != 0){
 		   	 	AtomIterator iterator =
@@ -550,7 +550,7 @@ display_command ::=
 		:}
 	| DISPLAY render_style:mode on_off:onoff selection:selectedAtoms
 		{:
-			int displayBit = mode.intValue();;
+			int displayBit = mode.intValue();
 			int on = 0;
 
 			if("on".equals(onoff)){
