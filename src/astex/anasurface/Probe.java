@@ -17,8 +17,6 @@
 
 package astex.anasurface;
 
-import astex.*;
-
 public class Probe {
     /** The coordinates of the probe placement. */
     public double x[] = new double[3];
@@ -42,14 +40,4 @@ public class Probe {
 
     /** The third contact atom. */
     public int k;
-
-    private DynamicArray clippingProbes = null;
-
-    public void addClippingProbe(Probe p){
-	if(clippingProbes == null){
-	    clippingProbes = new DynamicArray(2);
-	}
-
-	clippingProbes.add(p);
-    }
 }

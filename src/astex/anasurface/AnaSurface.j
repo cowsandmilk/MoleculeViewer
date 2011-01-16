@@ -1825,14 +1825,6 @@ public class AnaSurface {
 				    if(distance2(probe0, probe1) < rp2){
 					// they intersect one another.
 					selfIntersectingProbes++;
-		
-					// get the last two probes
-					// and add as intersecting pair
-					Probe p1 = (Probe)probes.getReverse(0);
-					Probe p2 = (Probe)probes.getReverse(1);
-					
-					p1.addClippingProbe(p2);
-					p2.addClippingProbe(p1);
 
 					Face f1 = (Face)faces.getReverse(0);
 					Face f2 = (Face)faces.getReverse(1);
