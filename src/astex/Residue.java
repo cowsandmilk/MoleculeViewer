@@ -26,7 +26,6 @@ package astex;
 
 import astex.generic.*;
 
-import java.util.*;
 import java.awt.Color;
 
 /**

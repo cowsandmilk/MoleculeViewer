@@ -18,7 +18,6 @@
 package astex;
 
 import java.awt.*;
-import java.applet.*;
 
 public class Util {
     /** Array of timer start times. */

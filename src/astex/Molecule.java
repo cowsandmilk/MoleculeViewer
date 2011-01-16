@@ -66,7 +66,6 @@ package astex;
  */
 
 import astex.generic.*;
-import java.util.*;
 
 public class Molecule extends Generic implements Selectable {
     /** Dynamic array of atoms. */
