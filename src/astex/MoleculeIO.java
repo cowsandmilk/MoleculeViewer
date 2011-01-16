@@ -777,23 +777,12 @@ public class MoleculeIO {
 
 		if(needNewChain(chainId)){
 		    Chain chain = molecule.addChain();
-		    //if(chainId != ' '){
-		    //		    if(chainId != ' ' ||
-		    //   (xplorChainId1 == ' ' || xplorChainId1 == FILE.EOF) &&
-		    //   (xplorChainId2 == ' ' || xplorChainId2 == FILE.EOF) &&
-		    //  (xplorChainId3 == ' ' || xplorChainId3 == FILE.EOF) &&
-		    //   (xplorChainId4 == ' ' || xplorChainId4 == FILE.EOF)){
 
-			chain.setName(file.getSubstring(21, 1));
-
-			//}else{
-			//chain.setName(file.getSubstring(72, 4));
-			//}						
+		    chain.setName(file.getSubstring(21, 1));
 		}
 
 		if(needNewResidue(residueId, insertionCode, ca, cb, cc)){
 		    Residue residue = molecule.addResidue();
-		    //String residueName = file.getSubstring(17, 3);
 		    String residueName = getResidueName(ca, cb, cc);
 		    residue.setNumber(residueId);
 		    residue.setInsertionCode(insertionCode);
@@ -1390,8 +1379,6 @@ public class MoleculeIO {
 		}
 	    }
 	}
-
-	//output.print("END\n");
     }
 
     /** Write an Sybyl mol2 file to the output stream. */

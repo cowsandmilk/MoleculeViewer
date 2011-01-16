@@ -651,34 +651,6 @@ public class Thinlet extends Canvas
 	}
 	
 	/**
-	 *
-	 */
-	/*private boolean wrap(char[] chars, int width, int lines) {
-		FontMetrics fm = getFontMetrics(font);
-		boolean prevletter = false; int n = chars.length; int linecount = 0;
-		for (int i = 0, j = -1, k = 0; k <= n; k++) { // j is the last space index (before k)
-			if (((k == n) || (chars[k] == '\n') || (chars[k] == ' ')) &&
-					(j > i) && (fm.charsWidth(chars, i, k - i) > width)) {
-				chars[j] = '\t';
-				k--; // draw line to the begin of the current word (+ spaces) if it is out of width
-			}
-			else if ((k == n) || (chars[k] == '\n')) { // draw line to the text/line end
-				j = k; prevletter = false;
-			}
-			else {
-				if (chars[k] == '\t') { chars[k] = ' '; }
-				if ((chars[k] == ' ') && (prevletter || (j > i))) { j = k; } // keep spaces starting the line
-				prevletter = (chars[k] != ' ');
-				continue;
-			}
-			linecount++;
-			if ((lines != 0) && (linecount == lines)) { return false; }
-			i = j + 1;
-		}
-		return true;
-	}*/
-	
-	/**
 	 * @param component a menuitem
 	 * @return key modifier strings and key text
 	 */
@@ -2634,9 +2606,6 @@ public class Thinlet extends Canvas
                     data[3] = Integer.valueOf(width-2);
                     data[4] = Integer.valueOf(height-2);
                     
-                    //Shape clipRect = g.getClip();
-                    //g.translate(x+1, y+1);
-                    //g.clipRect(0, 0, width, height);
                     try {
                         paintMethod.invoke(this, data);
                     }catch(Exception e){
@@ -2644,9 +2613,6 @@ public class Thinlet extends Canvas
                     }
                     
                     g.drawImage(paintImage, x+1, y+1, this);
-
-                    //g.translate(-x-1, -y-1);
-                    //g.setClip(clipRect);
                 }else
 
 

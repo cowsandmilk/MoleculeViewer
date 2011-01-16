@@ -1210,26 +1210,10 @@ public class FILE extends InputStream {
             // tab is less than \r (thank you paul mortenson)
 	    if(ch <= '\r' && ch != '\t'){
 
-		//if(ch == '\n'){
-		//	System.out.println("\\n");
-		//}else if(ch == '\r'){
-		//	System.out.println("\\r");
-		//}else if(ch == EOF){
-		//	System.out.println("EOF");
-		//}
-
 		if( ch == '\n' ) {
 		    return true;
 		} else if( ch == '\r' ) {
 		    ch = read();
-
-		    //if(ch == '\n'){
-		    //	System.out.println("After \\r \\n");
-		    //}else if(ch == '\r'){
-		    //	System.out.println("After \\r \\r");
-		    //}else if(ch == EOF){
-		    //	System.out.println("After \\r EOF");
-		    //}
 
 
 		    if( ch != '\n' && ch != EOF){
@@ -2080,19 +2064,9 @@ public class FILE extends InputStream {
     public static int readFrom(FILE file){
 	int bytesRead = 0;
 
-	//String line = null;
-	//while((line = file.readLine()) != null){
-	//	System.out.println("<" + line + ">");
-	//}
-
 	while(file.read() != FILE.EOF){
 	    bytesRead++;
 	}
-
-	//while(file.nextLine()){
-	//	System.out.println("length " + file.getLineLength());
-	//	bytesRead++;
-	//}
 
 	return bytesRead;
     }

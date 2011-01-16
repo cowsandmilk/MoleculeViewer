@@ -298,22 +298,14 @@ public class MoleculeRenderer {
 	    return;
 	}
 
-	//if(pickedAtoms.contains(pickedAtom)){
-	//    pickedAtoms.remove(pickedAtom);
-	//    return;
-	//}
-
 	// add the latest atom to the pick list
-	//pickedAtoms.add(pickedAtom);
 
 	if(pickMode == DISTANCE_PICK){
 	    if(pickedAtoms.size() == 2){
 		Atom atom0 = (Atom)pickedAtoms.get(0);
 		Atom atom1 = (Atom)pickedAtoms.get(1);
-		//addDistance(atom0, atom1);
 		Distance distance =Distance.createDistanceMonitor(atom0, atom1);
 		addDistance(distance);
-		//distances.add(distance);
 		pickedAtoms.removeAllElements();
 	    }
 	}else if(pickMode == ANGLE_PICK){
@@ -395,16 +387,6 @@ public class MoleculeRenderer {
 
 		    int centerColour =
 			Color32.getColorFromName(contourColourString);
-
-		    /*
-                      Color32.packed2hsv(centerColour, hsv);
-
-                      colors[0] = centerColour;
-                      hsv[0] += hueStep;
-                      colors[1] = Color32.hsv2packed(hsv);
-                      hsv[0] += hueStep;
-                      colors[2] = Color32.hsv2packed(hsv);
-		    */
 
 		    colors[0] = centerColour;
 		    colors[1] = Color32.add(centerColour, Color32.scale(Color32.white, 64));
@@ -663,7 +645,6 @@ public class MoleculeRenderer {
 	    d.setInteger(Distance.Mode, Distance.Pairs);
 
 	    addDistance(d);
-	    //distances.add(d);
 
 	    int fromCount = from.size();
 
@@ -718,11 +699,9 @@ public class MoleculeRenderer {
 
 		Distance d = new Distance();
 		configureDistance(d, args);
-		//d.setMode(Distance.Pairs);
 		d.setInteger(Distance.Mode, Distance.Pairs);
 
 		addDistance(d);
-		//distances.add(d);
 
 		for(int i = 0; i < fromCount; i++){
 		    Atom froma = (Atom)from.get(i);
@@ -1148,23 +1127,13 @@ public class MoleculeRenderer {
 		    nearest.add(neighbour);
 		    d -= ar;
 		    d += wmax;
-		    //d = 1. / Math.sqrt(Math.abs(d)) - 1./Math.sqrt(dmax);
 		    d = 1. / Math.abs(d) - 1./dmax;
-		    //d = (dmax - d)/dmax;
-		    //d *= d*d;
-		    //addDistance(d);
 		    distances.add(d);
 		    if(d < dnear){
 			dnear = d;
 		    }
 		}
 	    }
-
-	    //if(nearestAtom != null){
-	    //    tmesh.vcolor[i] = nearestAtom.getColor();
-	    //}else{
-	    //    tmesh.vcolor[i] = defaultColor;
-	    //}
 
 	    int nearCount = nearest.size();
 
@@ -1357,7 +1326,6 @@ public class MoleculeRenderer {
 	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
 		MoleculeRendererListener l =
 		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
-		//print.f("notifying " + l);
 		l.moleculeRemoved(this, molecule);
 	    }
 	}
@@ -1416,8 +1384,6 @@ public class MoleculeRenderer {
 
 	if(getMoleculeCount() == 1){
 	    resetView();
-	    //setCenter(null);
-	    //renderer.setRadius(0.0);
 	    initialiseCenter();
 	}
 
@@ -1559,11 +1525,8 @@ public class MoleculeRenderer {
 	for(int m = moleculeCount - 1; m >= 0; m--){
 	    Molecule molecule = getMolecule(m);
 	    
-	    //if(match.matches(pattern, moleculeName)){
 	    if(moleculeMatches(pattern, molecule)){
-		//if(pattern.equals(moleculeName)){
 		molecules.remove(molecule);
-		//System.out.println("removed " + moleculeName);
 
 		fireMoleculeRemovedEvent(molecule);
 	    }
@@ -1702,24 +1665,7 @@ public class MoleculeRenderer {
 	    addGraphicalObject(contourObject);
 	}
 
-	// hack to change contour levels of second map
-	/*
-	  if(mapCount == 2){
-	  if(map.initialiseContours){
-	  map.setContourColor(0, Color32.blue);
-	  map.setContourLevel(0, 3.0);
-	  map.setContourDisplayed(0, true);
-
-	  map.setContourColor(1, Color32.yellow);
-	  map.setContourDisplayed(1, false);
-	  map.setContourColor(2, Color32.red);
-	  map.setContourLevel(2, -3.0);
-	  map.setContourDisplayed(2, true);
-	  }
-	  }
-	*/
 	// fix the rereading of maps when we load another map
-	//generateMaps();
 	readMap(map);
 
 	for(int j = 0; j < Map.MaximumContourLevels; j++){
@@ -1781,11 +1727,9 @@ public class MoleculeRenderer {
 
 	if(map != null){
 	    map.setContourColor(contour, colour);
-	    //map.setContourDisplayed(contour, true);
 	    if(map.getContourDisplayed(contour)){
 		map.setCenter(renderer.getCenter());
 		map.setRadius(mapRadius);
-		//determineRegion(map);
 		contourMap(map, contour);
 	    }
 	}
@@ -1816,16 +1760,11 @@ public class MoleculeRenderer {
 	    if(map.getContourDisplayed(contour)){
 		map.setCenter(renderer.getCenter());
 		map.setRadius(mapRadius);
-		//determineRegion(map);
 		contourMap(map, contour);
 	    }else{
 		Tmesh contourObject = 
 		    getContourGraphicalObject(map, contour);
 		contourObject.setVisible(false);
-		//String contourName =
-		//    getContourGraphicalObjectName(map, contour);
-
-		//removeGraphicalObjectsBeginningWith(contourName);
 	    }
 	}
     }
@@ -1979,7 +1918,6 @@ public class MoleculeRenderer {
 	    Distance d = Distance.createDistanceMonitor(firstAtom,
 							secondAtom);
 	    addDistance(d);
-	    //distances.add(d);
 	}
     }
 
