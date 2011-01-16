@@ -538,7 +538,7 @@ public class Molecule extends Generic implements Selectable {
 	double zmin = 1.e10, zmax = -1.e10;
 
 	int atomCount = getAtomCount();
-	atomArray = atoms.getArray();
+	atomArray = atoms.toArray();
 
 	//System.out.println("atomCount "+ atomCount);
 
@@ -751,7 +751,7 @@ public class Molecule extends Generic implements Selectable {
     /** Connect the atoms in a molecule using standard bonding radii. */
     public void connect(){
 	int atomCount = getAtomCount();
-	Object atomArray[] = atoms.getArray();
+	Object atomArray[] = atoms.toArray();
 
 	// store all of the bonding radii so we don't have to
 	// keep looking them up.

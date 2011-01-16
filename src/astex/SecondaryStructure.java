@@ -129,7 +129,7 @@ public class SecondaryStructure {
 	    if(h != null){
 		Atom n = residues[r1].getAtom("N");
 
-		neighbours.removeAllElements();
+		neighbours.clear();
 
 		ol.getPossibleNeighbours(r1, n.x, n.y, n.z,
 					 neighbours, true);

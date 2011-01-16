@@ -410,8 +410,8 @@ public class Fit {
 
 	for(int i = 0; i < fitCount; i++){
 
-	    rmsd = fit(x.getArray(), y.getArray(), z.getArray(),
-		       xp.getArray(), yp.getArray(), zp.getArray(),
+	    rmsd = fit(x.toArray(), y.toArray(), z.toArray(),
+		       xp.toArray(), yp.toArray(), zp.toArray(),
 		       n, mat);
 	}
 

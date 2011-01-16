@@ -108,18 +108,6 @@ public class StringArray {
         }
     }
 
-    /** Set the capacity for the object. */
-    public void setCapacity(int count){
-        if(objectCount != 0){
-            System.err.println("setCapacity called on non-empty Array");
-            return;
-        }
-
-        objectCount = count;
-
-        objects = new String[objectCount];
-    }
-
     /**
      * Add an entry to the CLASSNAME.
      */
@@ -132,85 +120,10 @@ public class StringArray {
     }
 
     /**
-     * Remove an object from the CLASSNAME.
-     *
-     * All occurrences of the object will be removed.
-     */
-    public void remove(String object){
-        for(int i = objectCount - 1; i >= 0; i--){
-            if(object.equals(objects[i])){
-                removeElement(i);
-            }
-        }
-    }
-
-    /**
-     * Remove a specified element from the CLASSNAME.
-     */
-    public void removeElement(int element){
-        if(element == objectCount - 1){
-            // its the last entry so we can just decrement the
-            // object counter
-            objectCount--;
-            objects[objectCount] = null;
-        }else if(element < objectCount && element >= 0){
-            for(int i = element + 1; i < objectCount; i++){
-                objects[i - 1] = objects[i];
-            }
-
-            objectCount--;
-            objects[objectCount] = null;
-        }
-    }
-
-    /**
-     * Remove all elements from the dynamic array.
-     */
-    public void removeAllElements(){
-        for(int i = 0; i < objectCount; i++){
-            objects[i] = null;
-        }
-        objectCount = 0;
-    }
-
-    /**
      * Return a specified element from the array.
      */
     public String get(int index){
         return objects[index];
-    }
-
-    /** Return a specified element from the array end of the array. */
-    public String getReverse(int index){
-        return objects[objectCount - index - 1];
-    }
-
-    /** Set a specified element in the array. */
-    public void set(int index, String val){
-        // don't check for array bounds conditions.
-        // or even the allocation of the array
-        objects[index] = val;
-    }
-
-    /** Return the reference to the object array. */
-    public String[] getArray(){
-        return objects;
-    }
-
-    /** Does the array contain the specified object. */
-    public boolean contains(String object){
-        return getIndex(object) != -1;
-    }
-
-    /** Return the location of the object or -1 if its not present. */
-    public int getIndex(String object){
-        for(int i = 0; i < objectCount; i++){
-            if(object.equals(objects[i])){
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     /**
@@ -218,15 +131,5 @@ public class StringArray {
      */
     public int size(){
         return objectCount;
-    }
-    /**
-     * Print a CLASSNAME contents.
-     */
-    public static void print(String message, StringArray array){
-        System.out.println(message);
-
-        for(int i = 0; i < array.size(); i++){
-            System.out.println("array[" + i + "] = " + array.get(i));
-        }
     }
 }

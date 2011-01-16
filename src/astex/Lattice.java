@@ -132,10 +132,10 @@ public class Lattice {
 	IntArray cellList = hashTable[hashval];
 
 	if(cellList != null){
-	    int ci[] = celli.getArray();
-	    int cj[] = cellj.getArray();
-	    int ck[] = cellk.getArray();
-	    int cl[] = cellList.getArray();
+	    int ci[] = celli.toArray();
+	    int cj[] = cellj.toArray();
+	    int ck[] = cellk.toArray();
+	    int cl[] = cellList.toArray();
 	    int cellEntries = cellList.size();
 
 	    for(int c = 0; c < cellEntries; c++){
@@ -163,9 +163,9 @@ public class Lattice {
 	int jbox = BOX(y);
 	int kbox = BOX(z);
 
-	int h[] = head.getArray();
-	int l[] = list.getArray();
-	int idsArray[] = ids.getArray();
+	int h[] = head.toArray();
+	int l[] = list.toArray();
+	int idsArray[] = ids.toArray();
 
 	for(int i = -1; i <= 1; i++){
 	    int ii = ibox + i;
@@ -220,11 +220,11 @@ public class Lattice {
 
     /** Get the possible pairs of neighbours from a cell. */
     public int getPossibleCellNeighbours(int cid, IntArray objects){
-	cell1.removeAllElements();
+	cell1.clear();
 	getCellContents(cid, cell1);
 
 	int count1 = cell1.size();
-	int c1[] = cell1.getArray();
+	int c1[] = cell1.toArray();
 
 	for(int i = 0; i < count1; i++){
 	    int oi = c1[i];
@@ -251,10 +251,10 @@ public class Lattice {
 	    int c = findcell(ii, jj, kk);
 
 	    if(c != -1){
-		cell2.removeAllElements();
+		cell2.clear();
 		getCellContents(c, cell2);
 		int count2 = cell2.size();
-		int c2[] = cell2.getArray();
+		int c2[] = cell2.toArray();
 
 		for(int i = 0; i < count1; i++){
 		    int oi = c1[i];

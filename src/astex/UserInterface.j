@@ -1429,7 +1429,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
     
     private DynamicArray getSelectedObjects(){
 	Component components[] = objectContainer.getComponents();
-	selectedObjects.removeAllElements();
+	selectedObjects.clear();
 	
 	for(int i = 0; i < components.length; i++){
 	    if(components[i] instanceof ObjectControl){

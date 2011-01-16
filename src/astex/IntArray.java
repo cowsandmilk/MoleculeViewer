@@ -109,7 +109,7 @@ public class IntArray {
     }
 
     /** Set the capacity for the object. */
-    public void setCapacity(int count){
+    public void ensureCapacity(int count){
         if(objectCount != 0){
             System.err.println("setCapacity called on non-empty Array");
             return;
@@ -132,41 +132,9 @@ public class IntArray {
     }
 
     /**
-     * Remove an object from the CLASSNAME.
-     *
-     * All occurrences of the object will be removed.
-     */
-    public void remove(int object){
-        for(int i = objectCount - 1; i >= 0; i--){
-            if(objects[i] == object){
-                removeElement(i);
-            }
-        }
-    }
-
-    /**
-     * Remove a specified element from the CLASSNAME.
-     */
-    public void removeElement(int element){
-        if(element == objectCount - 1){
-            // its the last entry so we can just decrement the
-            // object counter
-            objectCount--;
-            objects[objectCount] = 0;
-        }else if(element < objectCount && element >= 0){
-            for(int i = element + 1; i < objectCount; i++){
-                objects[i - 1] = objects[i];
-            }
-
-            objectCount--;
-            objects[objectCount] = 0;
-        }
-    }
-
-    /**
      * Remove all elements from the dynamic array.
      */
-    public void removeAllElements(){
+    public void clear(){
         for(int i = 0; i < objectCount; i++){
             objects[i] = 0;
         }
@@ -193,17 +161,17 @@ public class IntArray {
     }
 
     /** Return the reference to the object array. */
-    public int[] getArray(){
+    public int[] toArray(){
         return objects;
     }
 
     /** Does the array contain the specified object. */
     public boolean contains(int object){
-        return getIndex(object) != -1;
+	return indexOf(object) != -1;
     }
 
     /** Return the location of the object or -1 if its not present. */
-    public int getIndex(int object){
+    public int indexOf(int object){
         for(int i = 0; i < objectCount; i++){
             if(objects[i] == object){
                 return i;
@@ -218,15 +186,5 @@ public class IntArray {
      */
     public int size(){
         return objectCount;
-    }
-    /**
-     * Print a CLASSNAME contents.
-     */
-    public static void print(String message, IntArray array){
-        System.out.println(message);
-
-        for(int i = 0; i < array.size(); i++){
-            System.out.println("array[" + i + "] = " + array.get(i));
-        }
     }
 }

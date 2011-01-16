@@ -108,18 +108,6 @@ public class FloatArray {
         }
     }
 
-    /** Set the capacity for the object. */
-    public void setCapacity(int count){
-        if(objectCount != 0){
-            System.err.println("setCapacity called on non-empty Array");
-            return;
-        }
-
-        objectCount = count;
-
-        objects = new float[objectCount];
-    }
-
     /**
      * Add an entry to the CLASSNAME.
      */
@@ -132,41 +120,9 @@ public class FloatArray {
     }
 
     /**
-     * Remove an object from the CLASSNAME.
-     *
-     * All occurrences of the object will be removed.
-     */
-    public void remove(float object){
-        for(int i = objectCount - 1; i >= 0; i--){
-            if(objects[i] == object){
-                removeElement(i);
-            }
-        }
-    }
-
-    /**
-     * Remove a specified element from the CLASSNAME.
-     */
-    public void removeElement(int element){
-        if(element == objectCount - 1){
-            // its the last entry so we can just decrement the
-            // object counter
-            objectCount--;
-            objects[objectCount] = 0.0f;
-        }else if(element < objectCount && element >= 0){
-            for(int i = element + 1; i < objectCount; i++){
-                objects[i - 1] = objects[i];
-            }
-
-            objectCount--;
-            objects[objectCount] = 0.0f;
-        }
-    }
-
-    /**
      * Remove all elements from the dynamic array.
      */
-    public void removeAllElements(){
+    public void clear(){
         for(int i = 0; i < objectCount; i++){
             objects[i] = 0.0f;
         }
@@ -180,37 +136,9 @@ public class FloatArray {
         return objects[index];
     }
 
-    /** Return a specified element from the array end of the array. */
-    public float getReverse(int index){
-        return objects[objectCount - index - 1];
-    }
-
-    /** Set a specified element in the array. */
-    public void set(int index, float val){
-        // don't check for array bounds conditions.
-        // or even the allocation of the array
-        objects[index] = val;
-    }
-
     /** Return the reference to the object array. */
-    public float[] getArray(){
+    public float[] toArray(){
         return objects;
-    }
-
-    /** Does the array contain the specified object. */
-    public boolean contains(float object){
-        return getIndex(object) != -1;
-    }
-
-    /** Return the location of the object or -1 if its not present. */
-    public int getIndex(float object){
-        for(int i = 0; i < objectCount; i++){
-            if(objects[i] == object){
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     /**
@@ -218,15 +146,5 @@ public class FloatArray {
      */
     public int size(){
         return objectCount;
-    }
-    /**
-     * Print a CLASSNAME contents.
-     */
-    public static void print(String message, FloatArray array){
-        System.out.println(message);
-
-        for(int i = 0; i < array.size(); i++){
-            System.out.println("array[" + i + "] = " + array.get(i));
-        }
     }
 }

@@ -306,7 +306,7 @@ public class MoleculeRenderer {
 		Atom atom1 = (Atom)pickedAtoms.get(1);
 		Distance distance =Distance.createDistanceMonitor(atom0, atom1);
 		addDistance(distance);
-		pickedAtoms.removeAllElements();
+		pickedAtoms.clear();
 	    }
 	}else if(pickMode == ANGLE_PICK){
 
@@ -315,7 +315,7 @@ public class MoleculeRenderer {
 		Atom atom1 = (Atom)pickedAtoms.get(1);
 		Atom atom2 = (Atom)pickedAtoms.get(2);
 		addAngle(atom0, atom1, atom2);
-		pickedAtoms.removeAllElements();
+		pickedAtoms.clear();
 	    }
 	}else if(pickMode == TORSION_PICK){
 
@@ -326,7 +326,7 @@ public class MoleculeRenderer {
 		Atom atom3 = (Atom)pickedAtoms.get(3);
 
 		addTorsion(atom0, atom1, atom2, atom3);
-		pickedAtoms.removeAllElements();
+		pickedAtoms.clear();
 	    }
 	}else{
 	    System.out.println("Invalid pick mode");
@@ -741,7 +741,7 @@ public class MoleculeRenderer {
 	    Distance d = (Distance)distances.get(j);
 	    String name = d.getString(Generic.Name, null);
 	    if(name != null && match.matches(pattern, name)){
-		distances.removeElement(j);
+		distances.remove(j);
 		fireGenericRemovedEvent((Generic)d);
 		deleted++;
 	    }
@@ -775,7 +775,7 @@ public class MoleculeRenderer {
 	boolean deleteAll           = args.getBoolean("-deleteall", false);
 
 	if(deleteAll){
-	    hbonds.removeAllElements();
+	    hbonds.clear();
 	}
 
 	if(calculateAtoms != null){
@@ -812,7 +812,7 @@ public class MoleculeRenderer {
 		Atom n = a;
 		Point3d h = getAmideHydrogen(a);
 
-		neighbours.removeAllElements();
+		neighbours.clear();
 
 		l.getPossibleNeighbours(Lattice.Undefined,
 					n.x, n.y, n.z,
@@ -848,7 +848,7 @@ public class MoleculeRenderer {
 	    Atom secondAtom = hbond.getSecondAtom();
 
 	    if(atoms.contains(firstAtom) || atoms.contains(secondAtom)){
-		hbonds.removeElement(i);
+		hbonds.remove(i);
 		removedCount++;
 	    }
 	}
@@ -1100,7 +1100,7 @@ public class MoleculeRenderer {
 	DoubleArray distances = new DoubleArray();
 
 	for(int i = 0; i < pointCount; i++){
-	    neighbours.removeAllElements();
+	    neighbours.clear();
 	    double tx = tmesh.x[i];
 	    double ty = tmesh.y[i];
 	    double tz = tmesh.z[i];
@@ -1111,8 +1111,8 @@ public class MoleculeRenderer {
 
 	    double dnear = 1.e10;
 
-	    nearest.removeAllElements();
-	    distances.removeAllElements();
+	    nearest.clear();
+	    distances.clear();
 
 	    for(int j = 0; j < neighbourCount; j++){
 		int neighbour = neighbours.get(j);
@@ -1967,7 +1967,7 @@ public class MoleculeRenderer {
 
     /** Remove all the angles. */
     public void removeAllAngles(){
-	angles.removeAllElements();
+	angles.clear();
     }
 
     /** Remove all the distance monitors. */
@@ -1977,7 +1977,7 @@ public class MoleculeRenderer {
 
     /** Remove all the torsion monitors. */
     public void removeAllTorsions(){
-	torsions.removeAllElements();
+	torsions.clear();
     }
 
     /** Remove all labelled atoms. */
@@ -1994,14 +1994,14 @@ public class MoleculeRenderer {
     public void removeAllSelectedAtoms(){
 	execute("select none;");
 
-	selectedAtoms.removeAllElements();
-	pickedAtoms.removeAllElements();
+	selectedAtoms.clear();
+	pickedAtoms.clear();
 	fireAtomSelectedEvent(null);
     }
 
     /** Remove all bump atoms. */
     private void removeAllBumpAtoms(){
-	bumpAtoms.removeAllElements();
+	bumpAtoms.clear();
     }
 
     /** Get the bump atoms. */
@@ -2329,7 +2329,7 @@ public class MoleculeRenderer {
 	if(selectionStackSize > 0){
 	    atoms = (DynamicArray)selectionStack.getReverse(0);
 
-	    selectionStack.removeElement(selectionStackSize - 1);
+	    selectionStack.remove(selectionStackSize - 1);
 	}else{
 	    Log.warn("can't pop, stack is empty");
 	}
@@ -2660,7 +2660,7 @@ public class MoleculeRenderer {
 
 	    int sphereSelectionCount = sphereSelection.size();
 	    int selectionCount = selection.size();
-	    Object selectionArray[] = selection.getArray();
+	    Object selectionArray[] = selection.toArray();
 	    double radiusSq = radius * radius;
 
 
@@ -2899,7 +2899,7 @@ public class MoleculeRenderer {
     /** Remove the maps rather than the contour levels. */
     private void removeMaps(){
 	removeGraphicalObjectsBeginningWith("Map");
-	maps.removeAllElements();
+	maps.clear();
     }
 
     /** Should we display maps. */
@@ -3360,7 +3360,7 @@ public class MoleculeRenderer {
 	    lastAtom = null;
 	}
 
-	Atom select_atoms[] = (Atom []) selection.getArray();
+	Atom select_atoms[] = (Atom []) selection.toArray();
 
 	for(Atom atom : select_atoms){
 	    double dx = 0.0;
@@ -3657,7 +3657,7 @@ public class MoleculeRenderer {
 	    boxPixels = 1;
 	}
 
-	sphereAtoms.removeAllElements();
+	sphereAtoms.clear();
 
 	int size[] = new int[2];
 
@@ -3770,7 +3770,7 @@ public class MoleculeRenderer {
     }
 
     private void sortSphereAtoms(){
-	Object satoms[] = sphereAtoms.getArray();
+	Object satoms[] = sphereAtoms.toArray();
     }
 
     private Molecule currentMolecule = null;

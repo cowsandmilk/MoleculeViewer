@@ -269,7 +269,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
 	if(atomCacheSize > 0){
 	    Atom atom = (Atom)atomCache.get(atomCacheSize - 1);
-	    atomCache.removeElement(atomCacheSize - 1);
+	    atomCache.remove(atomCacheSize - 1);
 	    atom.initialise();
 	    return atom;
 	}
@@ -1274,7 +1274,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Remove all bonds. */
     public void removeAllBonds(){
         if(bonds != null){
-            bonds.removeAllElements();
+            bonds.clear();
             bonds = null;
         }
 

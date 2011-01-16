@@ -687,7 +687,7 @@ public class ActiveSite {
 	    if(atom.getAtomLabel().equals(atomSelection[1]) &&
 	       (atomSelection[0] == null ||
 		residue.getName().equals(atomSelection[0]))){
-		pdbAtoms.removeAllElements();
+		pdbAtoms.clear();
 
 		pdbAtoms.add(atom);
 
@@ -763,12 +763,12 @@ public class ActiveSite {
 
 	int nfit = pdbAtoms.size();
 
-	x.removeAllElements();
-	y.removeAllElements();
-	z.removeAllElements();
-	xp.removeAllElements();
-	yp.removeAllElements();
-	zp.removeAllElements();
+	x.clear();
+	y.clear();
+	z.clear();
+	xp.clear();
+	yp.clear();
+	zp.clear();
 
 	for(int i = 0; i < nfit; i++){
 	    Atom a = (Atom)pdbAtoms.get(i);
@@ -788,12 +788,12 @@ public class ActiveSite {
 
 	Matrix rot = new Matrix();
 
-	double rmsd = astex.Fit.fit(x.getArray(),
-				    y.getArray(),
-				    z.getArray(),
-				    xp.getArray(),
-				    yp.getArray(),
-				    zp.getArray(), nfit, rot);
+	double rmsd = astex.Fit.fit(x.toArray(),
+				    y.toArray(),
+				    z.toArray(),
+				    xp.toArray(),
+				    yp.toArray(),
+				    zp.toArray(), nfit, rot);
 
 	if(rmsd > rmsdWarningLevel){
 	    Atom baseAtom = (Atom)pdbAtoms.get(0);
@@ -861,7 +861,7 @@ public class ActiveSite {
 			if(pboxx != boxx ||
 			   pboxy != boxy ||
 			   pboxz != boxz){
-			    neighbours.removeAllElements();
+			    neighbours.clear();
 			    lattice.getPossibleNeighbours(-1, p.x, p.y, p.z,
 							  neighbours, true);
 			    boxx = pboxx;
@@ -1031,7 +1031,7 @@ public class ActiveSite {
 
 				    if(success && xe[3] < max && xe[3] > min){
 					
-					neighbours.removeAllElements();
+					neighbours.clear();
 					lattice.getPossibleNeighbours(-1, xe[0], xe[1], xe[2],
 								      neighbours, true);
 					
@@ -1265,7 +1265,7 @@ public class ActiveSite {
 
 	Point3d gp = new Point3d();
 	int pmfSize = pmf.size();
-	double pmfData[] = pmf.getArray();
+	double pmfData[] = pmf.toArray();
 
 	for(int iz = gzmin; iz <= gzmax; iz++){
 	    gp.z = map.origin.z + iz * map.spacing.z;

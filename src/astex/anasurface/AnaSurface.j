@@ -196,7 +196,7 @@ public class AnaSurface {
 
 	for(int i = 0; i < tmesh.np; i++){
             tmesh.v[i] = 0.0001f;
-	    neighbours.removeAllElements();
+	    neighbours.clear();
 	    l.getPossibleNeighbours(-1,
 				    tmesh.x[i], tmesh.y[i], tmesh.z[i],
 				    neighbours, true);
@@ -348,7 +348,7 @@ public class AnaSurface {
 
 	int ecount = edgeList[ia].size();
 
-	sphereFace.removeAllElements();
+	sphereFace.clear();
 
 	for(int i = 0; i < ecount; i++){
 	    Edge e = (Edge)edgeList[ia].get(i);
@@ -365,7 +365,7 @@ public class AnaSurface {
 	}
 
 	while(unusedEdges != 0){
-	    convexFace.removeAllElements();
+	    convexFace.clear();
 	    Edge firstEdge = null;
 	    Edge lastEdge = null;
 	    Edge previousEdge = null;
@@ -416,8 +416,8 @@ public class AnaSurface {
     }
 
     private void processConvexFace(Face f){
-	vArray.removeAllElements();
-	eArray.removeAllElements();
+	vArray.clear();
+	eArray.clear();
 
 	if(f.type == Face.Concave && f.size() > 3){
 	    System.out.println("concave edge count "+ f.size());
@@ -471,8 +471,8 @@ public class AnaSurface {
 	}
 
 	int nv = vArray.size();
-	int vlist[] = vArray.getArray();
-	int elist[] = eArray.getArray();
+	int vlist[] = vArray.toArray();
+	int elist[] = eArray.toArray();
 
 	if(debug){
 	    for(int i = 0; i < nv; i++){
@@ -633,8 +633,8 @@ public class AnaSurface {
     /** Triangulate an arbitrary collection of edges and interior points. */
     private void addTriangles(){
 	int nv = vArray.size();
-	int vlist[] = vArray.getArray();
-	int elist[] = eArray.getArray();
+	int vlist[] = vArray.toArray();
+	int elist[] = eArray.toArray();
 
 	double rlim = currentLongestEdge * 1.5;
 	rlim *= rlim;
@@ -1301,8 +1301,8 @@ public class AnaSurface {
 
 	double step = (a1 - a0)/(tpcount1);
 
-	e2.setCapacity(tpcount);
-	e3.setCapacity(tpcount);
+	e2.ensureCapacity(tpcount);
+	e3.ensureCapacity(tpcount);
 
 	for(int a = 0; a < tpcount; a++){
 	    // tidy up any slight rounding error
@@ -1341,8 +1341,8 @@ public class AnaSurface {
 	    wrapAngleStep = wrapAngle/(nwap1);
 
 	    if(a == 0){
-		e0.setCapacity(nwap);
-		e1.setCapacity(nwap);
+		e0.ensureCapacity(nwap);
+		e1.ensureCapacity(nwap);
 	    }
 
 	    double wa = 0.0;
@@ -1603,7 +1603,7 @@ public class AnaSurface {
 		Edge connectRight =
 		    addSimpleEdge(vi0, vj0, null, cusp, nright, rint);
 
-		connectRight.removeAllElements();
+		connectRight.clear();
 		
 		int vcount = connectLeft.size();
 
@@ -1734,7 +1734,7 @@ public class AnaSurface {
 	    oldEdges[i] = (Edge)probeFace.get(i);
 	}
 	
-	probeFace.removeAllElements();
+	probeFace.clear();
 
 	for(int i = 0; i < edgeCount; i++){
 	    if(oldEdges[i] == olde){
@@ -2548,7 +2548,7 @@ public class AnaSurface {
 	}
 
 	// grab the neighbour list for easy reference
-	nn = nList.getArray();
+	nn = nList.toArray();
 
 	print("total neighbours", neighbourCount);
 	print("maximum neighbours", maxNeighbours);
@@ -2977,7 +2977,7 @@ public class AnaSurface {
 
 	print("number of spheres", n);
 	
-	AnaSurface s = new AnaSurface(xxx, r.getArray(), null, n);
+	AnaSurface s = new AnaSurface(xxx, r.toArray(), null, n);
 
 	s.density = subdivisions;
 	s.probeRadius = probeRadius;

@@ -441,7 +441,7 @@ public class Surface {
 	    neighbourCount = 0;
 
 	    if(selected[a] > 0){
-		possibleNeighbours.removeAllElements();
+		possibleNeighbours.clear();
 
 		l.getPossibleNeighbours(a, aax, aay, aaz, possibleNeighbours, true);
 
@@ -544,7 +544,7 @@ public class Surface {
 	    neighbourCount = 0;
 
 	    if(selected[a] > 0){
-		possibleNeighbours.removeAllElements();
+		possibleNeighbours.clear();
 
 		l.getPossibleNeighbours(a, aax, aay, aaz, possibleNeighbours, true);
 
@@ -859,8 +859,8 @@ public class Surface {
 
     /** Initialise the dot sphere structures. */
     public static void sphereGen(int subDivisions){
-	dots.removeAllElements();
-	triangles.removeAllElements();
+	dots.clear();
+	triangles.clear();
 
 	addSpherePoint(new Point3d(1.0, 0.0, 0.0));
 	addSpherePoint(new Point3d(0.0, 1.0, 0.0));

@@ -108,18 +108,6 @@ public class DoubleArray {
         }
     }
 
-    /** Set the capacity for the object. */
-    public void setCapacity(int count){
-        if(objectCount != 0){
-            System.err.println("setCapacity called on non-empty Array");
-            return;
-        }
-
-        objectCount = count;
-
-        objects = new double[objectCount];
-    }
-
     /**
      * Add an entry to the CLASSNAME.
      */
@@ -132,41 +120,9 @@ public class DoubleArray {
     }
 
     /**
-     * Remove an object from the CLASSNAME.
-     *
-     * All occurrences of the object will be removed.
-     */
-    public void remove(double object){
-        for(int i = objectCount - 1; i >= 0; i--){
-            if(objects[i] == object){
-                removeElement(i);
-            }
-        }
-    }
-
-    /**
-     * Remove a specified element from the CLASSNAME.
-     */
-    public void removeElement(int element){
-        if(element == objectCount - 1){
-            // its the last entry so we can just decrement the
-            // object counter
-            objectCount--;
-            objects[objectCount] = 0.0;
-        }else if(element < objectCount && element >= 0){
-            for(int i = element + 1; i < objectCount; i++){
-                objects[i - 1] = objects[i];
-            }
-
-            objectCount--;
-            objects[objectCount] = 0.0;
-        }
-    }
-
-    /**
      * Remove all elements from the dynamic array.
      */
-    public void removeAllElements(){
+    public void clear(){
         for(int i = 0; i < objectCount; i++){
             objects[i] = 0.0;
         }
@@ -180,37 +136,9 @@ public class DoubleArray {
         return objects[index];
     }
 
-    /** Return a specified element from the array end of the array. */
-    public double getReverse(int index){
-        return objects[objectCount - index - 1];
-    }
-
-    /** Set a specified element in the array. */
-    public void set(int index, double val){
-        // don't check for array bounds conditions.
-        // or even the allocation of the array
-        objects[index] = val;
-    }
-
     /** Return the reference to the object array. */
-    public double[] getArray(){
+    public double[] toArray(){
         return objects;
-    }
-
-    /** Does the array contain the specified object. */
-    public boolean contains(double object){
-        return getIndex(object) != -1;
-    }
-
-    /** Return the location of the object or -1 if its not present. */
-    public int getIndex(double object){
-        for(int i = 0; i < objectCount; i++){
-            if(objects[i] == object){
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     /**
@@ -218,15 +146,5 @@ public class DoubleArray {
      */
     public int size(){
         return objectCount;
-    }
-    /**
-     * Print a CLASSNAME contents.
-     */
-    public static void print(String message, DoubleArray array){
-        System.out.println(message);
-
-        for(int i = 0; i < array.size(); i++){
-            System.out.println("array[" + i + "] = " + array.get(i));
-        }
     }
 }

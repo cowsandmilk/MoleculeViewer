@@ -409,7 +409,7 @@ public class PASS {
      * Return the number of atoms within Rbc of the point.
      */
     private static int burialCount(double p[]){
-	burialNeighbours.removeAllElements();
+	burialNeighbours.clear();
 
 	l.getPossibleNeighbours(-1, p[0], p[1], p[2], burialNeighbours, true);
 
@@ -434,7 +434,7 @@ public class PASS {
      * Return the number of atoms within Rbc of the point.
      */
     private static boolean clashed(double p[], double rp){
-	burialNeighbours.removeAllElements();
+	burialNeighbours.clear();
 
 	l.getPossibleNeighbours(-1, p[0], p[1], p[2], burialNeighbours, true);
 
@@ -500,7 +500,7 @@ public class PASS {
 	}
 
 	// grab the neighbour list for easy reference
-	nn = nList.getArray();
+	nn = nList.toArray();
 
 	FILE.out.print("total neighbours   %7d\n", neighbourCount);
 	FILE.out.print("maximum neighbours %7d\n", maxNeighbours);

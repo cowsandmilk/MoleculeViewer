@@ -784,17 +784,17 @@ public class Renderer {
         }
 
 	// get rid of transparent spheres from the cache
-	stransx.removeAllElements();
-	stransy.removeAllElements();
-	stransz.removeAllElements();
-	stransr.removeAllElements();
-	stransxt.removeAllElements();
-	stransyt.removeAllElements();
-	stranszt.removeAllElements();
-	stransrt.removeAllElements();
-	stransrgb.removeAllElements();
-	stransp.removeAllElements();
-	stransid.removeAllElements();
+	stransx.clear();
+	stransy.clear();
+	stransz.clear();
+	stransr.clear();
+	stransxt.clear();
+	stransyt.clear();
+	stranszt.clear();
+	stransrt.clear();
+	stransrgb.clear();
+	stransp.clear();
+	stransid.clear();
     }
 
     private boolean depthMapInitialised = false;
@@ -1035,15 +1035,15 @@ public class Renderer {
     /** Render the spheres that are in the transparent list. */
     private void renderTransparentSpheres(){
 	int sphereCount = stransx.size();
-	double stx[] = stransx.getArray();
-	double sty[] = stransy.getArray();
-	double stz[] = stransz.getArray();
-	double str[] = stransr.getArray();
+	double stx[] = stransx.toArray();
+	double sty[] = stransy.toArray();
+	double stz[] = stransz.toArray();
+	double str[] = stransr.toArray();
 
 	// second pass, draw transparent spheres
 	if(sphereCount > 0){
-	    double sz[] = stranszt.getArray();
-	    int ids[] = stransid.getArray();
+	    double sz[] = stranszt.toArray();
+	    int ids[] = stransid.toArray();
 	    indexSort(sz, ids, 0, sphereCount - 1);
 
 	    for(int pass = 0; pass < 2; pass++){
@@ -1051,7 +1051,7 @@ public class Renderer {
 		    int i = ids[id];
 		    if(pass == 0 && stransp.get(i) > 200 ||
 		       pass == 1 && stransp.get(i) <= 200){
-			sphereOverlaps.removeAllElements();
+			sphereOverlaps.clear();
 			
 			for(int j = 0; j < sphereCount; j++){
 			    if(i != j){
@@ -2650,10 +2650,10 @@ public class Renderer {
 
     /** Is this point inside another transparent sphere. */
     private boolean spherePointVisible(double x, double y, double z){
-	double stx[] = stransxt.getArray();
-	double sty[] = stransyt.getArray();
-	double stz[] = stranszt.getArray();
-	double str[] = stransrt.getArray();
+	double stx[] = stransxt.toArray();
+	double sty[] = stransyt.toArray();
+	double stz[] = stranszt.toArray();
+	double str[] = stransrt.toArray();
 
 	int overlapCount = sphereOverlaps.size();
 

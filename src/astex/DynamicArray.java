@@ -108,18 +108,6 @@ public class DynamicArray {
         }
     }
 
-    /** Set the capacity for the object. */
-    public void setCapacity(int count){
-        if(objectCount != 0){
-            System.err.println("setCapacity called on non-empty Array");
-            return;
-        }
-
-        objectCount = count;
-
-        objects = new Object[objectCount];
-    }
-
     /**
      * Add an entry to the CLASSNAME.
      */
@@ -139,7 +127,7 @@ public class DynamicArray {
     public void remove(Object object){
         for(int i = objectCount - 1; i >= 0; i--){
             if(objects[i] == object){
-                removeElement(i);
+                remove(i);
             }
         }
     }
@@ -147,7 +135,7 @@ public class DynamicArray {
     /**
      * Remove a specified element from the CLASSNAME.
      */
-    public void removeElement(int element){
+    public void remove(int element){
         if(element == objectCount - 1){
             // its the last entry so we can just decrement the
             // object counter
@@ -166,7 +154,7 @@ public class DynamicArray {
     /**
      * Remove all elements from the dynamic array.
      */
-    public void removeAllElements(){
+    public void clear(){
         for(int i = 0; i < objectCount; i++){
             objects[i] = null;
         }
@@ -193,17 +181,17 @@ public class DynamicArray {
     }
 
     /** Return the reference to the object array. */
-    public Object[] getArray(){
+    public Object[] toArray(){
         return objects;
     }
 
     /** Does the array contain the specified object. */
     public boolean contains(Object object){
-        return getIndex(object) != -1;
+        return indexOf(object) != -1;
     }
 
     /** Return the location of the object or -1 if its not present. */
-    public int getIndex(Object object){
+    public int indexOf(Object object){
         for(int i = 0; i < objectCount; i++){
             if(objects[i] == object){
                 return i;
@@ -218,15 +206,5 @@ public class DynamicArray {
      */
     public int size(){
         return objectCount;
-    }
-    /**
-     * Print a CLASSNAME contents.
-     */
-    public static void print(String message, DynamicArray array){
-        System.out.println(message);
-
-        for(int i = 0; i < array.size(); i++){
-            System.out.println("array[" + i + "] = " + array.get(i));
-        }
     }
 }

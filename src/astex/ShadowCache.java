@@ -169,9 +169,9 @@ public class ShadowCache {
 	double y = sx * lighty.x + sy * lighty.y + sz * lighty.z;
 
 	if(sphereCount > 0){
-	    sphereOcclusionCacheList.removeAllElements();
-	    sphereShadowCacheList.removeAllElements();
-	    initialList.removeAllElements();
+	    sphereOcclusionCacheList.clear();
+	    sphereShadowCacheList.clear();
+	    initialList.clear();
 
 	    sphereGrid.getPossibleNeighbours(-1, x, y,
 					     sr + sphereGrid.getSpacing(),
@@ -211,9 +211,9 @@ public class ShadowCache {
 	int cylinderCount = ccachex0.size();
 
 	if(cylinderCount > 0){
-	    cylinderShadowCacheList.removeAllElements();
+	    cylinderShadowCacheList.clear();
 
-	    initialList.removeAllElements();
+	    initialList.clear();
 
 	    cylinderGrid.getPossibleNeighbours(-1, x, y,
 					       sr + cylinderGrid.getSpacing(), initialList, true);
@@ -258,8 +258,8 @@ public class ShadowCache {
 	// two remove those that don't overlap
 
 	if(tcachex0.size() > 0){
-	    triangleShadowCacheList.removeAllElements();
-	    initialList.removeAllElements();
+	    triangleShadowCacheList.clear();
+	    initialList.clear();
 
 	    triangleGrid.getPossibleNeighbours(-1, x, y, sr + triangleGrid.getSpacing(), initialList, true);
 	    
@@ -402,7 +402,7 @@ public class ShadowCache {
 	    lastObscuringCylinder = -1;
 	}
 
-	int slist[] = sphereShadowCacheList.getArray();
+	int slist[] = sphereShadowCacheList.toArray();
 
 	// ok now check lists
 	for(int j = 0; j < sphereCacheCount; j++){
@@ -523,35 +523,35 @@ public class ShadowCache {
 
     /** Clear out the shadow data structures. */
     public static void clearShadowCaches(){
-	scachex.removeAllElements();
-	scachey.removeAllElements();
-	scachez.removeAllElements();
-	scacher.removeAllElements();
+	scachex.clear();
+	scachey.clear();
+	scachez.clear();
+	scacher.clear();
 
-	ccachex0.removeAllElements();
-	ccachey0.removeAllElements();
-	ccachez0.removeAllElements();
-	ccachex1.removeAllElements();
-	ccachey1.removeAllElements();
-	ccachez1.removeAllElements();
-	ccacher.removeAllElements();
+	ccachex0.clear();
+	ccachey0.clear();
+	ccachez0.clear();
+	ccachex1.clear();
+	ccachey1.clear();
+	ccachez1.clear();
+	ccacher.clear();
 
-	tcachex0.removeAllElements();
-	tcachey0.removeAllElements();
-	tcachez0.removeAllElements();
-	tcachex1.removeAllElements();
-	tcachey1.removeAllElements();
-	tcachez1.removeAllElements();
-	tcachex2.removeAllElements();
-	tcachey2.removeAllElements();
-	tcachez2.removeAllElements();
+	tcachex0.clear();
+	tcachey0.clear();
+	tcachez0.clear();
+	tcachex1.clear();
+	tcachey1.clear();
+	tcachez1.clear();
+	tcachex2.clear();
+	tcachey2.clear();
+	tcachez2.clear();
 
-	tcen2dx.removeAllElements();
-	tcen2dy.removeAllElements();
-	tcenx.removeAllElements();
-	tceny.removeAllElements();
-	tcenz.removeAllElements();
-	tcenr.removeAllElements();
+	tcen2dx.clear();
+	tcen2dy.clear();
+	tcenx.clear();
+	tceny.clear();
+	tcenz.clear();
+	tcenr.clear();
     }
 
     private static Point3d light = new Point3d();
@@ -572,15 +572,15 @@ public class ShadowCache {
 	lighty = lightx.cross(light);
 	lighty.normalise();
 
-	tx0 = tcachex0.getArray();
-	ty0 = tcachey0.getArray();
-	tz0 = tcachez0.getArray();
-	tx1 = tcachex1.getArray();
-	ty1 = tcachey1.getArray();
-	tz1 = tcachez1.getArray();
-	tx2 = tcachex2.getArray();
-	ty2 = tcachey2.getArray();
-	tz2 = tcachez2.getArray();
+	tx0 = tcachex0.toArray();
+	ty0 = tcachey0.toArray();
+	tz0 = tcachez0.toArray();
+	tx1 = tcachex1.toArray();
+	ty1 = tcachey1.toArray();
+	tz1 = tcachez1.toArray();
+	tx2 = tcachex2.toArray();
+	ty2 = tcachey2.toArray();
+	tz2 = tcachez2.toArray();
 
 	prepareTriangleGrid();
 	prepareSphereGrid();
@@ -592,17 +592,17 @@ public class ShadowCache {
 
 	overallScale = ovs;
 
-	tc2x = tcen2dx.getArray();
-	tc2y = tcen2dy.getArray();
-	tcx = tcenx.getArray();
-	tcy = tceny.getArray();
-	tcz = tcenz.getArray();
-	tcr = tcenr.getArray();
+	tc2x = tcen2dx.toArray();
+	tc2y = tcen2dy.toArray();
+	tcx = tcenx.toArray();
+	tcy = tceny.toArray();
+	tcz = tcenz.toArray();
+	tcr = tcenr.toArray();
 
-	scx = scachex.getArray();
-	scy = scachey.getArray();
-	scz = scachez.getArray();
-	scr = scacher.getArray();
+	scx = scachex.toArray();
+	scy = scachey.toArray();
+	scz = scachez.toArray();
+	scr = scacher.toArray();
     }
 
     private static NeighbourGrid2D triangleGrid = new NeighbourGrid2D();
@@ -653,8 +653,8 @@ public class ShadowCache {
 	triangleGrid.reset(xmin - 0.1, ymin - 0.1,
 			   xmax + 0.1, ymax + 0.1, 1.01 * rmax);
 
-	tcx = tcen2dx.getArray();
-	tcy = tcen2dy.getArray();
+	tcx = tcen2dx.toArray();
+	tcy = tcen2dy.toArray();
 
 	for(int i = 0; i < triangleCount; i++){
 	    triangleGrid.add(i, tcx[i], tcy[i]);
@@ -672,10 +672,10 @@ public class ShadowCache {
 	double ymax = -1.e10;
 	double rmax = 0.0;
 
-	scx = scachex.getArray();
-	scy = scachey.getArray();
-	scz = scachez.getArray();
-	scr = scacher.getArray();
+	scx = scachex.toArray();
+	scy = scachey.toArray();
+	scz = scachez.toArray();
+	scr = scacher.toArray();
 	
 	for(int i = 0; i < sphereCount; i++){
 
@@ -738,8 +738,8 @@ public class ShadowCache {
 	cylinderGrid.reset(xmin - 0.1, ymin - 0.1,
 			   xmax + 0.1, ymax + 0.1, 1.01 * rmax);
 
-	tcx = tcen2dx.getArray();
-	tcy = tcen2dy.getArray();
+	tcx = tcen2dx.toArray();
+	tcy = tcen2dy.toArray();
 
 	for(int i = 0; i < cylinderCount; i++){
 	    boundingSphereCylinder(ccachex0.get(i), ccachey0.get(i), ccachez0.get(i),

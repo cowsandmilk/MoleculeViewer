@@ -94,7 +94,7 @@ public class NeighbourGrid2D {
 	    head[i] = -1;
 	}
 	
-	list.removeAllElements();
+	list.clear();
     }
 
     /** Add an object to the appropriate cell. */
@@ -135,7 +135,7 @@ public class NeighbourGrid2D {
 
 	int offset = 0 + (int)(0.5 + d/spacing);
 
-	int l[] = list.getArray();
+	int l[] = list.toArray();
 
 	for(int i = -offset; i <= offset; i++){
 	    int ii = ibox + i;
