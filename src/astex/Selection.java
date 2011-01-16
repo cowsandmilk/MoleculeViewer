@@ -72,8 +72,6 @@ public class Selection {
         }
     }
 
-    private static DynamicArray selectionMaskCache = new DynamicArray(10);
-
     /** Generate a new selection mask. */
     private static byte[] generateSelectionMask(MoleculeRenderer r){
 	int atomCount = r.getAtomCount();
@@ -1190,9 +1188,6 @@ public class Selection {
 	    
 	    atom.setTemporarilySelected(false);
 	}
-	 
-	// save the mask
-	selectionMaskCache.add(graphMask);
 
 	return mask;
     }
@@ -1237,9 +1232,6 @@ public class Selection {
 		mask1[i] = 0;
 	    }
 	}
-
-	// save the mask
-	selectionMaskCache.add(mask2);
 
 	// mask2 can just be garbage collected
 	return mask1;
