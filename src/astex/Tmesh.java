@@ -497,9 +497,8 @@ public class Tmesh {
 	    tcolor[nt] = color;
 
 	    return nt++;
-	}else{
-	    return -1;
 	}
+	return -1;
     }
 
     /** Set the initial capacity for triangles. */
