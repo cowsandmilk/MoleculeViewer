@@ -473,12 +473,8 @@ public class Molecule extends Generic implements Selectable {
     /** Does this atom need treating specially for bonding. */
     private boolean isSpecialAtom(Atom atom){
 	int element = atom.getElement();
-	if(element == PeriodicTable.SULPHUR ||
-	   element == PeriodicTable.PHOSPHORUS){
-	    return true;
-	}else{
-	    return false;
-	}
+	return (element == PeriodicTable.SULPHUR ||
+	   element == PeriodicTable.PHOSPHORUS);
     }
 
     /* Linked cell connectivity calculation. */

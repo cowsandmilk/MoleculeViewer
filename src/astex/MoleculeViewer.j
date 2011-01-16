@@ -263,13 +263,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Are we animating? */
     private boolean animating(){
-	if(animationThread != null &&
+	return (animationThread != null &&
 	   animationThread.isAlive() &&
-	   !animationThread.getInteractive()){
-	    return true;
-	}else{
-	    return false;
-	}
+	   !animationThread.getInteractive());
     }
 
     public boolean interactiveAnimation(){

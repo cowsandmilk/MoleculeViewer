@@ -5007,11 +5007,7 @@ public class MoleculeRenderer {
 
 	parserDepth--;
 
-	if(errorCondition){
-	    return false;
-	}else{
-	    return true;
-	}
+	return (!errorCondition);
     }
 
     private synchronized void executeInternal(String command){

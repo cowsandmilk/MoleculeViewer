@@ -255,11 +255,7 @@ public class Bond extends Generic {
 
     /** Is the bond a query bond. */
     public boolean isQueryBond(){
-	if(bondOrder > TripleBond && bondOrder <= AnyBond){
-	    return true;
-	}else{
-	    return false;
-	}
+	return (bondOrder > TripleBond && bondOrder <= AnyBond);
     }
 
     /** Set the first atom in the bond. */
@@ -338,12 +334,7 @@ public class Bond extends Generic {
 
     /** Is this bond non rotatable. */
     public boolean isNonRotatable(){
-	if(bondOrder == Bond.DoubleBond ||
-	   bondOrder == Bond.AromaticBond){
-	    return true;
-	}else{
-	    return false;
-	}
+	return (bondOrder == Bond.DoubleBond || bondOrder == Bond.AromaticBond);
     }
 
     /** Set the ideal bond length. */

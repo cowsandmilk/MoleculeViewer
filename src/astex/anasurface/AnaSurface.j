@@ -2603,11 +2603,7 @@ public class AnaSurface {
 	double dy = y2 - y1;
 	double dz = z2 - z1;
 
-	if(dx*dx + dy*dy + dz*dz < d*d){
-	    return true;
-	}else{
-	    return false;
-	}
+	return (dx*dx + dy*dy + dz*dz < d*d);
     }
 
     /** Calculate distance between two points. */
