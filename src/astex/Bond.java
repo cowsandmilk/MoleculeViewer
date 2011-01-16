@@ -67,11 +67,10 @@ public class Bond extends Generic {
     }
 
     public Object get(Object key, Object def){
-        if(key.equals(BondOrder)){
+        if(key.equals(BondOrder))
             return Integer.valueOf(bondOrder);
-        }else{
-            return super.get(key, def);
-        }
+
+        return super.get(key, def);
     }
 
     /** The first atom in the bond. */
@@ -280,13 +279,12 @@ public class Bond extends Generic {
 
     /** Get the specified atom. */
     public Atom getAtom(int index){
-	if(index == 0){
+	if(index == 0)
 	    return firstAtom;
-	}else if(index == 1){
+	if(index == 1)
 	    return secondAtom;
-	}else{
-	    return null;
-	}
+
+        return null;
     }
 
     /**
@@ -295,39 +293,34 @@ public class Bond extends Generic {
      * If the atom isn't in the bond return null.
      */
     public Atom getOtherAtom(Atom knownAtom){
-	if(knownAtom == firstAtom){
+	if(knownAtom == firstAtom)
 	    return secondAtom;
-	}else if(knownAtom == secondAtom){
+	if(knownAtom == secondAtom)
 	    return firstAtom;
-	}else{
-	    return null;
-	}
+
+        return null;
     }
 
     /** Return a smiles style symbol for the bond. */
     public String getBondSymbol(){
-	if(bondOrder == SingleBond){
+	if(bondOrder == SingleBond)
 	    return "-";
-	}else if(bondOrder == DoubleBond){
+	if(bondOrder == DoubleBond)
 	    return "=";
-	}else if(bondOrder == TripleBond){
+	if(bondOrder == TripleBond)
 	    return "#";
-	}else if(bondOrder == AromaticBond){
+	if(bondOrder == AromaticBond)
 	    return ":";
-	}else{
-	    return "-";
-	}
+
+        return "-";
     }
 
     /** Is this a terminal bond. */
     public boolean isTerminalBond(){
-	if(firstAtom.getBondCount() == 1){
+	if(firstAtom.getBondCount() == 1)
 	    return true;
-	}else{
-	    if(secondAtom.getBondCount() == 1){
-		return true;
-	    }
-	}
+	if(secondAtom.getBondCount() == 1)
+	    return true;
 
 	return false;
     }
@@ -353,11 +346,10 @@ public class Bond extends Generic {
 
     /** Get the actual bond length. */
     public double getBondLength(){
-	if(firstAtom != null && secondAtom != null){
+	if(firstAtom != null && secondAtom != null)
 	    return firstAtom.distance(secondAtom);
-	}else{
-	    return -1.0;
-	}
+	
+	return -1.0;
     }
 
     /** String representation of the bond. */

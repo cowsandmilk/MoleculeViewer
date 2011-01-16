@@ -988,11 +988,10 @@ public class Molecule extends Generic implements Selectable {
 
     /** Get the molecule name. */
     public String getName(){
-	if(moleculeName == null){
+	if(moleculeName == null)
 	    return "Unnamed molecule";
-	}else{
-	    return moleculeName;
-	}
+
+	return moleculeName;
     }
 
     /** Set the filename. */

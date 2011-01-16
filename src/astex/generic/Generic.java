@@ -39,11 +39,10 @@ public class Generic implements GenericInterface {
         if(properties == null){
 
             return def;
-        }else{
-            Object value = properties.get(key);
-        
-            return (value != null) ? value : def;
         }
+	Object value = properties.get(key);
+
+	return (value != null) ? value : def;
     }
 
     public Object set(Object name, Object value){
@@ -150,9 +149,8 @@ public class Generic implements GenericInterface {
     public Iterator<GenericInterface> getParents(Object type){
         if(parents == null){
             return emptyArrayList.iterator();
-        }else{
-            return parents.iterator();
         }
+        return parents.iterator();
     }
 
     ArrayList<GenericEventInterface> listeners = null;

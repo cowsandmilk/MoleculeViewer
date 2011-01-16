@@ -105,8 +105,8 @@ public class Color32 {
     /** Clamp number to range specified. */
     public static int clamp(int num) {
 	if(num < 0) return 0;
-	else if(num > 255) return 255;
-	else return num;
+	if(num > 255) return 255;
+	return num;
     }
 
     public static int scale(int c, int factor) {

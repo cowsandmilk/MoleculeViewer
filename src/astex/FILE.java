@@ -1272,11 +1272,10 @@ public class FILE extends InputStream {
      * readLine() method. There is no need to use this at all.
      */
     public String readLine(){
-	if(nextLine()){
+	if(nextLine())
 	    return getCurrentLineAsString();
-	}else{
-	    return null;
-	}
+
+        return null;
     }
 
     /**
@@ -1290,11 +1289,10 @@ public class FILE extends InputStream {
      * Return the specified character from the current line.
      */
     public char getChar(int offset){
-	if(offset < 0 || offset >= lineLength){
+	if(offset < 0 || offset >= lineLength)
 	    return (char)EOF;
-	}else{
-	    return (char)lineBuffer[offset];
-	}
+
+	return (char)lineBuffer[offset];
     }
 
     /**
@@ -1304,30 +1302,28 @@ public class FILE extends InputStream {
     public boolean currentLineContains(String string, int offset){
 	int stringLength = string.length();
 
-	if(stringLength + offset > lineLength){
+	if(stringLength + offset > lineLength)
 	    return false;
-	}else{
-	    for(int i = 0; i < stringLength; i++){
-		if(string.charAt(i) != lineBuffer[i + offset]){
-		    return false;
-		}
-	    }
 
-	    return true;
+	for(int i = 0; i < stringLength; i++){
+	    if(string.charAt(i) != lineBuffer[i + offset]){
+		return false;
+	    }
 	}
+
+	return true;
     }
 
     /**
      * Return a substring of the current line.
      */
     public String getSubstring(int offset, int length){
-	if(lineLength <= offset){
+	if(lineLength <= offset)
 	    return "";
-	}else if(offset + length > lineLength){
+	if(offset + length > lineLength)
 	    return new String(lineBuffer, offset, lineLength - offset);
-	}else{
-	    return new String(lineBuffer, offset, length);
-	}
+
+        return new String(lineBuffer, offset, length);
     }
 
     /**
@@ -1528,11 +1524,10 @@ public class FILE extends InputStream {
 	    determineFields();
 	}
 
-	if(f >= fieldCount|| f < 0){
+	if(f >= fieldCount|| f < 0)
 	    return -1;
-	}else{
-	    return fieldStartPosition[f];
-	}
+
+        return fieldStartPosition[f];
     }
 	
     /** Get the start position of the field. */
@@ -1541,11 +1536,10 @@ public class FILE extends InputStream {
 	    determineFields();
 	}
 
-	if(f >= fieldCount|| f < 0){
+	if(f >= fieldCount|| f < 0)
 	    return 0;
-	}else{
-	    return fieldLength[f];
-	}
+
+        return fieldLength[f];
     }
 
     /** Get the field as a string. */
@@ -1554,13 +1548,12 @@ public class FILE extends InputStream {
 	    determineFields();
 	}
 
-	if(f >= fieldCount|| f < 0){
+	if(f >= fieldCount|| f < 0)
 	    return null;
-	}else{
-	    int start = getFieldStart(f);
-	    int len = getFieldLength(f);
-	    return getSubstring(start, len);
-	}
+
+	int start = getFieldStart(f);
+	int len = getFieldLength(f);
+	return getSubstring(start, len);
     }
 
     /** Get the specified character from the field. */
@@ -1572,14 +1565,12 @@ public class FILE extends InputStream {
 	if(f >= fieldCount|| f < 0){
 	    System.out.println("invalid field: " + f);
 	    return (byte)-1;
-	}else{
-	    if(c >= 0 && c < getFieldLength(f)){
-		return lineBuffer[getFieldStart(f) + c];
-	    }else{
-		System.out.println("invalid char: field " + f + " char " + c);
-		return (byte)-1;
-	    }
 	}
+	if(c >= 0 && c < getFieldLength(f))
+	    return lineBuffer[getFieldStart(f) + c];
+
+	System.out.println("invalid char: field " + f + " char " + c);
+	return (byte)-1;
     }
 
     /**
@@ -1610,9 +1601,8 @@ public class FILE extends InputStream {
 		    }
 
 		    return relativePath;
-		}else{
-		    return path;
 		}
+		return path;
 	    }
 	}catch(Exception e){
 	    return path;
@@ -2040,11 +2030,10 @@ public class FILE extends InputStream {
 	    }
 	}
 
-	if(negative){
+	if(negative)
 	    return -value;
-	}else{
-	    return value;
-	}
+
+	return value;
     }
 
     /** Read a double value from a string. */

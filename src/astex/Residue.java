@@ -96,11 +96,10 @@ public class Residue extends Generic implements Selectable {
 
     /** Get the residue name. */
     public String getName(){
-	if(name == null){
+	if(name == null)
 	    return undefinedResidueName;
-	}else{
-	    return name;
-	}
+
+        return name;
     }
 
     /** Sheet secondary structure type. */
@@ -157,20 +156,18 @@ public class Residue extends Generic implements Selectable {
 
     /** Get the sequential residue number. */
     public int getSequentialNumber(){
-	if(sequentialNumber == undefinedResidueNumber){
+	if(sequentialNumber == undefinedResidueNumber)
 	    return 1;
-	}else{
-	    return sequentialNumber;
-	}
+
+	return sequentialNumber;
     }
 
     /** Get the residue number. */
     public int getNumber(){
-	if(number == undefinedResidueNumber){
+	if(number == undefinedResidueNumber)
 	    return 1;
-	}else{
-	    return number;
-	}
+
+        return number;
     }
 
     /** Add an atom to the list. */
@@ -278,11 +275,10 @@ public class Residue extends Generic implements Selectable {
 	    name = name.substring(0, name.length() - 1);
 	}
 
-	if(r == null){
+	if(r == null)
 	    return null;
-	}else{
-	    return r.getAtom(name, code);
-	}
+
+	return r.getAtom(name, code);
     }
 
     /** Is this residue a standard amino acid. */

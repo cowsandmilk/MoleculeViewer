@@ -737,9 +737,8 @@ public class MoleculeIO {
 	    lastResidueC = currentResidueC;
 
 	    return true;
-	}else{
-	    return false;
 	}
+	return false;
     }
 
     /**
@@ -866,11 +865,10 @@ public class MoleculeIO {
 	    System.err.println("readScaleRecord: molecule has scale but " +
 			       "no CRYST1 record");
 	    return;
-	}else{
-	    // assign the scale matrices.
-	    if(symmetry.scale == null){
-		symmetry.scale = new Matrix();
-	    }
+	}
+	// assign the scale matrices.
+	if(symmetry.scale == null){
+	    symmetry.scale = new Matrix();
 	}
 
 	Matrix r = symmetry.scale;
@@ -1061,29 +1059,28 @@ public class MoleculeIO {
 	    case 'Q': return PeriodicTable.UNKNOWN;
 	    default : return PeriodicTable.CARBON;
 	    }
-	}else{
+	}
 	    // its not a standard amino acid...
 	    // this needs some work.
-	    switch(c0){
-	    case 'C':
-		if(c1 == 'l' || c1 == 'L'){
-		    return PeriodicTable.CHLORINE;
-		}else{
-		    return PeriodicTable.CARBON;
-		}
-	    case 'H': return PeriodicTable.HYDROGEN;
-	    case 'F': return PeriodicTable.IRON;
-	    case 'W': return PeriodicTable.WOLFRAM;
-	    case 'B':
-		if(c1 == 'R' || c1 == 'r'){
-		    return PeriodicTable.BROMINE;
-		}else{
-		    return PeriodicTable.BORON;
-		}
-	    case '1': case '2': case '3': case '4': case '5':
-	    case '6': case '7': case '8': case '9': case '0':
-		return PeriodicTable.HYDROGEN;
+	switch(c0){
+	case 'C':
+	    if(c1 == 'l' || c1 == 'L'){
+		return PeriodicTable.CHLORINE;
+	    }else{
+		return PeriodicTable.CARBON;
 	    }
+	case 'H': return PeriodicTable.HYDROGEN;
+	case 'F': return PeriodicTable.IRON;
+	case 'W': return PeriodicTable.WOLFRAM;
+	case 'B':
+	    if(c1 == 'R' || c1 == 'r'){
+		return PeriodicTable.BROMINE;
+	    }else{
+		return PeriodicTable.BORON;
+	    }
+	case '1': case '2': case '3': case '4': case '5':
+	case '6': case '7': case '8': case '9': case '0':
+	    return PeriodicTable.HYDROGEN;
 	}
 
 	// or should we return unknown which is technically true

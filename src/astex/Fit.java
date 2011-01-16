@@ -191,11 +191,10 @@ public class Fit {
 
 	if(debug) trans.print("rotation/translation matrix");
 
-	if(Math.abs(d[emin]) < 1.e-5){
+	if(Math.abs(d[emin]) < 1.e-5)
 	    return 0.0;
-	}else{
-	    return Math.sqrt(Math.abs(d[emin])/n);
-	}
+
+        return Math.sqrt(Math.abs(d[emin])/n);
     }
 
     /** Private working space for fitting routines. */
@@ -290,11 +289,10 @@ public class Fit {
 
     private static double SIGN(double a, double b){
 	double absa = (a < 0.0 ? -a : a);
-	if(b >= 0.0){
+	if(b >= 0.0)
 	    return absa;
-	}else{
-	    return -absa;
-	}
+
+        return -absa;
     }
 
     /**

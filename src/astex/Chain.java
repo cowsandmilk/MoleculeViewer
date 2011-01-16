@@ -66,11 +66,10 @@ public class Chain implements Selectable {
 
     /** Get the chain name. */
     public String getName(){
-	if(name == null){
+	if(name == null)
 	    return undefinedChainName;
-	}else{
-	    return name;
-	}
+
+        return name;
     }
 
     /**

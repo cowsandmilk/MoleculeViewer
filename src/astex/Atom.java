@@ -272,9 +272,8 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	    atomCache.removeElement(atomCacheSize - 1);
 	    atom.initialise();
 	    return atom;
-	}else{
-	    return new Atom();
 	}
+	return new Atom();
     }
 
     /** Release an atom after we finished with it. */
@@ -396,11 +395,10 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public String getAtomSymbol(){
 	String symbol = PeriodicTable.getAtomSymbolFromElement(element);
 
-	if(symbol == null){
+	if(symbol == null)
 	    return "C";
-	}else{
-	    return symbol;
-	}
+
+        return symbol;
     }
 
     /** Set the atom label. */
@@ -410,14 +408,13 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Get the atom label. */
     public String getAtomLabel(){
-	if(label != null){
+	if(label != null)
 	    return label;
-	}else{
-	    String symbol =
-		PeriodicTable.getAtomSymbolFromElement(getElement());
 
-	    return symbol.toUpperCase() + getId();
-	}
+        String symbol =
+	    PeriodicTable.getAtomSymbolFromElement(getElement());
+
+	return symbol.toUpperCase() + getId();
     }
 
     /** Generate an atom label according to a format. */
@@ -620,11 +617,10 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Get the color or selected color if selected. */
     public int getSelectedColor(){
-	if(isSelected()){
+	if(isSelected())
 	    return selectedColor;
-	}else{
-	    return getColor();
-	}
+
+        return getColor();
     }
 
     /** Set color back to undefined. */
@@ -686,16 +682,14 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Return a specified bond or null if it doesn't exist. */
     public Bond getBond(int index){
-	if(bonds != null){
-	    // have dynamic array so it should be in here
+	if(bonds != null) // have dynamic array so it should be in here
 	    return (Bond)bonds.get(index);
-	}else if(index == 0){
+	if(index == 0)
 	    return firstBond;
-	}else if(index == 1){
+	if(index == 1)
 	    return secondBond;
-	}else if(index == 2){
+	if(index == 2)
 	    return thirdBond;
-	}
 
 	return null;
     }
@@ -713,17 +707,16 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Return the total number of bonds. */
     public int getBondCount(){
-	if(bonds != null){
+	if(bonds != null)
 	    return bonds.size();
-	}else if(thirdBond != null){
+	if(thirdBond != null)
 	    return 3;
-	}else if(secondBond != null){
+	if(secondBond != null)
 	    return 2;
-	}else if(firstBond != null){
+	if(firstBond != null)
 	    return 1;
-	}else{
-	    return 0;
-	}
+
+	return 0;
     }
 
     /** Does this atom have a bond to the specified atom. */
@@ -868,22 +861,20 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	if(element == PeriodicTable.CARBON ||
 	   element == PeriodicTable.NITROGEN ||
 	   element == PeriodicTable.FLUORINE ||
-	   element == PeriodicTable.OXYGEN){
+	   element == PeriodicTable.OXYGEN)
 	    return 0.9;
-	}else if(element == PeriodicTable.HYDROGEN){
+	if(element == PeriodicTable.HYDROGEN)
 	    return 0.3;
-	}else if(element == PeriodicTable.WOLFRAM){
+	if(element == PeriodicTable.WOLFRAM)
 	    return 1.0;
-	}else if(element == PeriodicTable.UNKNOWN){
+	if(element == PeriodicTable.UNKNOWN)
 	    return 0.0;
-	}else if(element == PeriodicTable.IRON){
+	if(element == PeriodicTable.IRON)
 	    return 1.25;
-	}else if(element == PeriodicTable.MANGANESE){
+	if(element == PeriodicTable.MANGANESE)
             // we would prefer not to have Mn bonded to anything
 	    return 0.0;
-	}else{
-	    return 1.2;
-	}
+	return 1.2;
     }
 
     /** Get the VDW radius of this atom. */
@@ -1001,47 +992,37 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public boolean isHBondDonor(){
 	String name = label;
 
-	if(isSolvent()){
+	if(isSolvent())
 	    return true;
-	}else if(!parentResidue.isStandardAminoAcid()){
+	if(!parentResidue.isStandardAminoAcid())
 	    return false;
-	}else{
-	    String resname = parentResidue.getName();
+	
+	String resname = parentResidue.getName();
 
-	    if("N".equals(name)){
-		if("PRO".equals(resname)){
-		    return false;
-		}else{
-		    return true;
-		}
-	    }else if("NE1".equals(name) && "TRP".equals(resname)){
-		return true;
-	    }else if("OG".equals(name) && "SER".equals(resname)){
-		return true;
-	    }else if("OG1".equals(name) && "THR".equals(resname)){
-		return true;
-	    }else if("ND2".equals(name) && "ASN".equals(resname)){
-		return true;
-	    }else if("NE2".equals(name) && "GLN".equals(resname)){
-		return true;
-	    }else if("OH".equals(name) && "TYR".equals(resname)){
-		return true;
-	    }else if("NE1".equals(name) && "HIS".equals(resname)){
-		return true;
-	    }else if(("NE2".equals(name) || "ND1".equals(name)) &&
-		     "HIS".equals(resname)){
-		return true;
-	    }else if("NZ".equals(name) && "LYS".equals(resname)){
-		return true;
-	    }else if(("NE".equals(name) ||
-		      "NH1".equals(name) ||
-		      "NH2".equals(name)) &&
-		     "ARG".equals(resname)){
-		return true;
-	    }else{
-		return false;
-	    }
+	if("N".equals(name)){
+	    return !("PRO".equals(resname));
 	}
+	if("NE1".equals(name) && "TRP".equals(resname))
+	    return true;
+	if("OG".equals(name) && "SER".equals(resname))
+	    return true;
+	if("OG1".equals(name) && "THR".equals(resname))
+	    return true;
+	if("ND2".equals(name) && "ASN".equals(resname))
+	    return true;
+	if("NE2".equals(name) && "GLN".equals(resname))
+	    return true;
+	if("OH".equals(name) && "TYR".equals(resname))
+	    return true;
+	if("NE1".equals(name) && "HIS".equals(resname))
+	    return true;
+	if(("NE2".equals(name) || "ND1".equals(name)) &&
+		 "HIS".equals(resname))
+	    return true;
+	if("NZ".equals(name) && "LYS".equals(resname))
+	    return true;
+	return (("NE".equals(name) || "NH1".equals(name) ||
+		 "NH2".equals(name)) && "ARG".equals(resname));
     }
 
     /**
@@ -1051,42 +1032,37 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public boolean isHBondAcceptor(){
 	String name = label;
 
-	if(isSolvent()){
+	if(isSolvent())
 	    return true;
-	}else if(!parentResidue.isStandardAminoAcid()){
+	if(!parentResidue.isStandardAminoAcid())
 	    return false;
-	}else if("O".equals(name)){
+	if("O".equals(name))
 	    return true;
-	}else{
-	    String resname = parentResidue.getName();
 
-	    if("NE1".equals(name) && "TRP".equals(resname)){
-		return true;
-	    }else if("OG".equals(name) && "SER".equals(resname)){
-		return true;
-	    }else if("OG1".equals(name) && "THR".equals(resname)){
-		return true;
-	    }else if("OD1".equals(name) && "ASN".equals(resname)){
-		return true;
-	    }else if("OE1".equals(name) && "GLN".equals(resname)){
-		return true;
-	    }else if("OH".equals(name) && "TYR".equals(resname)){
-		return true;
-	    }else if("NE1".equals(name) && "HIS".equals(resname)){
-		return true;
-	    }else if(("NE2".equals(name) || "ND1".equals(name)) &&
-		     "HIS".equals(resname)){
-		return true;
-	    }else if(("OD1".equals(name) || "OD2".equals(name)) &&
-		     "ASP".equals(resname)){
-		return true;
-	    }else if(("OE1".equals(name) || "OE2".equals(name)) &&
-		     "GLU".equals(resname)){
-		return true;
-	    }else{
-		return false;
-	    }
-	}
+	String resname = parentResidue.getName();
+
+	if("NE1".equals(name) && "TRP".equals(resname))
+	    return true;
+	if("OG".equals(name) && "SER".equals(resname))
+	    return true;
+	if("OG1".equals(name) && "THR".equals(resname))
+	    return true;
+	if("OD1".equals(name) && "ASN".equals(resname))
+	    return true;
+	if("OE1".equals(name) && "GLN".equals(resname))
+	    return true;
+	if("OH".equals(name) && "TYR".equals(resname))
+	    return true;
+	if("NE1".equals(name) && "HIS".equals(resname))
+	    return true;
+	if(("NE2".equals(name) || "ND1".equals(name)) &&
+		 "HIS".equals(resname))
+	    return true;
+	if(("OD1".equals(name) || "OD2".equals(name)) &&
+		 "ASP".equals(resname))
+	    return true;
+	return (("OE1".equals(name) || "OE2".equals(name)) &&
+		 "GLU".equals(resname));
     }
 
     /** Does the atom have any attributes set? */
@@ -1202,11 +1178,10 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Has this atom been displayed. */
     public boolean isDisplayed(){
 	Molecule mol = getMolecule();
-	if(mol.getDisplayed()){
+	if(mol.getDisplayed())
 	    return (attributes & DisplayedMask) != 0;
-	}else{
-	    return false;
-	}
+
+	return false;
     }
 
     /** Set the selection state. */
@@ -1237,11 +1212,10 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	    Bond bond = getBond(b);
 	    int bondOrder = bond.getBondOrder();
 
-	    if(bondOrder == Bond.DoubleBond){
+	    if(bondOrder == Bond.DoubleBond)
 		return sp2;
-	    }else if(bondOrder == 3){
+	    if(bondOrder == 3)
 		return sp;
-	    }
 	}
 
 	return sp3;

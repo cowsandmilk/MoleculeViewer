@@ -42,11 +42,7 @@ public class Settings {
 
 		Object object = properties.get(property);
 
-		if(object == null){
-			return null;
-		}else{
-			return object;
-		}
+		return object;
 	}
 
 	public static double getDouble(String table, String argument){
@@ -60,13 +56,12 @@ public class Settings {
 
 		if(o == null){
 			return defaultVal;
-		}else{
-			try {
-				return Double.valueOf((String)o).doubleValue();
-			}catch(Exception e){
-				Log.error(table + "," + argument + " not a double");
-				return defaultVal;
-			}
+		}
+		try {
+			return Double.valueOf((String)o).doubleValue();
+		}catch(Exception e){
+			Log.error(table + "," + argument + " not a double");
+			return defaultVal;
 		}
 	}
 

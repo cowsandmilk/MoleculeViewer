@@ -313,11 +313,10 @@ public class Lattice {
 
     /** Return the cell box id along one axis. */
     public int BOX(double x){
-	if(x > 0.0){
+	if(x > 0.0)
 	    return (int)(x/maxDistance);
-	}else{
-	    return (int)(x/maxDistance)-1;
-	}
+
+	return (int)(x/maxDistance)-1;
     }
 
     /** Size of Hash box. */

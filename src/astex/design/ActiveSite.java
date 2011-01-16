@@ -701,10 +701,9 @@ public class ActiveSite {
 			System.out.println("couldn't find match atom " + s +
 					   " for " + residue);
 			break;
-		    }else{
-			pdbAtoms.add(matchAtom);
-			s = istrMap.get(match);
 		    }
+		    pdbAtoms.add(matchAtom);
+		    s = istrMap.get(match);
 		}
 
 		if(pdbAtoms.size() == pdbMap.size()){
@@ -1053,12 +1052,11 @@ public class ActiveSite {
 					    if(aa == atom0 || aa == atom1 ||
 					       aa == atom2 || aa == atom3){
 						continue;
-					    }else{
-						double r = xe[3] + aa.getVDWRadius();
-						if(p.distanceSq(aa) < r*r){
-						    addit = false;
-						    break;
-						}
+					    }
+					    double r = xe[3] + aa.getVDWRadius();
+					    if(p.distanceSq(aa) < r*r){
+						addit = false;
+						break;
 					    }
 					}
 					

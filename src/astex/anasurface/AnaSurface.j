@@ -2279,9 +2279,8 @@ public class AnaSurface {
 	double h2 = (rip*rip) - distance2(bijk, ai);
 	if(h2 < 0.0){
 	    return -1.0;
-	}else{
-	    return Math.sqrt(h2);
 	}
+	return Math.sqrt(h2);
     }
 
     /**

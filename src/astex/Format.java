@@ -180,11 +180,10 @@ public class Format {
 			r = exp_format(x);
 		else throw new java.lang.IllegalArgumentException();
       
-		if(Double.isInfinite(x)){
+		if(Double.isInfinite(x))
 			return "Infinity";
-		}else{
-			return pad(sign(s, r));
-		}
+
+		return pad(sign(s, r));
 	}
    
 	/** 

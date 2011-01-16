@@ -824,9 +824,8 @@ public class Map extends Symmetry {
 	    pos += gz * xsize * ysize;
 
 	    return data[pos];
-	}else{
-	    return 0.0;
 	}
+	return 0.0;
     }
 
     /** Calculate the relative grid index. */
@@ -848,10 +847,8 @@ public class Map extends Symmetry {
 	    pos += gy * xsize;
 	    pos += gz * xsize * ysize;
 	    return pos;
-	}else{
-
-	    return -1;
 	}
+	return -1;
     }
 
     /** Return the size of map we have loaded. */
@@ -1030,11 +1027,10 @@ public class Map extends Symmetry {
 
 	// yes this does seem necessary to convert
 	// to signed properly...
-	if(littleEndian){
+	if(littleEndian)
 	    return (int)((short)(((ch1 << 8) + ((ch2)))));
-	}else{
-	    return (int)((short)(((ch2 << 8) + ((ch1)))));
-	}
+
+	return (int)((short)(((ch2 << 8) + ((ch1)))));
     }
 
     /**
@@ -1052,11 +1048,10 @@ public class Map extends Symmetry {
 	    System.out.println("eof");
 	}
 
-	if(littleEndian){
+	if(littleEndian)
 	    return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
-	}else{
-	    return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
-	}
+
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
     }
 
     /**

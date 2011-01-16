@@ -96,11 +96,10 @@ public class AtomIterator implements Enumeration<Atom> {
 
 	/** Get the next element. */
 	public Atom nextElement(){
-		if(hasMoreElements()){
+		if(hasMoreElements())
 			return currentMolecule.getAtom(currentAtomIndex++);
-		}else{
-			return null;
-		}
+
+		return null;
 	}
 
 	/** Get the next atom. */

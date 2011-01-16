@@ -120,25 +120,23 @@ public class Distance extends Generic {
 		// and all atoms are displayed
 		for(int i = 0; i < ngroup0; i++){
 			Atom a = (Atom)group0.get(i);
-			if(!a.isDisplayed()){
+			if(!a.isDisplayed())
 				return false;
-			}else{
-				Molecule mol = a.getMolecule();
-				if(!mol.getDisplayed()){
-					return false;
-				}
+
+			Molecule mol = a.getMolecule();
+			if(!mol.getDisplayed()){
+				return false;
 			}
 		}
 
 		for(int i = 0; i < ngroup1; i++){
 			Atom a = (Atom)group1.get(i);
-			if(!a.isDisplayed()){
+			if(!a.isDisplayed())
 				return false;
-			}else{
-				Molecule mol = a.getMolecule();
-				if(!mol.getDisplayed()){
-					return false;
-				}
+
+			Molecule mol = a.getMolecule();
+			if(!mol.getDisplayed()){
+				return false;
 			}
 		}
 

@@ -22,11 +22,10 @@ import java.util.*;
 public class Arguments extends Hashtable<Object,Object> {
     /** Add a dash to the argument if it doesn't exist. */
     public static String addDash(String argument){
-	if(argument != null && argument.charAt(0) != '-'){
+	if(argument != null && argument.charAt(0) != '-')
 	    return "-" + argument;
-	}else{
-	    return argument;
-	}
+
+        return argument;
     }
     
     /** Is this argument defined. */
@@ -47,21 +46,17 @@ public class Arguments extends Hashtable<Object,Object> {
 	    if(value != null){
 		return FILE.readDouble(value);
 	    }
+	    return defaultVal;
 	}
 
-	if(o == null){
-	    return defaultVal;
-	}else{
-	    if(o instanceof Double){
-		return ((Double)o).doubleValue();
-	    }else if(o instanceof Integer){
-		return (double)((Integer)o).intValue();
-	    }else{
-		System.out.print("getDouble " + argument);
-		System.out.println(": not a double");
-		return defaultVal;
-	    }
-	}
+	if(o instanceof Double)
+	    return ((Double)o).doubleValue();
+	if(o instanceof Integer)
+	    return (double)((Integer)o).intValue();
+
+	System.out.print("getDouble " + argument);
+	System.out.println(": not a double");
+	return defaultVal;
     }
 
     /** Lookup value of int arg or return default. */
@@ -75,19 +70,15 @@ public class Arguments extends Hashtable<Object,Object> {
 	    if(value != null){
 		return FILE.readInteger(value);
 	    }
+	    return defaultVal;
 	}
 
-	if(o == null){
-	    return defaultVal;
-	}else{
-	    if(o instanceof Integer){
-		return ((Integer)o).intValue();
-	    }else{
-		System.out.print("getInteger " + argument);
-		System.out.println(": not an integer");
-		return defaultVal;
-	    }
-	}
+	if(o instanceof Integer)
+	    return ((Integer)o).intValue();
+
+	System.out.print("getInteger " + argument);
+	System.out.println(": not an integer");
+	return defaultVal;
     }
 
     /** Lookup value of String arg or return default. */
@@ -96,40 +87,34 @@ public class Arguments extends Hashtable<Object,Object> {
 	
 	Object o = get(argument);
 
-	if(o == null){
+	if(o == null)
 	    o = propertyGet(argument);
-	}
 
-	if(o == null){
+	if(o == null)
 	    return defaultVal;
-	}else{
-	    if(o instanceof String){
-		return (String)o;
-	    }else{
-		System.out.print("getString " + argument);
-		System.out.println(": not a String");
-		System.out.println("value " + o);
-		return defaultVal;
-	    }
-	}
+	if(o instanceof String)
+	    return (String)o;
+
+	System.out.print("getString " + argument);
+	System.out.println(": not a String");
+	System.out.println("value " + o);
+	return defaultVal;
     }
 
     /** Return argument interpreted as a color. */
     public int getColor(String argument, int defaultVal){
         String o = getString(argument, null);
 
-        if(o == null){
+        if(o == null)
             return defaultVal;
-        }else{
-            if(o instanceof String){
-                return Color32.getColorFromName(o);
-            }else{
-		System.out.print("getColor " + argument);
-		System.out.println(": not a String");
-		System.out.println("value " + o);
-		return defaultVal;
-            }
-        }
+
+	if(o instanceof String)
+	    return Color32.getColorFromName(o);
+
+	System.out.print("getColor " + argument);
+	System.out.println(": not a String");
+	System.out.println("value " + o);
+	return defaultVal;
     }
 
     /** Lookup value of String arg or return default. */
@@ -138,21 +123,17 @@ public class Arguments extends Hashtable<Object,Object> {
 	
 	Object o = get(argument);
 
-	if(o == null){
+	if(o == null)
 	    o = propertyGet(argument);
-	}
 
-	if(o == null){
+	if(o == null)
 	    return defaultVal;
-	}else{
-	    if(o instanceof Boolean){
-		return ((Boolean)o).booleanValue();
-	    }else{
-		System.out.print("getBoolean " + argument);
-		System.out.println(": not a Boolean");
-		return defaultVal;
-	    }
-	}
+	if(o instanceof Boolean)
+	    return ((Boolean)o).booleanValue();
+
+        System.out.print("getBoolean " + argument);
+        System.out.println(": not a Boolean");
+        return defaultVal;
     }
 
     /** Return lookup of string argument from array of possibles. */
@@ -160,21 +141,17 @@ public class Arguments extends Hashtable<Object,Object> {
 			       int possibleValues[], int defaultValue){
 	String value = getString(argument, null);
 
-	if(value == null){
+	if(value == null)
 	    value = (String)propertyGet(argument);
-	}
 
-	if(value == null){
+	if(value == null)
 	    return defaultValue;
-	}
 	
 	for(int i = 0; i < possibles.length; i++){
 	    if(value.equals(possibles[i])){
-		if(possibleValues != null){
+		if(possibleValues != null)
 		    return possibleValues[i];
-		}else{
-		    return i;
-		}
+		return i;
 	    }
 	}
 

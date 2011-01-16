@@ -87,11 +87,10 @@ public class ResidueIterator implements Enumeration<Residue> {
 
 	/** Get the next element. */
 	public Residue nextElement(){
-		if(currentResidue < residueCount){
+		if(currentResidue < residueCount)
 			return residues[currentResidue++];
-		}else{
-			return null;
-		}
+		
+		return null;
 	}
 
 	/** Get the next residue. */

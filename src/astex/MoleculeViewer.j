@@ -114,7 +114,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    animationThread.start();
 
 	    return;
-	}else if("delete".equals(state)){
+	}
+	if("delete".equals(state)){
 	    stages.clear();
 	    return;
 	}
@@ -485,9 +486,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     public Dimension getPreferredSize(){
         if(preferredSize == null){
             return new Dimension(800, 600);
-        }else{
-            return preferredSize;
         }
+
+        return preferredSize;
     }
 
     /** Overridden update method. */
@@ -1908,39 +1909,38 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	if(mol == null){
 	    System.out.println("no such molecule <"+name+">");
 	    return;
-	}else{
-	    String newFileName = saveFile("Choose Filename...", null);
-
-	    // null from saveFile indicates Cancel
-	    if(newFileName == null){
-		return;
-	    }
-
-	    newFileName = checkExtension(mol, newFileName);
-
-	    System.out.println("new file name <"+newFileName+">");
-
-	    FILE output = FILE.write(newFileName);
-
-	    if(output == null){
-		System.out.println("saveMolecule: couldn't open " + newFileName);
-		return;
-	    }
-
-	    String type = MoleculeIO.getTypeFromExtension(newFileName);
-
-	    MoleculeIO.write(mol, output, type);
-
-	    output.close();
-
-	    mol.setName(newFileName);
-	    mol.setFilename(newFileName);
-
-	    moleculeRenderer.fireMoleculeRemovedEvent(mol);
-	    moleculeRenderer.fireMoleculeAddedEvent(mol);
-
-	    updateMenus();
 	}
+	String newFileName = saveFile("Choose Filename...", null);
+
+	// null from saveFile indicates Cancel
+	if(newFileName == null){
+	    return;
+	}
+
+	newFileName = checkExtension(mol, newFileName);
+
+	System.out.println("new file name <"+newFileName+">");
+
+	FILE output = FILE.write(newFileName);
+
+	if(output == null){
+	    System.out.println("saveMolecule: couldn't open " + newFileName);
+	    return;
+	}
+
+	String type = MoleculeIO.getTypeFromExtension(newFileName);
+
+	MoleculeIO.write(mol, output, type);
+
+	output.close();
+
+	mol.setName(newFileName);
+	mol.setFilename(newFileName);
+
+	moleculeRenderer.fireMoleculeRemovedEvent(mol);
+	moleculeRenderer.fireMoleculeAddedEvent(mol);
+
+	updateMenus();
     }
 
     /**
@@ -1962,26 +1962,25 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	   "sdf".equals(extension)){
 	    // its ok
 	    return f;
-	}else{
-	    if(extension == null){
-		// look to see what we need to do
-		String originalName = mol.getFilename();
-		dot = originalName.lastIndexOf('.');
+	}
+	if(extension == null){
+	    // look to see what we need to do
+	    String originalName = mol.getFilename();
+	    dot = originalName.lastIndexOf('.');
 
-		if(dot == -1){
-		    // no extension
+	    if(dot == -1){
+		// no extension
 
-		    int atomCount = mol.getAtomCount();
-		    if(atomCount < 256){
-			extension = "mol";
-		    }else{
-			extension = "pdb";
-		    }
+		int atomCount = mol.getAtomCount();
+		if(atomCount < 256){
+		    extension = "mol";
 		}else{
-		    extension =
-			originalName.substring(dot+1,
-					       originalName.length());
+		    extension = "pdb";
 		}
+	    }else{
+		extension =
+		    originalName.substring(dot+1,
+					   originalName.length());
 	    }
 	}
 
@@ -2156,15 +2155,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	dialog.dispose();
 
-	if(directory == null || file == null){
+	if(directory == null || file == null)
 	    return null;
-	}else{
-	    if(directory.endsWith(File.separator)){
-		return directory + file;
-	    }else{
-		return directory + File.separator + file;
-	    }
-	}
+
+	if(directory.endsWith(File.separator))
+	    return directory + file;
+
+        return directory + File.separator + file;
     }
 
     /* Implementation of MoleculeRendererListener. */
@@ -2423,9 +2420,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	if(colorChooser.accept){
 	    String s = hexFormat.format(colorChooser.rgb & 0xffffff);
 	    return s;
-	}else{
-	    return null;
 	}
+	return null;
     }
 
     /**

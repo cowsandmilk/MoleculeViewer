@@ -391,17 +391,15 @@ public class ShadowCache {
 	if(lastObscuringSphere != -1){
 	    if(obscuredBySphere(lastObscuringSphere, x, y, z)){
 		return true;
-	    }else{
-		lastObscuringSphere = -1;
 	    }
+	    lastObscuringSphere = -1;
 	}
 
 	if(lastObscuringCylinder != -1){
 	    if(obscuredByCylinder(lastObscuringCylinder)){
 		return true;
-	    }else{
-		lastObscuringCylinder = -1;
 	    }
+	    lastObscuringCylinder = -1;
 	}
 
 	int slist[] = sphereShadowCacheList.getArray();
@@ -437,9 +435,8 @@ public class ShadowCache {
 	if(lastObscuringTriangle != -1){
 	    if(obscuredByTriangle(lastObscuringTriangle)){
 		return true;
-	    }else{
-		lastObscuringTriangle = -1;
 	    }
+	    lastObscuringTriangle = -1;
 	}
 
 	int triangleCacheCount = triangleShadowCacheList.size();

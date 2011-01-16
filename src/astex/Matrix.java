@@ -576,9 +576,7 @@ public class Matrix {
 	double SinTheta = Math.sqrt(1.0-CosTheta*CosTheta);
 	
         if(Math.abs(SinTheta) < 1.e-5){
-            for(int i = 0; i < 4; i++){
-                Result[i] = Q0[i];
-            }
+	    System.arraycopy(Q0, 0, Result, 0, 4);
             return;
         }
 

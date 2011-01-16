@@ -1105,21 +1105,20 @@ public class Thinlet extends Canvas
 				}
 				size.width += block;
 				return size;
-			} else {
-				// maximum size of current values and choices including 2-2-2-2 insets
-				Dimension size = getSize(component, 4 , 4);
-				for (Object item = get(component, ":comp"); item != null; item = get(item, ":next")) {
-					Dimension d = getSize(item, 4 , 4);
-					size.width = Math.max(d.width, size.width); size.height = Math.max(d.height, size.height);
-				}
-				size.width += block;
-				if (size.height == 4) { // no content nor items, set text height
-					Font customfont = (Font) get(component, "font");
-					FontMetrics fm = getFontMetrics((customfont != null) ? customfont : font);
-					size.height = fm.getAscent() + fm.getDescent() + 4;
-				}
-				return size;
 			}
+			// maximum size of current values and choices including 2-2-2-2 insets
+			Dimension size = getSize(component, 4 , 4);
+			for (Object item = get(component, ":comp"); item != null; item = get(item, ":next")) {
+				Dimension d = getSize(item, 4 , 4);
+				size.width = Math.max(d.width, size.width); size.height = Math.max(d.height, size.height);
+			}
+			size.width += block;
+			if (size.height == 4) { // no content nor items, set text height
+				Font customfont = (Font) get(component, "font");
+				FontMetrics fm = getFontMetrics((customfont != null) ? customfont : font);
+				size.height = fm.getAscent() + fm.getDescent() + 4;
+			}
+			return size;
 		}
 		if (("textfield".equals(classname)) || ("passwordfield".equals(classname))) {
 			return getFieldSize(component);
@@ -1181,7 +1180,7 @@ public class Thinlet extends Canvas
 			}
 			return size;
 		}
-		else if ("desktop".equals(classname)) {
+		if ("desktop".equals(classname)) {
 			Dimension size = new Dimension();
 			for (Object comp = get(component, ":comp");
 					comp != null; comp = get(comp, ":next")) {

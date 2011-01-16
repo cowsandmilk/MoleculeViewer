@@ -1184,47 +1184,46 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	if(ev.getNewState() == BWTEnum.FOLDER_OPEN_ALL){
 	    if(folder.getChildren() != null){
 		return;
-	    }else{
-		Object userData = folder.getUserData();
-		if(userData instanceof Molecule){
-		    Molecule mol = (Molecule)userData;
-		    for(int c = 0; c < mol.getChainCount(); c++){
-			Chain chain = mol.getChain(c);
-			String chainName = chain.getName();
-			if(" ".equals(chainName)){
-			    chainName = "_";
-			}
-			JCOutlinerFolderNode chainFolder =
-			    new JCOutlinerFolderNode(null,
-						     BWTEnum.FOLDER_CLOSED,
-						     "Chain " + chainName);
-			chainFolder.setStyle(style);
-			folder.addNode(chainFolder);
-			chainFolder.setUserData(chain);
+	    }
+	    Object userData = folder.getUserData();
+	    if(userData instanceof Molecule){
+		Molecule mol = (Molecule)userData;
+		for(int c = 0; c < mol.getChainCount(); c++){
+		    Chain chain = mol.getChain(c);
+		    String chainName = chain.getName();
+		    if(" ".equals(chainName)){
+			chainName = "_";
 		    }
-		}else if(userData instanceof Chain){
-		    Chain chain = (Chain)userData;
-		    for(int rr = 0;  rr < chain.getResidueCount(); rr++){
-			Residue res = chain.getResidue(rr);
-			String resName = res.getName() + " " + res.getNumber() + 
-			    res.getInsertionCode();
-			JCOutlinerFolderNode resFolder =
-			    new JCOutlinerFolderNode(null, BWTEnum.FOLDER_CLOSED,
-						     resName);
-			folder.addNode(resFolder);
-			resFolder.setUserData(res);
-			resFolder.setStyle(style);
-		    }
-		}else if(userData instanceof Residue){
-		    Residue res = (Residue)userData;
-		    for(int a = 0;  a < res.getAtomCount(); a++){
-			Atom atom = res.getAtom(a);
-			JCOutlinerNode atomFolder =
-			    new JCOutlinerNode(null, folder);
-			atomFolder.setLabel(atom.getAtomLabel());
-			atomFolder.setUserData(atom);
-			atomFolder.setStyle(style);
-		    }
+		    JCOutlinerFolderNode chainFolder =
+			new JCOutlinerFolderNode(null,
+						 BWTEnum.FOLDER_CLOSED,
+						 "Chain " + chainName);
+		    chainFolder.setStyle(style);
+		    folder.addNode(chainFolder);
+		    chainFolder.setUserData(chain);
+		}
+	    }else if(userData instanceof Chain){
+		Chain chain = (Chain)userData;
+		for(int rr = 0;  rr < chain.getResidueCount(); rr++){
+		    Residue res = chain.getResidue(rr);
+		    String resName = res.getName() + " " + res.getNumber() +
+			res.getInsertionCode();
+		    JCOutlinerFolderNode resFolder =
+			new JCOutlinerFolderNode(null, BWTEnum.FOLDER_CLOSED,
+						 resName);
+		    folder.addNode(resFolder);
+		    resFolder.setUserData(res);
+		    resFolder.setStyle(style);
+		}
+	    }else if(userData instanceof Residue){
+		Residue res = (Residue)userData;
+		for(int a = 0;  a < res.getAtomCount(); a++){
+		    Atom atom = res.getAtom(a);
+		    JCOutlinerNode atomFolder =
+			new JCOutlinerNode(null, folder);
+		    atomFolder.setLabel(atom.getAtomLabel());
+		    atomFolder.setUserData(atom);
+		    atomFolder.setStyle(style);
 		}
 	    }
 	}
@@ -1325,9 +1324,8 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	if(colorChooser.accept){
 	    return colorChooser.rgb;
-	}else{
-	    return undefinedColor;
 	}
+	return undefinedColor;
     }
 
     Format hexFormat = new Format("0x%06x");

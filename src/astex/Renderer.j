@@ -960,11 +960,10 @@ public class Renderer {
 	    intensity = (int)(DepthCueMin + (255-DepthCueMin)*scale);
 	}
 
-	if(background == Color32.black){
+	if(background == Color32.black)
 	    return Color32.scale(c, intensity);
-	}else{
-	    return Color32.blend(c, background, intensity);
-	}
+
+	return Color32.blend(c, background, intensity);
     }
 
     /** Apply depth cueing to a color for a shaded object. */
@@ -984,11 +983,10 @@ public class Renderer {
 
 	int ds = depthScale[zslot];
 
-	if(background == Color32.black){
+	if(background == Color32.black)
 	    return Color32.scale(c, ds);
-	}else{
-	    return Color32.blend(c, background, ds);
-	}
+
+	return Color32.blend(c, background, ds);
     }
 
     /** Draw the tmesh objects. */
