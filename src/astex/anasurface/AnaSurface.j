@@ -89,8 +89,7 @@ public class AnaSurface {
     private static final double qLength[] = {0.0, 1.5, 0.9, 0.5, 0.3};
 
     /** Default constructor. */
-    public AnaSurface(double x[][], double r[],
-		      int visible[], int colors[], int n){
+    public AnaSurface(double x[][], double r[], int colors[], int n){
 	this.xyz = x;
 	this.radius = r;
 	this.colors = colors;
@@ -2978,7 +2977,7 @@ public class AnaSurface {
 
 	print("number of spheres", n);
 	
-	AnaSurface s = new AnaSurface(xxx, r.getArray(), visible.getArray(), null, n);
+	AnaSurface s = new AnaSurface(xxx, r.getArray(), null, n);
 
 	s.density = subdivisions;
 	s.probeRadius = probeRadius;

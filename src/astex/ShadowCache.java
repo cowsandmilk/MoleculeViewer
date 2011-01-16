@@ -521,26 +521,6 @@ public class ShadowCache {
 	return false;
     }
 
-
-    /** Is this point in another sphere. */
-    private static boolean pointInSphere(double x, double y, double z){
-	int sphereCount = sphereOcclusionCacheList.size();
-
-	for(int i = 0; i < sphereCount; i++){
-	    int j = sphereOcclusionCacheList.get(i);
-	    double dx = x - scachex.get(j);
-	    double dy = y - scachey.get(j);
-	    double dz = z - scachez.get(j);
-	    double r2 = scacher.get(j);
-
-	    if(dx*dx + dy*dy + dz*dz < r2 * r2){
-		return true;
-	    }
-	}
-
-	return false;
-    }
-
     /** Clear out the shadow data structures. */
     public static void clearShadowCaches(){
 	scachex.removeAllElements();

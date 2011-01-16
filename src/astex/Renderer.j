@@ -542,8 +542,6 @@ public class Renderer {
 
 	RendererEvent re = new RendererEvent(RendererEvent.ObjectAdded, tm);
 
-	tm.setRenderer(this);
-
 	fireRendererEvent(re);
     }
 
@@ -648,7 +646,6 @@ public class Renderer {
     private void removeGraphicalObjects(Tmesh tm){
 	if(objects.contains(tm)){
 	    objects.remove(tm);
-	    tm.setRenderer(null);
 	    RendererEvent re =
 		new RendererEvent(RendererEvent.ObjectRemoved, tm);
 

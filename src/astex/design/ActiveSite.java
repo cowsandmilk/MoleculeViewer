@@ -160,8 +160,6 @@ public class ActiveSite {
 	// initialise the map
 	initialiseMap(args, map, superstar);
 
-	scatterPlotCount = 0;
-
 	for(int groups = 0; groups < 1000; groups++){
 	    String groupLabel = "group." + groups;
 
@@ -746,8 +744,6 @@ public class ActiveSite {
 	}
     }
 
-    private static int scatterPlotCount = 0;
-
     private static DoubleArray x = new DoubleArray();
     private static DoubleArray y = new DoubleArray();
     private static DoubleArray z = new DoubleArray();
@@ -919,7 +915,7 @@ public class ActiveSite {
 			// multiply in the plot scale
 			// at this point
 			newAtom.setBFactor(a.getBFactor() / plotScale);
-			newAtom.setCharge(scatterPlotCount);
+			newAtom.setCharge(0);
 		    }
 
 		    // hmm, duplicate atom creation here
@@ -927,7 +923,7 @@ public class ActiveSite {
 		    atom.setElement(a.getElement());
 		    atom.set(p);
 		    atom.setBFactor(a.getBFactor() / plotScale);
-		    atom.setCharge(scatterPlotCount);
+		    atom.setCharge(0);
 
 		    scatterPlotAtoms.add(atom);
 		}

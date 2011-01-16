@@ -4575,35 +4575,9 @@ public class Thinlet extends Canvas
         return (negative) ? "-" + s : s;
     }
 
-
-
 	/**
 	 *
 	 */
-	private boolean processSpin2(Object component, Object part) {
-		String text = getString(component, "text", "");
-		try {
-			int itext = Integer.parseInt(text);
-			int step = getInteger(component, "step", 1);
-			if ((part == "up") ?
-					(itext + step <= getInteger(component, "maximum", Integer.MAX_VALUE)) :
-					(itext - step >= getInteger(component, "minimum", Integer.MIN_VALUE))) {
-				String value = String.valueOf((part == "up") ? (itext + step) : (itext - step));
-				setString(component, "text", value, null);
-				setInteger(component, "start", value.length(), 0);
-				setInteger(component, "end", 0, 0);
-				repaint(component, "spinbox", "text");
-				invoke(component, null, "action");
-				return true;
-			}
-		} catch (NumberFormatException nfe) {}
-		return false;
-	}
-
-	/**
-	 *
-	 */
-    //private boolean invoke(Object component, Object part, String event) {
 	private boolean invoke(Object component, Object part, String event) {
 		Object method = get(component, event);
 		if (method != null) {
@@ -5483,37 +5457,6 @@ public class Thinlet extends Canvas
 			setNextFocusable(component, false);
 		}
 	}
-
-	/**
-	 * Referenced by DOM
-	 */
-    private void insertItem2(Object parent, Object key, Object component, int index) {
-
-        if(index == -1){
-            Object lastcomponent = get(parent, ":last");
-            if(lastcomponent != null){
-                set(lastcomponent, ":next", component);
-                set(component, ":next", null);
-                set(parent, ":last", component);
-
-                return;
-            }
-        }
-
-        Object item = parent, next = get(parent, key);
-        for (int i = 0;; i++) {
-            if ((i == index) || (next == null)) {
-
-                set(item, key, component);
-                set(component, ":next", next);
-                if(index == -1 && next == null){
-                    set(parent, ":last", component);
-                }
-                break;
-            }
-            next = get(item = next, key = ":next");
-        }
-    }
 
     private Integer integers[] = null;
 

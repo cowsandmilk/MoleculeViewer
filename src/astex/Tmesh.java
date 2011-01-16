@@ -1220,16 +1220,6 @@ public class Tmesh {
 
 	return newTmesh;
     }
-
-    /** The Renderer that we belong to. */
-    private Renderer renderer;
-
-    /**
-     * Set the Renderer value.
-     */
-    public void setRenderer(Renderer r) {
-	renderer = r;
-    }
     
     /** Which pass of the renderer do we get drawn in. */
     private int renderPass = Renderer.RenderPass;

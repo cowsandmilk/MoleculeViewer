@@ -37,9 +37,6 @@ public class Chain implements Selectable {
     /** Dynamic array of residues. */
     private DynamicArray residues = null;
 
-    /** Undefined residue number. */
-    private static final int undefinedChainNumber = -9999;
-
     /** Undefined residue name. */
     private static final String undefinedChainName = "X";
 

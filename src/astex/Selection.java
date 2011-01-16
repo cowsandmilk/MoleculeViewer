@@ -104,14 +104,6 @@ public class Selection {
 
     private static Atom atomArray[] = null;
 
-    /** The stored selection expression. */
-    private static DynamicArray storedExpression = null;
-
-    /** Store the result of a selection expression. */
-    public static void store(DynamicArray sel){
-	storedExpression = sel;
-    }
-
     /** Return a DynamicArray from a selection mask. */
     public static synchronized DynamicArray maskToArray(MoleculeRenderer r,
 							byte mask[]){

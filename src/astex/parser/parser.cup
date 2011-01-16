@@ -333,7 +333,7 @@ selection_command ::=
 		:}
 	| EVALUATE selection:selectedAtoms
 		{:
-			Selection.store(selectedAtoms);
+			
 		:}
 	;
 
@@ -791,7 +791,7 @@ surface_command ::=
 			}
 
 			AnaSurface s =
-				new AnaSurface(xxx, r, visible, colors, selectionCount);
+				new AnaSurface(xxx, r, colors, selectionCount);
 
 			// set the background color for the object
 			s.backgroundColor = color;
