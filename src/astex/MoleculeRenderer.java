@@ -16,7 +16,6 @@
  */
 
 package astex;
-import java.util.*;
 
 /* Copyright Astex Technology Ltd. 1999 */
 
