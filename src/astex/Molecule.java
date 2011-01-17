@@ -66,19 +66,20 @@ package astex;
  */
 
 import astex.generic.*;
+import java.util.*;
 
 public class Molecule extends Generic implements Selectable {
     /** Dynamic array of atoms. */
-    private DynamicArray atoms = null;
+    private List<Atom> atoms = new ArrayList<Atom>(20);
 
     /** Dynamic array of bonds. */
-    private DynamicArray bonds = null;
+    private List<Bond> bonds = new ArrayList<Bond>(20);
 
     /** Dynamic array of rings. */
-    private DynamicArray rings = null;
+    private List<Ring> rings = new ArrayList<Ring>(1);
 
     /** Dynamic array of chains. */
-    private DynamicArray chains = null;
+    private List<Chain> chains = new ArrayList<Chain>(1);
 
     /** The molecule name as a string. */
     private String moleculeName = null;
@@ -160,12 +161,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Constructor which prepares a standard molecule. */
     public Molecule(){
-	atoms = new DynamicArray(20);
-	bonds = new DynamicArray(20);
-	rings = new DynamicArray(1, 1);
-	chains = new DynamicArray(1, 1);
-
-        set(DisplayHydrogens, Boolean.TRUE);
+	set(DisplayHydrogens, Boolean.TRUE);
         set(DisplayBondDetails, Boolean.TRUE);
     }
 
@@ -226,7 +222,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Return the specified atom. */
     public Atom getAtom(int index){
-	return (Atom)atoms.get(index);
+	return atoms.get(index);
     }
 
     /** The atom we will start searching at when looking for id's. */
@@ -244,9 +240,7 @@ public class Molecule extends Generic implements Selectable {
 	}
 
 	// we didn't find it so reset startAtom and try from the start
-	for(startAtom = 0; startAtom < atomCount; startAtom++){
-	    Atom atom = getAtom(startAtom);
-
+	for(Atom atom: atoms){
 	    if(atom.getId() == id){
 		return atom;
 	    }
@@ -258,10 +252,9 @@ public class Molecule extends Generic implements Selectable {
 
     /** Assign atom numbers. */
     public void assignAtomNumbers(){
-	int atomCount = getAtomCount();
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-	    atom.setId(a);
+	int a = 0;
+	for(Atom atom: atoms){
+	    atom.setId(a++);
 	}
     }
 
@@ -282,7 +275,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Return the specified bond. */
     public Bond getBond(int index){
-	return (Bond)bonds.get(index);
+	return bonds.get(index);
     }
 
     /** Make sure that rings have been assigned for the molecule. */
@@ -297,7 +290,7 @@ public class Molecule extends Generic implements Selectable {
     public Ring getRing(int index){
 	ensureRingsAssigned();
 
-	return (Ring)rings.get(index);
+	return rings.get(index);
     }
 
     /** Return the number of rings. */
@@ -314,7 +307,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Return the specified chain. */
     public Chain getChain(int index){
-	return (Chain)chains.get(index);
+	return chains.get(index);
     }
 
     /** The current chain to which atoms are added. */
@@ -333,8 +326,7 @@ public class Molecule extends Generic implements Selectable {
     public int getResidueCount(){
 	int totalResidues = 0;
 
-	for(int c = 0; c < getChainCount(); c++){
-	    Chain chain = getChain(c);
+	for(Chain chain : chains){
 	    totalResidues += chain.getResidueCount();
 	}
 
@@ -375,17 +367,6 @@ public class Molecule extends Generic implements Selectable {
 	newAtom.setParent(currentResidue);
 
 	return newAtom;
-    }
-
-    /** Add an atom to the chain, residue set. */
-    private Atom addAtom(Residue res){
-	Atom atom = Atom.create();
-	atom.setParent(res);
-	atoms.add(atom);
-
-	res.addAtom(atom);
-
-	return atom;
     }
 
     /** Add a new ring to the molecule. */
@@ -502,9 +483,6 @@ public class Molecule extends Generic implements Selectable {
     /** The head pointers for each cell. */
     private int head[] = null;
 
-    /** Direct array reference to the atoms. */
-    Object atomArray[] = null;
-
     /** Generate a cell index for the given grid. */
     private int cellIndex(int ix, int iy, int iz,
 			  int nx, int ny){
@@ -538,9 +516,6 @@ public class Molecule extends Generic implements Selectable {
 	double zmin = 1.e10, zmax = -1.e10;
 
 	int atomCount = getAtomCount();
-	atomArray = atoms.toArray();
-
-	//System.out.println("atomCount "+ atomCount);
 
 	bondingRadii = new double[atomCount];
 
@@ -550,9 +525,7 @@ public class Molecule extends Generic implements Selectable {
 	}
 
 	// Find the bounding box of the molecule
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = getAtom(a);
-
+	for(Atom atom: atoms){
 	    if(atom.x < xmin) xmin = atom.x;
 	    if(atom.y < ymin) ymin = atom.y;
 	    if(atom.z < zmin) zmin = atom.z;
@@ -698,21 +671,17 @@ public class Molecule extends Generic implements Selectable {
     private void connectTwoCells(int icell2){
 	// only need to get the contents of cell2
 	nc2 = getCellContents(icell2, cell2);
-	Object localAtomArray[] = atomArray;
-
-	//System.out.println("number in cell 1 " + nc1);
-	//System.out.println("number in cell 2 " + nc2);
 
 	// don't forget to look up the atom ids
 	// in the cell array.
 	for(int i = 0; i < nc1; i++){
 	    int i1 = cell1[i];
-	    Atom a1 = (Atom)localAtomArray[i1];
+	    Atom a1 = atoms.get(i1);
 	    double r1 = bondingRadii[i1];
 
 	    for(int j = 0; j < nc2; j++){
 		int i2 = cell2[j];
-		Atom a2 = (Atom)localAtomArray[i2];
+		Atom a2 = atoms.get(i2);
 		double r2 = bondingRadii[i2];
 		double d2 = r1 + r2;
 		d2 *= d2;
@@ -732,11 +701,11 @@ public class Molecule extends Generic implements Selectable {
 	// in the cell array.
 	for(int i = 0; i < nc1; i++){
 	    int i1 = cell1[i];
-	    Atom a1 = (Atom)atomArray[i1];
+	    Atom a1 = atoms.get(i1);
 	    double r1 = bondingRadii[i1];
 	    for(int j = i + 1; j < nc1; j++){
 		int i2 = cell1[j];
-		Atom a2 = (Atom)atomArray[i2];
+		Atom a2 = atoms.get(i2);
 		double r2 = bondingRadii[i2];
 		double d2 = r1 + r2;
 		d2 *= d2;
@@ -751,7 +720,6 @@ public class Molecule extends Generic implements Selectable {
     /** Connect the atoms in a molecule using standard bonding radii. */
     public void connect(){
 	int atomCount = getAtomCount();
-	Object atomArray[] = atoms.toArray();
 
 	// store all of the bonding radii so we don't have to
 	// keep looking them up.
@@ -764,7 +732,7 @@ public class Molecule extends Generic implements Selectable {
 
 	// now check each atom.
 	for(int a1 = 0; a1 < atomCount; a1++){
-	    Atom firstAtom = (Atom)atomArray[a1];
+	    Atom firstAtom = atoms.get(a1);
 	    double firstRadius = bondingRadii[a1];
 	    int startAtom = 0;
 	    int endAtom = atomCount;
@@ -786,7 +754,7 @@ public class Molecule extends Generic implements Selectable {
 
 	    for(int a2 = startAtom; a2 < endAtom; a2++){
 		if(a2 != a1){
-		    Atom secondAtom = (Atom)atomArray[a2];
+		    Atom secondAtom = atoms.get(a2);
 		    double secondRadius = bondingRadii[a2];
 		    double dSquare = firstRadius + secondRadius;
 
@@ -954,24 +922,18 @@ public class Molecule extends Generic implements Selectable {
 
     /** Return the best ring containing this bond. */
     public Ring getBestRingContainingBond(Bond bond){
-	int ringCount = getRingCount();
+	ensureRingsAssigned();
 
 	for(int i = 1; i >= 0; i--){
-	    for(int r = 0; r < ringCount; r++){
-		Ring ring = getRing(r);
-		//System.out.println("ring bond count " + ring.getBondCount());
+	    for(Ring ring: rings){
 		if(ring.contains(bond) && ring.getAtomCount() == (6 - i) &&
 		   ring.isAromatic()){
-					
-		    //System.out.println("ring is aromatic");
 		    return ring;
 		}
 	    }
 	}
 
-	for(int r = 0; r < ringCount; r++){
-	    Ring ring = getRing(r);
-	    //System.out.println("ring bond count " + ring.getBondCount());
+	for(Ring ring: rings){
 	    if(ring.contains(bond)){
 		return ring;
 	    }
@@ -1098,8 +1060,7 @@ public class Molecule extends Generic implements Selectable {
     /** Apply a selection recursively. */
     public int select(int state){
 	int selectCount = 0;
-	for(int c = 0; c < getChainCount(); c++){
-	    Chain chain = getChain(c);
+	for(Chain chain : chains){
 	    selectCount += chain.select(state);
 	}
 

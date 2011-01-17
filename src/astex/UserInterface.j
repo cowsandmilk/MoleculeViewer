@@ -1076,10 +1076,8 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	Layout.fill(panel, objectList, 1, 1, 5, 1, GridBagConstraints.BOTH);
 
 	Renderer r = moleculeViewer.getMoleculeRenderer().renderer;
-	int objectCount = r.getGraphicalObjectCount();
 
-	for(int i = 0; i < objectCount; i++){
-	    Tmesh tmesh = r.getGraphicalObject(i);
+	for(Tmesh tmesh : r.objects){
 
 	    ObjectControl oc = new ObjectControl(this, tmesh);
 
@@ -1372,7 +1370,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	}else if("reset".equals(command)){
 	    mr.resetView();
 	}else if(!command.startsWith("display")){
-	    DynamicArray selectedObjects = getSelectedObjects();
+	    java.util.List<Tmesh> selectedObjects = getSelectedObjects();
 
 	    if(selectedObjects == null){
 		handled = false;
@@ -1425,9 +1423,9 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	moleculeViewer.dirtyRepaint();
     }
 
-    private DynamicArray selectedObjects = new DynamicArray();
+    private java.util.List<Tmesh> selectedObjects = new ArrayList<Tmesh>();
     
-    private DynamicArray getSelectedObjects(){
+    private java.util.List<Tmesh> getSelectedObjects(){
 	Component components[] = objectContainer.getComponents();
 	selectedObjects.clear();
 	
@@ -1500,11 +1498,10 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	if(source == distanceMax){
 
-	    DynamicArray selectedObjects = getSelectedObjects();
+	    java.util.List<Tmesh> selectedObjects = getSelectedObjects();
 	    if(selectedObjects != null){
 		    
-		for(int i = 0; i < selectedObjects.size(); i++){
-		    Tmesh tm = (Tmesh)selectedObjects.get(i);
+		for(Tmesh tm : selectedObjects){
 		    String name = "'" + tm.getName() + "'";
 		    int tc = textureCoordinate.getValue();
 		    String texCoord = null;

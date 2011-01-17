@@ -122,7 +122,7 @@ public class Renderer {
     public boolean debug = false;
 
     /** The list of objects to render. */
-    public DynamicArray objects = new DynamicArray();
+    public List<Tmesh> objects = new ArrayList<Tmesh>();
 
     /** The background ambient light for the renderer. */
     private int ambient = Color32.black;
@@ -142,11 +142,11 @@ public class Renderer {
     /** The normal cutoff for cartoon rendering. */
     private double cartoonNormalCutoff = 0.08;
 
-    /** Have we calcualated our light map? */
+    /** Have we calculated our light map? */
     private transient boolean lightMapCalculated = false;
 
     /** The list of lights. */
-    public DynamicArray lights = new DynamicArray(8);
+    public List<Light> lights = new ArrayList<Light>(8);
 
     /** The list of textures. */
     public HashMap<String,Texture> textures = new HashMap<String,Texture>(11);
@@ -216,7 +216,7 @@ public class Renderer {
 	0xff9999, 0x99ff99, 0x9999ff, 0xffff99, 0xff99ff, 0x99ffff
     };
 
-    public transient DynamicArray rendererEventListeners = new DynamicArray();
+    public transient List<RendererEventListener> rendererEventListeners = new ArrayList<RendererEventListener>(20);
 
     /** Are we antialiasing. */
     private boolean antialias = false;
@@ -497,7 +497,7 @@ public class Renderer {
     /** Add a listener for renderer events. */
     public void addRendererEventListener(RendererEventListener rel){
         if(rendererEventListeners == null){
-            rendererEventListeners = new DynamicArray();
+            rendererEventListeners = new ArrayList<RendererEventListener>(20);
         }
         rendererEventListeners.add(rel);
     }
@@ -512,12 +512,7 @@ public class Renderer {
     /** Pass of the renderer event to anything that is interested. */
     private void fireRendererEvent(RendererEvent re){
         if(rendererEventListeners != null){
-            int listenerCount = rendererEventListeners.size();
-
-            for(int i = 0; i < listenerCount; i++){
-                RendererEventListener rel =
-                    (RendererEventListener)rendererEventListeners.get(i);
-                
+            for(RendererEventListener rel : rendererEventListeners){
                 rel.handleRendererEvent(re);
             }
         }
@@ -527,14 +522,13 @@ public class Renderer {
     public void addTmesh(Tmesh tm){
 	System.out.println("adding tmesh " + tm);
 	String newName = tm.getName();
-        int graphicalObjectCount = getGraphicalObjectCount();
 
-        for(int i = 0; i < graphicalObjectCount; i++){
-            Tmesh object = getGraphicalObject(i);
+        for(Iterator<Tmesh> it = objects.iterator(); it.hasNext();){
+            Tmesh object = it.next();
             String name = object.getName();
             if(name != null && newName != null &&
 	       newName.equals(name)){
-		removeGraphicalObjects(object);
+		removeGraphicalObjects(it,object);
 	    }
 	}
 
@@ -544,28 +538,18 @@ public class Renderer {
 
 	fireRendererEvent(re);
     }
-
-    /** Add a graphical object. */
-    public void addGraphicalObject(Tmesh tm){
-	addTmesh(tm);
-    }
     
     /** Get the number of graphical objects. */
     public int getGraphicalObjectCount(){
 	return objects.size();
     }
 
-    /** Get the number of graphical objects. */
-    public Tmesh getGraphicalObject(int i){
-	return (Tmesh)objects.get(i);
-    }
-
     /** Return a GraphicalObject with the specified name. */
     public Tmesh getGraphicalObject(String targetName){
         int graphicalObjectCount = getGraphicalObjectCount();
 
-        for(int i = graphicalObjectCount - 1; i >= 0; i--){
-            Tmesh object = (Tmesh)objects.get(i);
+        for(ListIterator<Tmesh> iti = objects.listIterator(graphicalObjectCount); iti.hasPrevious();){
+            Tmesh object = iti.previous();
             String name = object.getName();
 	    if(name != null && targetName != null &&
 	       name.equals(targetName)){
@@ -576,13 +560,11 @@ public class Renderer {
 	return null;
     }
 
-    /** Return a DynamicArray of objects that match the pattern. */
-    public DynamicArray getGraphicalObjects(String pattern){
-	DynamicArray matchingObjects = new DynamicArray();
-        int graphicalObjectCount = getGraphicalObjectCount();
+    /** Return a List of objects that match the pattern. */
+    public List<Tmesh> getGraphicalObjects(String pattern){
+	List<Tmesh> matchingObjects = new ArrayList<Tmesh>(20);
 
-        for(int i = 0; i < graphicalObjectCount; i++){
-            Tmesh object = getGraphicalObject(i);
+        for(Tmesh object : objects){
             String name = object.getName();
             if(name != null && match.matches(pattern, name)){
 		matchingObjects.add(object);
@@ -594,10 +576,7 @@ public class Renderer {
 
     /** Change the visibility state of GraphicalObjects. */
     public void setGraphicalObjectsColour(String pattern, int colour){
-        int graphicalObjectCount = getGraphicalObjectCount();
-
-        for(int i = graphicalObjectCount - 1; i >= 0; i--){
-            Tmesh object = (Tmesh)objects.get(i);
+        for(Tmesh object : objects){
             String name = object.getName(); 
            if(name != null && match.matches(pattern, name)){
                 object.setColor(colour);
@@ -607,10 +586,7 @@ public class Renderer {
 
     /** Change the visibility state of GraphicalObjects. */
     public void setGraphicalObjectsVisibility(String pattern, int state){
-        int graphicalObjectCount = getGraphicalObjectCount();
-
-        for(int i = graphicalObjectCount - 1; i >= 0; i--){
-            Tmesh object = getGraphicalObject(i);
+        for(Tmesh object : objects){
             String name = object.getName();
             if(name != null && match.matches(pattern, name)){
                 if(state == 0){
@@ -631,37 +607,31 @@ public class Renderer {
 
     /** Remove objects that match a pattern. */
     public void removeGraphicalObjects(String pattern){
-        int graphicalObjectCount = getGraphicalObjectCount();
-
-        for(int i = graphicalObjectCount - 1; i >= 0; i--){
-            Tmesh object = getGraphicalObject(i);
+        for(Iterator<Tmesh> it = objects.iterator(); it.hasNext();){
+            Tmesh object = it.next();
             String name = object.getName();
             if(name != null && match.matches(pattern, name)){
-		removeGraphicalObjects(object);
+		removeGraphicalObjects(it, object);
             }
         }
     }
 
     /** Remove specific graphical object. */
-    private void removeGraphicalObjects(Tmesh tm){
-	if(objects.contains(tm)){
-	    objects.remove(tm);
-	    RendererEvent re =
-		new RendererEvent(RendererEvent.ObjectRemoved, tm);
+    private void removeGraphicalObjects(Iterator<Tmesh> it, Tmesh tm){
+	it.remove();
+	RendererEvent re =
+	    new RendererEvent(RendererEvent.ObjectRemoved, tm);
 
-	    fireRendererEvent(re);
-	}
+	fireRendererEvent(re);
     }
 
     /** Remove objects that begin with the specified string. */
     public void removeGraphicalObjectsBeginningWith(String prefix){
-        int graphicalObjectCount = getGraphicalObjectCount();
-
-        for(int i = graphicalObjectCount - 1; i >= 0; i--){
-            Tmesh object = getGraphicalObject(i);
+        for(Iterator<Tmesh> it = objects.iterator(); it.hasNext();){
+            Tmesh object = it.next();
             String name = object.getName();
             if(name != null && name.startsWith(prefix)){
-		removeGraphicalObjects(object);
+		removeGraphicalObjects(it, object);
             }
         }
     }
@@ -681,10 +651,7 @@ public class Renderer {
 	    }
 	}
 
-        int graphicalObjectCount = getGraphicalObjectCount();
-
-        for(int i = 0; i < graphicalObjectCount; i++){
-            Tmesh object = getGraphicalObject(i);
+        for(Tmesh object : objects){
             String name = object.getName();
             if(name != null && match.matches(pattern, name)){
 		object.texture = tex;
@@ -694,10 +661,7 @@ public class Renderer {
 
     /** Scale texture to the specified objects. */
     public void scaleTexture(String pattern, int attribute, double value){
-        int graphicalObjectCount = getGraphicalObjectCount();
-	
-        for(int i = 0; i < graphicalObjectCount; i++){
-            Tmesh object = getGraphicalObject(i);
+        for(Tmesh object : objects){
             String name = object.getName();
 
             if(name != null && match.matches(pattern, name)){
@@ -718,10 +682,7 @@ public class Renderer {
 
     /** Set backface on or off. */
     public void setBackface(String pattern, boolean value){
-        int graphicalObjectCount = getGraphicalObjectCount();
-	
-        for(int i = 0; i < graphicalObjectCount; i++){
-            Tmesh object = getGraphicalObject(i);
+        for(Tmesh object : objects){
             String name = object.getName();
 
             if(name != null && match.matches(pattern, name)){
@@ -994,8 +955,7 @@ public class Renderer {
 #endif
 
 	// first pass, draw opaque objects
-	for(int i = 0; i < objects.size(); i++){
-	    Tmesh tm = (Tmesh)objects.get(i);
+	for(Tmesh tm : objects){
 	    if(tm.getRenderPass() == RenderPass &&
 	       tm.isVisible() && tm.transparency == 255){
 		renderObject(tm);
@@ -1003,8 +963,7 @@ public class Renderer {
 	}
 
 	// third pass, draw transparent objects
-	for(int i = 0; i < objects.size(); i++){
-	    Tmesh tm = (Tmesh)objects.get(i);
+	for(Tmesh tm : objects){
 	    if(tm.getRenderPass() == RenderPass &&
 	       tm.isVisible() && tm.transparency != 255){
 		renderObject(tm);
@@ -1020,8 +979,7 @@ public class Renderer {
 
     /** Draw object that belong to a particular render pass. */
     private void drawObjects(int pass){
-	for(int i = 0; i < objects.size(); i++){
-	    Tmesh tm = (Tmesh)objects.get(i);
+	for(Tmesh tm : objects){
 	    if(tm.getRenderPass() == pass &&
 	       tm.isVisible()){
 		renderObject(tm);
@@ -3195,7 +3153,7 @@ public class Renderer {
 
 	    }
 	    try {
-		DynamicArray hersheyFont = getHersheyFont("hershey.normal");
+		List<String> hersheyFont = getHersheyFont("hershey.normal");
 
 		int shade        = stringColor;
 		int stringLength = string.length();
@@ -3245,11 +3203,11 @@ public class Renderer {
     /** Draw a single hershey font char. */
     private double drawHersheyChar3d(double x, double y, double z,
 				     double zoff,
-				     char c, DynamicArray font,
+				     char c, List<String> font,
 				     int shade,
 				     boolean measure,
 				     double fmin[], double fmax[]){
-	String s = (String)font.get(c-32);
+	String s = font.get(c-32);
 	int len  = s.length();
 
 	// margins of this glyph
@@ -3323,11 +3281,11 @@ public class Renderer {
     }
 
     /** Where the character data is stored. */
-    private HashMap<String,DynamicArray> hersheyHash = new HashMap<String,DynamicArray>(4);
+    private HashMap<String,List<String>> hersheyHash = new HashMap<String,List<String>>(4);
 
     /** Make sure we got the hershey fonts loaded. */
-    private DynamicArray getHersheyFont(String name){
-	DynamicArray hersheyFont = hersheyHash.get(name);
+    private List<String> getHersheyFont(String name){
+	List<String> hersheyFont = hersheyHash.get(name);
 
 	if(hersheyFont == null){
 	    String hersheyFontName = Settings.getString("fonts", name);
@@ -3339,7 +3297,7 @@ public class Renderer {
 		return null;
 	    }
 
-	    hersheyFont = new DynamicArray();
+	    hersheyFont = new ArrayList<String>();
 
 	    while(hf.nextLine()){
 		String line = hf.getCurrentLineAsString();
@@ -4206,7 +4164,7 @@ public class Renderer {
 	if(shadowMode == ShadowsAccumulate){
 	    ShadowCache.clearShadowCaches();
 	}else if(shadowMode == ShadowsOn){
-	    ShadowCache.setupShadowCaches((Light)lights.get(0),
+	    ShadowCache.setupShadowCaches(lights.get(0),
 					  getOverallScale());
 	}
 
@@ -4531,8 +4489,9 @@ public class Renderer {
             setWrapAngle(w);
         }
 
-	for (int i = 0; i < lights.size(); i++) {
-	    Light l = (Light)lights.get(i);
+	for (ListIterator<Light> it = lights.listIterator(); it.hasNext();) {
+	    int i = it.nextIndex();
+	    Light l = it.next();
 	    
 	    if(l.on){
 		int diffuse = l.diffuse;

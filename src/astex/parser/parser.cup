@@ -174,7 +174,7 @@ non terminal Arguments arg_list;
 non terminal Arguments arguments;
 
 non terminal byte[] selection_expression;
-non terminal DynamicArray selection;
+non terminal List selection;
 non terminal Integer render_style;
 non terminal String on_off;
 
@@ -254,8 +254,6 @@ selection_command ::=
 			}
 		
 			parser.renderer.setSelected(selectedAtoms);
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| APPEND selection:selectedAtoms
 		{:
@@ -265,8 +263,6 @@ selection_command ::=
 				Atom a = (Atom)selectedAtoms.get(i);
 				a.setSelected(true);
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| EXCLUDE selection:selectedAtoms
 		{:
@@ -305,9 +301,7 @@ selection_command ::=
 				h.add(a);
 			}
 
-			parser.renderer.groups.put(name, h); 
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
+			parser.renderer.groups.put(name, h);
 		:} 
 	| UNDEFINE STRING:name
 		{:
@@ -317,7 +311,7 @@ selection_command ::=
 		{:
 			AtomIterator iterator =
 				parser.renderer.getAtomIterator();
-			DynamicArray selectedAtoms = new DynamicArray();
+			List<Atom> selectedAtoms = new ArrayList<Atom>(20);
 	    
 			// clear the selection state of all atoms
 			while(iterator.hasMoreElements()){
@@ -410,10 +404,9 @@ map_command ::=
 		:}
 	| MAP STRING:name CONTOUR INTEGER:contour STRING:onoff
 		{:
-			DynamicArray maps = parser.renderer.getMaps(name);
+			List<astex.Map> maps = parser.renderer.getMaps(name);
 
-			for(int i = 0; i < maps.size(); i++){
-				astex.Map map = (astex.Map)maps.get(i);
+			for(astex.Map map : maps){
 				if("wire".equals(onoff)){
 					map.setContourStyle(contour.intValue(), astex.Map.Lines);
 					parser.renderer.contourMap(map, contour.intValue());
@@ -439,10 +432,9 @@ map_command ::=
 		:}
 	| MAP STRING:name CONTOUR INTEGER:contour SOLID on_off:value
 		{:
-			DynamicArray maps = parser.renderer.getMaps(name);
+			List<astex.Map> maps = parser.renderer.getMaps(name);
 
-			for(int i = 0; i < maps.size(); i++){
-				astex.Map map = (astex.Map)maps.get(i);
+			for(astex.Map map : maps){
 				if("on".equals(value)){
 					map.setContourStyle(contour.intValue(), astex.Map.Surface);
 				}else{
@@ -520,8 +512,6 @@ display_command ::=
 		   			atom.setDisplayed(false);
 				}
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| DISPLAY render_style:mode selection:selectedAtoms
 		{:
@@ -545,8 +535,6 @@ display_command ::=
 			}else{
 				System.out.println("invalid display mode " + mode);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| DISPLAY render_style:mode on_off:onoff selection:selectedAtoms
 		{:
@@ -620,8 +608,6 @@ display_command ::=
 			dotSurface.setName(name);
 
 			parser.renderer.addGraphicalObject(dotSurface);
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| VDW number:r selection:selectedAtoms
 		{:
@@ -632,8 +618,6 @@ display_command ::=
 				Atom a = (Atom)selectedAtoms.get(i);
 				a.setVDWRadius(newr);
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| BALL_RADIUS number:r selection:selectedAtoms
 		{:
@@ -644,82 +628,62 @@ display_command ::=
 				Atom a = (Atom)selectedAtoms.get(i);
 				a.setBallRadius(newr);
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| STICK_RADIUS number:r selection:selectedAtoms
 		{:
 			double newr = r.doubleValue();
 
-			DynamicArray selectedBonds =
+			List<Bond> selectedBonds =
 				parser.renderer.getBondsInSelection(selectedAtoms);
-			for(int i = 0; i < selectedBonds.size(); i++){
-				Bond b = (Bond)selectedBonds.get(i);
+			for(Bond b : selectedBonds){
 				b.setStickWidth(newr);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| CYLINDER_RADIUS number:r selection:selectedAtoms
 		{:
 			double newr = r.doubleValue();
 
-			DynamicArray selectedBonds =
+			List<Bond> selectedBonds =
 				parser.renderer.getBondsInSelection(selectedAtoms);
-			for(int i = 0; i < selectedBonds.size(); i++){
-				Bond b = (Bond)selectedBonds.get(i);
+			for(Bond b : selectedBonds){
 				b.setCylinderWidth(newr);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| BOND_WIDTH INTEGER:iw selection:selectedAtoms
 		{:
 			int neww = iw.intValue();
 
-			DynamicArray selectedBonds =
+			List<Bond> selectedBonds =
 				parser.renderer.getBondsInSelection(selectedAtoms);
-			for(int i = 0; i < selectedBonds.size(); i++){
-				Bond b = (Bond)selectedBonds.get(i);
+			for(Bond b : selectedBonds){
 				b.setBondWidth(neww);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| STICK_COLOR STRING:colour selection:selectedAtoms
 		{:
 			int c = Color32.getColorFromName(colour);
-			DynamicArray selectedBonds =
+			List<Bond> selectedBonds =
 				parser.renderer.getBondsInSelection(selectedAtoms);
 
-			for(int i = 0; i < selectedBonds.size(); i++){
-				Bond b = (Bond)selectedBonds.get(i);
+			for(Bond b : selectedBonds){
 				b.setBondColor(c);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| CHARGE number:r selection:selectedAtoms
 		{:
 			double newr = r.doubleValue();
 
-			int selectedAtomCount = selectedAtoms.size();
-	    		for(int i = 0; i < selectedAtomCount; i++){
-				Atom a = (Atom)selectedAtoms.get(i);
+	    		for(Atom a : (List<Atom>) selectedAtoms){
 				a.setPartialCharge(newr);
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| ATTRIBUTE:att number:r selection:selectedAtoms
 		{:
 			double newr = r.doubleValue();
 			int value = att.intValue();
-			int selectedAtomCount = selectedAtoms.size();
 			boolean printedError = false;
 
-	    		for(int i = 0; i < selectedAtomCount; i++){
-				Atom a = (Atom)selectedAtoms.get(i);
+	    		for(Atom a : (List<Atom>) selectedAtoms){
 				if(value == Atom.B){
 					a.setBFactor(newr);
 				}else if(value == Atom.O){
@@ -738,8 +702,6 @@ display_command ::=
 				}
 
 	    		}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| SURFACE arguments:args STRING:name STRING:colour selection:selectedAtoms
 		{:
@@ -757,7 +719,6 @@ display_command ::=
 				surface.setColor(c);
 				r.addGraphicalObject(surface);
 			}
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	;
 
@@ -780,14 +741,15 @@ surface_command ::=
 			AnaSurface.defaultQuality = quality;
 
 
-			for(int i = 0; i < selectionCount; i++){
-				Atom a = (Atom)selectedAtoms.get(i);
+			int i = 0;
+			for(Atom a : (List<Atom>) selectedAtoms){
 				xxx[i][0] = a.x;
 				xxx[i][1] = a.y;
 				xxx[i][2] = a.z;
 				r[i] = a.getVDWRadius();
 				visible[i] = 1;
 				colors[i] = a.getColor();
+				i++;
 			}
 
 			AnaSurface s =
@@ -803,8 +765,6 @@ surface_command ::=
 			tm.setName(name);
 
 			parser.renderer.addGraphicalObject(tm);
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	;
 
@@ -832,29 +792,19 @@ color_command ::=
 	| COLOR_BY_RAINBOW selection:selectedAtoms
 		{:
 			parser.renderer.colorByRainbow(selectedAtoms);
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| COLOR STRING:c selection:selectedAtoms
 		{:
 			int color =
 				Color32.getColorFromName(c);
 
-			int selectionCount = selectedAtoms.size();
-
-			for(int i = 0; i < selectionCount; i++){
-				Atom a = (Atom)selectedAtoms.get(i);
+			for(Atom a : (List<Atom>) selectedAtoms){
 				a.setColor(color);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| TRANSPARENCY INTEGER:n selection:selectedAtoms
 		{:
-			int selectionCount = selectedAtoms.size();
-
-			for(int i = 0; i < selectionCount; i++){
-				Atom a = (Atom)selectedAtoms.get(i);
+			for(Atom a : (List<Atom>) selectedAtoms){
 				a.setTransparency(n.intValue());
 			}
 		:}
@@ -863,8 +813,7 @@ color_command ::=
 label_command ::=
 	  LABEL CLEAR selection:selectedAtoms
 		{:
-			for(int i = 0; i < selectedAtoms.size(); i++){
-				Atom a = (Atom)selectedAtoms.get(i);
+			for(Atom a : (List<Atom>) selectedAtoms){
 				a.setCustomLabel(null);
 			}
 		:}
@@ -872,20 +821,13 @@ label_command ::=
 		{:
 			parser.renderer.generateAtomLabels(format,
 							   selectedAtoms);
-			//for(int i = 0; i < selectedAtoms.size(); i++){
-			//	Atom a = (Atom)selectedAtoms.get(i);
-			//	a.setLabelled(true);
-			//}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	;
 
 center_command ::=
 	  CENTER selection:selectedAtoms
 		{:
-			parser.renderer.setCenter(selectedAtoms); 
-			//Selection.dynamicArrayCache.add(selectedAtoms);
+			parser.renderer.setCenter(selectedAtoms);
 		:}
 	| RADIUS number:x
 		{: parser.renderer.setRadius(x.doubleValue()); :}
@@ -906,9 +848,6 @@ distance_command ::=
 							secondAtom);
 				}
 			}
-
-			//Selection.dynamicArrayCache.add(first);
-			//Selection.dynamicArrayCache.add(second);
 		:}	
 	| DISTANCE arguments:args
 		{:
@@ -1141,8 +1080,7 @@ schematic_command ::=
 
 				if(sstype != -1){
 					// inefficient
-					for(int i = 0; i < selectedAtoms.size(); i++){
-						Atom a = (Atom)selectedAtoms.get(i);
+					for(Atom a : (List<Atom>) selectedAtoms){
 						Residue r = a.getResidue();
 						r.setSecondaryStructure(sstype);
 					}
@@ -1153,8 +1091,6 @@ schematic_command ::=
 		{:
 			Tmesh tm = Schematic.create(args, parser.renderer, selectedAtoms);
 			parser.renderer.addGraphicalObject(tm);
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	;
 
@@ -1246,14 +1182,12 @@ object_command ::=
 				double min = value.doubleValue();
 				double max = value2.doubleValue();
 
-				DynamicArray objects =
+				List<Tmesh> objects =
 					parser.renderer.renderer.getGraphicalObjects(name);
-					int objectCount = objects.size();
 
 				double scale = 1./(max - min);
 
-				for(int i = 0; i < objectCount; i++){
-					Tmesh object = (Tmesh)objects.get(i);
+				for(Tmesh object : objects){
 					object.setTextureRange(uv, min, max);
 				}
 			}
@@ -1295,15 +1229,12 @@ object_command ::=
 				uv = Tmesh.VTexture;
 			}
 
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				Texgen.distance(tm, selectedAtoms, uv);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| OBJECT STRING:name TEXTURE CURVATURE
 		 STRING:uvspec number:dmax selection:selectedAtoms
@@ -1315,16 +1246,13 @@ object_command ::=
 				uv = Tmesh.VTexture;
 			}
 
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				Texgen.curvature(tm, selectedAtoms, uv,
 					dmax.doubleValue());
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| OBJECT STRING:name TEXTURE ELECTROSTATIC
 		 STRING:uvspec number:dmax selection:selectedAtoms
@@ -1336,17 +1264,14 @@ object_command ::=
 				uv = Tmesh.VTexture;
 			}
 
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				Texgen.property_map(tm, selectedAtoms, uv,
 					dmax.doubleValue(), false,
 					Texgen.Electrostatic);
 			}
-
-			//Selection.dynamicArrayCache.add(selectedAtoms);
 		:}
 	| OBJECT STRING:name TEXTURE LIPOPHILICITY
 		 STRING:uvspec number:dmax selection:selectedAtoms
@@ -1358,11 +1283,10 @@ object_command ::=
 				uv = Tmesh.VTexture;
 			}
 
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				Texgen.property_map(tm, selectedAtoms, uv,
 					dmax.doubleValue(), false,
 					Texgen.Lipophilicity);
@@ -1370,31 +1294,28 @@ object_command ::=
 		:}
 	| OBJECT STRING:name COLOR STRING:colorName
 		{:
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 			int color = Color32.getColorFromName(colorName);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				tm.setColorStyle(Tmesh.ObjectColor);
 				tm.setColor(color);
 			}
 		:}
 	| OBJECT STRING:name LINEWIDTH number:w
 		{:
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				tm.setLineWidth(w.doubleValue());
 			}
 		:}
 	| OBJECT STRING:name TRANSPARENCY INTEGER:t
 		{:
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				tm.setTransparency(t.intValue());
 			}
 		:}
@@ -1404,17 +1325,16 @@ object_command ::=
 			if(uvSpec.indexOf("u") != -1) uv |= Tmesh.UTexture;
 			if(uvSpec.indexOf("v") != -1) uv |= Tmesh.VTexture;
 
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				tm.clip(uv);
 			}
 		:}
 	| OBJECT STRING:name COPYTO STRING:newname
 		{:
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
 			Tmesh tm = Tmesh.copy(objects);
@@ -1424,11 +1344,10 @@ object_command ::=
 	| OBJECT STRING:name TEXTURE RECTANGULAR
 		{:
 
-			DynamicArray objects =
+			List<Tmesh> objects =
 				parser.renderer.renderer.getGraphicalObjects(name);
 
-			for(int i = 0; i < objects.size(); i++){
-				Tmesh tm = (Tmesh)objects.get(i);
+			for(Tmesh tm : objects){
 				Texgen.rectangular(tm);
 			}
 		:}
@@ -1530,8 +1449,8 @@ arg ::=
 selection ::=
 	  selection_expression:mask
 		{:
-			DynamicArray selectedAtoms =
-				Selection.maskToArray(parser.renderer, mask);
+			List<Atom> selectedAtoms =
+				Selection.maskToList(parser.renderer, mask);
 			if(parser.renderer.getSelectCount()){
 				System.out.println("[" + selectedAtoms.size() + "]");
 			}
@@ -1671,19 +1590,19 @@ statement ::=
 		:}
 	| POP
 		{:
-			DynamicArray selectedAtoms = parser.renderer.popSelection();
+			List<Atom> selectedAtoms = parser.renderer.popSelection();
 
 			if(selectedAtoms != null){
-				RESULT = Selection.arrayToMask(parser.renderer, selectedAtoms);
+				RESULT = Selection.listToMask(parser.renderer, selectedAtoms);
 			}else{
 				RESULT = Selection.none(parser.renderer);
 			}
 		:}
 	| PEEK INTEGER:i
 		{:
-			DynamicArray selectedAtoms = parser.renderer.peekSelection(i.intValue());
+			List<Atom> selectedAtoms = parser.renderer.peekSelection(i.intValue());
 
-			RESULT = Selection.arrayToMask(parser.renderer, selectedAtoms);
+			RESULT = Selection.listToMask(parser.renderer, selectedAtoms);
 		:}
 	;
 

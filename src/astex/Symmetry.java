@@ -57,15 +57,15 @@ public class Symmetry {
     private String originalSpaceGroupName = null;
 
     /** The list of symmetry operators. */
-    private DynamicArray symmetryOperators = null;
+    private List<Matrix> symmetryOperators = null;
 
     /** The default location of the symmetry library. */
     private static final String symmetryLibrary = "symmetry.properties";
 
     /** Get the symmetry operators for the specified space group. */
-    public DynamicArray getSymmetryOperators(){
+    public List<Matrix> getSymmetryOperators(){
 	if(symmetryOperators != null){
-	    return symmetryOperators;
+	    return Collections.unmodifiableList(symmetryOperators);
 	}
 
 	FILE file = FILE.open(symmetryLibrary);
@@ -95,12 +95,12 @@ public class Symmetry {
 		System.out.println("spacegroup matched symmetry definition");
 		System.out.println(line);
 
-		symmetryOperators = new DynamicArray();
+		symmetryOperators = new ArrayList<Matrix>(operatorCount);
 
 		for(int i = 0; i < operatorCount; i++){
 		    file.nextLine();
 		    String operatorString = file.getCurrentLineAsString();
-		    readSymmetryOperator(operatorString, symmetryOperators);
+		    readSymmetryOperator(operatorString);
 		}
 
 		break;
@@ -113,7 +113,10 @@ public class Symmetry {
 
 	file.close();
 
-	return symmetryOperators;
+	if(symmetryOperators == null){
+	    return null;
+	}
+	return Collections.unmodifiableList(symmetryOperators);
     }
 
     /**
@@ -136,8 +139,7 @@ public class Symmetry {
     }
 
     /** Decode one symmetry operator. */
-    private static void readSymmetryOperator(String line,
-					    DynamicArray symmetryOperators){
+    private void readSymmetryOperator(String line){
 	StringTokenizer lineTokenizer = new StringTokenizer(line, ",");
 	String xToken = lineTokenizer.nextToken().trim();
 	String yToken = lineTokenizer.nextToken().trim();
@@ -155,8 +157,6 @@ public class Symmetry {
 	m.x02 = c[0]; m.x12 = c[1]; m.x22 = c[2]; m.x32 = c[3];
 
 	symmetryOperators.add(m);
-
-	//m.print("Symmetry Operator: "+ line);
     }
 
     /** The positive axes. */

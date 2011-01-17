@@ -17,6 +17,8 @@
 
 package astex;
 
+import java.util.*;
+
 /* Copyright Astex Technology Ltd. 1999 */
 
 /*
@@ -29,13 +31,8 @@ package astex;
  * of a protein chain.
  */
 public class Chain implements Selectable {
-    /** Default constructor. */
-    public Chain(){
-	residues = new DynamicArray(1);
-    }
-
     /** Dynamic array of residues. */
-    private DynamicArray residues = null;
+    private List<Residue> residues = new ArrayList<Residue>(100);
 
     /** Undefined residue name. */
     private static final String undefinedChainName = "X";
@@ -80,7 +77,7 @@ public class Chain implements Selectable {
      * Return the specified atom.
      */
     public Residue getResidue(int index){
-	return (Residue)residues.get(index);
+	return residues.get(index);
     }
 
     /** The current residue. */

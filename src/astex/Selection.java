@@ -30,16 +30,16 @@ import java.util.*;
  */
 public class Selection {
     /** Residue names for aminoacids. */
-    public static DynamicArray aminoacidNames = new DynamicArray();
+    public static List<String> aminoacidNames = new ArrayList<String>(30);
 
     /** Residue names for dna. */
-    public static DynamicArray dnaNames = new DynamicArray();
+    public static List<String> dnaNames = new ArrayList<String>(15);
 
     /** Residue names for solvent. */
-    public static DynamicArray solventNames = new DynamicArray();
+    public static List<String> solventNames = new ArrayList<String>(5);
 
     /** Residue names for ions. */
-    public static DynamicArray ionNames = new DynamicArray();
+    public static List<String> ionNames = new ArrayList<String>(15);
 
     static {
         String names[] = {
@@ -49,23 +49,23 @@ public class Selection {
             "ions"
         };
 
-        for(int i = 0; i < names.length; i++){
-            String value = (String)Settings.get("residue", names[i]);
+        for(String name: names){
+            String value = (String)Settings.get("residue", name);
             if(value == null){
-                print.f("no residue definition for " + names[i]);
+                print.f("no residue definition for " + name);
                 continue;
             }
             String residues[] = FILE.split(value, ",");
             if(residues == null) continue;
 
             for(int r = 0; r < residues.length; r++){
-                if("aminoacid".equals(names[i])){
+                if("aminoacid".equals(name)){
                     aminoacidNames.add(residues[r]);
-                }else if("dna".equals(names[i])){
+                }else if("dna".equals(name)){
                     dnaNames.add(residues[r]);
-                }else if("solvent".equals(names[i])){
+                }else if("solvent".equals(name)){
                     solventNames.add(residues[r]);
-                }else if("ions".equals(names[i])){
+                }else if("ions".equals(name)){
                     ionNames.add(residues[r]);
                 }
             }
@@ -100,69 +100,46 @@ public class Selection {
     /** Not equal attribute. */
     public static final int NE = 5;
 
-    private static Atom atomArray[] = null;
-
-    /** Return a DynamicArray from a selection mask. */
-    public static synchronized DynamicArray maskToArray(MoleculeRenderer r,
+    /** Return a List from a selection mask. */
+    public static synchronized List<Atom> maskToList(MoleculeRenderer r,
 							byte mask[]){
 	int atomCount = r.getAtomCount();
 
-	// figure out how many atoms are needed in the DynamicArray
-	// so they can all be allocated in one go.
-	if(atomArray == null || atomArray.length < atomCount){
-	    atomArray = new Atom[atomCount];
-	}
-
 	AtomIterator iterator = r.getAtomIterator();
 	int count = 0;
-	int atomArrayCount = 0;
+
+	ArrayList<Atom> selected = new ArrayList<Atom>(atomCount);
 
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
 	    if(mask[count++] > 0){
-		atomArray[atomArrayCount++] = atom;
+		selected.add(atom);
 	    }
 	}
 
-	if(count != atomCount){
-	    System.out.println("Selection.maskToArray() count != atomCount");
-	}
+	assert(count == atomCount);
 
-	DynamicArray selected = null;
-
-	if(selected == null){
-	    selected = new DynamicArray(atomArrayCount*2);
-	}
-
-	if(selected.size() != 0){
-	    System.out.println("Selection.maskToArray() initial size != 0");
-	}
-
-	for(int i = 0; i < atomArrayCount; i++){
-	    selected.add(atomArray[i]);
-	}
+	selected.trimToSize();
 
 	return selected;
     }
 
-    /** Return a mask from a DynamicArray. */
-    public static byte[] arrayToMask(MoleculeRenderer r,
-				     DynamicArray selectedAtoms){
+    /** Return a mask from a List. */
+    public static byte[] listToMask(MoleculeRenderer r,
+				     List<Atom> selectedAtoms){
 	int count = 0;
 	AtomIterator iterator = r.getAtomIterator();
 	byte mask[] = generateSelectionMask(r);
-	int selectedAtomCount = selectedAtoms.size();
 
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
             atom.setTemporarilySelected(false);
         }
 
-	for(int i = 0 ; i < selectedAtomCount; i++){
-	    Atom a = (Atom)selectedAtoms.get(i);
+	for(Atom a : selectedAtoms){
 	    a.setTemporarilySelected(true);
 	}
-	
+
 	iterator = r.getAtomIterator();
 
 	while(iterator.hasMoreElements()){
@@ -175,12 +152,11 @@ public class Selection {
 
 	    count++;
 	}
-	
-	for(int i = 0 ; i < selectedAtomCount; i++){
-	    Atom a = (Atom)selectedAtoms.get(i);
+
+	for(Atom a : selectedAtoms){
 	    a.setTemporarilySelected(false);
 	}
-	
+
 	return mask;
     }
 
@@ -237,7 +213,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] residue(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] residue(MoleculeRenderer r, List<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -340,7 +316,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] composite(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] composite(MoleculeRenderer r, List<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -383,7 +359,7 @@ public class Selection {
 	    byte chainMask[] = null;
 	    byte residueMask[] = null;
 	    byte insertionMask[] = null;
-	    ArrayList<Object> v = new ArrayList<Object>(1);
+	    List<Object> v = new ArrayList<Object>(1);
 
 	    if(chainBuffer.length() > 0){
 		v.clear();
@@ -425,7 +401,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] sequential(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] sequential(MoleculeRenderer r, List<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -526,7 +502,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of molecule name. */
-    public static byte[] molecule(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] molecule(MoleculeRenderer r, List<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -567,7 +543,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of molecule name. */
-    public static byte[] moleculeExact(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] moleculeExact(MoleculeRenderer r, List<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -698,7 +674,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of residue names. */
-    public static byte[] name(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] name(MoleculeRenderer r, List<String> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -718,7 +694,7 @@ public class Selection {
 		    int matched = 0;
 		    // it could match
 		    for(int i = 0; i < idCount; i++){
-			if(match.matches((String)ids.get(i), name)){
+			if(match.matches(ids.get(i), name)){
 			    matched = 1;
 			    break;
 			}
@@ -742,7 +718,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of residue names. */
-    public static byte[] chain(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] chain(MoleculeRenderer r, List<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -773,7 +749,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of atom ids. */
-    public static byte[] atom(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] atom(MoleculeRenderer r, List<Object> ids){
 	int idCount = ids.size();
 
 	byte[] mask = generateSelectionMask(r);
@@ -832,7 +808,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of ids. */
-    public static byte[] id(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] id(MoleculeRenderer r, List<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -873,7 +849,7 @@ public class Selection {
     }
 
     /** Select a set of atoms on the basis of elements. */
-    public static byte[] element(MoleculeRenderer r, ArrayList<Object> ids){
+    public static byte[] element(MoleculeRenderer r, List<Object> ids){
 	int minId = 1000000;
 	int maxId = -1000000;
 	int idCount = ids.size();
@@ -1086,8 +1062,7 @@ public class Selection {
 
     /** Return a set of atoms withinin a sphere. */
     public static byte[] sphere(MoleculeRenderer r, double rad, byte sphereMask[]){
-	DynamicArray sphereSelection = maskToArray(r, sphereMask);
-	int sphereSelectionCount = sphereSelection.size();
+	List<Atom> sphereSelection = maskToList(r, sphereMask);
 	byte[] mask = generateSelectionMask(r);
 	AtomIterator iterator = r.getAtomIterator();
 	int count = 0;
@@ -1096,8 +1071,7 @@ public class Selection {
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
 	    int inside = 0;
-	    for(int i = 0; i < sphereSelectionCount; i++){
-		Atom sphereAtom = (Atom)sphereSelection.get(i);
+	    for(Atom sphereAtom: sphereSelection){
 		if(atom.distanceSq(sphereAtom) < radSq){
 		    inside = 1;
 		    break;
@@ -1118,8 +1092,7 @@ public class Selection {
 
     /** Return a set of atoms withinin a tolerance of sum of vdw radii. */
     public static byte[] contact(MoleculeRenderer r, double rad, byte sphereMask[]){
-	DynamicArray sphereSelection = maskToArray(r, sphereMask);
-	int sphereSelectionCount = sphereSelection.size();
+	List<Atom> sphereSelection = maskToList(r, sphereMask);
 	byte[] mask = generateSelectionMask(r);
 	AtomIterator iterator = r.getAtomIterator();
 	int count = 0;
@@ -1130,8 +1103,7 @@ public class Selection {
 
 	    int inside = 0;
 
-	    for(int i = 0; i < sphereSelectionCount; i++){
-		Atom sphereAtom = (Atom)sphereSelection.get(i);
+	    for(Atom sphereAtom : sphereSelection){
 		double srad = sphereAtom.getVDWRadius();
 		double radSq = arad + srad;
 		radSq *= radSq;
@@ -1156,8 +1128,7 @@ public class Selection {
 
     /** Return a set of atoms in a connected graph. */
     public static byte[] graph(MoleculeRenderer r, byte graphMask[]){
-	DynamicArray graphSelection = maskToArray(r, graphMask);
-	int graphSelectionCount = graphSelection.size();
+	List<Atom> graphSelection = maskToList(r, graphMask);
 	byte[] mask = generateSelectionMask(r);
 	int count = 0;
 
@@ -1167,8 +1138,7 @@ public class Selection {
 	    atom.setTemporarilySelected(false);
 	}
 
-	for(int i = 0; i < graphSelectionCount; i++){
-	    Atom atom = (Atom)graphSelection.get(i);
+	for(Atom atom : graphSelection){
 	    if(!atom.isTemporarilySelected()){
 		propagateGraph(atom);
 	    }
@@ -1252,43 +1222,23 @@ public class Selection {
 	return mask1;
     }
 
-    /** Evaluate a builtin expression against residue names. */
-    private static byte[] builtin(MoleculeRenderer r, DynamicArray names){
-	ArrayList<Object> ids = new ArrayList<Object>(names.size());
-	for(int i = 0; i < names.size(); i++){
-	    ids.add(names.get(i));
-	}
-
-	return name(r, ids);
-    }
-
-    /** Evaluate a builtin expression atom names. */
-    private static byte[] builtin3(MoleculeRenderer r, DynamicArray names){
-	ArrayList<Object> ids = new ArrayList<Object>(names.size());
-	for(int i = 0; i < names.size(); i++){
-	    ids.add(names.get(i));
-	}
-
-	return name(r, ids);
-    }
-
     /** Aminoacid expression. */
     public static byte[] aminoacid(MoleculeRenderer r){
-	return builtin(r, aminoacidNames);
+	return name(r, aminoacidNames);
     }
 
     /** Solvent expression. */
     public static byte[] solvent(MoleculeRenderer r){
-	return builtin(r, solventNames);
+	return name(r, solventNames);
     }
 
     /** DNA expression. */
     public static byte[] dna(MoleculeRenderer r){
-	return builtin(r, dnaNames);
+	return name(r, dnaNames);
     }
 
     /** Ions expression. */
     public static byte[] ions(MoleculeRenderer r){
-	return builtin3(r, ionNames);
+	return name(r, ionNames);
     }
 }

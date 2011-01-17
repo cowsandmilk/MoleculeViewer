@@ -25,12 +25,12 @@ public class ActiveSite {
      * Handle an active site command.
      */
     public static void handleCommand(MoleculeViewer mv, Arguments args){
-	DynamicArray superstar  = (DynamicArray)args.get("-superstar");
-	DynamicArray asp        = (DynamicArray)args.get("-asp");
-	DynamicArray spheres    = (DynamicArray)args.get("-spheres");
-	DynamicArray pass       = (DynamicArray)args.get("-pass");
+	List<Atom> superstar  = (List<Atom>)args.get("-superstar");
+	List<Atom> asp        = (List<Atom>)args.get("-asp");
+	List<Atom> spheres    = (List<Atom>)args.get("-spheres");
+	List<Atom> pass       = (List<Atom>)args.get("-pass");
 
-	exclusion  = (DynamicArray)args.get("-exclusion");
+	exclusion  = (List<Atom>)args.get("-exclusion");
 
 	setupExclusion();
 
@@ -54,18 +54,16 @@ public class ActiveSite {
 	    // create the lattice object
 	    lattice = new Lattice(4.1);
 
-	    // and put them in it
-	    int exclusionCount = exclusion.size();
-
-	    for(int i = 0; i < exclusionCount; i++){
-		Atom atom = (Atom)exclusion.get(i);
+	    for(ListIterator<Atom> it = exclusion.listIterator(); it.hasNext();){
+		int i = it.nextIndex();
+		Atom atom = it.next();
 		lattice.add(i, atom.x, atom.y, atom.z);
 	    }
 	}
     }
 
     private static Lattice lattice = null;
-    private static DynamicArray exclusion = null;
+    private static List<Atom> exclusion = null;
 
     /** Arbitrary size for radius table. */
     private static final int MaxElements   = 200;
@@ -109,7 +107,7 @@ public class ActiveSite {
      */
     private static void generateSuperstarMap(MoleculeViewer mv,
 					    Arguments args,
-					    DynamicArray superstar){
+					    List<Atom> superstar){
 	// The prefix for molecule names
 	String molNamePrefix = args.getString("-prefix", "superstar");
 	String type          = args.getString("-type", null);
@@ -131,12 +129,8 @@ public class ActiveSite {
 
 	// hash for the istr molecules
 	probeMolecules = new HashMap<String, Molecule>(200);
-	
-	// clear the visit flags on the superstar atoms.
-	int atomCount = superstar.size();
 
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)superstar.get(a);
+	for(Atom atom : superstar){
 	    atom.setTemporarilySelected(false);
 	}
 
@@ -196,18 +190,16 @@ public class ActiveSite {
     /** Set up the map. */
     private static astex.Map initialiseMap(Arguments args,
                                            astex.Map map,
-					   DynamicArray superstarAtoms){
-	int atomCount       = superstarAtoms.size();
-
-	if(atomCount == 0){
+					   List<Atom> superstarAtoms){
+	if(superstarAtoms.isEmpty()){
 	    // no atoms so do nothing.
 	    return null;
 	}
 
         // set of atoms over which field is defined
-        DynamicArray boxAtoms = (DynamicArray)args.get("-boxatoms");
+        List<Atom> boxAtoms = (List<Atom>)args.get("-boxatoms");
 
-        if(boxAtoms == null || boxAtoms.size() == 0){
+        if(boxAtoms == null || boxAtoms.isEmpty()){
             boxAtoms = superstarAtoms;
         }
 
@@ -218,11 +210,7 @@ public class ActiveSite {
 	double xmin =  1.e10, ymin =  1.e10, zmin =  1.e10;
 	double xmax = -1.e10, ymax = -1.e10, zmax = -1.e10;
 
-        int boxAtomCount = boxAtoms.size();
-
-	for(int a = 0; a < boxAtomCount; a++){
-	    Atom atom = (Atom)boxAtoms.get(a);
-
+	for(Atom atom : boxAtoms){
 	    if(atom.x > xmax) xmax = atom.x;
 	    if(atom.x < xmin) xmin = atom.x;
 	    if(atom.y > ymax) ymax = atom.y;
@@ -389,7 +377,7 @@ public class ActiveSite {
     private static void prepareScatterPlotRegion(astex.Map map,
 						 float scatterPlot[],
 						 double probeRadius,
-						 DynamicArray centralAtoms,
+						 List<Atom> centralAtoms,
 						 int gmin[], int gmax[]){
 	// grid min, max for each atom
 	int gamin[] = new int[3];
@@ -406,10 +394,8 @@ public class ActiveSite {
 	}
 
 	double rp = probeRadius;
-	int centralAtomCount = centralAtoms.size();
 
-	for(int c = 0; c < centralAtomCount; c++){
-	    Atom catom = (Atom)centralAtoms.get(c);
+	for(Atom catom: centralAtoms){
 	    double rc = vdwRadii[catom.getElement()];
 	    double r = rp + rc + rOffset;
 
@@ -432,8 +418,7 @@ public class ActiveSite {
 
 		    gridPoint(map, i, j, k, gp);
 
-		    for(int c = 0; c < centralAtomCount; c++){
-			Atom catom = (Atom)centralAtoms.get(c);
+		    for(Atom catom : centralAtoms){
 			double rc = vdwRadii[catom.getElement()];
 			double r = rc - dtol;
 			
@@ -484,8 +469,8 @@ public class ActiveSite {
     private static double contrib[]  = new double[1000];
 
     /** Trim the atoms that are in the superstar molecule. */
-    private static void mapSuperstarMolecule(DynamicArray centralAtoms,
-					     DynamicArray scatterPlotAtoms,
+    private static void mapSuperstarMolecule(List<Atom> centralAtoms,
+					     List<Atom> scatterPlotAtoms,
 					     double probeRadius,
 					     astex.Map map){
 	int ninc = 0;
@@ -498,13 +483,10 @@ public class ActiveSite {
 	prepareScatterPlotRegion(map, scatterPlot,
 				 probeRadius, centralAtoms,
 				 gmin, gmax);
-	
-	int atomCount = scatterPlotAtoms.size();
 
 	Point3d pp = new Point3d();
 
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)scatterPlotAtoms.get(a);
+	for(Atom atom : scatterPlotAtoms){
 	    double d = 1.0 / (atom.getBFactor() * volume);
 
 	    //Log.info("contribution %f", d);
@@ -567,7 +549,7 @@ public class ActiveSite {
     /** Handle a superstar group definition. */
     private static void processSuperstarGroup(MoleculeViewer mv,
 					      Arguments args,
-					      DynamicArray superstar,
+					      List<Atom> superstar,
 					      String groupName,
 					      String molPrefix,
 					      astex.Map map){
@@ -633,10 +615,8 @@ public class ActiveSite {
 	    Log.info("plotScale %5.2f", plotScale);
 	}
 
-	StringArray pdbMap = new StringArray();
-	StringArray istrMap = new StringArray();
-	DynamicArray pdbAtoms = new DynamicArray();
-	DynamicArray istrAtoms = new DynamicArray();
+	List<String> pdbMap = new ArrayList<String>(220);
+	List<String> istrMap = new ArrayList<String>(220);
 
 	// look for the mappings
 	for(int i = 0; i < 1000; i++){
@@ -656,8 +636,10 @@ public class ActiveSite {
 	    istrMap.add(namePairs[1]);
 	}
 
-	for(int i = 0; i < istrMap.size(); i++){
-	    String idLabel = istrMap.get(i);
+	List<Atom> pdbAtoms = new ArrayList<Atom>(pdbMap.size());
+	List<Atom> istrAtoms = new ArrayList<Atom>(istrMap.size());
+
+	for(String idLabel : istrMap){
 	    int id = FILE.readInteger(idLabel);
 
 	    Atom a = istrMol.getAtomWithId(id);
@@ -678,10 +660,7 @@ public class ActiveSite {
 	    atomSelection[0] = null;
 	}
 
-	int atomCount = superstar.size();
-
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)superstar.get(a);
+	for(Atom atom : superstar){
 	    Residue residue = atom.getResidue();
 
 	    if(atom.getAtomLabel().equals(atomSelection[1]) &&
@@ -703,7 +682,7 @@ public class ActiveSite {
 		    pdbAtoms.add(matchAtom);
 		    s = istrMap.get(match);
 		}
-
+		//FIXME I don't think pdbAtoms.size() can equal pdbMap.size()
 		if(pdbAtoms.size() == pdbMap.size()){
 		    fitSuperstarGroup(pdbAtoms, istrAtoms,
 				      superstarMol, istrMol, plotScale, map);
@@ -753,13 +732,13 @@ public class ActiveSite {
 
     private static IntArray neighbours  = new IntArray();
 
-    private static void fitSuperstarGroup(DynamicArray pdbAtoms,
-					  DynamicArray istrAtoms,
+    private static void fitSuperstarGroup(List<Atom> pdbAtoms,
+					  List<Atom> istrAtoms,
 					  Molecule superstarMol,
 					  Molecule istrMol,
 					  double plotScale,
 					  astex.Map map){
-	DynamicArray scatterPlotAtoms = new DynamicArray();
+	List<Atom> scatterPlotAtoms = new ArrayList<Atom>(20);
 
 	int nfit = pdbAtoms.size();
 
@@ -771,7 +750,7 @@ public class ActiveSite {
 	zp.clear();
 
 	for(int i = 0; i < nfit; i++){
-	    Atom a = (Atom)pdbAtoms.get(i);
+	    Atom a = pdbAtoms.get(i);
 	    x.add(a.x);
 	    y.add(a.y);
 	    z.add(a.z);
@@ -779,7 +758,7 @@ public class ActiveSite {
 	    // mark the pdb atom as having been in a central group
 	    a.setTemporarilySelected(true);
 
-	    a = (Atom)istrAtoms.get(i);
+	    a = istrAtoms.get(i);
 	    xp.add(a.x);
 	    yp.add(a.y);
 	    zp.add(a.z);
@@ -796,7 +775,7 @@ public class ActiveSite {
 				    zp.toArray(), nfit, rot);
 
 	if(rmsd > rmsdWarningLevel){
-	    Atom baseAtom = (Atom)pdbAtoms.get(0);
+	    Atom baseAtom = pdbAtoms.get(0);
 	    Residue res = baseAtom.getResidue();
 
 	    Log.warn("residue " + res + " rmsd=%5.2f", rmsd);
@@ -873,7 +852,7 @@ public class ActiveSite {
 		    
 			for(int n = 0; n < ncount; n++){
 			    int id             = neighbours.get(n);
-			    Atom atomNeighbour = (Atom)exclusion.get(id);
+			    Atom atomNeighbour = exclusion.get(id);
 			    int elementn       = atomNeighbour.getElement();
 			    double rn          = vdwRadii[elementn];
 			    // allow closer approach to allow for hbonding
@@ -885,7 +864,7 @@ public class ActiveSite {
 				// with the actual fit atoms
 				// of the central group itself
 				for(int j = 0; j < nfit; j++){
-				    Atom pdbAtom = (Atom)pdbAtoms.get(j);
+				    Atom pdbAtom = pdbAtoms.get(j);
 				    if(pdbAtom == atomNeighbour){
 					ignore = true;
 					break;
@@ -935,16 +914,9 @@ public class ActiveSite {
 
 	// push the atoms from the scatter plot back
 	// into the central atom cache
-	int scatterPlotCount = scatterPlotAtoms.size();
-
-	for(int i = 0; i < scatterPlotCount; i++){
-	    Atom a = (Atom)scatterPlotAtoms.get(i);
+	for(Atom a : scatterPlotAtoms){
 	    a.release();
 	}
-
-	scatterPlotAtoms = null;
-
-	scatterPlotCount++;
     }
 
     private static double xs[][] = {{0.0, 0.0, 0.0, 0.0},
@@ -964,13 +936,12 @@ public class ActiveSite {
      */
     private static void generateTangentSpheres(MoleculeViewer mv,
 					      Arguments args,
-					      DynamicArray atoms){
+					      List<Atom> atoms){
 	double max              = args.getDouble("-maxradius", 3.0);
 	double min              = args.getDouble("-minradius", 1.5);
 	double minAcceptedAngle = args.getDouble("-minangle", 1.5);
 	String molName          = args.getString("-molecule", "spheres");
 
-	int atomCount = atoms.size();
 	int quadCount = 0;
 	int sphereCount = 0;
 	Point3d p = new Point3d();
@@ -983,14 +954,16 @@ public class ActiveSite {
 
 	double maxAngle = 0.0;
 
-	for(int a0 = 0; a0 < atomCount; a0++){
-	    Atom atom0 = (Atom)atoms.get(a0);
+	for(ListIterator<Atom> it0 = atoms.listIterator(); it0.hasNext();){
+	    int a0 = it0.nextIndex();
+	    Atom atom0 = it0.next();
 	    xs[0][0] = atom0.x; xs[1][0] = atom0.y; xs[2][0] = atom0.z;
 	    rs[0] = atom0.getVDWRadius();
 	    atomQuad[0] = atom0;
 
-	    for(int a1 = a0+1; a1 < atomCount; a1++){
-		Atom atom1 = (Atom)atoms.get(a1);
+	    for(ListIterator<Atom> it1 = atoms.listIterator(a0+1); it1.hasNext();){
+		int a1 = it1.nextIndex();
+		Atom atom1 = it1.next();
 		xs[0][1] = atom1.x; xs[1][1] = atom1.y; xs[2][1] = atom1.z;
 		rs[1] = atom1.getVDWRadius();
 		atomQuad[1] = atom1;
@@ -998,8 +971,9 @@ public class ActiveSite {
 		double max01 = max + rs[0] + rs[1];
 
 		if(atom0.distanceSq(atom1) < max01*max01){
-		    for(int a2 = a1+1; a2 < atomCount; a2++){
-			Atom atom2 = (Atom)atoms.get(a2);
+		    for(ListIterator<Atom> it2 = atoms.listIterator(a1+1); it2.hasNext();){
+			int a2 = it2.nextIndex();
+			Atom atom2 = it2.next();
 			xs[0][2] = atom2.x;
 			xs[1][2] = atom2.y;
 			xs[2][2] = atom2.z;
@@ -1011,8 +985,8 @@ public class ActiveSite {
 
 			if(atom0.distanceSq(atom2) < (max02*max02) &&
 			   atom1.distanceSq(atom2) < (max12*max12)){
-			    for(int a3 = a2+1; a3 < atomCount; a3++){
-				Atom atom3 = (Atom)atoms.get(a3);
+			    for(ListIterator<Atom> it3 = atoms.listIterator(a2+1); it3.hasNext();){
+				Atom atom3 = it3.next();
 				rs[3] = atom3.getVDWRadius();
 				atomQuad[3] = atom3;
 
@@ -1043,7 +1017,7 @@ public class ActiveSite {
 					
 					for(int n = 0; n < ncount; n++){
 					    int id = neighbours.get(n);
-					    Atom aa = (Atom)exclusion.get(id);
+					    Atom aa = exclusion.get(id);
 					    // skip the atoms that define the sphere.
 					    if(aa == atom0 || aa == atom1 ||
 					       aa == atom2 || aa == atom3){
@@ -1098,7 +1072,7 @@ public class ActiveSite {
     /** Generate an Astex Statistical Potential map. */
     private static void generateAspMap(MoleculeViewer mv,
 				      Arguments args,
-				      DynamicArray aspAtoms){
+				      List<Atom> aspAtoms){
 	String aspPrefix = args.getString("-prefix", "asp");
 	String probeName = args.getString("-type", "C.3");
 	double maxd      = args.getDouble("-maxdistance", 6.0);
@@ -1139,17 +1113,17 @@ public class ActiveSite {
 
 	Lattice aspLattice = new Lattice(6.0);
 
-	for(int i = 0; i < exclusionCount; i++){
-	    Atom aspAtom = (Atom)exclusion.get(i);
+	for(ListIterator<Atom> it = exclusion.listIterator(); it.hasNext();){
+	    int i = it.nextIndex();
+	    Atom aspAtom = it.next();
 	    aspLattice.add(i, aspAtom.x, aspAtom.y, aspAtom.z);
 	}
 
 	// build the type information
-	StringArray types = new StringArray();
+	List<String> types = new ArrayList<String>(exclusionCount);
 	HashMap<String, DoubleArray> pmfs = new HashMap<String, DoubleArray>(11);
 
-	for(int i = 0; i < exclusionCount; i++){
-	    Atom atom = (Atom)exclusion.get(i);
+	for(Atom atom : exclusion){
 	    Residue res = atom.getResidue();
 	    String description = res.getName() + "." + atom.getAtomLabel();
 
@@ -1178,8 +1152,9 @@ public class ActiveSite {
 	}
 
 	// now go through each atom, and sum the field
-	for(int i = 0; i < exclusionCount; i++){
-	    Atom atom = (Atom)exclusion.get(i);
+	for(ListIterator<Atom> it = exclusion.listIterator(); it.hasNext();){
+	    int i = it.nextIndex();
+	    Atom atom = it.next();
 	    incorporatePotential(map, i, atom, types, pmfs, maxd);
 	}
 	
@@ -1223,7 +1198,7 @@ public class ActiveSite {
 
     /** Add in the potential of an atom. */
     private static void incorporatePotential(astex.Map map, int iatom,
-					    Atom atom, StringArray types,
+					    Atom atom, List<String> types,
 					    HashMap<String,DoubleArray> pmfs, double maxd){
 	String type = types.get(iatom);
 	DoubleArray pmf = pmfs.get(type);

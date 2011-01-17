@@ -17,7 +17,7 @@
 
 package astex.anasurface;
 
-import astex.*;
+import java.util.*;
 
 /**
  * A face on the molecular surface.
@@ -28,7 +28,7 @@ import astex.*;
  * Each is processed in slightly different ways.
  */
 
-public class Face extends DynamicArray {
+public class Face extends Stack<Edge> {
     /** Type of face. */
     public int type = 0;
 
@@ -69,7 +69,7 @@ public class Face extends DynamicArray {
 
     /** Constructor. */
     public Face(int t){
-	super(4);
+	super();
 	type = t;
 
 	if(type == Saddle){
@@ -78,22 +78,19 @@ public class Face extends DynamicArray {
 	}
     }
 
-    public void add(Edge e){
-	super.add(e);
-
+    public boolean add(Edge e){
 	if(this.type == Face.Concave && e.probeFace == null){
 	    e.probeFace = this;
 	}
+
+	return super.add(e);
     }
 
     /** Is this face valid? */
-    boolean isValid(){
-	int edgeCount = size();
-	Edge previous = (Edge)get(size() - 1);
+    public boolean isValid(){
+	Edge previous = get(size() - 1);
 
-	for(int i = 0; i < edgeCount; i++){
-	    Edge e = (Edge)get(i);
-
+	for(Edge e : this){
 	    if(e.v0 != previous.v1){
 		System.out.println("face error");
 
@@ -108,8 +105,7 @@ public class Face extends DynamicArray {
 
     public void print(String s){
 	System.out.println(s + " " + size() + " edges");
-	for(int i = 0; i < size(); i++){
-	    Edge e = (Edge)get(i);
+	for(Edge e : this){
 	    System.out.println("v0.vi " + e.v0.vi + " v1.vi " + e.v1.vi);
 	}
     }

@@ -17,6 +17,8 @@
 
 package astex;
 
+import java.util.List;
+
 /**
  * Class for assigning secondary structure to a protein molecule.
  */
@@ -27,13 +29,10 @@ public class SecondaryStructure {
     private static Tmesh tm = null;
 
     /** Assign secondary structure to residues in a protein molecule. */
-    public static Tmesh assign(DynamicArray molecules){
-	int moleculeCount = molecules.size();
-
+    public static Tmesh assign(List<Molecule> molecules){
 	tm = new Tmesh();
 
-	for(int m = 0; m < moleculeCount; m++){
-	    Molecule mol = (Molecule)molecules.get(m);
+	for(Molecule mol : molecules){
 	    assignMolecule(mol);
 	}
 

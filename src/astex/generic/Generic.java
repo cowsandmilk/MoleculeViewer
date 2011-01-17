@@ -23,7 +23,7 @@ public class Generic implements GenericInterface {
     
     private static final String ClassName   = "__class__";
 
-    private static final ArrayList<GenericInterface> emptyArrayList = new ArrayList<GenericInterface>(0);
+    private static final List<GenericInterface> emptyArrayList = Collections.emptyList();
 
     public Generic(String cl){
         setClassname(cl);

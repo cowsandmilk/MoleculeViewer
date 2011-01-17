@@ -39,7 +39,7 @@ package astex;
 
 import astex.generic.*; 
 import java.util.*;
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * A class for holding information about an atom.
@@ -190,7 +190,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
      * 
      * Used only when we have more than three bonds.
      */
-    private DynamicArray bonds;
+    private List<Bond> bonds;
 	
     /** Reference to first bond (or null if there are no bonds). */
     private Bond firstBond;
@@ -256,8 +256,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     private static final int MaxAtomCacheSize = 2048;
 
     /** Cache for reusing atoms. */
-    private static DynamicArray atomCache =
-	new DynamicArray(MaxAtomCacheSize);
+    private static Stack<Atom> atomCache = new Stack<Atom>();
 
     /**
      * Create an atom.
@@ -265,11 +264,8 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
      * This is the only public interface for creating new atoms.
      */
     public static synchronized Atom create(){
-	int atomCacheSize = atomCache.size();
-
-	if(atomCacheSize > 0){
-	    Atom atom = (Atom)atomCache.get(atomCacheSize - 1);
-	    atomCache.remove(atomCacheSize - 1);
+	if(!atomCache.isEmpty()){
+	    Atom atom = atomCache.pop();
 	    atom.initialise();
 	    return atom;
 	}
@@ -279,7 +275,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Release an atom after we finished with it. */
     public synchronized void release(){
 	if(atomCache.size() < MaxAtomCacheSize){
-	    atomCache.add(this);
+	    atomCache.push(this);
 	}
     }
 
@@ -668,8 +664,8 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	    // first slot full, second empty stick it here
 	    thirdBond = bond;
 	}else{
-	    // both slots are full so allocate the dynamic array
-	    bonds = new DynamicArray(4, 1);
+	    // both slots are full so allocate the list
+	    bonds = new ArrayList<Bond>(6);
 	    bonds.add(firstBond);
 	    bonds.add(secondBond);
 	    bonds.add(thirdBond);
@@ -683,7 +679,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Return a specified bond or null if it doesn't exist. */
     public Bond getBond(int index){
 	if(bonds != null) // have dynamic array so it should be in here
-	    return (Bond)bonds.get(index);
+	    return bonds.get(index);
 	if(index == 0)
 	    return firstBond;
 	if(index == 1)
@@ -1234,21 +1230,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	}
 	
 	return generateLabel(defaultLongFormat);
-    }
-
-    /** Remove an atom. */
-    public void delete(){
-	Residue res = getResidue();
-
-	res.removeAtom(this);
-
-	Molecule mol = getMolecule();
-
-	if(mol != null){
-	    mol.removeAtom(this);
-	}else{
-	    System.out.println("Atom.delete: not in molecule " + this);
-	}
     }
 
     /** Remove a bond from this atom. */

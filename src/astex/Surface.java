@@ -17,6 +17,9 @@
 
 package astex;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /* Copyright Astex Technology Ltd. 1999-2001 */
 
 /*
@@ -124,12 +127,12 @@ public class Surface {
     private static Lattice l = null;
 
     /** Create a soft object surface. */
-    public static Tmesh connolly(DynamicArray atoms,
+    public static Tmesh connolly(List<Atom> atoms,
 				 double gridSpacing, boolean solid){
 	desiredGridSpacing = gridSpacing;
 
 	atomCount = atoms.size();
-	
+
 	ax = new double[atomCount];
 	ay = new double[atomCount];
 	az = new double[atomCount];
@@ -145,8 +148,9 @@ public class Surface {
 	int selectionCount = 0;
 	maxRadius = 0.0;
 
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)atoms.get(a);
+	{
+	int a = 0;
+	for(Atom atom : atoms){
 	    ar[a] = atom.getVDWRadius() + rp;
 	    if(ar[a] > maxRadius){
 		maxRadius = ar[a];
@@ -161,6 +165,8 @@ public class Surface {
 	    }else{
 		selected[a] = 0;
 	    }
+	    a++;
+	}
 	}
 
 	FILE.out.print("maximum solvent extended radius %.2f\n", maxRadius);
@@ -821,11 +827,11 @@ public class Surface {
     }
 
     /* Generate dot spheres. */
-    private static DynamicArray dots = new DynamicArray();
-    private static DynamicArray triangles = new DynamicArray();
+    private static List<Point3d> dots = new ArrayList<Point3d>(30);
+    private static List<int[]> triangles = new ArrayList<int[]>(40);
 
     private static void addSpherePoint(Point3d p){
-	dots.add(new Point3d(p));
+	dots.add(p);
     }
     
     private static void addTriangle(int i, int j, int k){
@@ -838,16 +844,14 @@ public class Surface {
 
     private static int findSpherePoint(Point3d a, Point3d b){
 	Point3d mid = Point3d.mid(a, b);
-	double len = mid.length();
-	mid.scale(1./len);
+	mid.normalise();
 
-	int dotCount = dots.size();
-
-	for(int d = 0; d < dotCount; d++){
-	    Point3d p = (Point3d)dots.get(d);
+	int d = 0;
+	for(Point3d p : dots){
 	    if(p.distanceSq(mid) < 0.0001){
 		return d;
 	    }
+	    d++;
 	}
 
 	// not there so add it
@@ -884,10 +888,10 @@ public class Surface {
 	    int triCount = triangles.size();
 
 	    for(int t = firstTriangle; t < triCount; t++){
-		int tri[] = (int[])triangles.get(t);
-		Point3d v0 = (Point3d)dots.get(tri[0]);
-		Point3d v1 = (Point3d)dots.get(tri[1]);
-		Point3d v2 = (Point3d)dots.get(tri[2]);
+		int tri[] = triangles.get(t);
+		Point3d v0 = dots.get(tri[0]);
+		Point3d v1 = dots.get(tri[1]);
+		Point3d v2 = dots.get(tri[2]);
 
 		int mid01 = findSpherePoint(v0, v1);
 		int mid12 = findSpherePoint(v1, v2);
@@ -906,7 +910,7 @@ public class Surface {
     /** Generate a dot surface. */
 
     public static synchronized
-	Tmesh dotSurface(DynamicArray selectedAtoms,
+	Tmesh dotSurface(List<Atom> selectedAtoms,
 			 int subDivisions){
 
 	sphereGen(subDivisions);
@@ -921,24 +925,28 @@ public class Surface {
 	int atomCount = selectedAtoms.size();
 	neighbours = new int[atomCount];
 
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)selectedAtoms.get(a);
+	int a = 0;
+	for(Atom atom : selectedAtoms){
 	    double ra = atom.getVDWRadius();
 	    int atomColor = atom.getColor();
 
 	    neighbourCount = 0;
 
-	    for(int b = 0; b < atomCount; b++){
+	    {
+	    int b = 0;
+	    for(Atom atom2 : selectedAtoms){
 		// XXX can reduce the number of torii we generate here
 		// XXX only need to consider pairs of selected atoms once..
-		Atom atom2 = (Atom)selectedAtoms.get(b);
 		if(a != b){
 		    double rb = atom2.getVDWRadius();
 		    if(atom.distanceSq(atom2) < (ra + rb) * (ra + rb)){
 			neighbours[neighbourCount++] = b;
 		    }
 		}
+		b++;
 	    }
+	    }
+	    a++;
 	    
 
 
@@ -948,7 +956,7 @@ public class Surface {
 
 	    for(int i = 0; i < dotCount; i++){
 		boolean clipped = false;
-		dot.set((Point3d)dots.get(i));
+		dot.set(dots.get(i));
 		dot.scale(r);
 		dot.add(atom);
 		
@@ -963,7 +971,7 @@ public class Surface {
 		
 		if(!clipped){
 		    for(int b = 0; b < neighbourCount; b++){
-			Atom atom2 = (Atom)selectedAtoms.get(neighbours[b]);
+			Atom atom2 = selectedAtoms.get(neighbours[b]);
 			double r2 = atom2.getVDWRadius();
 			if(atom2.distanceSq(dot) < r2*r2){
 			    lastClippingAtom = atom2;

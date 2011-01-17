@@ -17,6 +17,8 @@
 
 package astex;
 
+import java.util.List;
+
 /**
  * Class for generating various sorts of texture coordinates.
  */
@@ -30,9 +32,8 @@ public class Texgen {
      * normalised by the longest distance measured.
      * This has the effect that the tex coords will max at 1.0.
      */
-    public static void distance(Tmesh tm, DynamicArray points, int uv){
+    public static void distance(Tmesh tm, List<Atom> points, int uv){
 	int tnp = tm.np;
-	int np = points.size();
 	float tlocal[] = null;
 	double dmax = 0.0;
 
@@ -52,8 +53,7 @@ public class Texgen {
 	    double tz = tm.z[i];
 	    double dmin = 1.e10;
 
-	    for(int j = 0; j < np; j++){
-		Point3d p = (Point3d)points.get(j);
+	    for(Point3d p : points){
 		double dx = tx - p.x;
 		double dy = ty - p.y;
 		double dz = tz - p.z;
@@ -85,10 +85,9 @@ public class Texgen {
     }
 
     /** Calculate pseudo curvature. */
-    public static void curvature(Tmesh tm, DynamicArray points,
+    public static void curvature(Tmesh tm, List<Atom> points,
 				 int uv, double maxd){
 	int tnp = tm.np;
-	int np = points.size();
 	float tlocal[] = null;
 	double maxd2 = maxd*maxd;
 	double min = 1.e10;
@@ -110,8 +109,7 @@ public class Texgen {
 	    double tz = tm.z[i];
 	    double dtotal = 0.0;
 
-	    for(int j = 0; j < np; j++){
-		Point3d p = (Point3d)points.get(j);
+	    for(Point3d p : points){
 		double dx = tx - p.x;
 		double dy = ty - p.y;
 		double dz = tz - p.z;
@@ -171,7 +169,7 @@ public class Texgen {
 
     /** Generate potential. */
     public static synchronized void property_map(Tmesh tm,
-						 DynamicArray atoms,
+						 List<Atom> atoms,
 						 int uv,
 						 double maxd,
 						 boolean absolute,
@@ -204,8 +202,7 @@ public class Texgen {
 	int na = 0;
 	int amideProtons = 0;
 
-	for(int i = 0; i < atomCount; i++){
-	    Atom a = (Atom)atoms.get(i);
+	for(Atom a : atoms){
 	    String name = a.getAtomLabel();
 
 	    if(func == Electrostatic && "N".equals(name)){

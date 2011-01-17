@@ -18,6 +18,7 @@
 package astex.design;
 
 import astex.*;
+import java.util.*;
 
 // for Probe class
 import astex.anasurface.*;
@@ -46,8 +47,8 @@ public class PASS {
     private static double D0          = -1.0;
 
     /** The coordinates as an array. */
-    private static DynamicArray probes = new DynamicArray();
-    private static DynamicArray newProbes = new DynamicArray();
+    private static List<Probe> probes = new ArrayList<Probe>(20);
+    private static List<Probe> newProbes = new ArrayList<Probe>(20);
 
     /**
      * Generate a PASS description of a set of atoms.
@@ -62,7 +63,7 @@ public class PASS {
      * JCAMD, 14: 383-401, 2000.
      */
     public static Molecule generatePASS(Arguments args,
-					DynamicArray atoms){
+					List<Atom> atoms){
 	setup(args);
 
 	Molecule mol = new Molecule();
@@ -82,15 +83,11 @@ public class PASS {
 
     /** Actually generate the PASS atoms. */
     private static void generatePASSMolecule(Molecule mol,
-					    DynamicArray atoms){
-	int atomCount = atoms.size();
-
+					    List<Atom> atoms){
 	// find maximum radius
 	maxRad = 0.0;
 
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)atoms.get(a);
-
+	for(Atom atom : atoms){
 	    Probe p = new Probe();
 	    p.x[0] = atom.x;
 	    p.x[1] = atom.y;
@@ -116,16 +113,17 @@ public class PASS {
 
 	l = new Lattice(spacing + 0.1);
 
-	for(int a = 0; a < atomCount; a++){
-	    Probe p = (Probe)probes.get(a);
+	for(ListIterator<Probe> ita = probes.listIterator(); ita.hasNext();){
+	    int a = ita.nextIndex();
+	    Probe p = ita.next();
 	    l.add(a, p.x[0], p.x[1], p.x[2]);
 	}
 
 	// build the neighbour lists.
-	buildNeighbourList(probes);
+	buildNeighbourList();
 
 	// build the initial probe placements.
-	constructProbePlacements(mol, probes);
+	constructProbePlacements(mol);
     }
 
     /** Working space for probe placements. */
@@ -133,16 +131,16 @@ public class PASS {
     private static double p1[] = new double[3];
 
     /** Construct probe placements from triplets of atoms. */
-    private static void constructProbePlacements(Molecule mol, DynamicArray probes){
-	int n = probes.size();
+    private static void constructProbePlacements(Molecule mol){
 	int tripletCount = 0;
 
-	for(int i = 0; i < n; i++){
-	    Probe pi = (Probe)probes.get(i);
+	for(ListIterator<Probe> iti = probes.listIterator(); iti.hasNext();){
+	    int i = iti.nextIndex();
+	    Probe pi = iti.next();
 	    for(int a = 0; a < count[i]; a++){
 		int j = nn[first[i] + a];
 		if(j > i){
-		    Probe pj = (Probe)probes.get(j);
+		    Probe pj = probes.get(j);
 		    commonCount =
 			AnaSurface.commonElements(nn, first[i], count[i],
 						  nn, first[j], count[j],
@@ -152,7 +150,7 @@ public class PASS {
 			int k = commonNeighbours[b];
 			
 			if(k > j){
-			    Probe pk = (Probe)probes.get(k);
+			    Probe pk = probes.get(k);
 			    tripletCount++;
 			    
 			    boolean retCode =
@@ -174,11 +172,9 @@ public class PASS {
 				    if(!obscured(ppp, Rprobe, i, j, k)){
 					int bc = burialCount(ppp);
 					if(bc >= BCthreshold){
-                                            int np = newProbes.size();
                                             Probe weedProbe = null;
 
-                                            for(int op = 0; op < np; op++){
-                                                Probe old = (Probe)newProbes.get(op);
+                                            for(Probe old : newProbes){
                                                 if(AnaSurface.distance2(old.x, ppp) < 1.0 &&
                                                    (weedProbe == null ||
                                                    old.bc < weedProbe.bc)) {
@@ -217,21 +213,24 @@ public class PASS {
 
 	do {
 	    secondLayer = 0;
-	    n = newProbes.size();
+	    int n = newProbes.size();
 
 	    FILE.out.print("first layer %5d\n", n);
 
 	    tripletCount = 0;
 
-	    for(int i = 0; i < n; i++){
-		Probe pi = (Probe)newProbes.get(i);
-		for(int j = i+1; j < n; j++){
-		    Probe pj = (Probe)newProbes.get(j);
+	    for(ListIterator<Probe> iti = newProbes.listIterator(); iti.hasNext();){
+		int i = iti.nextIndex();
+		Probe pi = iti.next();
+		for(ListIterator<Probe> itj = newProbes.listIterator(i+1); itj.hasNext();){
+		    int j = itj.nextIndex();
+		    Probe pj = itj.next();
 		    double dsq = AnaSurface.distance2(pi.x, pj.x);
 		    double r = pi.r + pj.r + 2.*Raccretion;
 		    if(dsq < r*r){
-			for(int k = j+1; k < n; k++){
-			    Probe pk = (Probe)newProbes.get(k);
+			for(ListIterator<Probe> itk = newProbes.listIterator(j+1); itk.hasNext();){
+			    int k = itk.nextIndex();
+			    Probe pk = itk.next();
 			    dsq = AnaSurface.distance2(pi.x, pk.x);
 			    r = pi.r + pk.r + 2.*Raccretion;
 			    if(dsq < r*r){
@@ -260,8 +259,9 @@ public class PASS {
 						int bc = burialCount(ppp);
                                                 if(bc >= BCthreshold){
                                                     boolean probeClashed = false;
-                                                    for(int l = 0; l < n; l++){
-                                                        Probe pl = (Probe)newProbes.get(l);
+                                                    for(ListIterator<Probe> itl = newProbes.listIterator(); itl.hasNext();){
+							int l = itl.nextIndex();
+                                                        Probe pl = itl.next();
                                                         dsq = AnaSurface.distance2(pl.x, ppp);
                                                         r = 2.0 * Raccretion;
                                                         if(dsq < r * r &&
@@ -272,11 +272,9 @@ public class PASS {
                                                     }
 						
                                                     if(!probeClashed){
-                                                        int np = newProbes.size();
                                                         Probe weedProbe = null;
 
-                                                        for(int op = n; op < np; op++){
-                                                            Probe old = (Probe)newProbes.get(op);
+                                                        for(Probe old : newProbes){
                                                             if(AnaSurface.distance2(old.x, ppp) < 1.0 &&
                                                                (weedProbe == null ||
                                                                 old.bc < weedProbe.bc)){
@@ -324,10 +322,12 @@ public class PASS {
 
         for(int iteration = 0; iteration < 2; iteration++){
             
-            for(int i = 0; i < probeCount; i++){
-                Probe pi = (Probe)newProbes.get(i);
-                for(int j = i + 1; j < probeCount; j++){
-                    Probe pj = (Probe)newProbes.get(j);
+            for(ListIterator<Probe> iti = newProbes.listIterator(); iti.hasNext();){
+		int i = iti.nextIndex();
+                Probe pi = iti.next();
+                for(ListIterator<Probe> itj = newProbes.listIterator(i + 1); itj.hasNext();){
+		    int j = itj.nextIndex();
+                    Probe pj = itj.next();
          
                     if(iteration == 0){
                         if(AnaSurface.distance2(pi.x, pj.x) < rcut){
@@ -347,7 +347,7 @@ public class PASS {
 
 	for(int i = 0; i < probeCount; i++){
             if(probeNeighbours2[i] >= 4){
-                Probe probe = (Probe)newProbes.get(i);
+                Probe probe = newProbes.get(i);
                 Atom atom = mol.addAtom();
                 atom.x = probe.x[0];
                 atom.y = probe.x[1];
@@ -386,7 +386,7 @@ public class PASS {
 
 	for(int a = first[i]; a < lastn; a++){
 	    int neighbour = nn[a];
-	    Probe probe = (Probe)probes.get(neighbour);
+	    Probe probe = probes.get(neighbour);
 	    double dx = p[0] - probe.x[0];
 	    double dy = p[1] - probe.x[1];
 	    double dz = p[2] - probe.x[2];
@@ -421,7 +421,7 @@ public class PASS {
 
 	for(int i = 0; i < neighbourCount; i++){
 	    int neighbour = burialNeighbours.get(i);
-	    Probe probe = (Probe)probes.get(neighbour);
+	    Probe probe = probes.get(neighbour);
 	    if(AnaSurface.distance2(p, probe.x) < Rbc2){
 		bc++;
 	    }
@@ -442,7 +442,7 @@ public class PASS {
 
 	for(int i = 0; i < neighbourCount; i++){
 	    int neighbour = burialNeighbours.get(i);
-	    Probe probe = (Probe)probes.get(neighbour);
+	    Probe probe = probes.get(neighbour);
 	    double r = probe.r + rp;
 	    if(AnaSurface.distance2(p, probe.x) < r*r){
 		return true;
@@ -466,8 +466,8 @@ public class PASS {
      *
      * A neighbour is any sphere within ri + rj + 2 * rp
      */
-    private static void buildNeighbourList(DynamicArray atoms){
-	int n = atoms.size();
+    private static void buildNeighbourList(){
+	int n = probes.size();
 
 	first = new int[n];
 	count = new int[n];
@@ -478,12 +478,14 @@ public class PASS {
 	int maxNeighbours = 0;
 
 	// replace with more sophisticated algorithm later
-	for(int i = 0; i < n; i++){
-	    Probe pi = (Probe)probes.get(i);
+	for(ListIterator<Probe> iti = probes.listIterator(); iti.hasNext();){
+	    int i = iti.nextIndex();
+	    Probe pi = iti.next();
 	    double ri = pi.r + 2.0 * Rprobe;
 	    first[i] = neighbourCount;
-	    for(int j = 0; j < n; j++){
-		Probe pj = (Probe)probes.get(j);
+	    for(ListIterator<Probe> itj = probes.listIterator(); itj.hasNext();){
+		int j = itj.nextIndex();
+		Probe pj = itj.next();
 		double dij2 = AnaSurface.distance2(pi.x, pj.x);
 		double rirj = ri + pj.r;
 		if(dij2 < rirj*rirj && i != j){

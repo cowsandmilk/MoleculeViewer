@@ -1165,14 +1165,10 @@ public class Tmesh {
     }
 
     /** Copy the specified objects into a new object. */
-    public static Tmesh copy(DynamicArray objects){
+    public static Tmesh copy(List<Tmesh> objects){
 	Tmesh newTmesh = new Tmesh();
 
-	int objectCount = objects.size();
-	
-	for(int o = 0; o < objectCount; o++){
-	    Tmesh tm = (Tmesh)objects.get(o);
-
+	for(Tmesh tm : objects){
 	    int cp = newTmesh.np;
 
 	    for(int i = 0; i < tm.np; i++){
@@ -1200,20 +1196,17 @@ public class Tmesh {
 	    newTmesh.visible  = tm.visible;
 
 	    if(tm.spheres != null){
-		DynamicArray tmp = new DynamicArray();
-		tmp.add(tm.spheres);
+		List<Tmesh> tmp = Collections.singletonList(tm.spheres);
 		newTmesh.spheres = copy(tmp);
 	    }
-	    
+
 	    if(tm.cylinders != null){
-		DynamicArray tmp = new DynamicArray();
-		tmp.add(tm.cylinders);
+		List<Tmesh> tmp = Collections.singletonList(tm.cylinders);
 		newTmesh.cylinders = copy(tmp);
 	    }
-	    
+
 	    if(tm.lines != null){
-		DynamicArray tmp = new DynamicArray();
-		tmp.add(tm.lines);
+		List<Tmesh> tmp = Collections.singletonList(tm.lines);
 		newTmesh.lines = copy(tmp);
 	    }
 	}

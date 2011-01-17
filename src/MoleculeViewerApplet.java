@@ -11,6 +11,8 @@ import java.applet.*;
 import java.awt.*;
 import java.net.*;
 import java.io.*;
+import java.util.List;
+import java.util.LinkedList;
 
 import astex.splitter.*;
 import astex.thinlet.*;
@@ -251,22 +253,18 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	    moleculeViewer.setArrayCopy(true);
 	}
 	
-	DynamicArray moleculeNames = getParameterList("molecule");
+	List<String> moleculeNames = getParameterList("molecule");
 	
-	for(int i = 0; i < moleculeNames.size(); i++){
-	    String moleculeName = (String)moleculeNames.get(i);
-
+	for(String moleculeName : moleculeNames){
 	    Molecule molecule = MoleculeIO.read(moleculeName);
 	    moleculeViewer.addMolecule(molecule);
 	}
 
         reportProgress();
 	
-	DynamicArray mapNames = getParameterList("map");
+	List<String> mapNames = getParameterList("map");
 	
-	for(int i = 0; i < mapNames.size(); i++){
-	    String mapName = (String)mapNames.get(i);
-	    
+	for(String mapName : mapNames){
 	    Map map = Map.create();
 	    //System.out.println("map name is " + mapName);
 	    map.setFile(mapName);
@@ -290,7 +288,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 		moleculeRenderer.setCenter(x, y, z);
 	    }else{
 		// its an atom selection
-		DynamicArray centerSelection =
+		List<Atom> centerSelection =
 		    moleculeRenderer.getAtomsInSelection(centerString);
 		
 		moleculeRenderer.setCenter(centerSelection);
@@ -311,17 +309,12 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	String wideBondsString = getParameter("wide");
 	
 	if(wideBondsString != null){
-	    //System.out.println("wide was set");
 	    moleculeRenderer.resetWideBonds();
 	    
-	    DynamicArray wideBondsSelection =
+	    List<Atom> wideBondsSelection =
 		moleculeRenderer.getAtomsInSelection(wideBondsString);
 	    
-	    int atomCount = wideBondsSelection.size();
-	    //System.out.println("atomCount " + atomCount);
-	    
-	    for(int a = 0; a < atomCount; a++){
-		Atom atom = (Atom)wideBondsSelection.get(a);
+	    for(Atom atom : wideBondsSelection){
 		int bondCount = atom.getBondCount();
 		for(int b = 0; b < bondCount; b++){
 		    Bond bond = atom.getBond(b);
@@ -338,7 +331,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 	    // switch on bump checking.
 	    moleculeRenderer.setDisplayBumps(true);
 	    
-	    DynamicArray bumpAtoms =
+	    List<Atom> bumpAtoms =
 		moleculeRenderer.getAtomsInSelection(bumpString);
 	    
 	    moleculeRenderer.generateBumps(bumpAtoms);
@@ -390,8 +383,8 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     }
 
     /** Return a DynamicArray of parameters that begin with the String. */
-    private DynamicArray getParameterList(String prefix){
-	DynamicArray parameters = new DynamicArray();
+    private List<String> getParameterList(String prefix){
+	List<String> parameters = new LinkedList<String>();
 
 	String value = getParameter(prefix);
 
@@ -698,53 +691,5 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     public String getColor(int x, int y){
 
 	return moleculeViewer.getColor(x, y);
-
-	/*
-	Log.info("start of color Chooser");
-
-	if(colorChooserDialog == null){
-	    if(colorChooserFrame == null){
-		colorChooserFrame = new Frame();
-	    }
-	    colorChooserDialog = new Dialog(colorChooserFrame, true);
-
-	    colorChooser = new ColorChooser(colorChooserDialog);
-	    colorChooserDialog.add(colorChooser);
-	}
-
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-	colorChooserDialog.pack();
-	Dimension chooserSize = colorChooserDialog.size();
-
-	// shuffle coords to stop dialog being off screen.
-
-	if(x + chooserSize.width > screenSize.width){
-	    x = screenSize.width - chooserSize.width;
-	}else if(x < 0){
-	    x = 0;
-	}
-
-	if(y + chooserSize.height > screenSize.height){
-	    y = screenSize.height - chooserSize.height;
-	}else if(y < 0){
-	    y = 0;
-	}
-
-	colorChooserDialog.setLocation(x, y);
-	colorChooserDialog.setVisible(true);
-
-	Log.info("show color chooser");
-
-	if(colorChooser.accept){
-	    String s = hexFormat.format(colorChooser.rgb & 0xffffff);
-	    Log.info("user hit ok: color is " + s);
-	    return s;
-	}else{
-	    Log.info("user hit cancel: color is null");
-	    return null;
-	}
-
-	*/
     }
 }

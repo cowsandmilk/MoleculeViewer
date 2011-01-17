@@ -27,6 +27,7 @@ package astex;
 import astex.generic.*;
 
 import java.awt.Color;
+import java.util.*;
 
 /**
  * A class for storing a group of atoms that form part
@@ -43,7 +44,7 @@ public class Residue extends Generic implements Selectable {
     }
 
     /** Dynamic array of atoms. */
-    private DynamicArray atoms = new DynamicArray(6);
+    private List<Atom> atoms = new ArrayList<Atom>(6);
 
     /** Undefined residue number. */
     public static final int undefinedResidueNumber = -9999;
@@ -196,7 +197,7 @@ public class Residue extends Generic implements Selectable {
      * Return the specified atom.
      */
     public Atom getAtom(int index){
-	return (Atom)atoms.get(index);
+	return atoms.get(index);
     }
 
     /** Return the atom with the given name. */
@@ -206,9 +207,7 @@ public class Residue extends Generic implements Selectable {
 
     /** Return the atom with the given name. */
     private Atom getAtom(String nm, char code){
-	int atomCount = getAtomCount();
-	for(int i = 0; i < atomCount; i++){
-	    Atom a = getAtom(i);
+	for(Atom a : atoms){
 	    // atom has the appropriate name
 	    // and insertion code ' ' or 'A'
 	    if(a.getAtomLabel().equals(nm) &&
@@ -282,38 +281,22 @@ public class Residue extends Generic implements Selectable {
 
     /** Is this residue a standard amino acid. */
     public boolean isStandardAminoAcid(){
-	return isStringInArray(name, Selection.aminoacidNames);
+	return Selection.aminoacidNames.contains(name.trim());
     }
 
     /** Is this residue an ion. */
     public boolean isIon(){
-	return isStringInArray(name, Selection.ionNames);
+	return Selection.ionNames.contains(name.trim());
     }
 
     /** Is this a solvent residue. */
     public boolean isSolvent(){
-	return isStringInArray(name, Selection.solventNames);
+	return Selection.solventNames.contains(name.trim());
     }
 
     /** Is this a solvent residue. */
     public boolean isNucleicAcid(){
-	return isStringInArray(name, Selection.dnaNames);
-    }
-
-    /** Is the passed string in the array of strings. */
-    private boolean isStringInArray(String string, DynamicArray stringArray){
-	if(name != null){
-	    String trimmedString = string.trim();
-	    int count = stringArray.size();
-			
-	    for(int i = 0; i < count; i++){
-		if(trimmedString.equals(stringArray.get(i))){
-		    return true;
-		}
-	    }
-	}
-
-	return false;
+	return Selection.dnaNames.contains(name.trim());
     }
 
     public String selectStatement(){
@@ -337,8 +320,7 @@ public class Residue extends Generic implements Selectable {
     /** Apply a selection recursively. */
     public int select(int state){
 	int selectCount = 0;
-	for(int a = 0; a < getAtomCount(); a++){
-	    Atom atom = getAtom(a);
+	for(Atom atom: atoms){
 	    selectCount += atom.select(state);
 	}
 

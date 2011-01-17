@@ -18,7 +18,8 @@
 package astex;
 
 import astex.generic.*;
-import java.awt.*;
+import java.awt.Color;
+import java.util.*;
 
 public class Distance extends Generic {
 	/** Properties for a Distance object. */
@@ -63,44 +64,40 @@ public class Distance extends Generic {
 	}
 
 	/** Atoms at one end of the distance. */
-	public DynamicArray group0 = new DynamicArray();
+	public List<Point3d> group0 = new ArrayList<Point3d>(10);
 
 	/** Atoms at the other end of the distance. */
-	public DynamicArray group1 = new DynamicArray();
+	public List<Point3d> group1 = new ArrayList<Point3d>(10);
 
 	/** Calculate the center of group 0. */
 	public Point3d getCenter0(){
-		Point3d p = new Point3d();
-		getCenter(p, group0);
-		return p;
+		return getCenter(group0);
 	}
 
 	/** Calculate the center of group 1. */
 	public Point3d getCenter1(){
-		Point3d p = new Point3d();
-		getCenter(p, group1);
-		return p;
+		return getCenter(group1);
 	}
 
 	/** Calculate the center of the group. */
-	public void getCenter(Point3d p, DynamicArray d){
-		p.zero();
-		int n = d.size();
+	public Point3d getCenter(List<Point3d> d){
+		Point3d p = new Point3d(0,0,0);
 
-		if(n == 0){
-			return;
+		if(d.isEmpty()){
+			return p;
 		}
 
-		for(int i = 0; i < n; i++){
-			Point3d a = (Point3d)d.get(i);
+		for(Point3d a : d){
 			p.x += a.x;
 			p.y += a.y;
 			p.z += a.z;
 		}
 
+		int n = d.size();
 		p.x /= (double)n;
 		p.y /= (double)n;
 		p.z /= (double)n;
+		return p;
 	}
 
 	/** Is this distance valid. */
@@ -109,17 +106,14 @@ public class Distance extends Generic {
 			return false;
 		}
 
-		int ngroup0 = group0.size();
-		int ngroup1 = group1.size();
-
 		// both ends contains some atoms
-		if(ngroup0 == 0 || ngroup1 == 0){
+		if(group0.isEmpty() || group1.isEmpty()){
 			return false;
 		}
 
 		// and all atoms are displayed
-		for(int i = 0; i < ngroup0; i++){
-			Atom a = (Atom)group0.get(i);
+		for(Point3d p : group0){
+			Atom a = (Atom) p;
 			if(!a.isDisplayed())
 				return false;
 
@@ -129,8 +123,8 @@ public class Distance extends Generic {
 			}
 		}
 
-		for(int i = 0; i < ngroup1; i++){
-			Atom a = (Atom)group1.get(i);
+		for(Point3d p : group1){
+			Atom a = (Atom) p;
 			if(!a.isDisplayed())
 				return false;
 

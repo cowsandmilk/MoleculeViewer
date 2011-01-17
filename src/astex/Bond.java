@@ -366,13 +366,4 @@ public class Bond extends Generic {
     public Point3d getUnitVector(){
 	return Point3d.unitVector(firstAtom, secondAtom);
     }
-
-    /** Delete this bond. */
-    public void delete(){
-	firstAtom.removeBond(this);
-	secondAtom.removeBond(this);
-
-	firstAtom = null;
-	secondAtom = null;
-    }
 }

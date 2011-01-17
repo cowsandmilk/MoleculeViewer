@@ -17,13 +17,15 @@
 
 package astex;
 
+import java.util.List;
+
 /**
  * Class for creating schematic diagrams.
  */
 
 public class Schematic {
     /** Create a schematic. */
-    public static Tmesh create(Arguments args, MoleculeRenderer mr, DynamicArray atoms){
+    public static Tmesh create(Arguments args, MoleculeRenderer mr, List<Atom> atoms){
 	String name = args.getString("-name", "defaultSchematic");
 	Tmesh tm = new Tmesh();
 	tm.setName(name);
@@ -33,11 +35,8 @@ public class Schematic {
 	    Atom atom = iterator.getNextAtom();
 	    atom.setTemporarilySelected(false);
 	}
-
-	int atomCount = atoms.size();
 	
-	for(int a = 0; a < atomCount; a++){
-	    Atom atom = (Atom)atoms.get(a);
+	for(Atom atom : atoms){
 	    atom.setTemporarilySelected(true);
 	}
 

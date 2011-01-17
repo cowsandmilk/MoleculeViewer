@@ -84,7 +84,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private boolean animationThreadActive = false;
 
     /** The animation stages. */
-    private ArrayList<AnimationObject> stages = new ArrayList<AnimationObject>();
+    private java.util.List<AnimationObject> stages = new ArrayList<AnimationObject>();
 
     /** Is this MoleculeViewer running in an application. */
     private boolean application = false;
@@ -165,7 +165,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    double cb      = -r;
 
 	    if(args.defined("-selection")){
-		DynamicArray selection = (DynamicArray)args.get("-selection");
+		java.util.List<Atom> selection = (java.util.List<Atom>)args.get("-selection");
 		center                 = moleculeRenderer.getCenter(selection);
 		r                      = moleculeRenderer.getRadius(selection);
 	    }else if(args.defined("-center")){
@@ -725,12 +725,12 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
             }else if(args[i].endsWith(".tmesh")){
                 Tmesh tm = Tmesh.read(args[i]);
                 tm.setName(args[i]);
-                moleculeRenderer.renderer.addGraphicalObject(tm);
+                moleculeRenderer.renderer.addTmesh(tm);
             }else if("-c".equals(args[i])){
                 if(i + 1 < args.length){
                     i++;
                     String centerString = args[i];
-                    DynamicArray centerSelection =
+                    java.util.List<Atom> centerSelection =
                         moleculeRenderer.getAtomsInSelection(centerString);
 		    
                     moleculeRenderer.setCenter(centerSelection);
@@ -1008,8 +1008,6 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    lastMouseEvent = e;
 	}
 
-        viewChangeOnly = true;
-
 	dirtyRepaint();
     }
 
@@ -1153,7 +1151,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(c == 'd'){
 	    moleculeRenderer.addDistanceBetweenSelectedAtoms();
 	}else if(c == 'c'){
-	    DynamicArray selectedAtoms =
+	    java.util.List<Atom> selectedAtoms =
 		moleculeRenderer.getSelectedOrLabelledAtoms();
 
 	    moleculeRenderer.setCenter(selectedAtoms);
@@ -1297,7 +1295,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Create the menu bar that we will use. */
     public MenuBar createMenuBar(){
-	DynamicArray menus = new DynamicArray();
+	java.util.List<Menu> menus = new ArrayList<Menu>(8);
 
 	menus.add(createFileMenu());
 
@@ -1315,8 +1313,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	MenuBar menuBar = new MenuBar();
 
-	for(int i = 0; i < menus.size(); i++){
-	    Menu menu = (Menu)menus.get(i);
+	for(Menu menu : menus){
 	    if(popup != null){
 		popup.add(menu);
 	    }else{
@@ -1630,18 +1627,18 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 #endif
 
 	}else if(command.equals(CenterViewString)){
-	    DynamicArray selectedAtoms =
+	    java.util.List<Atom> selectedAtoms =
 		moleculeRenderer.getSelectedOrLabelledAtoms();
 
 	    moleculeRenderer.setCenter(selectedAtoms);
 
 	}else if(command.equals(ClipMapsToSelectionString)){
-	    DynamicArray selectedAtoms =
+	    java.util.List<Atom> selectedAtoms =
 		moleculeRenderer.getSelectedAtoms();
 
 	    moleculeRenderer.clipMaps(null, selectedAtoms, true);
 	}else if(command.equals(WideBondsForSelectionString)){
-	    DynamicArray selectedAtoms =
+	    java.util.List<Atom> selectedAtoms =
 		moleculeRenderer.getSelectedAtoms();
 
 	    moleculeRenderer.setWideBonds(selectedAtoms);
@@ -1874,13 +1871,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(command.equals(SetBackgroundColorCommand)){
 	    moleculeRenderer.execute("background "+ words[1] +";");
 	}else if(command.equals(SelectCommand)){
-	    DynamicArray selection =
+	    java.util.List<Atom> selection =
 		moleculeRenderer.getAtomsInSelection(words[1]);
 
 	    moleculeRenderer.setSelected(selection, excludeFromSelection);
 
 	}else if(command.equals(SelectLigandCommand)){
-	    DynamicArray selection = moleculeRenderer.getAtomsInLigands();
+	    java.util.List<Atom> selection = moleculeRenderer.getAtomsInLigands();
 
 	    moleculeRenderer.setSelected(selection, excludeFromSelection);
 	}else if(commandString.equals(SaveViewString)){
@@ -2072,34 +2069,12 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}
     }
 
-    private boolean viewChangeOnly = false;
-
     /** Mark the renderer dirty and ask for repaint(). */
     // this used to be synchronized... this causes deadlocks though
     // I'm sure there was a reason for it but can't recall it now
     public void dirtyRepaint(){
 	moleculeRenderer.dirty = true;
 	repaint();
-
-        if(!viewChangeOnly && repaintListeners != null){
-            notifyRepaintListeners();
-        }
-
-        viewChangeOnly = false;
-    }
-
-    private DynamicArray repaintListeners = null;
-
-    private void notifyRepaintListeners(){
-        if(repaintListeners != null){
-            int repaintListenerCount = repaintListeners.size();
-            
-            for(int r = 0; r < repaintListenerCount; r++){
-                Component c = (Component)repaintListeners.get(r);
-                
-                c.repaint();
-            }
-        }
     }
 
     /** Convenience method for loading a file. */

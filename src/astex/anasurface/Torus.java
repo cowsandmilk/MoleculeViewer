@@ -17,7 +17,7 @@
 
 package astex.anasurface;
 
-import astex.*;
+import java.util.*;
 
 public class Torus {
     /** Index of first atom. */
@@ -60,7 +60,7 @@ public class Torus {
     }
 
     /** List of faces for this torus. */
-    public DynamicArray edges = new DynamicArray(10);
+    public List<Edge> edges = new ArrayList<Edge>(10);
 
     /** Does the torus self intersect. */
     public boolean selfIntersects = false;

@@ -17,6 +17,7 @@
 
 package astex;
 import astex.generic.*;
+import java.util.*;
 
 /* Copyright Astex Technology Ltd. 1999 */
 
@@ -30,10 +31,10 @@ import astex.generic.*;
  */
 public class Ring extends Generic {
     /** The atoms in the ring. */
-    private DynamicArray atoms = new DynamicArray(6, 1);
+    private List<Atom> atoms = new ArrayList<Atom>(6);
 
     /** The bonds in the ring. */
-    private DynamicArray bonds = new DynamicArray(6, 1);
+    private List<Bond> bonds = new ArrayList<Bond>(6);
 
     /**
      * Private default constructor.
@@ -56,17 +57,10 @@ public class Ring extends Generic {
     }
 
     /**
-     * Get an atom.
-     */
-    private Atom getAtom(int index){
-	return (Atom)atoms.get(index);
-    }
-
-    /**
      * Get a bond.
      */
     private Bond getBond(int index){
-	return (Bond)bonds.get(index);
+	return bonds.get(index);
     }
 
     /** Return the atom count. */
@@ -83,9 +77,7 @@ public class Ring extends Generic {
      * Does this ring contain the specified atom?
      */
     private boolean contains(Atom queryAtom){
-	int atomCount = getAtomCount();
-	for(int i = 0; i < atomCount; i++){
-	    Atom atom = getAtom(i);
+	for(Atom atom: atoms){
 	    if(atom == queryAtom){
 		return true;
 	    }
@@ -98,9 +90,7 @@ public class Ring extends Generic {
      * Does this ring contain the specified bond?
      */
     public boolean contains(Bond queryBond){
-	int bondCount = getBondCount();
-	for(int i = 0; i < bondCount; i++){
-	    Bond bond = getBond(i);
+	for(Bond bond: bonds){
 	    if(bond == queryBond){
 		return true;
 	    }
@@ -121,8 +111,7 @@ public class Ring extends Generic {
 	int bondCount = getBondCount();
 	boolean allAromatic = true;
 
-	for(int i = 0; i < bondCount; i++){
-	    Bond bond = getBond(i);
+	for(Bond bond: bonds){
 	    if(bond.getBondOrder() != Bond.AromaticBond){
 		allAromatic = false;
 		break;
@@ -139,9 +128,7 @@ public class Ring extends Generic {
 
 	int heteroAtomCount = 0;
 
-	for(int i = 0; i < atomCount; i++){
-	    Atom atom = getAtom(i);
-
+	for(Atom atom: atoms){
 	    if(atom.getElement() != PeriodicTable.CARBON){
 		heteroAtomCount++;
 	    }
@@ -175,8 +162,7 @@ public class Ring extends Generic {
 	    }
 	}else if(atomCount == 5){
 	    int doubleBondCount = 0;
-	    for(int i = 0; i < bondCount; i++){
-		Bond bond = getBond(i);
+	    for(Bond bond: bonds){
 		if(bond.getBondOrder() == Bond.DoubleBond){
 		    doubleBondCount++;
 		}
@@ -196,14 +182,12 @@ public class Ring extends Generic {
 
 	int atomCount = getAtomCount();
 
-	if(atomCount > 0){
-	    for(int i = 0; i < atomCount; i++){
-		Atom atom = getAtom(i);
-		center.add(atom);
-	    }
-
-	    center.scale(1./(double)atomCount);
+	assert(atomCount > 0);
+	for(Atom atom: atoms){
+	    center.add(atom);
 	}
+
+	center.divide(atomCount);
 
 	return center;
     }

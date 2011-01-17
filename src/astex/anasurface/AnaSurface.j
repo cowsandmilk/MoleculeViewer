@@ -6,6 +6,7 @@ package astex.anasurface;
  */
 
 import astex.*;
+import java.util.*;
 
 public class AnaSurface {
     /* Input coordinates and radii. */
@@ -14,10 +15,8 @@ public class AnaSurface {
     private double radius2[] = null;
     private double rsq[] = null;
     private int colors[] = null;
-    private DynamicArray edgeList[] = null;
-    private DynamicArray probeList[] = null;
-    private DynamicArray vertexList[] = null;
-    private DynamicArray torusList[] = null;
+    private List<Edge> edgeList[];
+    private List<Torus> torusList[];
     private int nxyz = 0;
 
     /** Is debugging on? */
@@ -39,19 +38,13 @@ public class AnaSurface {
     private String probesFilename = null;
 
     /** Probe placements. */
-    private DynamicArray probes = new DynamicArray(1024);
-
-    /** The vertices on the molecular surface. */
-    private DynamicArray vertices = new DynamicArray(1024);
-
-    /** The edges of the molecular surface. */
-    private DynamicArray edges = new DynamicArray(1024);
+    private List<Probe> probes = new ArrayList<Probe>(1024);
 
     /** The faces of the molecular surface. */
-    private DynamicArray faces = new DynamicArray(1024);
+    private List<Face> faces = new ArrayList<Face>(1024);
 
     /** The torii of the molecular surface. */
-    private DynamicArray torii = new DynamicArray(1024);
+    private List<Torus> torii = new ArrayList<Torus>(1024);
 
     /** The number of torii with a single face. */
     private int singleFace = 0;
@@ -132,22 +125,7 @@ public class AnaSurface {
 
 	triangulateAtoms();
 
-	int surfaceAtoms = 0;
-	int maximumVertices = 0;
-	for(int i = 0; i < nxyz; i++){
-	    if(edgeList[i] != null){
-		surfaceAtoms++;
-		if(edgeList[i].size() > maximumVertices){
-		    maximumVertices = edgeList[i].size();
-		}
-	    }
-	}
-
-	print("surfaced atoms", surfaceAtoms);
-	print("maximum vertices ", maximumVertices);
 	print("total probe placements", probes.size());
-	print("total vertices", vertices.size());
-	print("total edges", edges.size());
 	print("total faces", faces.size());
 	print("single face torii", singleFace);
 	print("maximum torus edges", maximumTorusEdges);
@@ -159,7 +137,7 @@ public class AnaSurface {
 	      (int)(Runtime.getRuntime().totalMemory()/1000.));
 
 	if(probesFilename != null){
-	    outputProbes(probes, probesFilename);
+	    outputProbes();
 	}
 
 	print("points in tmesh", tmesh.np);
@@ -180,13 +158,12 @@ public class AnaSurface {
     }
 
     private void deCuspSurface(Tmesh tmesh){
-	int probeCount = probes.size();
-
 	// build probe lattice
 	Lattice l = new Lattice(probeRadius * 2.0);
 
-	for(int p = 0; p < probeCount; p++){
-	    Probe probe = (Probe)probes.get(p);
+	for(ListIterator<Probe> it = probes.listIterator(); it.hasNext(); ){
+	    int p = it.nextIndex();
+	    Probe probe = it.next();
 
 	    l.add(p, probe.x[0], probe.x[1], probe.x[2]);
 	}
@@ -206,7 +183,7 @@ public class AnaSurface {
 
 	    for(int j = 0; j < neighbourCount; j++){
 		int p = neighbours.get(j);
-		Probe probe = (Probe)probes.get(p);
+		Probe probe = probes.get(p);
 		double d = distance(probe.x[0], probe.x[1], probe.x[2],
 				    tmesh.x[i], tmesh.y[i], tmesh.z[i]);
 		if(d < dmin){
@@ -231,16 +208,10 @@ public class AnaSurface {
 	}
 
 	// space for keeping the edge lists
-	edgeList = new DynamicArray[nxyz];
-
-	// space for keeping the probe lists
-	probeList = new DynamicArray[nxyz];
-
-	// space for keeping the vertex lists
-	vertexList = new DynamicArray[nxyz];
+	edgeList = new List[nxyz];
 
 	// space for keeping the torus lists
-	torusList = new DynamicArray[nxyz];
+	torusList = new List[nxyz];
 
 	// build target length approximation for
 	// diagonal across toroidal triangles
@@ -260,14 +231,9 @@ public class AnaSurface {
 
     /** Perform the various parts of the triangulation process. */
     private void triangulate(){
-
-	int faceCount = faces.size();
-
 	// do the torus faces first, as they define edge
 	// points for all other faces.
-	for(int i = faceCount - 1; i >= 0; i--){
-	    Face f = (Face)faces.get(i);
-
+	for(Face f : faces){
 	    int edgeCount = f.size();
 
 	    if(edgeCount == 4 && f.type == Face.Saddle){
@@ -275,8 +241,7 @@ public class AnaSurface {
 	    }
 	}
 
-	for(int i = 0; i < faceCount; i++){
-	    Face f = (Face)faces.get(i);
+	for(Face f : faces){
 	    int edgeCount = f.size();
 
 	    if(!(edgeCount == 4 && f.type == Face.Saddle) && !f.skip){
@@ -304,9 +269,9 @@ public class AnaSurface {
 	    System.out.println("undefined face has edges " + f.size());
 	}
 
-	Edge e0 = (Edge)f.get(0);
-	Edge e1 = (Edge)f.get(1);
-	Edge e2 = (Edge)f.get(2);
+	Edge e0 = f.get(0);
+	Edge e1 = f.get(1);
+	Edge e2 = f.get(2);
 
 	meshAddTriangle(e0.v0.vi, e1.v0.vi, e2.v0.vi);
     }
@@ -346,12 +311,9 @@ public class AnaSurface {
 	copy(xyz[ia], convexFace.cen);
 	convexFace.r = radius[ia];
 
-	int ecount = edgeList[ia].size();
-
 	sphereFace.clear();
 
-	for(int i = 0; i < ecount; i++){
-	    Edge e = (Edge)edgeList[ia].get(i);
+	for(Edge e : edgeList[ia]){
 	    if(e.v0.i == ia && e.v1.i == ia){
 		// edge is on atom
 		sphereFace.add(e);
@@ -377,11 +339,10 @@ public class AnaSurface {
 		for(int i = 0; i < sphereFace.size(); i++){
 		
 		    if(!used[i]){
-			Edge currentEdge = (Edge)sphereFace.get(i);
+			Edge currentEdge = sphereFace.get(i);
 
-			if(convexFace.size() > 0){
-			    previousEdge =
-				(Edge)convexFace.getReverse(0);
+			if(!convexFace.isEmpty()){
+			    previousEdge = convexFace.peek();
 
 			    if(previousEdge.v1.vi == currentEdge.v0.vi){
 				convexFace.add(currentEdge);
@@ -400,15 +361,15 @@ public class AnaSurface {
 		    }
 		}
 		
-		firstEdge = (Edge)convexFace.get(0);
-		lastEdge = (Edge)convexFace.getReverse(0);
+		firstEdge = convexFace.get(0);
+		lastEdge = convexFace.peek();
 	    } while(lastEdge.v1.vi != firstEdge.v0.vi && addedEdge);
 
 	    if(!addedEdge){
 		System.out.println("failed to extend contact face");
 		sphereFace.print("faulty sphere face");
 	    }else{
-		if(convexFace.size() > 0){
+		if(!convexFace.isEmpty()){
 		    processIrregularFace(convexFace, ia);
 		}
 	    }
@@ -439,7 +400,7 @@ public class AnaSurface {
 	}
 
 	for(int i = 0; i < edgeCount; i++){
-	    Edge e = (Edge)f.get(i);
+	    Edge e = f.get(i);
 	    int nv = e.size();
 
 	    if(nv == 0){
@@ -1062,8 +1023,6 @@ public class AnaSurface {
 
     /** Clip sphere according to plane list and add to tmesh. */
     private void clipSphere(Face f, int ia){
-	int edgeCount = f.size();
-
 	// reset the clip and hull markers
 	for(int isp = 0; isp < nsp; isp++){
 	    clipped[isp] = -1;
@@ -1072,9 +1031,7 @@ public class AnaSurface {
 	clipTolerance = -0.15 * currentLongestEdge;
 
 	if(ia == -1){
-	    for(int a = 0; a < edgeCount; a++){
-		Edge e = (Edge)f.get(a);
-		
+	    for(Edge e : f){
 		for(int isp = 0; isp < nsp; isp++){
 		    if(clipped[isp] == -1){
 			// plane equation
@@ -1147,9 +1104,9 @@ public class AnaSurface {
     }
 
     private int colorPoint(Face f, double p[]){
-	Vertex v0 = ((Edge)f.get(0)).v0;
-	Vertex v1 = ((Edge)f.get(1)).v0;
-	Vertex v2 = ((Edge)f.get(2)).v0;
+	Vertex v0 = (f.get(0)).v0;
+	Vertex v1 = (f.get(1)).v0;
+	Vertex v2 = (f.get(2)).v0;
 
 	double d0 = distance(p[0], p[1], p[2], v0.x[0], v0.x[1], v0.x[2]);
 	double d1 = distance(p[0], p[1], p[2], v1.x[0], v1.x[1], v1.x[2]);
@@ -1254,10 +1211,10 @@ public class AnaSurface {
      */
     private void triangulateToroidalFace(Face f){
 	Torus t = f.torus;
-	Edge e0 = (Edge)f.get(0);
-	Edge e1 = (Edge)f.get(1);
-	Edge e2 = (Edge)f.get(2);
-	Edge e3 = (Edge)f.get(3);
+	Edge e0 = f.get(0);
+	Edge e1 = f.get(1);
+	Edge e2 = f.get(2);
+	Edge e3 = f.get(3);
 	double a0 = f.startAngle;
 	double a1 = f.stopAngle;
 
@@ -1464,7 +1421,7 @@ public class AnaSurface {
 	}
 
 	for(int i = 0; i < edgeCount; i++){
-	    torusEdges[i] = (Edge)t.edges.get(i);
+	    torusEdges[i] = t.edges.get(i);
 	}
 
 	for(int ee = 0; ee < edgeCount; ee++){
@@ -1731,7 +1688,7 @@ public class AnaSurface {
 	int edgeCount = probeFace.size();
 
 	for(int i = 0; i < edgeCount; i++){
-	    oldEdges[i] = (Edge)probeFace.get(i);
+	    oldEdges[i] = probeFace.get(i);
 	}
 	
 	probeFace.clear();
@@ -1768,11 +1725,7 @@ public class AnaSurface {
 
     /** Process all of the torii. */
     private void processTorii(){
-	int toriiCount = torii.size();
-
-	for(int i = 0; i < toriiCount; i++){
-	    Torus t = (Torus)torii.get(i);
-
+	for(Torus t : torii){
 	    processTorus(t);
 	}
     }
@@ -1826,8 +1779,8 @@ public class AnaSurface {
 					// they intersect one another.
 					selfIntersectingProbes++;
 
-					Face f1 = (Face)faces.getReverse(0);
-					Face f2 = (Face)faces.getReverse(1);
+					Face f1 = faces.get(faces.size() -1);
+					Face f2 = faces.get(faces.size() -2);
 					
 					f1.intersection = Face.ProbeIntersection;
 					f2.intersection = Face.ProbeIntersection;
@@ -1921,14 +1874,6 @@ public class AnaSurface {
 
 	probes.add(p);
 
-	// add the probes to the atom lists.
-	if(probeList[i] == null) probeList[i] = new DynamicArray(10);
-	if(probeList[j] == null) probeList[j] = new DynamicArray(10);
-	if(probeList[k] == null) probeList[k] = new DynamicArray(10);
-	probeList[i].add(p);
-	probeList[j].add(p);
-	probeList[k].add(p);
-
 	return p;
     }
 
@@ -1948,13 +1893,6 @@ public class AnaSurface {
 
 	// record the coords here for convenience.
 	copy(vx, v.x);
-
-	if(i != -1){
-	    if(vertexList[i] == null) vertexList[i] = new DynamicArray(10);
-	    vertexList[i].add(v);
-	}
-
-	vertices.add(v);
 
 	return v;
     }
@@ -1977,10 +1915,8 @@ public class AnaSurface {
 	    negate(e.n);
 	}
 
-	edges.add(e);
-
-	if(edgeList[v0.i] == null) edgeList[v0.i] = new DynamicArray(10);
-	if(edgeList[v1.i] == null) edgeList[v1.i] = new DynamicArray(10);
+	if(edgeList[v0.i] == null) edgeList[v0.i] = new ArrayList<Edge>(10);
+	if(edgeList[v1.i] == null) edgeList[v1.i] = new ArrayList<Edge>(10);
 
 	edgeList[v0.i].add(e);
 
@@ -2150,14 +2086,14 @@ public class AnaSurface {
 
 	    // ok we got the torus
 	    // now stick it in all the data structures
-	    if(torusList[i] == null) torusList[i] = new DynamicArray(4);
-	    if(torusList[j] == null) torusList[j] = new DynamicArray(4);
+	    if(torusList[i] == null) torusList[i] = new ArrayList<Torus>(4);
+	    if(torusList[j] == null) torusList[j] = new ArrayList<Torus>(4);
 	
 	    torusList[i].add(torus);
 	    torusList[j].add(torus);
 
-	    if(edgeList[i] == null) edgeList[i] = new DynamicArray(4);
-	    if(edgeList[j] == null) edgeList[j] = new DynamicArray(4);
+	    if(edgeList[i] == null) edgeList[i] = new ArrayList<Edge>(4);
+	    if(edgeList[j] == null) edgeList[j] = new ArrayList<Edge>(4);
 	
 	    // add edges to atom edge lists.
 	    edgeList[i].add(edge);
@@ -2174,12 +2110,8 @@ public class AnaSurface {
     /** Is there a torus between i and j. */
     private Torus findTorus(int i, int j){
 	if(torusList[i] == null) return null;
-	
-	int torusCount = torusList[i].size();
 
-	for(int t = 0; t < torusCount; t++){
-	    Torus torus = (Torus)torusList[i].get(t);
-
+	for(Torus torus : torusList[i]){
 	    if((torus.i == i && torus.j == j) ||
 	       (torus.i == j && torus.j == i)){
 		return torus;
@@ -2607,16 +2539,15 @@ public class AnaSurface {
     }
 
     /** Output the probes file. */
-    private void outputProbes(DynamicArray pr, String filename){
-	FILE output = FILE.write(filename);
+    private void outputProbes(){
+	FILE output = FILE.write(probesFilename);
 
 	if(output == null){
-	    System.err.println("couldn't open " + filename);
+	    System.err.println("couldn't open " + probesFilename);
 	    return;
 	}
 
-	for(int i = 0; i < pr.size(); i++){
-	    Probe p = (Probe)pr.get(i);
+	for(Probe p : probes){
 	    output.print("%.3f", p.x[0]);
 	    output.print(" %.3f", p.x[1]);
 	    output.print(" %.3f", p.x[2]);
