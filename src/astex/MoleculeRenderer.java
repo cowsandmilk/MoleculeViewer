@@ -1294,87 +1294,70 @@ public class MoleculeRenderer {
 
     /** Add a MoleculeRendererListener. */
     public void addMoleculeRendererListener(MoleculeRendererListener l){
-	if(moleculeRendererListeners == null){
-	    moleculeRendererListeners = new DynamicArray();
-	}
 	moleculeRendererListeners.add(l);
     }
 
     /** Remove a MoleculeRendererListener. */
     public void removeMoleculeRendererListener(MoleculeRendererListener l){
-	if(moleculeRendererListeners != null){
-	    moleculeRendererListeners.remove(l);
-	    System.out.println("moleculeRendererListeners " + moleculeRendererListeners.size());
-	}
+	moleculeRendererListeners.remove(l);
+	System.out.println("moleculeRendererListeners " + moleculeRendererListeners.size());
     }
 
     /** Fire a molecule added event. */
     public void fireMoleculeAddedEvent(Molecule molecule){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
+       for(int i = 0; i < moleculeRendererListeners.size(); i++){
+	    MoleculeRendererListener l =
+		(MoleculeRendererListener)moleculeRendererListeners.get(i);
 
-		l.moleculeAdded(this, molecule);
-	    }
+	    l.moleculeAdded(this, molecule);
 	}
     }
 
     /** Fire a molecule removed event. */
     public void fireMoleculeRemovedEvent(Molecule molecule){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
-		l.moleculeRemoved(this, molecule);
-	    }
+	for(int i = 0; i < moleculeRendererListeners.size(); i++){
+	    MoleculeRendererListener l =
+		(MoleculeRendererListener)moleculeRendererListeners.get(i);
+	    l.moleculeRemoved(this, molecule);
 	}
     }
 
     /** Fire a distance added event. */
     private void fireGenericAddedEvent(Generic generic){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
+	for(int i = 0; i < moleculeRendererListeners.size(); i++){
+	    MoleculeRendererListener l =
+		(MoleculeRendererListener)moleculeRendererListeners.get(i);
 
-		l.genericAdded(this, generic);
-	    }
+	    l.genericAdded(this, generic);
 	}
     }
 
     /** Fire a generic removed event. */
     private void fireGenericRemovedEvent(Generic generic){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
-		l.genericRemoved(this, generic);
-	    }
+	for(int i = 0; i < moleculeRendererListeners.size(); i++){
+	    MoleculeRendererListener l =
+		(MoleculeRendererListener)moleculeRendererListeners.get(i);
+	    l.genericRemoved(this, generic);
 	}
     }
 
     /** Fire a map added event. */
     private void fireMapAddedEvent(Map map){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
+	for(int i = 0; i < moleculeRendererListeners.size(); i++){
+	    MoleculeRendererListener l =
+		(MoleculeRendererListener)moleculeRendererListeners.get(i);
 
-		l.mapAdded(this, map);
-	    }
+	    l.mapAdded(this, map);
 	}
     }
 
     /** Fire an atom selected event. */
     private void fireAtomSelectedEvent(Atom atom){
-	if(moleculeRendererListeners != null){
-	    for(int i = 0; i < moleculeRendererListeners.size(); i++){
-		MoleculeRendererListener l =
-		    (MoleculeRendererListener)moleculeRendererListeners.get(i);
+	for(int i = 0; i < moleculeRendererListeners.size(); i++){
+	    MoleculeRendererListener l =
+		(MoleculeRendererListener)moleculeRendererListeners.get(i);
 
-		l.atomSelected(this, atom);
-	    }
+	    l.atomSelected(this, atom);
 	}
     }
 
@@ -1382,7 +1365,7 @@ public class MoleculeRenderer {
     public void addMolecule(Molecule molecule){
 	molecules.add(molecule);
 
-	if(getMoleculeCount() == 1){
+	if(molecules.size() == 1){
 	    resetView();
 	    initialiseCenter();
 	}
