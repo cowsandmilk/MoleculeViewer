@@ -114,7 +114,7 @@ public class Symmetry {
 	file.close();
 
 	if(symmetryOperators == null){
-	    return null;
+	    return Collections.emptyList();
 	}
 	return Collections.unmodifiableList(symmetryOperators);
     }
