@@ -23,6 +23,7 @@ import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Enumeration;
 import java.util.ArrayList;
+import java.util.List;
 
 import nanoxml.*;
 
@@ -84,7 +85,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private boolean animationThreadActive = false;
 
     /** The animation stages. */
-    private java.util.List<AnimationObject> stages = new ArrayList<AnimationObject>();
+    private List<AnimationObject> stages = new ArrayList<AnimationObject>();
 
     /** Is this MoleculeViewer running in an application. */
     private boolean application = false;
@@ -165,7 +166,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    double cb      = -r;
 
 	    if(args.defined("-selection")){
-		java.util.List<Atom> selection = (java.util.List<Atom>)args.get("-selection");
+		List<Atom> selection = (List<Atom>)args.get("-selection");
 		center                 = moleculeRenderer.getCenter(selection);
 		r                      = moleculeRenderer.getRadius(selection);
 	    }else if(args.defined("-center")){
@@ -730,7 +731,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
                 if(i + 1 < args.length){
                     i++;
                     String centerString = args[i];
-                    java.util.List<Atom> centerSelection =
+                    List<Atom> centerSelection =
                         moleculeRenderer.getAtomsInSelection(centerString);
 		    
                     moleculeRenderer.setCenter(centerSelection);
@@ -1151,7 +1152,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(c == 'd'){
 	    moleculeRenderer.addDistanceBetweenSelectedAtoms();
 	}else if(c == 'c'){
-	    java.util.List<Atom> selectedAtoms =
+	    List<Atom> selectedAtoms =
 		moleculeRenderer.getSelectedOrLabelledAtoms();
 
 	    moleculeRenderer.setCenter(selectedAtoms);
@@ -1295,7 +1296,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Create the menu bar that we will use. */
     public MenuBar createMenuBar(){
-	java.util.List<Menu> menus = new ArrayList<Menu>(8);
+	List<Menu> menus = new ArrayList<Menu>(8);
 
 	menus.add(createFileMenu());
 
@@ -1627,19 +1628,17 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 #endif
 
 	}else if(command.equals(CenterViewString)){
-	    java.util.List<Atom> selectedAtoms =
+	    List<Atom> selectedAtoms =
 		moleculeRenderer.getSelectedOrLabelledAtoms();
 
 	    moleculeRenderer.setCenter(selectedAtoms);
 
 	}else if(command.equals(ClipMapsToSelectionString)){
-	    java.util.List<Atom> selectedAtoms =
-		moleculeRenderer.getSelectedAtoms();
+	    List<Atom> selectedAtoms =	moleculeRenderer.getSelectedAtoms();
 
 	    moleculeRenderer.clipMaps(null, selectedAtoms, true);
 	}else if(command.equals(WideBondsForSelectionString)){
-	    java.util.List<Atom> selectedAtoms =
-		moleculeRenderer.getSelectedAtoms();
+	    List<Atom> selectedAtoms =	moleculeRenderer.getSelectedAtoms();
 
 	    moleculeRenderer.setWideBonds(selectedAtoms);
 	}else if(command.equals(ResetViewString)){
@@ -1871,13 +1870,13 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(command.equals(SetBackgroundColorCommand)){
 	    moleculeRenderer.execute("background "+ words[1] +";");
 	}else if(command.equals(SelectCommand)){
-	    java.util.List<Atom> selection =
+	    List<Atom> selection =
 		moleculeRenderer.getAtomsInSelection(words[1]);
 
 	    moleculeRenderer.setSelected(selection, excludeFromSelection);
 
 	}else if(command.equals(SelectLigandCommand)){
-	    java.util.List<Atom> selection = moleculeRenderer.getAtomsInLigands();
+	    List<Atom> selection = moleculeRenderer.getAtomsInLigands();
 
 	    moleculeRenderer.setSelected(selection, excludeFromSelection);
 	}else if(commandString.equals(SaveViewString)){

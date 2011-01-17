@@ -3,6 +3,7 @@ package astex;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.awt.event.*;
 
 import astex.generic.*;
@@ -1370,7 +1371,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	}else if("reset".equals(command)){
 	    mr.resetView();
 	}else if(!command.startsWith("display")){
-	    java.util.List<Tmesh> selectedObjects = getSelectedObjects();
+	    List<Tmesh> selectedObjects = getSelectedObjects();
 
 	    if(selectedObjects == null){
 		handled = false;
@@ -1423,9 +1424,9 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 	moleculeViewer.dirtyRepaint();
     }
 
-    private java.util.List<Tmesh> selectedObjects = new ArrayList<Tmesh>();
+    private List<Tmesh> selectedObjects = new ArrayList<Tmesh>();
     
-    private java.util.List<Tmesh> getSelectedObjects(){
+    private List<Tmesh> getSelectedObjects(){
 	Component components[] = objectContainer.getComponents();
 	selectedObjects.clear();
 	
@@ -1498,7 +1499,7 @@ public class UserInterface implements MouseListener, JCOutlinerListener,
 
 	if(source == distanceMax){
 
-	    java.util.List<Tmesh> selectedObjects = getSelectedObjects();
+	    List<Tmesh> selectedObjects = getSelectedObjects();
 	    if(selectedObjects != null){
 		    
 		for(Tmesh tm : selectedObjects){
