@@ -368,18 +368,7 @@ public class SplitterBar extends Panel {
 	public void paint (Graphics g) {
             g.setColor(new Color(0x89899a));
 		Component c[] = getComponents();
-		if (c != null && c.length > 0)
-	    	for(int i = 0; i <c.length;i++) {
-				if (c[i] instanceof SplitterSpace) {
-					// only draw boxes where SplitterSpace components appear
-					Rectangle r = c[i].getBounds();
-					if (orientation == SplitterLayout.VERTICAL)
-						g.fill3DRect(r.x+2,r.y+r.height/2-1,r.width-5,3,true);
-					else
-						g.fill3DRect(r.x+r.width/2-1,r.y+2,3,r.y+r.height-5,true);
-					}
-				}
-		else {
+		if (c == null || c.length == 0) {
                     Rectangle r = getBounds();
 			if (orientation == SplitterLayout.VERTICAL){
                             g.drawLine(2, r.height/2 -12, 2, r.height/2 + 12);
