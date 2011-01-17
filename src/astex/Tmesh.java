@@ -242,7 +242,7 @@ public class Tmesh {
     }
 
     /** Get the object color style. */
-    private int getColorStyle(){
+    public int getColorStyle(){
 	return colorStyle;
     }
 
