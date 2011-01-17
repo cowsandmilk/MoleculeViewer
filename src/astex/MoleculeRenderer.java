@@ -2245,11 +2245,12 @@ public class MoleculeRenderer {
 	List<Atom> atoms = null;
 	int selectionStackSize = selectionStack.size();
 
-	if (i == 0) {
-	    atoms = Collections.singletonList(selectionStack.peek());
-	}else if(i < selectionStackSize){
-	    atoms = Collections.singletonList(selectionStack.get(selectionStackSize -i -1));
-
+	if(i < selectionStackSize){
+	    if (i == 0) {
+		atoms = Collections.singletonList(selectionStack.peek());
+	    } else {
+		atoms = Collections.singletonList(selectionStack.get(selectionStackSize -i -1));
+	    }
 	}else{
 	    Log.warn("can't peek selection " + i +
 		     ": stack is only " + selectionStackSize + " deep");
