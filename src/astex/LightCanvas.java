@@ -19,6 +19,7 @@ package astex;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ListIterator;
 
 class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
     private MoleculeViewer moleculeViewer;
@@ -73,10 +74,9 @@ class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
 	g.setColor(Color.lightGray);
 	g.fillOval(0, 0, width, height);
 
-	int lightCount = renderer.lights.size();
-
-	for(int l = 0; l < lightCount; l++){
-	    Light light = (Light)renderer.lights.get(l);
+	for(ListIterator<Light> it = renderer.lights.listIterator(); it.hasNext();){
+	    int l = it.nextIndex();
+	    Light light = it.next();
 
 	    int lx = l2cx(light.pos[0]);
 	    int ly = l2cy(light.pos[1]);
@@ -96,14 +96,13 @@ class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
 	activeLight = -1;
 	int dmin = 10000000;
-
-	int lightCount = renderer.lights.size();
 	
 	int mx = e.getX();
 	int my = e.getY();
 
-	for(int l = 0; l < lightCount; l++){
-	    Light light = (Light)renderer.lights.get(l);
+	for(ListIterator<Light> it = renderer.lights.listIterator(); it.hasNext();){
+	    int l = it.nextIndex();
+	    Light light = it.next();
 	    int lx = l2cx(light.pos[0]);
 	    int ly = l2cy(light.pos[1]);
 
@@ -121,7 +120,7 @@ class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
 	repaint();
 
 	if(activeLight != -1){
-	    Light light = (Light)renderer.lights.get(activeLight);
+	    Light light = renderer.lights.get(activeLight);
 	    moleculeViewer.setActiveLight(activeLight, light);
 	}
     }
