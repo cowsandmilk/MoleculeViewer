@@ -52,7 +52,7 @@ public class Selection {
         for(String name: names){
             String value = (String)Settings.get("residue", name);
             if(value == null){
-                print.f("no residue definition for " + name);
+                System.out.println("no residue definition for " + name);
                 continue;
             }
             String residues[] = FILE.split(value, ",");

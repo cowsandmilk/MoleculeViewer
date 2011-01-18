@@ -79,7 +79,7 @@ class Animate extends Thread {
 					//System.out.println("sleepDuration " + sleepDuration);
 					sleep(sleepDuration);
 				}catch(InterruptedException e){
-				    print.f("Interrupted thread=" + Thread.currentThread());
+				    System.out.println("Interrupted thread=" + Thread.currentThread());
 				}
 			}
 		}

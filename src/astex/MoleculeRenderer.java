@@ -3347,10 +3347,6 @@ public class MoleculeRenderer {
 		    double v = map.data[gp];
 
 		    int op = (int)(255 * (emax - v)/(emax - emin));
-		    //int op = (int)(255 * (v - emin)/(emax - emin));
-
-
-		    //print.f("v " + v + " emin " + emin + " emax " + emax + " op " + op);
 
 		    if(op < 256 && op >= minTransp){
 			renderer.applyTransform(x, y, z, s);

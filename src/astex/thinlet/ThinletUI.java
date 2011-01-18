@@ -135,7 +135,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
         }
 
         if(columnId == -1){
-            print.f("ERROR: table has no column called " + name);
+            System.out.println("ERROR: table has no column called " + name);
         }
 
         if(row == null){
@@ -363,7 +363,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
             return sb.toString();
         }catch(Exception e){
-            print.f("exception opening template " + e);
+            System.out.println("exception opening template " + e);
             return null;
         }
     }
@@ -409,7 +409,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
 
             repaint();
         }else{
-            print.f("couldn't find molecule tree");
+            System.out.println("couldn't find molecule tree");
         }
     }
 
@@ -725,7 +725,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
             }
 
             if(component == null){
-                print.f("WARNING: couldn't find thinlet component " + name);
+                System.out.println("WARNING: couldn't find thinlet component " + name);
             }else{
                 components.put(name, component);
             }

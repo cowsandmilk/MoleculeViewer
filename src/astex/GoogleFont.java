@@ -229,8 +229,6 @@ class GoogleFont {
         size[0] = w/2;
         size[1] = h/2;
 
-        //print.f("about to return pix component=" + component);
-
         impix = null;
         pix = null;
 

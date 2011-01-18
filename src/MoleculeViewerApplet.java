@@ -39,10 +39,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     }
 
     public void init(){
-
-        //print.f("hello from init thread="+ Thread.currentThread());
-        //super.init();
-
         // if we display the splash screen the applet gets init'ed
         // before it really is inited. This breaks every single
         // application that does an onload() initialisation from
@@ -51,11 +47,8 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         // at startup
 	if(getParameter("splashscreen") == null){
             run();
-	    //initialiseApplet();
-	    //moleculeViewer.ready = true;
 	}else{
 	    prepareThread = new Thread(this);
-            //print.f("hello from init prepare="+ prepareThread);
 	    prepareThread.start();
 	}
     }
@@ -64,11 +57,10 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         initStep++;
         repaint(0);
         getToolkit().sync();
-        //print.f("thread=" + Thread.currentThread() + " " + initStep);
         try {
             Thread.sleep(20);
         }catch(InterruptedException e){
-	    print.f("Interrupted thread=" + Thread.currentThread() + " " + initStep);
+	    System.out.println("Interrupted thread=" + Thread.currentThread() + " " + initStep);
         }
     }
 
@@ -109,7 +101,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     public void run(){
         reportProgress();
 
-        //print.f("hello from run thread="+ Thread.currentThread());
 	moleculeViewer = new MoleculeViewer();
 
 	moleculeViewer.ready = false;
@@ -148,7 +139,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
         try {
             publicInit();
         }catch(Exception e){
-            print.f("some terrible error occurred loading user extension");
+            System.out.println("some terrible error occurred loading user extension");
             e.printStackTrace();
         }
 
@@ -159,14 +150,11 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     }
 
     public void update(Graphics g){
-        //print.f("hello in update");
         paint(g);
-	//super.paintComponents(g);
     }
 
     public void paint(Graphics g){
         if(moleculeViewer != null && moleculeViewer.ready){
-            //print.f("paintComponents");
             super.paintComponents(g);
         }else{
             paintSplashScreen(g);
@@ -182,9 +170,6 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     private int splashHeight  = -1;
 
     private void paintSplashScreen(Graphics g){
-        //print.f("hello in paintSplashScreen " +initStep);
-        //print.f("g " + g);
-
         int width = getSize().width;
         int height = getSize().height;
         int midx = width/2;
@@ -205,13 +190,8 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
             }else{
                 return;
             }
-            //print.f("#######splashImage " + splashImage);
             splashWidth = splashImage.getWidth(null);
             splashHeight = splashImage.getHeight(null);
-
-            //print.f("width " + splashWidth);
-            //print.f("height " + splashHeight);
-
         }
 
         if(splashImage != null){

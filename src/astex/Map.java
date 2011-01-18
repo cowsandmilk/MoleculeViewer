@@ -226,7 +226,7 @@ public class Map extends Symmetry {
     /** Read a map from the specified file object. */
     public void readHeader(){
 
-        print.f("mapType " + mapType);
+        System.out.println("mapType " + mapType);
 
 	if(headerInitialised){
 	    return;
@@ -669,7 +669,7 @@ public class Map extends Symmetry {
      * can reread the map when we recenter.
      */
     public void setFile(String file){
-        print.f("file |"+file+"|");
+        System.out.println("file |"+file+"|");
 
 	filename = file;
 	if(file.indexOf(".grd") != -1){
@@ -684,7 +684,7 @@ public class Map extends Symmetry {
 	    mapType = ASTEX_ASCII;
 	}
 
-        print.f("mapType " + mapType);
+        System.out.println("mapType " + mapType);
     }
 
     /** Get the filename. */
