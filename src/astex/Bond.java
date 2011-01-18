@@ -352,6 +352,7 @@ public class Bond extends Generic {
     }
 
     /** String representation of the bond. */
+    @Override
     public String toString(){
 	int firstId = firstAtom.getId();
 	int secondId = secondAtom.getId();

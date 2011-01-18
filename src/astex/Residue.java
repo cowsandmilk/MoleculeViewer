@@ -328,6 +328,7 @@ public class Residue extends Generic implements Selectable {
     }
 
     /** Print out a residue. */
+    @Override
     public String toString(){
 	Chain c = getParent();
 

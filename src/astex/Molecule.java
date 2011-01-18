@@ -166,6 +166,7 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Generate a string representation. */
+    @Override
     public String toString(){
 	StringBuilder ret = new StringBuilder(getName());
 	int atomCount = getAtomCount();

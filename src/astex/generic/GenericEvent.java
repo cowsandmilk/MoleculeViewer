@@ -53,6 +53,7 @@ class GenericEvent extends Generic {
         }
     }
 
+    @Override
     public String toString(){
         StringBuilder s = new StringBuilder(Class + ": ");
  

@@ -1216,6 +1216,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Placeholder for the default format atom string. */
     private static String defaultLongFormat = null;
 
+    @Override
     public String toString(){
 	if(defaultLongFormat == null){
 	    defaultLongFormat = Settings.getString("config", "atom.long.format");
