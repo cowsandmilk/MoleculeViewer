@@ -409,14 +409,12 @@ public class Renderer {
 
     /** Get the center point. */
     public Point3d getCenter(){
-	return new Point3d(center);
+	return center.clone();
     }
 
     /** Set the center point. */
     public void setCenter(Point3d p){
-	center.x = p.x;
-	center.y = p.y;
-	center.z = p.z;
+	center = p.clone();
     }
 
     /** Reset the center and radius of the view. */

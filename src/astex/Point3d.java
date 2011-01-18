@@ -28,7 +28,7 @@ package astex;
 /**
  * A class for manipulating 3d points and vectors.
  */
-public class Point3d {
+public class Point3d implements Cloneable {
     /**
      * The object space coordinates of the this point.
      */
@@ -69,20 +69,15 @@ public class Point3d {
     }
 
     /**
-     * Construct a 3D point from the coordinates of another Point3d.
-     */
-    public Point3d(Point3d p){
-	set(p);
-    }
-
-
-    /**
      * Clone method
      */
-    public Object clone() {
-	Point3d copyPt = new Point3d( this );
-
-	return (Object)copyPt;
+    @Override
+    protected Point3d clone() {
+	try {
+	    return (Point3d) super.clone();
+	} catch(CloneNotSupportedException e) {
+	    throw new Error("This should never happen");
+	}
     }
 
 

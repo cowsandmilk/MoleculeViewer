@@ -640,7 +640,7 @@ public class Map extends Symmetry {
 
     /** Set the center point of the region we will contour. */
     public void setCenter(Point3d p){
-	center.set(p);
+	center = p.clone();
 	needsReadingFlag = true;
     }
 

@@ -1941,7 +1941,7 @@ public class MoleculeRenderer {
 	symmetryMolecule.setName("Symmetry");
 	symmetryMolecule.setMoleculeType(Molecule.SymmetryMolecule);
 
-	Point3d fractionalCenter = new Point3d(center);
+	Point3d fractionalCenter = center.clone();
 
 	Molecule molecule = getMolecule(0);
 	Point3d moleculeCenter = molecule.getCenter();
@@ -4250,13 +4250,13 @@ public class MoleculeRenderer {
 	    normal.scale(doubleBondOffset);
 	    first2second.scale(0.1);
 
-	    Point3d firstEnd = new Point3d(firstAtom);
+	    Point3d firstEnd = firstAtom.clone();
 	    firstEnd.add(normal);
 	    if(firstAtom.getBondCount() > 1){
 		firstEnd.add(first2second);
 	    }
 
-	    Point3d secondEnd = new Point3d(secondAtom);
+	    Point3d secondEnd = secondAtom.clone();
 	    secondEnd.add(normal);
 	    if(secondAtom.getBondCount() > 1){
 		secondEnd.subtract(first2second);
@@ -4273,13 +4273,13 @@ public class MoleculeRenderer {
 	    }
 
 	    if(triple){
-		firstEnd = new Point3d(firstAtom);
+		firstEnd = firstAtom.clone();
 		firstEnd.subtract(normal);
 		if(firstAtom.getBondCount() > 1){
 		    firstEnd.add(first2second);
 		}
 
-		secondEnd = new Point3d(secondAtom);
+		secondEnd = secondAtom.clone();
 		secondEnd.subtract(normal);
 		if(secondAtom.getBondCount() > 1){
 		    secondEnd.subtract(first2second);

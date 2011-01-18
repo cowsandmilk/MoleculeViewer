@@ -992,7 +992,7 @@ public class Molecule extends Generic implements Selectable {
 	    }
 	}
 
-	return new Point3d(center);
+	return center.clone();
     }
 
     /** Get the radius of the molecule. */
