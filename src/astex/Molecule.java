@@ -230,19 +230,25 @@ public class Molecule extends Generic implements Selectable {
     private int startAtom = 0;
 
     /** Return the atom with the specified id. */
+    //the idea behind the use of startAtom is that
+    //this function is often used to look up the two
+    //atoms in a bond, so... they are likely near each other
+    //hopefully the first leaves startAtom a couple before the second
     public Atom getAtomWithId(int id){
-	int atomCount = getAtomCount();
-	for(/* nothing */; startAtom < atomCount; startAtom++){
-	    Atom atom = getAtom(startAtom);
+	for(ListIterator<Atom> it = atoms.listIterator(startAtom); it.hasNext();){
+	    Atom atom = it.next();
 
 	    if(atom.getId() == id){
+		startAtom =it.previousIndex(); //set to be the atom found
 		return atom;
 	    }
 	}
 
-	// we didn't find it so reset startAtom and try from the start
-	for(Atom atom: atoms){
+	// we didn't find it so search backwards from startAtom
+	for(ListIterator<Atom> it = atoms.listIterator(startAtom); it.hasNext();){
+	    Atom atom = it.previous();
 	    if(atom.getId() == id){
+		startAtom = it.nextIndex();
 		return atom;
 	    }
 	}
