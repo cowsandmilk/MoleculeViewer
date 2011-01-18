@@ -179,7 +179,7 @@ public class Residue extends Generic implements Selectable {
     public void removeAtom(Atom atom){
 	atoms.remove(atom);
 
-	if(atoms.size() == 0){
+	if(atoms.isEmpty()){
 	    Chain chain = getParent();
 
 	    chain.removeResidue(this);
