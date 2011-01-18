@@ -408,7 +408,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	    return label;
 
         String symbol =
-	    PeriodicTable.getAtomSymbolFromElement(getElement());
+	    PeriodicTable.getAtomSymbolFromElement(element);
 
 	return symbol.toUpperCase() + getId();
     }
@@ -568,12 +568,12 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Get the atom symbol for the element. */
     public String getSymbol(){
-	return PeriodicTable.getAtomSymbolFromElement(getElement());
+	return PeriodicTable.getAtomSymbolFromElement(element);
     }
 
     /** Get the default mass for the atom. */
     public double getMass(){
-	return PeriodicTable.elements[getElement()].mass;
+	return PeriodicTable.elements[element].mass;
     }
 
     /** Get the atom charge. */
@@ -594,7 +594,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Get the atom color. */
     public int getColor(){
 	if(color == 0xff000000){
-	    switch(getElement()){
+	    switch(element){
 	    case PeriodicTable.CARBON: color = Color32.green; break;
 	    case PeriodicTable.OXYGEN: color = Color32.red; break;
 	    case PeriodicTable.NITROGEN: color = Color32.blue; break;
@@ -852,8 +852,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Get the bonding radius for the atom. */
     public double getBondingRadius(){
-	int element = getElement();
-
 	if(element == PeriodicTable.CARBON ||
 	   element == PeriodicTable.NITROGEN ||
 	   element == PeriodicTable.FLUORINE ||
@@ -876,8 +874,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Get the VDW radius of this atom. */
     public double getVDWRadius(){
 	if(radius < 0.0f){
-	    int element = getElement();
-
 	    if(element == PeriodicTable.CARBON){
 		radius = 1.88f;
 	    }else if(element == PeriodicTable.NITROGEN){
@@ -967,7 +963,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	
     /** Is this an aliphatic hydrogen. */
     public boolean isAliphaticHydrogen(){
-	if(getElement() != PeriodicTable.HYDROGEN){
+	if(element != PeriodicTable.HYDROGEN){
 	    return false;
 	}
 
