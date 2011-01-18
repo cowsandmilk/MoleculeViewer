@@ -28,12 +28,6 @@ public interface GenericInterface {
 
     /** Set an object value. */
     public Object set(Object key, Object value);
-    
-    /** Get our class description. */
-    public Object getClassname();
-
-    /** Set our classname. */
-    public void setClassname(String classname);
 
     /** Get an Enumeration of our parents. */
     public Iterator<GenericInterface> getParents(Object type);

@@ -48,10 +48,6 @@ public class Bond extends Generic {
 	secondAtom = a2;
     }
 
-    public Object getClassname(){
-        return getClass().getName();
-    }
-
     public Object set(Object key, Object property){
         String name = (String)key;
 

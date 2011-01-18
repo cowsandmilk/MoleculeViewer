@@ -1329,15 +1329,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
         return null;
     }
-    
-    /** Get our class description. */
-    public Object getClassname(){
-        return getClass().getName();
-    }
-
-    /** Set our classname. */
-    public void setClassname(String classname){
-    }
 
     /** Get an Enumeration of our parents. */
     public Iterator<GenericInterface> getParents(Object type){

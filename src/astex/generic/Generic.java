@@ -19,19 +19,8 @@ package astex.generic;
 
 import java.util.*;
 
-public class Generic implements GenericInterface {
-    
-    private static final String ClassName   = "__class__";
-
+public abstract class Generic implements GenericInterface {
     private static final List<GenericInterface> emptyArrayList = Collections.emptyList();
-
-    public Generic(String cl){
-        setClassname(cl);
-    }
-
-    public Generic(){
-        setClassname(getClass().getName());
-    }
 
     private HashMap<String,Object> properties = null;
 
@@ -68,14 +57,6 @@ public class Generic implements GenericInterface {
         }
 
         return oldValue;
-    }
-
-    public void setClassname(String c){
-        set(ClassName, c);
-    }
-
-    public Object getClassname(){
-        return get(ClassName, null);
     }
 
     ArrayList<GenericInterface> children = null;
@@ -176,32 +157,6 @@ public class Generic implements GenericInterface {
             }
         }
     }
-
-    public static void main(String args[]){
-        Generic scene = new Generic("scene");
-
-        GenericEventInterface listener = new GenericEventInterface(){
-                public boolean handleEvent(GenericEvent ge){
-                    System.out.println("scene listener " + ge);
-                    
-                    return true;
-                }
-            };
-
-
-        scene.addListener(listener);
-
-        Generic mol = new Generic("mol");
-
-        mol.addListener(listener);
-
-        mol.set("RenderStyle", "trace");
-        mol.set("Displayed", Boolean.TRUE);
-
-        scene.addChild(mol);
-    }
-
-    /* Static convenience functions. */
 
     /** Get a double. */
     public double getDouble(Object property, double def){
