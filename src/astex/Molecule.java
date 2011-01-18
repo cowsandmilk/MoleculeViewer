@@ -287,13 +287,6 @@ public class Molecule extends Generic implements Selectable {
 	}
     }
 
-    /** Return the specified ring. */
-    public Ring getRing(int index){
-	ensureRingsAssigned();
-
-	return rings.get(index);
-    }
-
     /** Return the number of rings. */
     public int getRingCount(){
 	ensureRingsAssigned();
@@ -922,7 +915,7 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Return the best ring containing this bond. */
-    public Ring getBestRingContainingBond(Bond bond){
+    Ring getBestRingContainingBond(Bond bond){
 	ensureRingsAssigned();
 
 	for(int i = 1; i >= 0; i--){

@@ -37,12 +37,6 @@ class Ring extends Generic {
     private List<Bond> bonds = new ArrayList<Bond>(6);
 
     /**
-     * Private default constructor.
-     */
-    public Ring(){
-    }
-
-    /**
      * Add an atom to the ring.
      */
     public void addAtom(Atom a){

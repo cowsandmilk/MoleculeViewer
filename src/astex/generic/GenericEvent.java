@@ -35,7 +35,7 @@ class GenericEvent extends Generic {
     public static final String Child               = "__child__";
     public static final String Parent              = "__parent__";
 
-    public GenericEvent(String type, Object target, Object a, Object b){
+    GenericEvent(String type, Object target, Object a, Object b){
         set(Type, type);
         set(Target, target);
 
