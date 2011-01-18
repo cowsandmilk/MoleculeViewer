@@ -28,7 +28,7 @@ import java.util.*;
  * Each is processed in slightly different ways.
  */
 
-public class Face extends Stack<Edge> {
+class Face extends Stack<Edge> {
     /** Type of face. */
     public int type = 0;
 

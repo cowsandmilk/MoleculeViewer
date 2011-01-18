@@ -24,7 +24,7 @@ import java.util.zip.*;
  * Write a pixel format image to a file.
  * Limited options currently (windows bitmap).
  */
-public class ImageIO {
+class ImageIO {
     private static int imageNumber = 0;
 
     public static boolean write(String name, int pixels[],

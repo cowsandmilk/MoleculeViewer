@@ -21,7 +21,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ImageButton extends Canvas implements MouseListener {
+class ImageButton extends Canvas implements MouseListener {
     private Image image;
     private boolean selected = false;
     private Dimension size;

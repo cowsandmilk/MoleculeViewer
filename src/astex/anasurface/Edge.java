@@ -19,7 +19,7 @@ package astex.anasurface;
 
 import astex.*;
 
-public class Edge extends IntArray {
+class Edge extends IntArray {
     /** Index of first sphere on edge. */
     public Vertex v0 = new Vertex();
     

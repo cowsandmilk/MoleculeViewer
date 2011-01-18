@@ -23,7 +23,7 @@ package astex;
  * A class for (hopefully) implementing marching 
  * cubes algorithm for isosurfaces.
  */
-public class March {
+class March {
 
     /** Number of edges per layer. */
     private static int nLayerEdges = 0;

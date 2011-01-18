@@ -12,7 +12,7 @@ import java.awt.*;
  * @autor: stephan@stean.ch
  * @version: 1.0
  */
-public class CustomComponent extends Component {
+class CustomComponent extends Component {
   private Object component;
   private Thinlet thinlet;
 

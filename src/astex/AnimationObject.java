@@ -17,7 +17,7 @@
 
 package astex;
 
-public class AnimationObject {
+class AnimationObject {
     /** Constant to indicate that we are rocking. */
     public static final int Rock     = 1;
 

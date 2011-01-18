@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Iterate over the residues in a scene.
  */
-public class ResidueIterator implements Enumeration<Residue> {
+class ResidueIterator implements Enumeration<Residue> {
 	/** The scene that we will enumerate the residues of. */
 	private MoleculeRenderer renderer = null;
 

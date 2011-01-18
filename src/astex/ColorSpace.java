@@ -20,7 +20,7 @@ package astex;
 import java.awt.*;
 import java.awt.image.*;
 
-public class ColorSpace extends Canvas {
+class ColorSpace extends Canvas {
     private int width = -1;
     private int height = -1;
     private int pixels[];

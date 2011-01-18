@@ -61,7 +61,7 @@ package astex;
  *  @author Timothy Gerard Endres (matchExprRecursor method)
  *  @author Oskar Liljeblad (everything else)
  */
-public class match {
+class match {
     /** This flag represents the asterisk (`*') wildcard character. */
     private static final int ASTERISK = 1 << 0;
     /** This flag represents the question mark (`?') wildcard

@@ -17,7 +17,7 @@
 
 package astex;
 
-public class Version {
+class Version {
   private static int major = 3 ;
   private static int minor = 0 ;
   private static int build = 99 ;

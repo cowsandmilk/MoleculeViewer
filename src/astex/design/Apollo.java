@@ -15,9 +15,9 @@
  * along with OpenAstexViewer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package astex;
+package astex.design;
 
-public class Apollo {
+class Apollo {
     private static final double rd[]   = new double[2];
     private static final double rv[]   = new double[3];
     private static final double xd[][] = new double[3][4];

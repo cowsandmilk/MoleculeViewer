@@ -21,7 +21,7 @@ import java.awt.*;
 import java.awt.event.*;
 import jclass.bwt.*;
 
-public class ObjectControl extends Panel implements JCItemListener, JCActionListener, JCAdjustmentListener {
+class ObjectControl extends Panel implements JCItemListener, JCActionListener, JCAdjustmentListener {
     /** The tmesh object we control. */
     private UserInterface userInterface = null;
     public Tmesh tmesh            = null;

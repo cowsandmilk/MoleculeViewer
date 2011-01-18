@@ -17,7 +17,7 @@
 
 package astex.generic;
 
-public class GenericEvent extends Generic {
+class GenericEvent extends Generic {
 
     public static final String Class               = "GenericEvent";
 

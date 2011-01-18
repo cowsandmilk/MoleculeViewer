@@ -17,7 +17,7 @@
 
 package astex;
 
-public class ShadowCache {
+class ShadowCache {
     /** Sphere cache for shadows. */
     private static FloatArray scachex = new FloatArray();
     private static FloatArray scachey = new FloatArray();

@@ -20,7 +20,7 @@ package astex;
 import java.awt.*;
 import jclass.bwt.*;
 
-public class UI {
+class UI {
     // Convenience methods for BWT.
 
     /** Create a button. */

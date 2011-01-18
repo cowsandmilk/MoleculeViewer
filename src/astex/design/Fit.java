@@ -15,12 +15,13 @@
  * along with OpenAstexViewer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package astex;
+package astex.design;
 
+import astex.*;
 /**
  * Class for least squares fitting of sets of points.
  */
-public class Fit {
+class Fit {
     /**
      * Fit the pairs of coordinates using Kearsley's quaternion based
      * algorithm. Method returns the RMSD for the fitted point, and

@@ -27,7 +27,7 @@ import java.awt.image.*;
  * 
  * Needs an AWT component to do the offscreen font rendering.
  */
-public class GoogleFont {
+class GoogleFont {
     /** We need a component for making images. */
     private static Component component = null; 
 

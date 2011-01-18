@@ -19,7 +19,7 @@ package astex.anasurface;
 
 import java.util.*;
 
-public class Torus {
+class Torus {
     /** Index of first atom. */
     public int i;
 

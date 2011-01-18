@@ -24,7 +24,7 @@ package astex;
 	used by PTable class for storing element info
 */
 
-public class AtomicElement {
+class AtomicElement {
 	/** The maximum number of valence states that any of our atoms exist in. */
 	
 	public String symbol;

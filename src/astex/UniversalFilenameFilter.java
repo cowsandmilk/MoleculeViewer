@@ -29,7 +29,7 @@ import java.io.*;
  * Implements a FilenameFilter that can take a list of
  * accepted extensions in the construtor.
  */
-public class UniversalFilenameFilter implements FilenameFilter {
+class UniversalFilenameFilter implements FilenameFilter {
 	/** The file extensions we will accept. */
 	String acceptedExtensions[] = null;
 

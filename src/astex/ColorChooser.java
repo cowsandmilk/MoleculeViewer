@@ -21,7 +21,7 @@ import java.awt.*;
 import jclass.bwt.*;
 import java.awt.event.*;
 
-public class ColorChooser extends Panel
+class ColorChooser extends Panel
     implements JCActionListener,  MouseMotionListener,  MouseListener,
 	       JCSpinBoxListener, ActionListener {
 

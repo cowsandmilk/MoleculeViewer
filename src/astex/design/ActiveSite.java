@@ -767,7 +767,7 @@ public class ActiveSite {
 
 	Matrix rot = new Matrix();
 
-	double rmsd = astex.Fit.fit(x.toArray(),
+	double rmsd = Fit.fit(x.toArray(),
 				    y.toArray(),
 				    z.toArray(),
 				    xp.toArray(),

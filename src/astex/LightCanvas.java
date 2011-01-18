@@ -20,7 +20,7 @@ package astex;
 import java.awt.*;
 import java.awt.event.*;
 
-public class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
+class LightCanvas extends Canvas implements MouseListener, MouseMotionListener {
     private MoleculeViewer moleculeViewer;
     private MoleculeRenderer moleculeRenderer;
     private Renderer renderer;

@@ -29,7 +29,7 @@ import java.util.*;
 /**
  * Class for holding information about ring systems in molecular structures.
  */
-public class Ring extends Generic {
+class Ring extends Generic {
     /** The atoms in the ring. */
     private List<Atom> atoms = new ArrayList<Atom>(6);
 

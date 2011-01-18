@@ -23,7 +23,7 @@ package astex;
  * http://www.geometrictools.com/
  * Which is available under LGPL license
  */
-public class Geometry {
+class Geometry {
 	private static double kU[] = new double[3];
 	private static double kV[] = new double[3];
 	private static double kW[] = new double[3];

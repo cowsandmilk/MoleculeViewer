@@ -24,7 +24,7 @@ import java.util.*;
 import astex.anasurface.*;
 
 
-public class PASS {
+class PASS {
     /** Radius of the probe. */
     private static double Rprobe      = -1.0;
 

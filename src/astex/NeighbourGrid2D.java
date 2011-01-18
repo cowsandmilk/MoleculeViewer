@@ -17,7 +17,7 @@
 
 package astex;
 
-public class NeighbourGrid2D {
+class NeighbourGrid2D {
     /** The maximum number of cells along an edge. */
     private static final int MaxDim = 64;
 

@@ -23,7 +23,7 @@ import java.util.*;
 
 import jclass.bwt.*;
 
-public class ObjectPropertyDialog extends Dialog
+class ObjectPropertyDialog extends Dialog
     implements
 	WindowListener, JCActionListener, JCSpinBoxListener {
     /** The only instance of an ObjectPropertyDialog. */

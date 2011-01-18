@@ -23,7 +23,7 @@ import java.awt.*;
  * Class that extends Scrollbar so that we
  * can force it to occupy a particular size.
  */
-public class ContourScrollbar extends Scrollbar {
+class ContourScrollbar extends Scrollbar {
     public ContourScrollbar(int orientation){
 	super(orientation);
     }

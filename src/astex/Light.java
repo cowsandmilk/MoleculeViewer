@@ -20,7 +20,7 @@ package astex;
 /**
  * Store the data for a light source.
  */
-public class Light {
+class Light {
     /** Position of the light. */
     public double pos[] = new double[3];
 

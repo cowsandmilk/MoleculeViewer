@@ -30,7 +30,7 @@ package astex;
 import java.awt.*;
 import java.io.Serializable;
 
-public class Layout implements Serializable {
+class Layout implements Serializable {
     public static void fill(Container container, Component component,
 			    int gx, int gy){
 	Layout.fill(container, component, gx, gy, 1, 1);

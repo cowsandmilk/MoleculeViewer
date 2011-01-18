@@ -13,7 +13,7 @@ import jclass.util.*;
 
 import nanoxml.*;
 
-public class UserInterface implements MouseListener, JCOutlinerListener,
+class UserInterface implements MouseListener, JCOutlinerListener,
 				      JCActionListener,
 				      MoleculeRendererListener,
 				      RendererEventListener,

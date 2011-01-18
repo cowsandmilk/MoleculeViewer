@@ -19,7 +19,7 @@ package astex;
 
 import java.util.*;
 
-public class Animate extends Thread {
+class Animate extends Thread {
 	/** The list of animation objects. */
 	private List<AnimationObject> stages = null;
 

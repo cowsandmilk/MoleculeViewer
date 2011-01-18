@@ -20,7 +20,7 @@ package astex;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ColorButton extends ImageButton {
+class ColorButton extends ImageButton {
     private Frame colorChooserFrame = null;
     private Dialog colorChooserDialog = null;
     private ColorChooser colorChooser = null;

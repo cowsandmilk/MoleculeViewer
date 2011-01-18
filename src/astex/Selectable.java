@@ -17,7 +17,7 @@
 
 package astex;
 
-public interface Selectable {
+interface Selectable {
     public int select(int state);
     public String selectStatement();
 }
