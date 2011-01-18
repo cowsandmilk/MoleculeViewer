@@ -406,7 +406,7 @@ public class Point3d implements Cloneable {
 	return Math.acos(dot);
     }
 
-    /** Calcluate the angle in degrees. */
+    /** Calculate the angle in degrees. */
     public static double angleDegrees(Point3d a, Point3d b, Point3d c){
 	return 180.0 * angle(a, b, c) / Math.PI;
     }
