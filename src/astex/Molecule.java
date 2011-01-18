@@ -1071,6 +1071,7 @@ public class Molecule extends Generic implements Selectable {
     public static final String DisplayHydrogens = "hydrogens";
     public static final String DisplayBondDetails = "bondDetails";
 
+    @Override
     public Object set(Object key, Object property){
         String name = (String)key;
 
@@ -1084,6 +1085,7 @@ public class Molecule extends Generic implements Selectable {
         return null;
     }
 
+    @Override
     public Object get(Object key, Object def){
         if(key.equals(Displayed)){
             return Boolean.valueOf(getDisplayed());

@@ -48,6 +48,7 @@ public class Bond extends Generic {
 	secondAtom = a2;
     }
 
+    @Override
     public Object set(Object key, Object property){
         String name = (String)key;
 
@@ -61,6 +62,7 @@ public class Bond extends Generic {
         return null;
     }
 
+    @Override
     public Object get(Object key, Object def){
         if(key.equals(BondOrder))
             return Integer.valueOf(bondOrder);
