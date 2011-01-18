@@ -3713,8 +3713,7 @@ public class MoleculeRenderer {
     private Point3d last = new Point3d();
     private Point3d arc = new Point3d();
 
-    private void drawTorsion(Generic g, String label,
-			     Point3d a0, Point3d a1,
+    private void drawTorsion(Point3d a0, Point3d a1,
 			     Point3d a2, Point3d a3){
 	Point3d.unitVector(ta01, a0, a1);
 	Point3d.unitVector(ta12, a1, a2);
@@ -3728,7 +3727,7 @@ public class MoleculeRenderer {
 	// second orthogonal vector
 	Point3d.cross(n, ta12, p01);
 
-	double radius = g.getDouble("torsionRadius", 0.3);
+	double radius = 0.3;
 
 	int lineColor = Color32.magenta;
 	double lineRadius = 0.015;
@@ -3762,7 +3761,7 @@ public class MoleculeRenderer {
 	double t = Point3d.torsion(a0, a1, a2, a3);
 
 	// arc
-	double step = g.getDouble("torsionStep", 5.0);
+	double step = 5.0;
 	step *= (Math.PI/180.0);
 
 	if(t < 0.0){
@@ -3791,19 +3790,7 @@ public class MoleculeRenderer {
 	    angle += step;
 	}
 
-
-	String format = g.getString(Residue.TorsionFormat, "%t %.1f");
-
-	format = Util.replace(format, "%t", label);
-
-	if(g.getBoolean(Residue.TorsionGreek, false)){
-	    format = Util.replace(format, "chi", "\\c");
-	    format = Util.replace(format, "phi", "\\f");
-	    format = Util.replace(format, "psi", "\\y");
-	    format = Util.replace(format, "omega", "\\w");
-	}
-
-	format = String.format(format, t * 180.0/Math.PI);
+	String format = String.format("%.1f", t * 180.0/Math.PI);
 
 	renderer.drawString(m12.x, m12.y, m12.z, 1.0, Color32.white, format);
     }
@@ -3952,8 +3939,6 @@ public class MoleculeRenderer {
     /** Format for angles. */
     private Format angleFormat = new Format("%.1f");
 
-    private final Generic dummyGeneric = new Generic("dummy");
-
     /** Draw the angle markers. */
     private void drawTorsions(){
 	int count = torsions.size();
@@ -3978,7 +3963,7 @@ public class MoleculeRenderer {
 		Atom a3 = torsions.get(i + 2);
 		Atom a4 = torsions.get(i + 3);
 
-		drawTorsion(dummyGeneric, "", a1, a2, a3, a4);
+		drawTorsion(a1, a2, a3, a4);
 	    }
 	}
     }
