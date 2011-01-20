@@ -21,6 +21,7 @@ package astex;
  * Cay S. Horstmann & Gary Cornell, Core Java
  * Published By Sun Microsystems Press/Prentice-Hall
  * Copyright (C) 1997 Sun Microsystems Inc.
+ * Copyright David Hall, Boston University, 2011 
  * All Rights Reserved.
  *
  * Permission to use, copy, modify, and distribute this 

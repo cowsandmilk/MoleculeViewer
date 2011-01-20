@@ -18,6 +18,7 @@
 package astex;
 
 /* Copyright Astex Technology Ltd. 2003 */
+/* Copyright David Hall, Boston University, 2011 */
 
 /**
  * A class for (hopefully) implementing marching 

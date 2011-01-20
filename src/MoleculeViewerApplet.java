@@ -1,4 +1,5 @@
 /* Copyright Astex Technology Ltd. 1999 */
+/* Copyright David Hall, Boston University, 2011 */
 
 /*
  * 17-11-99 mjh

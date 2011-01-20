@@ -17,6 +17,7 @@
 
 package astex;
 /* Copyright Astex Technology Ltd. 2002 */
+/* Copyright David Hall, Boston University, 2011 */
 
 /*
  */

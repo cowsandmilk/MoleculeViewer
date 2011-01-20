@@ -3,6 +3,7 @@
 package astex;
 
 /* Copyright Astex Technology Ltd. 1999 */
+/* Copyright David Hall, Boston University, 2011 */
 
 /*
  * 20-05-00 mjh

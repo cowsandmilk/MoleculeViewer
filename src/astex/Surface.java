@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* Copyright Astex Technology Ltd. 1999-2001 */
+/* Copyright David Hall, Boston University, 2011 */
 
 /*
  * 17-05-01 mjh

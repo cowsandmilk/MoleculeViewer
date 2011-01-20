@@ -20,6 +20,7 @@ import astex.generic.*;
 import java.util.*;
 
 /* Copyright Astex Technology Ltd. 1999 */
+/* Copyright David Hall, Boston University, 2011 */
 
 /*
  * 02-11-99 mjh
