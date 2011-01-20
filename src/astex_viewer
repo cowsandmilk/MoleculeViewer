@@ -1,8 +1,8 @@
 #!/bin/csh -f
 #
 # you need to edit this file to reflect the location of your
-# java installation and the location fo the AstexViewer.jar file
+# java installation and the location fo the MoleculeViewer.jar file
 
 setenv LD_ASSUME_KERNEL 2.2.5
-setenv CLASSPATH /software/jdk118/lib/classes.zip:/software/bin/AstexViewer.jar
+setenv CLASSPATH /software/jdk118/lib/classes.zip:/software/bin/MoleculeViewer.jar
 /software/jdk118/bin/java MoleculeViewer $*

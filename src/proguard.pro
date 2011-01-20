@@ -8,8 +8,8 @@
 # Specify the input jars, output jars, and library jars.
 # We'll filter out the Ant and WTK classes, keeping everything else.
 
--injars  ../jar/OpenAstexViewer.jar(!proguard/ant/**,!proguard/wtk/**)
--outjars ../jar/OpenAstexViewerObf.jar
+-injars  ../jar/MoleculeViewer.jar(!proguard/ant/**,!proguard/wtk/**)
+-outjars ../jar/MoleculeViewerObf.jar
 
 -libraryjars <java.home>/lib/rt.jar
 

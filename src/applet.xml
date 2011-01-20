@@ -7,7 +7,7 @@ Note this file configures a number of things
 invisible panel at the end of the file.
 
 2) The physical description and layout of the controls that will
-affect AstexViewer. Colours for thinlet must be specfied using hex
+affect MoleculeViewer. Colours for thinlet must be specfied using hex
 color triples, which is a slight pain.
 
 3) The scripting actions. Note that executeUsing can be used to

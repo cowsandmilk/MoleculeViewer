@@ -73,7 +73,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     /** Are we initialised? */
     private Image splashImage = null;
 
-    /** Are we announcing the origin of AstexViewer. */
+    /** Are we announcing the origin of MoleculeViewer. */
     private boolean announce = false;
 
     /** Definition of key bindings. */
@@ -332,9 +332,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
     /** Default constructor. */
     public MoleculeViewer(){
-	System.out.println("AstexViewer " + Version.getVersion());
+	System.out.println("MoleculeViewer " + Version.getVersion());
 	System.out.println("Copyright (C) 1999-2005 Astex Therapeutics Ltd.");
-	System.out.println("http://www.astex-therapeutics.com/AstexViewer");
+	System.out.println("Copyright (C) 2011 David Hall, Boston University");
+	System.out.println("https://github.com/cowsandmilk/MoleculeViewer");
 
 	moleculeRenderer = new MoleculeRenderer();
 	moleculeRenderer.moleculeViewer = this;
@@ -556,12 +557,12 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    g.setColor(Color.gray);
 	    
 	    String version =
-		"AstexViewer " + Version.getVersion() +
+		"MoleculeViewer " + Version.getVersion() +
 		" Copyright (C) 1999-2005 Astex Therapeutics Ltd.";
 	    
 	    g.drawString(version, 10, 14);
 	    g.drawString("All rights reserved", 10, 28);
-	    g.drawString("http://www.astex-technology.com/AstexViewer",
+	    g.drawString("https://github.com/cowsandmilk/MoleculeViewer",
 			 10, 42);
 	    g.drawString("Loading...",
 			 10, 60);
@@ -1144,7 +1145,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	    if(showVersion){
 		String version =
-		    "AstexViewer " + Version.getVersion() +
+		    "MoleculeViewer " + Version.getVersion() +
 		    " Copyright (C) 1999-2007 Astex Therapeutics Ltd.";
 		moleculeRenderer.renderer.setLogo(version);
 	    }else{
@@ -2374,7 +2375,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private transient ColorChooser colorChooser = null;
 
     /**
-     * Instruct AstexViewer to display its color gadget
+     * Instruct MoleculeViewer to display its color gadget
      * so that a JavaScript interface can use it for
      * picking colours.
      */

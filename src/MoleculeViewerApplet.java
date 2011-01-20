@@ -666,7 +666,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
     Format hexFormat = new Format("0x%06x");
 
     /**
-     * Instruct AstexViewer to display its color gadget
+     * Instruct MoleculeViewer to display its color gadget
      * so that something can use it for picking colours.
      */
     public String getColor(int x, int y){

@@ -1,18 +1,18 @@
 /*
- * This file is part of OpenAstexViewer.
+ * This file is part of MoleculeViewer.
  *
- * OpenAstexViewer is free software: you can redistribute it and/or modify
+ * MoleculeViewer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * OpenAstexViewer is distributed in the hope that it will be useful,
+ * MoleculeViewer is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with OpenAstexViewer.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MoleculeViewer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package astex;
@@ -123,7 +123,7 @@ public class MoleculeIO {
     /** PDB file. */
     public static final String PDBFile = "pdb";
 
-    /** Static mapping of file extensions to AstexViewer molecule types. */
+    /** Static mapping of file extensions to MoleculeViewer molecule types. */
     public static String getTypeFromExtension(String filename){
 	String type = null;
 
@@ -1224,7 +1224,7 @@ public class MoleculeIO {
     private static void writePDB(Molecule molecule, FILE output){
 	Symmetry symmetry = molecule.getSymmetry();
 
-	output.println("REMARK Written by AstexViewer " + Version.getVersion());
+	output.println("REMARK Written by MoleculeViewer " + Version.getVersion());
 
 	// write out the symmetry if any is defined for the molecule
 	// this requires the CRYST1 record at the minimum.
@@ -1384,7 +1384,7 @@ public class MoleculeIO {
 
     /** Write an Sybyl mol2 file to the output stream. */
     private static void writeMol2(Molecule molecule, FILE output){
-        output.println("# Sybyl Mol2 file written by AstexViewer " + Version.getVersion());
+        output.println("# Sybyl Mol2 file written by MoleculeViewer " + Version.getVersion());
         output.println("@<TRIPOS>MOLECULE");
         output.println(molecule.getName());
 
@@ -1471,7 +1471,7 @@ public class MoleculeIO {
 
     private static void writeMDLMol(Molecule molecule, FILE output, boolean dollars){
 	output.println(molecule.getName());
-	output.println("AstexViewer");
+	output.println("MoleculeViewer");
 	output.println("");
 
 	int atomCount = molecule.getAtomCount();

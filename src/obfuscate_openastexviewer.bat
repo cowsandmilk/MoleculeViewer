@@ -6,4 +6,4 @@
 
 %JAVA%\java -Xmx512m -jar ..\..\proguard4.1\lib\proguard.jar @proguard.pro
 
-copy ..\jar\OpenAstexViewerObf.jar ..\web\OpenAstexViewerObf.jar
+copy ..\jar\MoleculeViewerObf.jar ..\web\MoleculeViewerObf.jar
