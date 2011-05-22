@@ -53,6 +53,8 @@ package astex;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 #ifdef JPEG
 import com.sun.image.codec.jpeg.*;
@@ -986,27 +988,27 @@ public class Renderer {
     }
 
     /** List of spheres that overlap current transparent sphere. */
-    private IntArray sphereOverlaps = new IntArray();
+    private IntArrayList sphereOverlaps = new IntArrayList();
 
     /** Render the spheres that are in the transparent list. */
     private void renderTransparentSpheres(){
 	int sphereCount = stransx.size();
-	double stx[] = stransx.toArray();
-	double sty[] = stransy.toArray();
-	double stz[] = stransz.toArray();
-	double str[] = stransr.toArray();
+	double stx[] = stransx.toDoubleArray();
+	double sty[] = stransy.toDoubleArray();
+	double stz[] = stransz.toDoubleArray();
+	double str[] = stransr.toDoubleArray();
 
 	// second pass, draw transparent spheres
 	if(sphereCount > 0){
-	    double sz[] = stranszt.toArray();
-	    int ids[] = stransid.toArray();
+	    double sz[] = stranszt.toDoubleArray();
+	    int ids[] = stransid.toIntArray();
 	    indexSort(sz, ids, 0, sphereCount - 1);
 
 	    for(int pass = 0; pass < 2; pass++){
 		for(int id = sphereCount - 1; id >= 0; id--){
 		    int i = ids[id];
-		    if(pass == 0 && stransp.get(i) > 200 ||
-		       pass == 1 && stransp.get(i) <= 200){
+		    if(pass == 0 && stransp.getInt(i) > 200 ||
+		       pass == 1 && stransp.getInt(i) <= 200){
 			sphereOverlaps.clear();
 			
 			for(int j = 0; j < sphereCount; j++){
@@ -1023,8 +1025,8 @@ public class Renderer {
 			
 			actuallyDrawSphere(stx[i], sty[i], stz[i],
 					   str[i],
-					   stransrgb.get(i),
-					   stransp.get(i));
+					   stransrgb.getInt(i),
+					   stransp.getInt(i));
 		    }
 		}
 	    }
@@ -2570,17 +2572,17 @@ public class Renderer {
 	}
     }
 
-    private DoubleArray stransx  = new DoubleArray();
-    private DoubleArray stransy  = new DoubleArray();
-    private DoubleArray stransz  = new DoubleArray();
-    private DoubleArray stransxt = new DoubleArray();
-    private DoubleArray stransyt = new DoubleArray();
-    private DoubleArray stranszt = new DoubleArray();
-    private DoubleArray stransr  = new DoubleArray();
-    private DoubleArray stransrt = new DoubleArray();
-    private IntArray stransrgb  = new IntArray();
-    private IntArray stransp    = new IntArray();
-    private IntArray stransid   = new IntArray();
+    private DoubleArrayList stransx  = new DoubleArrayList();
+    private DoubleArrayList stransy  = new DoubleArrayList();
+    private DoubleArrayList stransz  = new DoubleArrayList();
+    private DoubleArrayList stransxt = new DoubleArrayList();
+    private DoubleArrayList stransyt = new DoubleArrayList();
+    private DoubleArrayList stranszt = new DoubleArrayList();
+    private DoubleArrayList stransr  = new DoubleArrayList();
+    private DoubleArrayList stransrt = new DoubleArrayList();
+    private IntArrayList stransrgb  = new IntArrayList();
+    private IntArrayList stransp    = new IntArrayList();
+    private IntArrayList stransid   = new IntArrayList();
 
     /** Add a transparent sphere to the cache. */
     private void cacheTransparentSphere(double x, double y, double z, double r,
@@ -2606,15 +2608,15 @@ public class Renderer {
 
     /** Is this point inside another transparent sphere. */
     private boolean spherePointVisible(double x, double y, double z){
-	double stx[] = stransxt.toArray();
-	double sty[] = stransyt.toArray();
-	double stz[] = stranszt.toArray();
-	double str[] = stransrt.toArray();
+	double stx[] = stransxt.toDoubleArray();
+	double sty[] = stransyt.toDoubleArray();
+	double stz[] = stranszt.toDoubleArray();
+	double str[] = stransrt.toDoubleArray();
 
 	int overlapCount = sphereOverlaps.size();
 
 	for(int ii = 0; ii < overlapCount; ii++){
-	    int i = sphereOverlaps.get(ii);
+	    int i = sphereOverlaps.getInt(ii);
 	    double dx = x - stx[i];
 	    double dy = y - sty[i];
 	    double dz = z - stz[i];

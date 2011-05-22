@@ -19,6 +19,7 @@ package astex;
 
 import java.util.ArrayList;
 import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 /* Copyright Astex Technology Ltd. 1999-2001 */
 /* Copyright David Hall, Boston University, 2011 */
@@ -436,7 +437,7 @@ public class Surface {
     private static void projectPoints(){
 	float gr[] = grid;
 
-	IntArray possibleNeighbours = new IntArray();
+	IntArrayList possibleNeighbours = new IntArrayList();
 
 	for(int a = 0; a < atomCount; a++){
 	    double ra = ar[a];
@@ -457,7 +458,7 @@ public class Surface {
 		for(int p = 0; p < possibleNeighbourCount; p++){
 		    // XXX can reduce the number of torii we generate here
 		    // XXX only need to consider pairs of selected atoms once..
-		    int b = possibleNeighbours.get(p);
+		    int b = possibleNeighbours.getInt(p);
 
 		    double rb = ar[b];
 		    if(distance2(aax, aay, aaz, ax[b], ay[b], az[b]) <
@@ -541,7 +542,7 @@ public class Surface {
     /** Project the points inside the atoms onto the surface. */
     private static void projectTorii(){
 
-	IntArray possibleNeighbours = new IntArray();
+	IntArrayList possibleNeighbours = new IntArrayList();
 
 	for(int a = 0; a < atomCount; a++){
 	    double r1 = ar[a];
@@ -560,7 +561,7 @@ public class Surface {
 		for(int p = 0; p < possibleNeighbourCount; p++){
 		    // XXX can reduce the number of torii we generate here
 		    // XXX only need to consider pairs of selected atoms once..
-		    int b = possibleNeighbours.get(p);
+		    int b = possibleNeighbours.getInt(p);
 
 		    if(selected[b] > 0 && a != b){
 			double r12 = r1 + ar[b];

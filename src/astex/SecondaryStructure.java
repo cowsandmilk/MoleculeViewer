@@ -18,6 +18,7 @@
 package astex;
 
 import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 /**
  * Class for assigning secondary structure to a protein molecule.
@@ -47,8 +48,8 @@ public class SecondaryStructure {
     private static Atom opos[]         = new Atom[MaxResidues];
     private static int types[]         = new int[MaxResidues];
     private static int mapping[]       = new int[MaxResidues];
-    private static IntArray hbond_no[] = new IntArray[MaxResidues];
-    private static IntArray hbond_on[] = new IntArray[MaxResidues];
+    private static IntArrayList hbond_no[] = new IntArrayList[MaxResidues];
+    private static IntArrayList hbond_on[] = new IntArrayList[MaxResidues];
 
     // number of residues including gaps in molecule.
     private static int nres = 0;
@@ -79,8 +80,8 @@ public class SecondaryStructure {
 
 		residues[nres] = res;
 		types[nres] = res.getSecondaryStructure();
-		hbond_no[nres] = new IntArray();
-		hbond_on[nres] = new IntArray();
+		hbond_no[nres] = new IntArrayList();
+		hbond_on[nres] = new IntArrayList();
 		hpos[nres] = null;
 		opos[nres] = null;
 		mapping[realRes] = nres;
@@ -93,8 +94,8 @@ public class SecondaryStructure {
 	    for(int i = 0; i < 4; i++){
 		residues[nres] = null;
 		types[nres] = Residue.Undefined;
-		hbond_no[nres] = new IntArray();
-		hbond_on[nres] = new IntArray();
+		hbond_no[nres] = new IntArrayList();
+		hbond_on[nres] = new IntArrayList();
 		hpos[nres] = null;
 		opos[nres] = null;
 		nres++;
@@ -110,7 +111,7 @@ public class SecondaryStructure {
 	    }
 	}
 
-	IntArray neighbours = new IntArray();
+	IntArrayList neighbours = new IntArrayList();
 
 	Lattice ol = new Lattice(MaxHBondDistance * 1.05);
 
@@ -136,7 +137,7 @@ public class SecondaryStructure {
 		int neighbourCount = neighbours.size();
 
 		for(int i = 0; i < neighbourCount; i++){
-		    int oid = neighbours.get(i);
+		    int oid = neighbours.getInt(i);
 		    Atom o = opos[oid];
 		    
 		    if(o != null){
@@ -199,7 +200,7 @@ public class SecondaryStructure {
 				       hbondCount + " hbonds");
 		}
 		for(int hb = 0; hb < hbondCount; hb++){
-		    int rj = hbond_no[ri].get(hb);
+		    int rj = hbond_no[ri].getInt(hb);
 		    if(debug){
 			System.out.println("hydrogen bonded to " + residues[rj]);
 		    }
@@ -234,7 +235,7 @@ public class SecondaryStructure {
 	    if(types[ri] == Residue.Coil || types[ri] == Residue.Sheet){
 		int hbondCount = hbond_no[ri].size();
 		for(int hb = 0; hb < hbondCount; hb++){
-		    int rrj = hbond_no[ri].get(hb);
+		    int rrj = hbond_no[ri].getInt(hb);
 		    for(int rj = rrj - 1; rj < rrj + 2; rj++){
 			if((rj >= 0 && rj < nres) &&
 			    ((hbonded(ri, rj-1) && hbonded(rj+1,ri)) ||

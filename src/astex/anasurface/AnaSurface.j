@@ -7,6 +7,8 @@ package astex.anasurface;
 
 import astex.*;
 import java.util.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class AnaSurface {
     /* Input coordinates and radii. */
@@ -169,7 +171,7 @@ public class AnaSurface {
 	}
 
 	// measure distance to nearest probe center
-	IntArray neighbours = new IntArray();
+	IntArrayList neighbours = new IntArrayList();
 
 	for(int i = 0; i < tmesh.np; i++){
             tmesh.v[i] = 0.0001f;
@@ -182,7 +184,7 @@ public class AnaSurface {
 	    double dmin = probeRadius;
 
 	    for(int j = 0; j < neighbourCount; j++){
-		int p = neighbours.get(j);
+		int p = neighbours.getInt(j);
 		Probe probe = probes.get(p);
 		double d = distance(probe.x[0], probe.x[1], probe.x[2],
 				    tmesh.x[i], tmesh.y[i], tmesh.z[i]);
@@ -413,10 +415,10 @@ public class AnaSurface {
 	    for(int j = 0; j < nv-1; j++){
 
 		if(debug){
-		    FILE.out.print("adding to vlist %4d\n", e.get(j));
+		    FILE.out.print("adding to vlist %4d\n", e.getInt(j));
 		}
 
-		vArray.add(e.get(j));
+		vArray.add(e.getInt(j));
 		int edgeMask = (1 << i);
 
 		if(j == 0){
@@ -432,8 +434,8 @@ public class AnaSurface {
 	}
 
 	int nv = vArray.size();
-	int vlist[] = vArray.toArray();
-	int elist[] = eArray.toArray();
+	int vlist[] = vArray.toIntArray();
+	int elist[] = eArray.toIntArray();
 
 	if(debug){
 	    for(int i = 0; i < nv; i++){
@@ -575,10 +577,10 @@ public class AnaSurface {
     }
 
     /** The list of edge vertices we have to triangulate. */
-    private IntArray vArray = new IntArray(64);
+    private IntArrayList vArray = new IntArrayList(64);
 
     /** The list of edge ids associated with the vertices. */
-    private IntArray eArray = new IntArray(64);
+    private IntArrayList eArray = new IntArrayList(64);
 
     private double pp0[] = new double[3];
     private double pp1[] = new double[3];
@@ -594,8 +596,8 @@ public class AnaSurface {
     /** Triangulate an arbitrary collection of edges and interior points. */
     private void addTriangles(){
 	int nv = vArray.size();
-	int vlist[] = vArray.toArray();
-	int elist[] = eArray.toArray();
+	int vlist[] = vArray.toIntArray();
+	int elist[] = eArray.toIntArray();
 
 	double rlim = currentLongestEdge * 1.5;
 	rlim *= rlim;
@@ -1565,7 +1567,7 @@ public class AnaSurface {
 		int vcount = connectLeft.size();
 
 		for(int iv = 0; iv < vcount; iv++){
-		    connectRight.add(connectLeft.getReverse(iv));
+		    connectRight.add(connectLeft.getInt(vcount-iv-1));
 		}
 
 		// tidy up the probe boundary edges.
@@ -2447,7 +2449,7 @@ public class AnaSurface {
 	count = new int[nxyz];
 	// use IntArray to dynamically grow the 
 	// neighbour list
-	IntArray nList = new IntArray(nxyz*60);
+	IntArrayList nList = new IntArrayList(nxyz*60);
 
 	int maxNeighbours = 0;
 
@@ -2472,7 +2474,7 @@ public class AnaSurface {
 	}
 
 	// grab the neighbour list for easy reference
-	nn = nList.toArray();
+	nn = nList.toIntArray();
 
 	print("total neighbours", neighbourCount);
 	print("maximum neighbours", maxNeighbours);
@@ -2870,11 +2872,11 @@ public class AnaSurface {
 	    System.exit(2);
 	}
 
-	DoubleArray x = new DoubleArray(1024);
-	DoubleArray y = new DoubleArray(1024);
-	DoubleArray z = new DoubleArray(1024);
-	DoubleArray r = new DoubleArray(1024);
-	IntArray visible = new IntArray(1024);
+	DoubleArrayList x = new DoubleArrayList(1024);
+	DoubleArrayList y = new DoubleArrayList(1024);
+	DoubleArrayList z = new DoubleArrayList(1024);
+	DoubleArrayList r = new DoubleArrayList(1024);
+	IntArrayList visible = new IntArrayList(1024);
 	int n = 0;
 
 	while(f.nextLine()){
@@ -2893,14 +2895,14 @@ public class AnaSurface {
 	double xxx[][] = new double[n][3];
 
 	for(int i = 0; i < n; i++){
-	    xxx[i][0] = x.get(i);
-	    xxx[i][1] = y.get(i);
-	    xxx[i][2] = z.get(i);
+	    xxx[i][0] = x.getDouble(i);
+	    xxx[i][1] = y.getDouble(i);
+	    xxx[i][2] = z.getDouble(i);
 	}
 
 	print("number of spheres", n);
 	
-	AnaSurface s = new AnaSurface(xxx, r.toArray(), null, n);
+	AnaSurface s = new AnaSurface(xxx, r.toDoubleArray(), null, n);
 
 	s.density = subdivisions;
 	s.probeRadius = probeRadius;

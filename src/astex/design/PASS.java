@@ -22,6 +22,7 @@ import java.util.*;
 
 // for Probe class
 import astex.anasurface.*;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 
 class PASS {
@@ -403,7 +404,7 @@ class PASS {
     }
 
     /** neighbours of the point for burial calculations. */
-    private static IntArray burialNeighbours = new IntArray();
+    private static IntArrayList burialNeighbours = new IntArrayList();
 
     /** 
      * Return the number of atoms within Rbc of the point.
@@ -420,7 +421,7 @@ class PASS {
 	int bc = 0;
 
 	for(int i = 0; i < neighbourCount; i++){
-	    int neighbour = burialNeighbours.get(i);
+	    int neighbour = burialNeighbours.getInt(i);
 	    Probe probe = probes.get(neighbour);
 	    if(AnaSurface.distance2(p, probe.x) < Rbc2){
 		bc++;
@@ -441,7 +442,7 @@ class PASS {
 	int neighbourCount = burialNeighbours.size();
 
 	for(int i = 0; i < neighbourCount; i++){
-	    int neighbour = burialNeighbours.get(i);
+	    int neighbour = burialNeighbours.getInt(i);
 	    Probe probe = probes.get(neighbour);
 	    double r = probe.r + rp;
 	    if(AnaSurface.distance2(p, probe.x) < r*r){
@@ -473,7 +474,7 @@ class PASS {
 	count = new int[n];
 	// use IntArray to dynamically grow the 
 	// neighbour list
-	IntArray nList = new IntArray(n*60);
+	IntArrayList nList = new IntArrayList(n*60);
 
 	int maxNeighbours = 0;
 
@@ -502,7 +503,7 @@ class PASS {
 	}
 
 	// grab the neighbour list for easy reference
-	nn = nList.toArray();
+	nn = nList.toIntArray();
 
 	FILE.out.print("total neighbours   %7d\n", neighbourCount);
 	FILE.out.print("maximum neighbours %7d\n", maxNeighbours);

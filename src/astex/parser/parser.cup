@@ -7,6 +7,7 @@ import java.net.*;
 
 import astex.*;
 import astex.anasurface.*;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 
 parser code {:
 	public static String urlContents = null;
@@ -165,7 +166,7 @@ terminal String STRING;
 
 non terminal byte[] statement;
 non terminal ArrayList id_list;
-non terminal FloatArray number_list;
+non terminal FloatArrayList number_list;
 non terminal int[] id;
 non terminal ArrayList string_list;
 
@@ -1629,7 +1630,7 @@ id_list ::=
 
 number_list ::=
 	  number:f
-		{: FloatArray fa = new FloatArray(); fa.add((float)f.doubleValue()); RESULT = fa; :}
+		{: FloatArrayList fa = new FloatArrayList(); fa.add((float)f.doubleValue()); RESULT = fa; :}
 	| number_list:fa number:f
 		{: fa.add((float)f.doubleValue()); RESULT = fa; :}
 	;

@@ -79,6 +79,9 @@ import java.lang.reflect.*;
 
 import astex.parser.*;
 import astex.generic.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 /**
  * Class for drawing a molecule into our renderer.
@@ -329,7 +332,7 @@ public class MoleculeRenderer {
     }
 
     /** Handle a command that updates the properties of atoms. */
-    public void handleUpdateCommand(Arguments args, FloatArray fa){
+    public void handleUpdateCommand(Arguments args, FloatArrayList fa){
     }
 
     /** Interpret a new style map command. */
@@ -786,7 +789,7 @@ public class MoleculeRenderer {
 	}
 
 	// space for the neighbours
-	IntArray neighbours = new IntArray();
+	IntArrayList neighbours = new IntArrayList();
 
 	for(Atom a : atoms){
 	    if("N".equals(a.getAtomLabel())){
@@ -802,7 +805,7 @@ public class MoleculeRenderer {
 		int neighbourCount = neighbours.size();
 
 		for(int j = 0; j < neighbourCount; j++){
-		    Atom o = atoms.get(neighbours.get(j));
+		    Atom o = atoms.get(neighbours.getInt(j));
 		    Atom c = o.getBondedAtom("C");
 
 		    double e = hbondEnergy(n, h, o, c, hbondConstant);
@@ -1070,9 +1073,9 @@ public class MoleculeRenderer {
 	// find the nearest atom for each tmesh point
 	int pointCount = tmesh.np;
 
-	IntArray neighbours = new IntArray();
-	IntArray nearest = new IntArray();
-	DoubleArray distances = new DoubleArray();
+	IntArrayList neighbours = new IntArrayList();
+	IntArrayList nearest = new IntArrayList();
+	DoubleArrayList distances = new DoubleArrayList();
 
 	for(int i = 0; i < pointCount; i++){
 	    neighbours.clear();
@@ -1090,7 +1093,7 @@ public class MoleculeRenderer {
 	    distances.clear();
 
 	    for(int j = 0; j < neighbourCount; j++){
-		int neighbour = neighbours.get(j);
+		int neighbour = neighbours.getInt(j);
 		Atom atom = mapAtoms.get(neighbour);
 		double ar = atom.getVDWRadius();
 		double dx = atom.x - tx;
@@ -1115,24 +1118,24 @@ public class MoleculeRenderer {
 	    if(nearCount == 0){
 		tmesh.vcolor[i] = defaultColor;
 	    }else if(nearCount == 1){
-		int a = nearest.get(0);
+		int a = nearest.getInt(0);
 		Atom atom = mapAtoms.get(a);
 		int color = atom.getColor();
 		tmesh.vcolor[i] = color;
 	    }else{
 		double sum = 0.0;
 		for(int nn = 0; nn < nearCount; nn++){
-		    sum += distances.get(nn);
+		    sum += distances.getDouble(nn);
 		}
 
 		int r = 0, g = 0, b = 0;
 
 		for(int nn = 0; nn < nearCount; nn++){
-		    int a = nearest.get(nn);
+		    int a = nearest.getInt(nn);
 		    Atom atom = mapAtoms.get(a);
 		    int color = atom.getColor();
 
-		    double comp = distances.get(nn)/sum;
+		    double comp = distances.getDouble(nn)/sum;
 
 		    r += comp * Color32.getRed(color);
 		    g += comp * Color32.getGreen(color);

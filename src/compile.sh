@@ -11,4 +11,5 @@ javac -Xlint:deprecation -target 1.6 MoleculeViewerApplet.java
 jar c0f ../MoleculeViewer.jar java_cup/runtime/*.class astex/generic/*.class astex/anasurface/*.class astex/parser/*.class astex/*.class astex/design/*.class *.properties images/textures/*.jpg images/*.jpg fonts/* thinlet/*.class astex/splitter/*.class astex/thinlet/*.class astex/thinlet/*.properties astex/thinlet/*.gif MoleculeViewerApplet.class
 jar u0f ../MoleculeViewer.jar -C ../lib nanoxml
 jar u0f ../MoleculeViewer.jar -C ../lib jclass
+jar u0f ../MoleculeViewer.jar -C ../lib it
 jar u0fm ../MoleculeViewer.jar AstexViewer.manifest

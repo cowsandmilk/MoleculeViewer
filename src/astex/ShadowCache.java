@@ -16,40 +16,42 @@
  */
 
 package astex;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 class ShadowCache {
     /** Sphere cache for shadows. */
-    private static FloatArray scachex = new FloatArray();
-    private static FloatArray scachey = new FloatArray();
-    private static FloatArray scachez = new FloatArray();
-    private static FloatArray scacher = new FloatArray();
+    private static FloatArrayList scachex = new FloatArrayList();
+    private static FloatArrayList scachey = new FloatArrayList();
+    private static FloatArrayList scachez = new FloatArrayList();
+    private static FloatArrayList scacher = new FloatArrayList();
 
     /** Cylinder cache for shadows. */
-    private static FloatArray ccachex0 = new FloatArray();
-    private static FloatArray ccachey0 = new FloatArray();
-    private static FloatArray ccachez0 = new FloatArray();
-    private static FloatArray ccachex1 = new FloatArray();
-    private static FloatArray ccachey1 = new FloatArray();
-    private static FloatArray ccachez1 = new FloatArray();
-    private static FloatArray ccacher  = new FloatArray();
+    private static FloatArrayList ccachex0 = new FloatArrayList();
+    private static FloatArrayList ccachey0 = new FloatArrayList();
+    private static FloatArrayList ccachez0 = new FloatArrayList();
+    private static FloatArrayList ccachex1 = new FloatArrayList();
+    private static FloatArrayList ccachey1 = new FloatArrayList();
+    private static FloatArrayList ccachez1 = new FloatArrayList();
+    private static FloatArrayList ccacher  = new FloatArrayList();
 
     /** Triangle cache for shadows. */
-    private static FloatArray tcachex0 = new FloatArray();
-    private static FloatArray tcachey0 = new FloatArray();
-    private static FloatArray tcachez0 = new FloatArray();
-    private static FloatArray tcachex1 = new FloatArray();
-    private static FloatArray tcachey1 = new FloatArray();
-    private static FloatArray tcachez1 = new FloatArray();
-    private static FloatArray tcachex2 = new FloatArray();
-    private static FloatArray tcachey2 = new FloatArray();
-    private static FloatArray tcachez2 = new FloatArray();
+    private static FloatArrayList tcachex0 = new FloatArrayList();
+    private static FloatArrayList tcachey0 = new FloatArrayList();
+    private static FloatArrayList tcachez0 = new FloatArrayList();
+    private static FloatArrayList tcachex1 = new FloatArrayList();
+    private static FloatArrayList tcachey1 = new FloatArrayList();
+    private static FloatArrayList tcachez1 = new FloatArrayList();
+    private static FloatArrayList tcachex2 = new FloatArrayList();
+    private static FloatArrayList tcachey2 = new FloatArrayList();
+    private static FloatArrayList tcachez2 = new FloatArrayList();
 
-    private static FloatArray tcen2dx  = new FloatArray();
-    private static FloatArray tcen2dy  = new FloatArray();
-    private static FloatArray tcenx    = new FloatArray();
-    private static FloatArray tceny    = new FloatArray();
-    private static FloatArray tcenz    = new FloatArray();
-    private static FloatArray tcenr    = new FloatArray();
+    private static FloatArrayList tcen2dx  = new FloatArrayList();
+    private static FloatArrayList tcen2dy  = new FloatArrayList();
+    private static FloatArrayList tcenx    = new FloatArrayList();
+    private static FloatArrayList tceny    = new FloatArrayList();
+    private static FloatArrayList tcenz    = new FloatArrayList();
+    private static FloatArrayList tcenr    = new FloatArrayList();
 
     /** References to the triangle array contents. */
     private static float tx0[] = null;
@@ -77,11 +79,11 @@ class ShadowCache {
     private static float scr[] = null;
 
     /** Cache and occlusion lists. */
-    private static IntArray sphereShadowCacheList    = new IntArray();
-    private static IntArray sphereOcclusionCacheList = new IntArray();
-    private static IntArray cylinderShadowCacheList  = new IntArray();
-    private static IntArray triangleShadowCacheList  = new IntArray();
-    private static IntArray initialList              = new IntArray();
+    private static IntArrayList sphereShadowCacheList    = new IntArrayList();
+    private static IntArrayList sphereOcclusionCacheList = new IntArrayList();
+    private static IntArrayList cylinderShadowCacheList  = new IntArrayList();
+    private static IntArrayList triangleShadowCacheList  = new IntArrayList();
+    private static IntArrayList initialList              = new IntArrayList();
 
     /** Overall scale factor in the renderer. */
     public static double overallScale = 1.0;
@@ -180,7 +182,7 @@ class ShadowCache {
 	    int initialSize = initialList.size();
 
 	    for(int j = 0; j < initialSize; j++){
-		int i = initialList.get(j);
+		int i = initialList.getInt(j);
 
 		// look up triangle center and radius
 		double r   = sr + scr[i];
@@ -221,11 +223,11 @@ class ShadowCache {
 	    int initialSize = initialList.size();
 
 	    for(int j = 0; j < initialSize; j++){
-		int i = initialList.get(j);
+		int i = initialList.getInt(j);
 
-		boundingSphereCylinder(ccachex0.get(i), ccachey0.get(i), ccachez0.get(i),
-				       ccachex1.get(i), ccachey1.get(i), ccachez1.get(i),
-				       ccacher.get(i),
+		boundingSphereCylinder(ccachex0.getFloat(i), ccachey0.getFloat(i), ccachez0.getFloat(i),
+				       ccachex1.getFloat(i), ccachey1.getFloat(i), ccachez1.getFloat(i),
+				       ccacher.getFloat(i),
 				       cbs);
 
 		double r   = sr + cbs[3];
@@ -266,7 +268,7 @@ class ShadowCache {
 	    int initialSize = initialList.size();
 
 	    for(int j = 0; j < initialSize; j++){
-		int i = initialList.get(j);
+		int i = initialList.getInt(j);
 
 		// look up triangle center and radius
 		double r   = sr + tcr[i];
@@ -402,7 +404,7 @@ class ShadowCache {
 	    lastObscuringCylinder = -1;
 	}
 
-	int slist[] = sphereShadowCacheList.toArray();
+	int slist[] = sphereShadowCacheList.toIntArray();
 
 	// ok now check lists
 	for(int j = 0; j < sphereCacheCount; j++){
@@ -416,7 +418,7 @@ class ShadowCache {
 	int cylinderCacheCount = cylinderShadowCacheList.size();
 
 	for(int j = 0; j < cylinderCacheCount; j++){
-	    int i = cylinderShadowCacheList.get(j);
+	    int i = cylinderShadowCacheList.getInt(j);
 	    if(obscuredByCylinder(i)){
 		lastObscuringCylinder = i;
 		return true;
@@ -442,7 +444,7 @@ class ShadowCache {
 	int triangleCacheCount = triangleShadowCacheList.size();
 
 	for(int j = 0; j < triangleCacheCount; j++){
-	    int i = triangleShadowCacheList.get(j);
+	    int i = triangleShadowCacheList.getInt(j);
 	    if(obscuredByTriangle(i)){
 		lastObscuringTriangle = i;
 		return true;
@@ -507,14 +509,14 @@ class ShadowCache {
     private static int lastObscuringCylinder = -1;
 
     private static boolean obscuredByCylinder(int i){
-	c0[0] = ccachex0.get(i);
-	c0[1] = ccachey0.get(i);
-	c0[2] = ccachez0.get(i);
-	c1[0] = ccachex1.get(i);
-	c1[1] = ccachey1.get(i);
-	c1[2] = ccachez1.get(i);
+	c0[0] = ccachex0.getFloat(i);
+	c0[1] = ccachey0.getFloat(i);
+	c0[2] = ccachez0.getFloat(i);
+	c1[0] = ccachex1.getFloat(i);
+	c1[1] = ccachey1.getFloat(i);
+	c1[2] = ccachez1.getFloat(i);
 	
-	if(astex.anasurface.AnaSurface.intersect(ray0, ray1, c0, c1, rint, nint) < ccacher.get(i)){
+	if(astex.anasurface.AnaSurface.intersect(ray0, ray1, c0, c1, rint, nint) < ccacher.getFloat(i)){
 	    return true;
 	}
 
@@ -572,15 +574,15 @@ class ShadowCache {
 	lighty = lightx.cross(light);
 	lighty.normalise();
 
-	tx0 = tcachex0.toArray();
-	ty0 = tcachey0.toArray();
-	tz0 = tcachez0.toArray();
-	tx1 = tcachex1.toArray();
-	ty1 = tcachey1.toArray();
-	tz1 = tcachez1.toArray();
-	tx2 = tcachex2.toArray();
-	ty2 = tcachey2.toArray();
-	tz2 = tcachez2.toArray();
+	tx0 = tcachex0.toFloatArray();
+	ty0 = tcachey0.toFloatArray();
+	tz0 = tcachez0.toFloatArray();
+	tx1 = tcachex1.toFloatArray();
+	ty1 = tcachey1.toFloatArray();
+	tz1 = tcachez1.toFloatArray();
+	tx2 = tcachex2.toFloatArray();
+	ty2 = tcachey2.toFloatArray();
+	tz2 = tcachez2.toFloatArray();
 
 	prepareTriangleGrid();
 	prepareSphereGrid();
@@ -592,17 +594,17 @@ class ShadowCache {
 
 	overallScale = ovs;
 
-	tc2x = tcen2dx.toArray();
-	tc2y = tcen2dy.toArray();
-	tcx = tcenx.toArray();
-	tcy = tceny.toArray();
-	tcz = tcenz.toArray();
-	tcr = tcenr.toArray();
+	tc2x = tcen2dx.toFloatArray();
+	tc2y = tcen2dy.toFloatArray();
+	tcx = tcenx.toFloatArray();
+	tcy = tceny.toFloatArray();
+	tcz = tcenz.toFloatArray();
+	tcr = tcenr.toFloatArray();
 
-	scx = scachex.toArray();
-	scy = scachey.toArray();
-	scz = scachez.toArray();
-	scr = scacher.toArray();
+	scx = scachex.toFloatArray();
+	scy = scachey.toFloatArray();
+	scz = scachez.toFloatArray();
+	scr = scacher.toFloatArray();
     }
 
     private static NeighbourGrid2D triangleGrid = new NeighbourGrid2D();
@@ -653,8 +655,8 @@ class ShadowCache {
 	triangleGrid.reset(xmin - 0.1, ymin - 0.1,
 			   xmax + 0.1, ymax + 0.1, 1.01 * rmax);
 
-	tcx = tcen2dx.toArray();
-	tcy = tcen2dy.toArray();
+	tcx = tcen2dx.toFloatArray();
+	tcy = tcen2dy.toFloatArray();
 
 	for(int i = 0; i < triangleCount; i++){
 	    triangleGrid.add(i, tcx[i], tcy[i]);
@@ -672,10 +674,10 @@ class ShadowCache {
 	double ymax = -1.e10;
 	double rmax = 0.0;
 
-	scx = scachex.toArray();
-	scy = scachey.toArray();
-	scz = scachez.toArray();
-	scr = scacher.toArray();
+	scx = scachex.toFloatArray();
+	scy = scachey.toFloatArray();
+	scz = scachez.toFloatArray();
+	scr = scacher.toFloatArray();
 	
 	for(int i = 0; i < sphereCount; i++){
 
@@ -717,9 +719,9 @@ class ShadowCache {
 	double rmax = 0.0;
 	
 	for(int i = 0; i < cylinderCount; i++){
-	    boundingSphereCylinder(ccachex0.get(i), ccachey0.get(i), ccachez0.get(i),
-				   ccachex1.get(i), ccachey1.get(i), ccachez1.get(i),
-				   ccacher.get(i),
+	    boundingSphereCylinder(ccachex0.getFloat(i), ccachey0.getFloat(i), ccachez0.getFloat(i),
+				   ccachex1.getFloat(i), ccachey1.getFloat(i), ccachez1.getFloat(i),
+				   ccacher.getFloat(i),
 				   cbs);
 	    // project tri center onto light orthonormal set
 	    double x = cbs[0] * lightx.x + cbs[1] * lightx.y + cbs[2] * lightx.z;
@@ -738,13 +740,13 @@ class ShadowCache {
 	cylinderGrid.reset(xmin - 0.1, ymin - 0.1,
 			   xmax + 0.1, ymax + 0.1, 1.01 * rmax);
 
-	tcx = tcen2dx.toArray();
-	tcy = tcen2dy.toArray();
+	tcx = tcen2dx.toFloatArray();
+	tcy = tcen2dy.toFloatArray();
 
 	for(int i = 0; i < cylinderCount; i++){
-	    boundingSphereCylinder(ccachex0.get(i), ccachey0.get(i), ccachez0.get(i),
-				   ccachex1.get(i), ccachey1.get(i), ccachez1.get(i),
-				   ccacher.get(i),
+	    boundingSphereCylinder(ccachex0.getFloat(i), ccachey0.getFloat(i), ccachez0.getFloat(i),
+				   ccachex1.getFloat(i), ccachey1.getFloat(i), ccachez1.getFloat(i),
+				   ccacher.getFloat(i),
 				   cbs);
 	    // project tri center onto light orthonormal set
 	    double x = cbs[0] * lightx.x + cbs[1] * lightx.y + cbs[2] * lightx.z;

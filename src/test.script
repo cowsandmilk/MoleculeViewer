@@ -2,7 +2,7 @@ set symmetry off;
 
 view -wuantialias true;
 
-molecule load protein '../pdb/621p.pdb';
+molecule load protein '621p.pdb';
 
 color_by_rainbow aminoacid;
 secstruc aminoacid;
@@ -11,11 +11,11 @@ schematic -name ribbon aminoacid;
 
 /*view -background '#444';*/
 
-center name GTN;
+center name GNP;
 
-display cylinders on name GTN;
+display cylinders on name GNP;
 
-surface -solid true protein_surface dodgerblue name GTN;
+surface -solid true protein_surface dodgerblue name GNP;
 
 /*object protein_surface transparency 128;*/
 

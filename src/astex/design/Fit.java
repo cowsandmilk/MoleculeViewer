@@ -18,6 +18,7 @@
 package astex.design;
 
 import astex.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 /**
  * Class for least squares fitting of sets of points.
  */
@@ -372,12 +373,12 @@ class Fit {
 
     public static void fitMolecules(String molname0, String molname1,
 				    String molname2){
-	DoubleArray x = new DoubleArray();
-	DoubleArray y = new DoubleArray();
-	DoubleArray z = new DoubleArray();
-	DoubleArray xp = new DoubleArray();
-	DoubleArray yp = new DoubleArray();
-	DoubleArray zp = new DoubleArray();
+	DoubleArrayList x = new DoubleArrayList();
+	DoubleArrayList y = new DoubleArrayList();
+	DoubleArrayList z = new DoubleArrayList();
+	DoubleArrayList xp = new DoubleArrayList();
+	DoubleArrayList yp = new DoubleArrayList();
+	DoubleArrayList zp = new DoubleArrayList();
 
 	Molecule mol0 = MoleculeIO.read(molname0);
 	Molecule mol1 = MoleculeIO.read(molname1);
@@ -411,8 +412,8 @@ class Fit {
 
 	for(int i = 0; i < fitCount; i++){
 
-	    rmsd = fit(x.toArray(), y.toArray(), z.toArray(),
-		       xp.toArray(), yp.toArray(), zp.toArray(),
+	    rmsd = fit(x.toDoubleArray(), y.toDoubleArray(), z.toDoubleArray(),
+		       xp.toDoubleArray(), yp.toDoubleArray(), zp.toDoubleArray(),
 		       n, mat);
 	}
 

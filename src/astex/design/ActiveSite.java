@@ -19,6 +19,8 @@ package astex.design;
 
 import astex.*;
 import java.util.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class ActiveSite {
     /**
@@ -723,14 +725,14 @@ public class ActiveSite {
 	}
     }
 
-    private static DoubleArray x = new DoubleArray();
-    private static DoubleArray y = new DoubleArray();
-    private static DoubleArray z = new DoubleArray();
-    private static DoubleArray xp = new DoubleArray();
-    private static DoubleArray yp = new DoubleArray();
-    private static DoubleArray zp = new DoubleArray();
+    private static DoubleArrayList x = new DoubleArrayList();
+    private static DoubleArrayList y = new DoubleArrayList();
+    private static DoubleArrayList z = new DoubleArrayList();
+    private static DoubleArrayList xp = new DoubleArrayList();
+    private static DoubleArrayList yp = new DoubleArrayList();
+    private static DoubleArrayList zp = new DoubleArrayList();
 
-    private static IntArray neighbours  = new IntArray();
+    private static IntArrayList neighbours  = new IntArrayList();
 
     private static void fitSuperstarGroup(List<Atom> pdbAtoms,
 					  List<Atom> istrAtoms,
@@ -767,12 +769,12 @@ public class ActiveSite {
 
 	Matrix rot = new Matrix();
 
-	double rmsd = Fit.fit(x.toArray(),
-				    y.toArray(),
-				    z.toArray(),
-				    xp.toArray(),
-				    yp.toArray(),
-				    zp.toArray(), nfit, rot);
+	double rmsd = Fit.fit(x.toDoubleArray(),
+				    y.toDoubleArray(),
+				    z.toDoubleArray(),
+				    xp.toDoubleArray(),
+				    yp.toDoubleArray(),
+				    zp.toDoubleArray(), nfit, rot);
 
 	if(rmsd > rmsdWarningLevel){
 	    Atom baseAtom = pdbAtoms.get(0);
@@ -851,7 +853,7 @@ public class ActiveSite {
 			int ncount = neighbours.size();
 		    
 			for(int n = 0; n < ncount; n++){
-			    int id             = neighbours.get(n);
+			    int id             = neighbours.getInt(n);
 			    Atom atomNeighbour = exclusion.get(id);
 			    int elementn       = atomNeighbour.getElement();
 			    double rn          = vdwRadii[elementn];
@@ -1016,7 +1018,7 @@ public class ActiveSite {
 					int ncount = neighbours.size();
 					
 					for(int n = 0; n < ncount; n++){
-					    int id = neighbours.get(n);
+					    int id = neighbours.getInt(n);
 					    Atom aa = exclusion.get(id);
 					    // skip the atoms that define the sphere.
 					    if(aa == atom0 || aa == atom1 ||
@@ -1121,7 +1123,7 @@ public class ActiveSite {
 
 	// build the type information
 	List<String> types = new ArrayList<String>(exclusionCount);
-	HashMap<String, DoubleArray> pmfs = new HashMap<String, DoubleArray>(11);
+	HashMap<String, DoubleArrayList> pmfs = new HashMap<String, DoubleArrayList>(11);
 
 	for(Atom atom : exclusion){
 	    Residue res = atom.getResidue();
@@ -1199,9 +1201,9 @@ public class ActiveSite {
     /** Add in the potential of an atom. */
     private static void incorporatePotential(astex.Map map, int iatom,
 					    Atom atom, List<String> types,
-					    HashMap<String,DoubleArray> pmfs, double maxd){
+					    HashMap<String,DoubleArrayList> pmfs, double maxd){
 	String type = types.get(iatom);
-	DoubleArray pmf = pmfs.get(type);
+	DoubleArrayList pmf = pmfs.get(type);
 
 	if(pmf == null){
 	    Log.error("couldn't find pmf for " + type);
@@ -1240,7 +1242,7 @@ public class ActiveSite {
 
 	Point3d gp = new Point3d();
 	int pmfSize = pmf.size();
-	double pmfData[] = pmf.toArray();
+	double pmfData[] = pmf.toDoubleArray();
 
 	for(int iz = gzmin; iz <= gzmax; iz++){
 	    gp.z = map.origin.z + iz * map.spacing.z;
@@ -1267,9 +1269,9 @@ public class ActiveSite {
     }
 
     /** Try and load the pmf. */
-    private static void loadPmf(HashMap<String, DoubleArray> pmfs, String location, String pmf){
+    private static void loadPmf(HashMap<String, DoubleArrayList> pmfs, String location, String pmf){
 	String filename = location + "/" + pmf + ".pmf";
-	DoubleArray values = new DoubleArray();
+	DoubleArrayList values = new DoubleArrayList();
 
 	FILE f = FILE.open(filename);
 

@@ -19,6 +19,7 @@
  * Class for performing near neighbour calculations.
  */
 package astex;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class Lattice {
     /** List of cells to search for all pairs search. */
@@ -79,10 +80,10 @@ public class Lattice {
 
 	if(c == -1){
 	    int hashval = HASH(i, j, k);
-	    IntArray cellList = hashTable[hashval];
+	    IntArrayList cellList = hashTable[hashval];
 
 	    if(cellList == null){
-		cellList = new IntArray();
+		cellList = new IntArrayList();
 		hashTable[hashval] = cellList;
 	    }
 
@@ -100,25 +101,25 @@ public class Lattice {
 	
 	// shuffle the object id's
 	// to add the new object to the cell chain
-	list.add(head.get(c));
+	list.add(head.getInt(c));
 	head.set(c, actualId);
     }
 
     /** Get the contents of the cell. */
-    public int getCellContents(int icell, IntArray c){
+    public int getCellContents(int icell, IntArrayList c){
 	if(icell == -1){
 	    return 0;
 	}
 
-	int j = head.get(icell);
+	int j = head.getInt(icell);
 
 	if(j == -1){
 	    return 0;
 	}
 
 	while(j >= 0){
-	    c.add(ids.get(j));
-	    j = list.get(j);
+	    c.add(ids.getInt(j));
+	    j = list.getInt(j);
 	}
 
 	return c.size();
@@ -129,13 +130,13 @@ public class Lattice {
 	int hashval = HASH(i, j, k);
 
 	// search list with this hashval, if not present return -1
-	IntArray cellList = hashTable[hashval];
+	IntArrayList cellList = hashTable[hashval];
 
 	if(cellList != null){
-	    int ci[] = celli.toArray();
-	    int cj[] = cellj.toArray();
-	    int ck[] = cellk.toArray();
-	    int cl[] = cellList.toArray();
+	    int ci[] = celli.toIntArray();
+	    int cj[] = cellj.toIntArray();
+	    int ck[] = cellk.toIntArray();
+	    int cl[] = cellList.toIntArray();
 	    int cellEntries = cellList.size();
 
 	    for(int c = 0; c < cellEntries; c++){
@@ -157,15 +158,15 @@ public class Lattice {
      */
     public int getPossibleNeighbours(int id,
 				     double x, double y, double z,
-				     IntArray neighbours,
+				     IntArrayList neighbours,
 				     boolean allNeighbours){
 	int ibox = BOX(x);
 	int jbox = BOX(y);
 	int kbox = BOX(z);
 
-	int h[] = head.toArray();
-	int l[] = list.toArray();
-	int idsArray[] = ids.toArray();
+	int h[] = head.toIntArray();
+	int l[] = list.toIntArray();
+	int idsArray[] = ids.toIntArray();
 
 	for(int i = -1; i <= 1; i++){
 	    int ii = ibox + i;
@@ -215,16 +216,16 @@ public class Lattice {
     }
 
     /** Working space for cell objects gathers. */
-    private IntArray cell1 = new IntArray();
-    private IntArray cell2 = new IntArray();
+    private IntArrayList cell1 = new IntArrayList();
+    private IntArrayList cell2 = new IntArrayList();
 
     /** Get the possible pairs of neighbours from a cell. */
-    public int getPossibleCellNeighbours(int cid, IntArray objects){
+    public int getPossibleCellNeighbours(int cid, IntArrayList objects){
 	cell1.clear();
 	getCellContents(cid, cell1);
 
 	int count1 = cell1.size();
-	int c1[] = cell1.toArray();
+	int c1[] = cell1.toIntArray();
 
 	for(int i = 0; i < count1; i++){
 	    int oi = c1[i];
@@ -239,9 +240,9 @@ public class Lattice {
 	    }
 	}
 
-	int icell = celli.get(cid);
-	int jcell = cellj.get(cid);
-	int kcell = cellk.get(cid);
+	int icell = celli.getInt(cid);
+	int jcell = cellj.getInt(cid);
+	int kcell = cellk.getInt(cid);
 
 	for(int ioff = 0; ioff < offsets.length; ioff++){
 	    int ii = icell + offsets[ioff][0];
@@ -254,14 +255,14 @@ public class Lattice {
 		cell2.clear();
 		getCellContents(c, cell2);
 		int count2 = cell2.size();
-		int c2[] = cell2.toArray();
+		int c2[] = cell2.toIntArray();
 
 		for(int i = 0; i < count1; i++){
 		    int oi = c1[i];
 		    for(int j = 0; j < count2; j++){
 			int oj = c2[j];
-			objects.add(ids.get(oi));
-			objects.add(ids.get(oj));
+			objects.add(ids.getInt(oi));
+			objects.add(ids.getInt(oj));
 		    }
 		}
 	    }
@@ -280,7 +281,7 @@ public class Lattice {
 	for(int i = 0; i < HASHTABLESIZE; i++){
 	    if(hashTable[i] != null){
 		occupiedHashSlots++;
-		IntArray cellList = hashTable[i];
+		IntArrayList cellList = hashTable[i];
 		int cellCount = cellList.size();
 
 		if(cellCount > maxCells){
@@ -335,19 +336,19 @@ public class Lattice {
     private static final int HASHTABLESIZE = HS*HS*HS;
 
     /** Table of indexes to cells. */
-    private IntArray hashTable[] = new IntArray[HASHTABLESIZE];
+    private IntArrayList hashTable[] = new IntArrayList[HASHTABLESIZE];
 
     /** The cell indexes for each cell. */
-    private IntArray celli = new IntArray();
-    private IntArray cellj = new IntArray();
-    private IntArray cellk = new IntArray();
+    private IntArrayList celli = new IntArrayList();
+    private IntArrayList cellj = new IntArrayList();
+    private IntArrayList cellk = new IntArrayList();
 
     /** The head and list pointers for each cell. */
-    private IntArray head  = new IntArray();
-    private IntArray list  = new IntArray();
+    private IntArrayList head  = new IntArrayList();
+    private IntArrayList list  = new IntArrayList();
 
     /** Mapping from passed ids to internal ids. */
-    private IntArray ids   = new IntArray();
+    private IntArrayList ids   = new IntArrayList();
 
     /** Constant to indicate we don't care about ids. */
     public final static int Undefined = Integer.MIN_VALUE;

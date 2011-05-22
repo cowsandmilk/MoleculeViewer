@@ -18,8 +18,9 @@
 package astex.anasurface;
 
 import astex.*;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-class Edge extends IntArray {
+class Edge extends IntArrayList {
     /** Index of first sphere on edge. */
     public Vertex v0 = new Vertex();
     

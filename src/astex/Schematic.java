@@ -18,6 +18,7 @@
 package astex;
 
 import java.util.List;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 
 /**
  * Class for creating schematic diagrams.
@@ -616,7 +617,7 @@ public class Schematic {
 	int rfirst = resids[0];
 	int rlast = resids[residCount - 1];
 
-	DoubleArray radii = null;
+	DoubleArrayList radii = null;
 
 	// apply guide point smoothing.
 	for(int iteration = 0; iteration < smooth; iteration++){
@@ -711,7 +712,7 @@ public class Schematic {
 	int plast[] = new int[perimPoints];
 
 	if(taper){
-	    radii = new DoubleArray();
+	    radii = new DoubleArrayList();
 	}
 
 	// build the trig lookup table
@@ -819,7 +820,7 @@ public class Schematic {
 	    double rr = radius;
 
 	    if(taper){
-		rr = radii.get(isp);
+		rr = radii.getDouble(isp);
 	    }
 
 	    color = splineColor[isp];

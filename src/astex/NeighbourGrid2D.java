@@ -16,6 +16,7 @@
  */
 
 package astex;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 class NeighbourGrid2D {
     /** The maximum number of cells along an edge. */
@@ -40,7 +41,7 @@ class NeighbourGrid2D {
     private int ncell = 0;
 
     /** The list of cell positions for atoms. */
-    private IntArray list = new IntArray();
+    private IntArrayList list = new IntArrayList();
 
     /** The head pointers for each cell. */
     private int head[] = null;
@@ -128,14 +129,14 @@ class NeighbourGrid2D {
     public int getPossibleNeighbours(int id,
 				     double x, double y,
 				     double d,
-				     IntArray neighbours,
+				     IntArrayList neighbours,
 				     boolean allNeighbours){
 	int ibox = ((int)((x - xmin)/spacing));
 	int jbox = ((int)((y - ymin)/spacing));
 
 	int offset = 0 + (int)(0.5 + d/spacing);
 
-	int l[] = list.toArray();
+	int l[] = list.toIntArray();
 
 	for(int i = -offset; i <= offset; i++){
 	    int ii = ibox + i;
