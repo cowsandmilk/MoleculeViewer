@@ -1357,9 +1357,9 @@ public class Renderer {
 
 	frontFaceOnly = !tmesh.backface;
 
-	if(tmesh.colorStyle == Tmesh.VertexColor){
+	if(tmesh.colorStyle == Tmesh.ColorStyle.VertexColor){
 	    renderMode |= ModeVertex;
-	}else if(tmesh.colorStyle == Tmesh.ObjectColor){
+	}else if(tmesh.colorStyle == Tmesh.ColorStyle.ObjectColor){
 	    setColor(tmesh.color);
 	}else if((renderMode & ModeTexture) == 0){
 	    renderMode |= ModeTriangle;
@@ -4014,9 +4014,9 @@ public class Renderer {
 	// radius is stored in nx for the sphere
 	for(int i = 0; i < sphereCount; i++){
 	    int c0 = 0;
-	    if(tmesh.colorStyle == Tmesh.ObjectColor){
+	    if(tmesh.colorStyle == Tmesh.ColorStyle.ObjectColor){
 		c0 = tmesh.color;
-	    }else if(tmesh.colorStyle == Tmesh.VertexColor){
+	    }else if(tmesh.colorStyle == Tmesh.ColorStyle.VertexColor){
 		c0 = tmesh.vcolor[i];
 	    }else{
 		c0 = tmesh.vcolor[i];
@@ -4047,7 +4047,7 @@ public class Renderer {
 	    int p1 = tmesh.t1[i];
 	    int c0 = 0;
 	    int c1 = 0;
-	    if(tmesh.colorStyle == Tmesh.ObjectColor){
+	    if(tmesh.colorStyle == Tmesh.ColorStyle.ObjectColor){
 		c0 = tmesh.color;
 		c1 = tmesh.color;
 	    }else{

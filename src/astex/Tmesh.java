@@ -125,17 +125,12 @@ public class Tmesh {
     /** Renderering Style. */
     public Style style = Style.TRIANGLES;
 
+    public enum ColorStyle {
+	ObjectColor, TriangleColor, VertexColor
+    }
+    
     /** Color style. */
-    public int colorStyle = ObjectColor;
-
-    /** The color style possibilities. */
-    public static final int ObjectColor = 1;
-
-    /** The color style possibilities. */
-    public static final int TriangleColor = 2;
-
-    /** The color style possibilities. */
-    public static final int VertexColor = 3;
+    public ColorStyle colorStyle = ColorStyle.ObjectColor;
 
     /** Debugging on? */
     private boolean debug = false;
@@ -223,7 +218,7 @@ public class Tmesh {
     }
 
     /** Set the object color style. */
-    public void setColorStyle(int s){
+    public void setColorStyle(ColorStyle s){
 	colorStyle = s;
 	if(lines != null) lines.setColorStyle(s);
 	if(spheres != null) spheres.setColorStyle(s);
@@ -231,7 +226,7 @@ public class Tmesh {
     }
 
     /** Get the object color style. */
-    public int getColorStyle(){
+    public ColorStyle getColorStyle(){
 	return colorStyle;
     }
 
@@ -555,8 +550,8 @@ public class Tmesh {
 	if(style != Style.CYLINDERS){
 	    if(cylinders == null){
 		cylinders = new Tmesh();
-		cylinders.colorStyle = VertexColor;
 		cylinders.style = Style.CYLINDERS;
+		cylinders.colorStyle = ColorStyle.VertexColor;
 	    }
 
 	    cylinders.addCylinder(x1, y1, z1, x2, y2, z2, r, c1, c2);
