@@ -633,16 +633,16 @@ public class ThinletUI extends Thinlet implements WindowListener,
     }
 
     public boolean handleRendererEvent(final RendererEvent re){
-        if(re.getType() == RendererEvent.ObjectAdded){
+        if(re.getType() == RendererEvent.Type.ObjectAdded){
             final Tmesh tmesh = (Tmesh)re.getItem();
             final Object objectList = findComponent("object_list");
 
             addObject(objectList, tmesh);
-        }else if(re.getType() == RendererEvent.ObjectRemoved){
+        }else if(re.getType() == RendererEvent.Type.ObjectRemoved){
             final Tmesh tmesh = (Tmesh)re.getItem();
 
             remove(find(tmesh.getName()));
-	}else if(re.getType() == RendererEvent.FrontClipMoved){
+	}else if(re.getType() == RendererEvent.Type.FrontClipMoved){
 	    final Double d = (Double)re.getItem();
 	    if(d != null){
 		final double val = d.doubleValue();
@@ -652,7 +652,7 @@ public class ThinletUI extends Thinlet implements WindowListener,
                     setString(clip, "text", String.format("%.1f", val));
                 }
             }
-	}else if(re.getType() == RendererEvent.BackClipMoved){
+	}else if(re.getType() == RendererEvent.Type.BackClipMoved){
 	    final Double d = (Double)re.getItem();
 	    if(d != null){
 		final double val = d.doubleValue();

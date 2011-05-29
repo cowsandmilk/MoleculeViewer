@@ -338,7 +338,7 @@ public class Renderer {
 
 	if(fireEvent){
 	    RendererEvent re =
-		new RendererEvent(RendererEvent.FrontClipMoved,
+		new RendererEvent(RendererEvent.Type.FrontClipMoved,
 				  Double.valueOf(front));
 	    fireRendererEvent(re);
 	}
@@ -361,7 +361,7 @@ public class Renderer {
 
 	if(fireEvent){
 	    RendererEvent re =
-		new RendererEvent(RendererEvent.BackClipMoved,
+		new RendererEvent(RendererEvent.Type.BackClipMoved,
 				  Double.valueOf(back));
 	    fireRendererEvent(re);
 	}
@@ -534,7 +534,7 @@ public class Renderer {
 
 	objects.add(tm);
 
-	RendererEvent re = new RendererEvent(RendererEvent.ObjectAdded, tm);
+	RendererEvent re = new RendererEvent(RendererEvent.Type.ObjectAdded, tm);
 
 	fireRendererEvent(re);
     }
@@ -620,7 +620,7 @@ public class Renderer {
     private void removeGraphicalObjects(Iterator<Tmesh> it, Tmesh tm){
 	it.remove();
 	RendererEvent re =
-	    new RendererEvent(RendererEvent.ObjectRemoved, tm);
+	    new RendererEvent(RendererEvent.Type.ObjectRemoved, tm);
 
 	fireRendererEvent(re);
     }

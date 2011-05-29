@@ -19,24 +19,23 @@ package astex;
 
 /** Events fired from the renderer. */
 public class RendererEvent {
-    public RendererEvent(int t, Object o){
+    public RendererEvent(Type t, Object o){
 	type = t;
 	item = o;
     }
 
-    public static final int ObjectAdded = 1;
-    public static final int ObjectRemoved = 2;
-    public static final int FrontClipMoved = 3;
-    public static final int BackClipMoved = 4;
+    public enum Type {
+	ObjectAdded, ObjectRemoved, FrontClipMoved, BackClipMoved
+    }
 
     /** The type of the event. */
-    private int type = 0;
+    private Type type;
     
     /**
      * Get the value of type.
      * @return value of type.
      */
-    public int getType() {
+    public Type getType() {
 	return type;
     }
 

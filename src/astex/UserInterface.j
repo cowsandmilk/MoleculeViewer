@@ -1444,16 +1444,14 @@ class UserInterface implements MouseListener, JCOutlinerListener,
 
     /** Handle events in the renderer. */
     public boolean handleRendererEvent(RendererEvent re){
-	int type = re.getType();
-
-	if(type == RendererEvent.ObjectAdded){
+	if(re.getType() == RendererEvent.Type.ObjectAdded){
 	    Tmesh tm = (Tmesh)re.getItem();
 
 	    ObjectControl oc = new ObjectControl(this, tm);
 
 	    objectContainer.add(oc);
 	    objectContainer.doLayout();
-	}else if(type == RendererEvent.ObjectRemoved){
+	}else if(re.getType() == RendererEvent.Type.ObjectRemoved){
 	    Tmesh tm = (Tmesh)re.getItem();
 
 	    System.out.println("remove " + tm);
@@ -1469,7 +1467,7 @@ class UserInterface implements MouseListener, JCOutlinerListener,
 		}
 	    }
 
-	}else if(type == RendererEvent.FrontClipMoved){
+	}else if(re.getType() == RendererEvent.Type.FrontClipMoved){
 	    Double d = (Double)re.getItem();
 	    if(d != null){
 		double val = d.doubleValue();
@@ -1477,7 +1475,7 @@ class UserInterface implements MouseListener, JCOutlinerListener,
 		frontClip.setValue((int)(val * 10), false);
 		frontValue.setText(f.format(val));
 	    }
-	}else if(type == RendererEvent.BackClipMoved){
+	}else if(re.getType() == RendererEvent.Type.BackClipMoved){
 	    Double d = (Double)re.getItem();
 	    if(d != null){
 		double val = -d.doubleValue();
