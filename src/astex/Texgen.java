@@ -343,11 +343,11 @@ public class Texgen {
 
 	Point3d hpos = new Point3d();
 	hpos.set(N);
-	hpos.subtract(C);
+	hpos.sub(C);
 	hpos.add(N);
-	hpos.subtract(CA);
+	hpos.sub(CA);
 
-	hpos.normalise();
+	hpos.normalize();
 	hpos.scale(1.04);
 
 	hpos.add(N);

@@ -846,7 +846,7 @@ public class Surface {
 
     private static int findSpherePoint(Point3d a, Point3d b){
 	Point3d mid = Point3d.mid(a, b);
-	mid.normalise();
+	mid.normalize();
 
 	int d = 0;
 	for(Point3d p : dots){

@@ -177,9 +177,9 @@ public class Schematic {
 	    }
 
 	    tangents[r].zero();
-	    tangents[r].subtract(guides[before]);
+	    tangents[r].sub(guides[before]);
 	    tangents[r].add(guides[after]);
-	    tangents[r].normalise();
+	    tangents[r].normalize();
 	}
 
 	// calculate out of plane normals
@@ -427,8 +427,8 @@ public class Schematic {
 		h[r].set(j, COSA * width[r].get(j) + SINA * tangents[r].get(j));
 	    }
 
-	    t[r].normalise();
-	    h[r].normalise();
+	    t[r].normalize();
+	    h[r].normalize();
 	    Point3d.cross(tout[r], t[r], h[r]);
 	}
 
@@ -489,7 +489,7 @@ public class Schematic {
 			    en.set(c, ct * wint.get(c) * at + st * tint.get(c) * w);
 			}
 
-			en.normalise();
+			en.normalize();
 
 			currentEllipse[iep] = tm.addPoint(ep.x, ep.y, ep.z, en.x, en.y, en.z, 0.0, 0.0);
 		    }
@@ -648,9 +648,9 @@ public class Schematic {
 	    }
 
 	    tangents[r].zero();
-	    tangents[r].subtract(guides[before]);
+	    tangents[r].sub(guides[before]);
 	    tangents[r].add(guides[after]);
-	    tangents[r].normalise();
+	    tangents[r].normalize();
 	}
 
 	boolean fudgeFirst = false;
@@ -926,7 +926,7 @@ public class Schematic {
 		}else if(i < residCount - 1){
 		    tmp[r].add(width[r+1]);
 		}
-		tmp[r].normalise();
+		tmp[r].normalize();
 	    }
 
 	    // and reinstall them...
@@ -976,7 +976,7 @@ public class Schematic {
 	    // try and reorthogonalise the width vectors
 	    Point3d.cross(ref, width[r], ab);
 	    Point3d.cross(width[r], ref, ab);
-	    width[r].normalise();
+	    width[r].normalize();
 
 	    Point3d.cross(thick[r], ab, width[r]);
 	}
@@ -1138,7 +1138,7 @@ public class Schematic {
 	s.x = p1.x + t * (p2.x - p1.x);
 	s.y = p1.y + t * (p2.y - p1.y);
 	s.z = p1.z + t * (p2.z - p1.z);
-	s.normalise();
+	s.normalize();
     }
 
     /** Interpolate hermite spline. */

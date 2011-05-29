@@ -882,11 +882,11 @@ public class MoleculeRenderer {
 
 	Point3d hpos = new Point3d();
 	hpos.set(N);
-	hpos.subtract(C);
+	hpos.sub(C);
 	hpos.add(N);
-	hpos.subtract(CA);
+	hpos.sub(CA);
 
-	hpos.normalise();
+	hpos.normalize();
 	hpos.scale(1.04);
 
 	hpos.add(N);
@@ -4226,7 +4226,7 @@ public class MoleculeRenderer {
 	    }
 	}else{
 	    Point3d first2second = Point3d.unitVector(firstAtom, secondAtom);
-	    first2second.normalise();
+	    first2second.normalize();
 	    Point3d normal = getDoubleBondOffsetVector(firstAtom, secondAtom);
 	    normal.scale(doubleBondOffset);
 	    first2second.scale(0.1);
@@ -4240,7 +4240,7 @@ public class MoleculeRenderer {
 	    Point3d secondEnd = secondAtom.clone();
 	    secondEnd.add(normal);
 	    if(secondAtom.getBondCount() > 1){
-		secondEnd.subtract(first2second);
+		secondEnd.sub(first2second);
 	    }
 
 	    if(bond.getBondOrder() == Bond.BondOrder.AromaticBond){
@@ -4255,15 +4255,15 @@ public class MoleculeRenderer {
 
 	    if(triple){
 		firstEnd = firstAtom.clone();
-		firstEnd.subtract(normal);
+		firstEnd.sub(normal);
 		if(firstAtom.getBondCount() > 1){
 		    firstEnd.add(first2second);
 		}
 
 		secondEnd = secondAtom.clone();
-		secondEnd.subtract(normal);
+		secondEnd.sub(normal);
 		if(secondAtom.getBondCount() > 1){
-		    secondEnd.subtract(first2second);
+		    secondEnd.sub(first2second);
 		}
 
 		drawLine(firstEnd.x, firstEnd.y, firstEnd.z,
@@ -4276,7 +4276,7 @@ public class MoleculeRenderer {
     /** Direction of double bond offset for non-ring double bond. */
     private Point3d getDoubleBondOffsetVector(Atom firstAtom, Atom secondAtom){
 	Point3d first2second = Point3d.unitVector(firstAtom, secondAtom);
-	first2second.normalise();
+	first2second.normalize();
 	Atom targetAtom = null;
 	Atom otherAtom = null;
 	if(firstAtom.getBondCount() > 1){
@@ -4297,9 +4297,9 @@ public class MoleculeRenderer {
 		    // this will do for the vector.
 		    Point3d dir = Point3d.unitVector(targetAtom, a);
 		    Point3d reference = dir.cross(first2second);
-		    reference.normalise();
+		    reference.normalize();
 		    Point3d normal = first2second.cross(reference);
-		    normal.normalise();
+		    normal.normalize();
 		    return normal;
 		}
 	    }

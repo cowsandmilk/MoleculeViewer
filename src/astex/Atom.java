@@ -48,6 +48,7 @@ import java.awt.Color;
 public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Default constructor. */
     private Atom(){
+	super();
 	initialise();
     }
 
@@ -109,9 +110,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public static final int sp = 1;
 
     /** Initialise an atom. */
-    @Override
     public void initialise(){
-	super.initialise();
 	bonds         = null;
 	firstBond     = null;
 	secondBond    = null;

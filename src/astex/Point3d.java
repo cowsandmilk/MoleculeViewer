@@ -17,6 +17,8 @@
 
 package astex;
 
+import javax.vecmath.Vector3d;
+
 
 /* Copyright Astex Technology Ltd. 1999 */
 /* Copyright David Hall, Boston University, 2011 */
@@ -29,11 +31,7 @@ package astex;
 /**
  * A class for manipulating 3d points and vectors.
  */
-public class Point3d implements Cloneable {
-    /**
-     * The object space coordinates of the this point.
-     */
-    public double x, y, z;
+public class Point3d extends Vector3d implements Cloneable {
 
     /**
      * Default constructor.
@@ -41,23 +39,14 @@ public class Point3d implements Cloneable {
      * The x, y and z coordinates are set to 0.0
      */
     public Point3d(){
-	this(0.0, 0.0, 0.0);
+	super();
     }
 
     /**
      * Constructor which allows the x, y, and z coordinates to be specified.
      */
     public Point3d(double xx, double yy, double zz){
-	x = xx;
-	y = yy;
-	z = zz;
-    }
-
-    /**
-     * Initialise a point.
-     */
-    public void initialise(){
-	zero();
+	super(xx,yy,zz);
     }
 
     /**
@@ -73,33 +62,8 @@ public class Point3d implements Cloneable {
      * Clone method
      */
     @Override
-    protected Point3d clone() {
-	try {
-	    return (Point3d) super.clone();
-	} catch(CloneNotSupportedException e) {
-	    throw new Error("This should never happen");
-	}
-    }
-
-
-    /**
-     * Set the x, y and z coordinates of this Point3d.
-     *
-     * Transformed and screen coordinates are not affected.
-     */
-    public void set(double xx, double yy, double zz){
-	x = xx;
-	y = yy;
-	z = zz;
-    }
-
-    /**
-     * Set the x, y and z coordinates to the values from another Point3d.
-     */
-    public void set(Point3d p){
-	x = p.x;
-	y = p.y;
-	z = p.z;
+    public Point3d clone() {
+	return (Point3d) super.clone();
     }
 
     /** Set the specified component. */
@@ -164,35 +128,6 @@ public class Point3d implements Cloneable {
     }
 
     /**
-     * Add the x, y and z coordinates from another Point3d to the
-     * coordinates of this point.
-     */
-    public void add(Point3d p){
-	x += p.x;
-	y += p.y;
-	z += p.z;
-    }
-
-    /**
-     * Subtract the x, y and z coordinates from another Point3d from the
-     * coordinates of this point.
-     */
-    public void subtract(Point3d p){
-	x -= p.x;
-	y -= p.y;
-	z -= p.z;
-    }
-
-    /**
-     * Negate the x, y and z coordinates of this point.
-     */
-    public void negate(){
-	x = -x;
-	y = -y;
-	z = -z;
-    }
-
-    /**
      * Construct a point with the x, y and z coordinates equal to the
      * midpoint of two other Point3ds.
      */
@@ -216,36 +151,6 @@ public class Point3d implements Cloneable {
     }
 
     /**
-     * Make the position vector of this point have unit length.
-     *
-     * That is, divide x, y and z by Math.sqrt(x*x + y*y + z*z).
-     * If the divisor is zero no change is made.
-     */
-    public void normalise(){
-	double norm = Math.sqrt(x*x + y*y + z*z);
-
-	if(Math.abs(norm) > 1.e-5){
-	    x /= norm;
-	    y /= norm;
-	    z /= norm;
-	}
-    }
-
-    /**
-     * Return the dot product of this vector with another one.
-     */
-    public double dot(Point3d p){
-	return x * p.x + y * p.y + z * p.z;
-    }
-
-    /**
-     * Return the length of the vector.
-     */
-    public double length(){
-	return Math.sqrt(x*x + y*y + z*z);
-    }
-
-    /**
      * Return another point, which is at the mid point of two points.
      */
     public static Point3d unitVector(Point3d p1, Point3d p2){
@@ -253,7 +158,7 @@ public class Point3d implements Cloneable {
 
 	Point3d unit = new Point3d(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
 
-	unit.normalise();
+	unit.normalize();
 
 	return unit;
     }
@@ -264,7 +169,7 @@ public class Point3d implements Cloneable {
 
 	up12.set(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
 
-	up12.normalise();
+	up12.normalize();
     }
 
     /**
@@ -298,7 +203,7 @@ public class Point3d implements Cloneable {
 	else if(p.y != 0.) normal.y = (p.x + p.z) / -p.y;
 	else if(p.z != 0.) normal.z = (p.x + p.y) / -p.z;
 
-	normal.normalise();
+	normal.normalize();
 
 	return normal;
     }
@@ -319,16 +224,16 @@ public class Point3d implements Cloneable {
 	else if(p.y != 0.) n.y = (p.x + p.z) / -p.y;
 	else if(p.z != 0.) n.z = (p.x + p.y) / -p.z;
 
-	n.normalise();
+	n.normalize();
     }
 
     /** Return cross product with c. */
     public Point3d cross(Point3d c){
 
-	Point3d a = new Point3d((y * c.z) - (z * c.y),
-				(z * c.x) - (x * c.z),
-				(x * c.y) - (y * c.x));
-	a.normalise();
+	Point3d a = new Point3d();
+	a.cross(this, c);
+	
+	a.normalize();
 
 	return a;
     }
@@ -336,19 +241,14 @@ public class Point3d implements Cloneable {
     /** Set a to cross product of b and c. */
     public static void cross(Point3d a, Point3d b, Point3d c){
 
-	a.set((b.y * c.z) - (b.z * c.y),
-	      (b.z * c.x) - (b.x * c.z),
-	      (b.x * c.y) - (b.y * c.x));
+	a.cross(b,c);
 
-	a.normalise();
+	a.normalize();
     }
 
     /** Set a to cross product of b and c. */
     public static void crossNoNormalise(Point3d a, Point3d b, Point3d c){
-
-	a.set((b.y * c.z) - (b.z * c.y),
-	      (b.z * c.x) - (b.x * c.z),
-	      (b.x * c.y) - (b.y * c.x));
+	a.cross(b,c);
     }
 
     /** Generate cross product for double[] vectors. */
@@ -356,13 +256,6 @@ public class Point3d implements Cloneable {
 	a[0] = (b[1] * c[2]) - (b[2] * c[1]);
 	a[1] = (b[2] * c[0]) - (b[0] * c[2]);
 	a[2] = (b[0] * c[1]) - (b[1] * c[0]);
-    }
-
-    /**
-     * Scale the point by the specified amount.
-     */
-    public void scale(double len){
-	x *= len; y *= len; z *= len;
     }
 
     /**
@@ -387,9 +280,7 @@ public class Point3d implements Cloneable {
 
     /** Scale a vector by the amount specified for each coordinate. */
     public void divide(double s){
-	x /= s;
-	y /= s;
-	z /= s;
+	scale(1/s);
     }
 
     /** Calculate the angle between the 3 points. */
@@ -425,8 +316,8 @@ public class Point3d implements Cloneable {
 	v3 = unitVector(p3, p4);
 		
 	/* form xprods and normalise */
-	n1 = v1.cross(v2); n1.normalise();
-	n2 = v2.cross(v3); n2.normalise();
+	n1 = v1.cross(v2); n1.normalize();
+	n2 = v2.cross(v3); n2.normalize();
 		
 	/*
 	 * get the angle between xprods and figure out whether to negate it

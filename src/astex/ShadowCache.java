@@ -425,7 +425,7 @@ class ShadowCache {
 	    }
 	}
 
-	light.normalise();
+	light.normalize();
 
 	//reform ray1 as the direction to the light
 
@@ -567,12 +567,12 @@ class ShadowCache {
 	// on screen orientation
 	light.y = -l0.pos[1];
 	light.z = l0.pos[2];
-	light.normalise();
+	light.normalize();
 
 	lightx = Point3d.normalToLine(light);
-	lightx.normalise();
+	lightx.normalize();
 	lighty = lightx.cross(light);
-	lighty.normalise();
+	lighty.normalize();
 
 	tx0 = tcachex0.toFloatArray();
 	ty0 = tcachey0.toFloatArray();
