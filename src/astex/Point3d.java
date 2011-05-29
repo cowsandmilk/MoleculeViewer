@@ -349,9 +349,9 @@ public class Point3d extends Vector3d implements Cloneable {
 
     /** Transform this atom to screen coordinates. */
     public void transform(Matrix m){
-	double xx = x*m.x00 + y*m.x10 + z*m.x20 + m.x30;
-	double yy = x*m.x01 + y*m.x11 + z*m.x21 + m.x31;
-	double zz = x*m.x02 + y*m.x12 + z*m.x22 + m.x32;
+	double xx = x*m.m00 + y*m.m10 + z*m.m20 + m.m30;
+	double yy = x*m.m01 + y*m.m11 + z*m.m21 + m.m31;
+	double zz = x*m.m02 + y*m.m12 + z*m.m22 + m.m32;
 
 	x = xx;
 	y = yy;

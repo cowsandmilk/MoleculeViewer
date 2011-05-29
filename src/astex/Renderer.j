@@ -1127,10 +1127,10 @@ public class Renderer {
     /** Apply a transform to a point. */
     public void applyTransform(double x, double y, double z, double s[]){
         Matrix m = overallMatrix;
-        double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
-        double mx10 = m.x10, mx11 = m.x11, mx12 = m.x12;
-        double mx20 = m.x20, mx21 = m.x21, mx22 = m.x22;
-        double mx30 = m.x30, mx31 = m.x31, mx32 = m.x32;
+        double mx00 = m.m00, mx01 = m.m01, mx02 = m.m02;
+        double mx10 = m.m10, mx11 = m.m11, mx12 = m.m12;
+        double mx20 = m.m20, mx21 = m.m21, mx22 = m.m22;
+        double mx30 = m.m30, mx31 = m.m31, mx32 = m.m32;
         double xx = x*mx00 + y*mx10 + z*mx20 + mx30 + 0.5;
         double yy = x*mx01 + y*mx11 + z*mx21 + mx31 + 0.5;
         double zz = x*mx02 + y*mx12 + z*mx22 + mx32;
@@ -1142,9 +1142,9 @@ public class Renderer {
     /** Apply a transform to a point. */
     private void transformNormal(double x, double y, double z, double s[]){
         Matrix m = rotationMatrix;
-        double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
-        double mx10 = m.x10, mx11 = m.x11, mx12 = m.x12;
-        double mx20 = m.x20, mx21 = m.x21, mx22 = m.x22;
+        double mx00 = m.m00, mx01 = m.m01, mx02 = m.m02;
+        double mx10 = m.m10, mx11 = m.m11, mx12 = m.m12;
+        double mx20 = m.m20, mx21 = m.m21, mx22 = m.m22;
         double xx = x*mx00 + y*mx10 + z*mx20;
         double yy = x*mx01 + y*mx11 + z*mx21;
         double zz = x*mx02 + y*mx12 + z*mx22;
@@ -1167,15 +1167,15 @@ public class Renderer {
 	float vlocal[] = tmesh.v;
 
 	Matrix m = overallMatrix;
-	double mx00 = m.x00, mx01 = m.x01, mx02 = m.x02;
-	double mx10 = m.x10, mx11 = m.x11, mx12 = m.x12;
-	double mx20 = m.x20, mx21 = m.x21, mx22 = m.x22;
-	double mx30 = m.x30, mx31 = m.x31, mx32 = m.x32;
+	double mx00 = m.m00, mx01 = m.m01, mx02 = m.m02;
+	double mx10 = m.m10, mx11 = m.m11, mx12 = m.m12;
+	double mx20 = m.m20, mx21 = m.m21, mx22 = m.m22;
+	double mx30 = m.m30, mx31 = m.m31, mx32 = m.m32;
 
 	Matrix r = rotationMatrix;
-	double rx00 = r.x00, rx01 = r.x01, rx02 = r.x02;
-	double rx10 = r.x10, rx11 = r.x11, rx12 = r.x12;
-	double rx20 = r.x20, rx21 = r.x21, rx22 = r.x22;
+	double rx00 = r.m00, rx01 = r.m01, rx02 = r.m02;
+	double rx10 = r.m10, rx11 = r.m11, rx12 = r.m12;
+	double rx20 = r.m20, rx21 = r.m21, rx22 = r.m22;
 
 	double x, y, z, xx, yy, zz;
 
@@ -2461,10 +2461,10 @@ public class Renderer {
 
 	// need floating point z coordinate to get clipping right
 	double overallScale = getOverallScale();
-	xs = (int)(x*m.x00 + y*m.x10 + z*m.x20 + m.x30 + 0.5);
-	ys = (int)(x*m.x01 + y*m.x11 + z*m.x21 + m.x31 + 0.5);
+	xs = (int)(x*m.m00 + y*m.m10 + z*m.m20 + m.m30 + 0.5);
+	ys = (int)(x*m.m01 + y*m.m11 + z*m.m21 + m.m31 + 0.5);
 
-	zs = x*m.x02 + y*m.x12 + z*m.x22 + m.x32;
+	zs = x*m.m02 + y*m.m12 + z*m.m22 + m.m32;
 
 	int zscale = (int)(zs*ZFixedBits);
 

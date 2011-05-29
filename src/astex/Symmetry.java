@@ -151,11 +151,11 @@ public class Symmetry {
 	m.setIdentity();
 
 	decodeSymmetryToken(xToken, c);
-	m.x00 = c[0]; m.x10 = c[1]; m.x20 = c[2]; m.x30 = c[3];
+	m.m00 = c[0]; m.m10 = c[1]; m.m20 = c[2]; m.m30 = c[3];
 	decodeSymmetryToken(yToken, c);
-	m.x01 = c[0]; m.x11 = c[1]; m.x21 = c[2]; m.x31 = c[3];
+	m.m01 = c[0]; m.m11 = c[1]; m.m21 = c[2]; m.m31 = c[3];
 	decodeSymmetryToken(zToken, c);
-	m.x02 = c[0]; m.x12 = c[1]; m.x22 = c[2]; m.x32 = c[3];
+	m.m02 = c[0]; m.m12 = c[1]; m.m22 = c[2]; m.m32 = c[3];
 
 	symmetryOperators.add(m);
     }
@@ -235,7 +235,7 @@ public class Symmetry {
 
 	    Matrix sinv = new Matrix();
 
-	    Matrix.invert(s, sinv);
+	    sinv.invert(s);
 
 	    Matrix tmp = new Matrix(s);
 	    tmp.transform(sinv);
@@ -245,9 +245,9 @@ public class Symmetry {
 	    Matrix check = new Matrix(s);
 	    check.transform(f2c);
 
-	    check.x30 = 0.0;
-	    check.x31 = 0.0;
-	    check.x32 = 0.0;
+	    check.m30 = 0.0;
+	    check.m31 = 0.0;
+	    check.m32 = 0.0;
 
 	    Matrix checkt = new Matrix(check);
 
@@ -261,8 +261,8 @@ public class Symmetry {
 
 	    if(check.isIdentity(1.e-2)){
 		// reorientation was pure rotation
-		c2f.copy(s);
-		f2c.copy(sinv);
+		c2f.set(s);
+		f2c.set(sinv);
 	    }else{
 		System.err.println("prepareSymmetry: inconsistent " +
 				   "scale matrix - ignored");
@@ -349,21 +349,21 @@ public class Symmetry {
 		
 	/* Cartesian to fractional conversion matrix. */
 
-	cartesianToFractional.x00=1.0/cell[0];
-	cartesianToFractional.x10=-cabg[2]/(sabg[2]*cell[0]);
-	cartesianToFractional.x20=-(cabg[2]*sabg[1]*cabgs[0]+cabg[1]*sabg[2])/
+	cartesianToFractional.m00=1.0/cell[0];
+	cartesianToFractional.m10=-cabg[2]/(sabg[2]*cell[0]);
+	cartesianToFractional.m20=-(cabg[2]*sabg[1]*cabgs[0]+cabg[1]*sabg[2])/
 	    (sabg[1]*sabgs1*sabg[2]*cell[0]);
-	cartesianToFractional.x11=1.0/(sabg[2]*cell[1]);
-	cartesianToFractional.x21=cabgs[0]/(sabgs1*sabg[2]*cell[1]);
-	cartesianToFractional.x22=1.0/(sabg[1]*sabgs1*cell[2]);
+	cartesianToFractional.m11=1.0/(sabg[2]*cell[1]);
+	cartesianToFractional.m21=cabgs[0]/(sabgs1*sabg[2]*cell[1]);
+	cartesianToFractional.m22=1.0/(sabg[1]*sabgs1*cell[2]);
 
 	/* Fractional to cartesian matrix. */
 
-	fractionalToCartesian.x00= cell[0];
-	fractionalToCartesian.x10= cabg[2]*cell[1];
-	fractionalToCartesian.x20= cabg[1]*cell[2];
-	fractionalToCartesian.x11= sabg[2]*cell[1];
-	fractionalToCartesian.x21=-sabg[1]*cabgs[0]*cell[2];
-	fractionalToCartesian.x22=sabg[1]*sabgs1*cell[2];
+	fractionalToCartesian.m00= cell[0];
+	fractionalToCartesian.m10= cabg[2]*cell[1];
+	fractionalToCartesian.m20= cabg[1]*cell[2];
+	fractionalToCartesian.m11= sabg[2]*cell[1];
+	fractionalToCartesian.m21=-sabg[1]*cabgs[0]*cell[2];
+	fractionalToCartesian.m22=sabg[1]*sabgs1*cell[2];
     }
 }

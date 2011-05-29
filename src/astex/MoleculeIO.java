@@ -430,15 +430,15 @@ public class MoleculeIO {
 		}else if(c1 == 'E' && c2 == 'L'){
 		    // should hold a matrix
 		    Matrix symmetry = new Matrix();
-		    symmetry.x00 = file.getDouble(1);
-		    symmetry.x01 = file.getDouble(2);
-		    symmetry.x02 = file.getDouble(3);
-		    symmetry.x10 = file.getDouble(4);
-		    symmetry.x11 = file.getDouble(5);
-		    symmetry.x12 = file.getDouble(6);
-		    symmetry.x20 = file.getDouble(7);
-		    symmetry.x21 = file.getDouble(8);
-		    symmetry.x22 = file.getDouble(9);
+		    symmetry.m00 = file.getDouble(1);
+		    symmetry.m01 = file.getDouble(2);
+		    symmetry.m02 = file.getDouble(3);
+		    symmetry.m10 = file.getDouble(4);
+		    symmetry.m11 = file.getDouble(5);
+		    symmetry.m12 = file.getDouble(6);
+		    symmetry.m20 = file.getDouble(7);
+		    symmetry.m21 = file.getDouble(8);
+		    symmetry.m22 = file.getDouble(9);
 
 		    symmetryElements++;
 
@@ -942,20 +942,20 @@ public class MoleculeIO {
 	char c5 = file.getChar(5);
 
 	if(c5 == '1'){
-	    r.x00 = file.readDouble(11, 9);
-	    r.x10 = file.readDouble(21, 9);
-	    r.x20 = file.readDouble(31, 9);
-	    r.x30 = file.readDouble(44, 11);
+	    r.m00 = file.readDouble(11, 9);
+	    r.m10 = file.readDouble(21, 9);
+	    r.m20 = file.readDouble(31, 9);
+	    r.m30 = file.readDouble(44, 11);
 	}else if(c5 == '2'){
-	    r.x01 = file.readDouble(11, 9);
-	    r.x11 = file.readDouble(21, 9);
-	    r.x21 = file.readDouble(31, 9);
-	    r.x31 = file.readDouble(44, 11);
+	    r.m01 = file.readDouble(11, 9);
+	    r.m11 = file.readDouble(21, 9);
+	    r.m21 = file.readDouble(31, 9);
+	    r.m31 = file.readDouble(44, 11);
 	}else if(c5 == '3'){
-	    r.x02 = file.readDouble(11, 9);
-	    r.x12 = file.readDouble(21, 9);
-	    r.x22 = file.readDouble(31, 9);
-	    r.x32 = file.readDouble(44, 11);
+	    r.m02 = file.readDouble(11, 9);
+	    r.m12 = file.readDouble(21, 9);
+	    r.m22 = file.readDouble(31, 9);
+	    r.m32 = file.readDouble(44, 11);
 	}else{
 	    System.err.println("readScaleRecord: illegal scale record");
 	    System.err.println(file.getCurrentLineAsString());
@@ -1321,20 +1321,20 @@ public class MoleculeIO {
 		// we need to write out the scale matrix
 
 		output.print("SCALE1    ");
-		output.print("%10.6f", scale.x00);
-		output.print("%10.6f", scale.x10);
-		output.print("%10.6f", scale.x20);
-		output.print("     %10.5f\n", scale.x30);
+		output.print("%10.6f", scale.m00);
+		output.print("%10.6f", scale.m10);
+		output.print("%10.6f", scale.m20);
+		output.print("     %10.5f\n", scale.m30);
 		output.print("SCALE2    ");
-		output.print("%10.6f", scale.x01);
-		output.print("%10.6f", scale.x11);
-		output.print("%10.6f", scale.x21);
-		output.print("     %10.5f\n", scale.x31);
+		output.print("%10.6f", scale.m01);
+		output.print("%10.6f", scale.m11);
+		output.print("%10.6f", scale.m21);
+		output.print("     %10.5f\n", scale.m31);
 		output.print("SCALE3    ");
-		output.print("%10.6f", scale.x02);
-		output.print("%10.6f", scale.x12);
-		output.print("%10.6f", scale.x22);
-		output.print("     %10.5f\n", scale.x32);
+		output.print("%10.6f", scale.m02);
+		output.print("%10.6f", scale.m12);
+		output.print("%10.6f", scale.m22);
+		output.print("     %10.5f\n", scale.m32);
 	    }
 	}
 

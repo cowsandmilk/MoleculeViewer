@@ -19,6 +19,7 @@ package astex.design;
 
 import astex.*;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import javax.vecmath.Quat4d;
 /**
  * Class for least squares fitting of sets of points.
  */
@@ -183,7 +184,7 @@ class Fit {
 	    Log.warn("quaternion norm is not 1.0... %8.3f", nq);
 	}
 
-	rotation.fromQuaternion(m[1][emin], m[2][emin], m[3][emin], m[4][emin]);
+	rotation.set(new Quat4d(m[1][emin], m[2][emin], m[3][emin], m[4][emin]));
 
 	trans.transform(rotation);
 

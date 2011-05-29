@@ -3466,10 +3466,10 @@ public class MoleculeRenderer {
 	command.append("animate\n\t-mode\t\trecenter\n\t-matrix\t\t\"");
 	Matrix m = renderer.rotationMatrix;
 
-	command.append(String.format("%g,%g,%g,%g", m.x00, m.x01, m.x02, m.x03));
-	command.append(String.format(",%g,%g,%g,%g", m.x10, m.x11, m.x12, m.x13));
-	command.append(String.format(",%g,%g,%g,%g", m.x20, m.x21, m.x22, m.x23));
-	command.append(String.format(",%g,%g,%g,%g", m.x30, m.x31, m.x32, m.x33));
+	command.append(String.format("%g,%g,%g,%g", m.m00, m.m01, m.m02, m.m03));
+	command.append(String.format(",%g,%g,%g,%g", m.m10, m.m11, m.m12, m.m13));
+	command.append(String.format(",%g,%g,%g,%g", m.m20, m.m21, m.m22, m.m23));
+	command.append(String.format(",%g,%g,%g,%g", m.m30, m.m31, m.m32, m.m33));
 
 	Point3d p = renderer.getCenter();
 

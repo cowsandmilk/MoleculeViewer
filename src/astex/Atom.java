@@ -874,9 +874,9 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     /** Transform this atom to screen coordinates. */
     public void transformToScreen(Matrix m){
 	// add 0.5 to make it the nearest integer
-	double xx = x*m.x00 + y*m.x10 + z*m.x20 + m.x30 + 0.5;
-	double yy = x*m.x01 + y*m.x11 + z*m.x21 + m.x31 + 0.5;
-	double zz = x*m.x02 + y*m.x12 + z*m.x22 + m.x32;
+	double xx = x*m.m00 + y*m.m10 + z*m.m20 + m.m30 + 0.5;
+	double yy = x*m.m01 + y*m.m11 + z*m.m21 + m.m31 + 0.5;
+	double zz = x*m.m02 + y*m.m12 + z*m.m22 + m.m32;
 
 	xs = (int)(xx) << Renderer.FixedBits;
 	ys = (int)(yy) << Renderer.FixedBits;

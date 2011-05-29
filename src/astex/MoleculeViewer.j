@@ -223,22 +223,22 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 		Matrix rm = new Matrix();
 
-		rm.x00 = FILE.readDouble(elements[0]);
-		rm.x01 = FILE.readDouble(elements[1]);
-		rm.x02 = FILE.readDouble(elements[2]);
-		rm.x03 = FILE.readDouble(elements[3]);
-		rm.x10 = FILE.readDouble(elements[4]);
-		rm.x11 = FILE.readDouble(elements[5]);
-		rm.x12 = FILE.readDouble(elements[6]);
-		rm.x13 = FILE.readDouble(elements[7]);
-		rm.x20 = FILE.readDouble(elements[8]);
-		rm.x21 = FILE.readDouble(elements[9]);
-		rm.x22 = FILE.readDouble(elements[10]);
-		rm.x23 = FILE.readDouble(elements[11]);
-		rm.x30 = FILE.readDouble(elements[12]);
-		rm.x31 = FILE.readDouble(elements[13]);
-		rm.x32 = FILE.readDouble(elements[14]);
-		rm.x33 = FILE.readDouble(elements[15]);
+		rm.m00 = FILE.readDouble(elements[0]);
+		rm.m01 = FILE.readDouble(elements[1]);
+		rm.m02 = FILE.readDouble(elements[2]);
+		rm.m03 = FILE.readDouble(elements[3]);
+		rm.m10 = FILE.readDouble(elements[4]);
+		rm.m11 = FILE.readDouble(elements[5]);
+		rm.m12 = FILE.readDouble(elements[6]);
+		rm.m13 = FILE.readDouble(elements[7]);
+		rm.m20 = FILE.readDouble(elements[8]);
+		rm.m21 = FILE.readDouble(elements[9]);
+		rm.m22 = FILE.readDouble(elements[10]);
+		rm.m23 = FILE.readDouble(elements[11]);
+		rm.m30 = FILE.readDouble(elements[12]);
+		rm.m31 = FILE.readDouble(elements[13]);
+		rm.m32 = FILE.readDouble(elements[14]);
+		rm.m33 = FILE.readDouble(elements[15]);
 
 		stage.setFinishMatrix(rm);
 	    }
@@ -2284,10 +2284,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	Renderer r = getMoleculeRenderer().renderer;
 	Matrix m = r.rotationMatrix;
 	viewString.append("matrix\n ")
-		  .append(m.x00).append(" ").append(m.x01).append(" ").append(m.x02).append(" ").append(m.x03).append("\n ")
-		  .append(m.x10).append(" ").append(m.x11).append(" ").append(m.x12).append(" ").append(m.x13).append("\n ")
-		  .append(m.x20).append(" ").append(m.x21).append(" ").append(m.x22).append(" ").append(m.x23).append("\n ")
-		  .append(m.x30).append(" ").append(m.x31).append(" ").append(m.x32).append(" ").append(m.x33).append("\n;");
+		  .append(m.m00).append(" ").append(m.m01).append(" ").append(m.m02).append(" ").append(m.m03).append("\n ")
+		  .append(m.m10).append(" ").append(m.m11).append(" ").append(m.m12).append(" ").append(m.m13).append("\n ")
+		  .append(m.m20).append(" ").append(m.m21).append(" ").append(m.m22).append(" ").append(m.m23).append("\n ")
+		  .append(m.m30).append(" ").append(m.m31).append(" ").append(m.m32).append(" ").append(m.m33).append("\n;");
 
 	Point3d center = r.getCenter();
 

@@ -964,28 +964,28 @@ miscellaneous_command ::=
 			}
 		:}
 	| MATRIX
-		number:x00 number:x01 number:x02 number:x03
-		number:x10 number:x11 number:x12 number:x13
-		number:x20 number:x21 number:x22 number:x23
-		number:x30 number:x31 number:x32 number:x33
+		number:m00 number:m01 number:m02 number:m03
+		number:m10 number:m11 number:m12 number:m13
+		number:m20 number:m21 number:m22 number:m23
+		number:m30 number:m31 number:m32 number:m33
 		{:
 			Matrix rm = parser.renderer.renderer.rotationMatrix;
-			rm.x00 = x00.doubleValue();
-			rm.x01 = x01.doubleValue();
-			rm.x02 = x02.doubleValue();
-			rm.x03 = x03.doubleValue();
-			rm.x10 = x10.doubleValue();
-			rm.x11 = x11.doubleValue();
-			rm.x12 = x12.doubleValue();
-			rm.x13 = x13.doubleValue();
-			rm.x20 = x20.doubleValue();
-			rm.x21 = x21.doubleValue();
-			rm.x22 = x22.doubleValue();
-			rm.x23 = x23.doubleValue();
-			rm.x30 = x30.doubleValue();
-			rm.x31 = x31.doubleValue();
-			rm.x32 = x32.doubleValue();
-			rm.x33 = x33.doubleValue();
+			rm.m00 = m00.doubleValue();
+			rm.m01 = m01.doubleValue();
+			rm.m02 = m02.doubleValue();
+			rm.m03 = m03.doubleValue();
+			rm.m10 = m10.doubleValue();
+			rm.m11 = m11.doubleValue();
+			rm.m12 = m12.doubleValue();
+			rm.m13 = m13.doubleValue();
+			rm.m20 = m20.doubleValue();
+			rm.m21 = m21.doubleValue();
+			rm.m22 = m22.doubleValue();
+			rm.m23 = m23.doubleValue();
+			rm.m30 = m30.doubleValue();
+			rm.m31 = m31.doubleValue();
+			rm.m32 = m32.doubleValue();
+			rm.m33 = m33.doubleValue();
 		:}
 	| BACKGROUND STRING:colorName
 		{:
