@@ -3053,9 +3053,9 @@ public class MoleculeRenderer {
 	contour.empty();
 
 	if(style == Map.Lines){
-	    contour.style = Tmesh.LINES;
+	    contour.style = Tmesh.Style.LINES;
 	}else if(style == Map.Surface){
-	    contour.style = Tmesh.TRIANGLES;
+	    contour.style = Tmesh.Style.TRIANGLES;
 	}
 
 	if(mapType == Map.CCP4_BINARY || mapType == Map.O_BINARY){
@@ -3119,7 +3119,7 @@ public class MoleculeRenderer {
 	    }
 	}
 
-	if(contour.style == Tmesh.TRIANGLES && mapType == Map.CCP4_BINARY){
+	if(contour.style == Tmesh.Style.TRIANGLES && mapType == Map.MapType.CCP4_BINARY){
 	    // swap surface normals round according
 	    // to the map header
 	    // we will regenerate them later...

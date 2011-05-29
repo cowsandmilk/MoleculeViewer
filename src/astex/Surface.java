@@ -239,9 +239,9 @@ public class Surface {
 	// fix
 	Tmesh surface = new Tmesh();
 	if(solid){
-	    surface.style = Tmesh.TRIANGLES;
+	    surface.style = Tmesh.Style.TRIANGLES;
 	}else{
-	    surface.style = Tmesh.LINES;
+	    surface.style = Tmesh.Style.LINES;
 	}
 
 	then = System.currentTimeMillis();
@@ -922,7 +922,7 @@ public class Surface {
 	// fix
 	//GraphicalObject ds = GraphicalObject.create();
 	Tmesh ds = new Tmesh();
-	ds.style = Tmesh.DOTS;
+	ds.style = Tmesh.Style.DOTS;
 
 	int atomCount = selectedAtoms.size();
 	neighbours = new int[atomCount];

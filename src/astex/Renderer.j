@@ -1190,7 +1190,7 @@ public class Renderer {
 
 	ensureTransformCapacity(np);
 
-	if(tmesh.style == Tmesh.TRIANGLES){
+	if(tmesh.style == Tmesh.Style.TRIANGLES){
 	    transformNormals = true;
 	}
 
@@ -1373,13 +1373,13 @@ public class Renderer {
 
 	transformObject(tmesh);
 
-	if(tmesh.style == Tmesh.SPHERES){
+	if(tmesh.style == Tmesh.Style.SPHERES){
 	    renderSphereObject(tmesh);
-	}else if(tmesh.style == Tmesh.LINES){
+	}else if(tmesh.style == Tmesh.Style.LINES){
 	    drawLineObject(tmesh);
-	}else if(tmesh.style == Tmesh.TRIANGLES){
+	}else if(tmesh.style == Tmesh.Style.TRIANGLES){
 	    renderTriangleObject(tmesh);
-	}else if(tmesh.style == Tmesh.DOTS){
+	}else if(tmesh.style == Tmesh.Style.DOTS){
 	    renderDotObject(tmesh);
 	}
 

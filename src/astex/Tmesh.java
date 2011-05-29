@@ -118,23 +118,12 @@ public class Tmesh {
     /** The number of triangles we will grow a tmesh by. */
     private static final int TriangleAllocationIncrement = 8192;
 
+    public enum Style {
+	DOTS, LINES, TRIANGLES, CYLINDERS, SPHERES
+    }
+    
     /** Renderering Style. */
-    public int style = TRIANGLES;
-
-    /** Types for style. */
-    public static final int DOTS = 1;
-
-    /** Types for style. */
-    public static final int LINES = 2;
-
-    /** Types for style. */
-    public static final int TRIANGLES = 3;
-
-    /** Types for style. */
-    public static final int CYLINDERS = 4;
-
-    /** Types for style. */
-    public static final int SPHERES = 5;
+    public Style style = Style.TRIANGLES;
 
     /** Color style. */
     public int colorStyle = ObjectColor;
@@ -537,10 +526,10 @@ public class Tmesh {
 
     /** Add a sphere to this tmesh. */
     public void addSphere(double xx, double yy, double zz, double rr, int cc){
-	if(style != SPHERES){
+	if(style != Style.SPHERES){
 	    if(spheres == null){
 		spheres = new Tmesh();
-		spheres.style = SPHERES;
+		spheres.style = Style.SPHERES;
 	    }
 
 	    spheres.addSphere(xx, yy, zz, rr, cc);
@@ -563,11 +552,11 @@ public class Tmesh {
 			    double x2, double y2, double z2, double r,
 			    int c1, int c2){
 
-	if(style != CYLINDERS){
+	if(style != Style.CYLINDERS){
 	    if(cylinders == null){
 		cylinders = new Tmesh();
-		cylinders.style = CYLINDERS;
 		cylinders.colorStyle = VertexColor;
+		cylinders.style = Style.CYLINDERS;
 	    }
 
 	    cylinders.addCylinder(x1, y1, z1, x2, y2, z2, r, c1, c2);
