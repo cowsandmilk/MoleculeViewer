@@ -502,27 +502,8 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     /** A format for presenting the frame rate. */
     private Format f1 = new Format("%4.1f");
 
-    private boolean firstTime = false;
-
     /** Override the paint method. */
     public void paint(Graphics g){
-
-        if(firstTime){
-            //GoogleFont.setComponent(this);
-            
-            int size[] = new int[2];
-            int pix[] = GoogleFont.makeFontImage("hello", 0x000000, 0xffffff, size);
-            
-            try {
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("tmp.bmp"));
-                
-                astex.ImageIO.writeBMP(bos, pix, size[0], size[1]);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            firstTime = false;
-        }
-
 
 	if(!ready){
 	    drawLoadingScreen(g);
@@ -1249,7 +1230,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
     private static final String SaveViewString = "Save View...";
     private static final String SaveString = "Save All";
     private static final String SaveMoleculeString = "Save Molecule";
-    private static final String WriteBMPString = "Write BMP...";
+    private static final String WritePNGString = "Write PNG...";
     private static final String ExitString = "Exit";
 
     private static final String DisplayString = "Display";
@@ -1342,17 +1323,17 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	fileMenu.add(createCloseMoleculeMenu());
 	fileMenu.addSeparator();
-	fileMenu.add(createBMPMenu());
+	fileMenu.add(createPNGMenu());
 	fileMenu.addSeparator();
 	fileMenu.add(createMenuItem(ExitString));
 
 	return fileMenu;
     }
 
-    private HashMap<String,String> writeBMPHash= new HashMap<String,String>(16);
+    private HashMap<String,String> writePNGHash= new HashMap<String,String>(16);
 
-    private Menu createBMPMenu(){
-	Menu menu = new Menu(WriteBMPString);
+    private Menu createPNGMenu(){
+	Menu menu = new Menu(WritePNGString);
 
 	for(int i = 0; ; i++){
 	    String label   = Settings.getString("config", "imagesizelabel." + i);
@@ -1363,7 +1344,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    }
 
 	    menu.add(createMenuItem(label));
-	    writeBMPHash.put(label, command);
+	    writePNGHash.put(label, command);
 	}
 
 	return menu;
@@ -1653,14 +1634,14 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	}else if(command.equals(HideContourDialogString)){
 
 	    hideContourLevelDialog();
-	}else if(writeBMPHash.containsKey(command)){
-	    String bitmapFileName = saveFile("Choose a BMP file...", null);
+	}else if(writePNGHash.containsKey(command)){
+	    String bitmapFileName = saveFile("Choose a PNG file...", null);
 
 	    if(bitmapFileName != null){
 
 		System.out.println("starting offscreen render");
 
-		StringBuilder s = new StringBuilder(writeBMPHash.get(command));
+		StringBuilder s = new StringBuilder(writePNGHash.get(command));
 
 		s.append(" -writeimage '").append(bitmapFileName).append("';");
 

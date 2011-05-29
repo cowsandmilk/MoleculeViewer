@@ -17,6 +17,12 @@
 
 package astex;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ViewCommand {
     private static int    defaultWidth     = 400;
     private static int    defaultHeight    = 300;
@@ -148,16 +154,25 @@ public class ViewCommand {
 	    }
 
 	    if(sample != 1){
+		BufferedImage bi = new BufferedImage(mr.renderer.pixelWidth/sample, mr.renderer.pixelHeight/sample, BufferedImage.TYPE_INT_RGB);
 		doAntialias(mr.renderer.pbuffer,
 			    mr.renderer.pixelWidth, mr.renderer.pixelHeight,
-			    sample);
-		ImageIO.write(image, tempBuffer,
-			      mr.renderer.pixelWidth/sample,
-			      mr.renderer.pixelHeight/sample, compress);
+			    sample, bi);
+		File outputfile = new File(image);
+		try {
+		    javax.imageio.ImageIO.write(bi, "png", outputfile);
+		} catch (IOException ex) {
+		    Logger.getLogger(ViewCommand.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	    }else{
-		ImageIO.write(image, mr.renderer.pbuffer,
-			      mr.renderer.pixelWidth, mr.renderer.pixelHeight,
-			      compress);
+		BufferedImage bi = new BufferedImage(mr.renderer.pixelWidth, mr.renderer.pixelHeight, BufferedImage.TYPE_INT_RGB);
+		bi.setRGB(0, 0, mr.renderer.pixelWidth, mr.renderer.pixelHeight, mr.renderer.pbuffer, 0, mr.renderer.pixelWidth);
+		File outputfile = new File(image);
+		try {
+		    javax.imageio.ImageIO.write(bi, "png", outputfile);
+		} catch (IOException ex) {
+		    Logger.getLogger(ViewCommand.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	    }
 
 	    System.out.println("done.");
@@ -229,16 +244,10 @@ public class ViewCommand {
 	mv.dirtyRepaint();
     }
 
-    private static void doAntialias(int pbuffer[], int w, int h, int sample){
+    private static void doAntialias(int pbuffer[], int w, int h, int sample, BufferedImage bi){
 	int wa = w / sample;
 	int ha = h / sample;
-	int pa = wa * ha;
 
-	if(tempBuffer == null || tempBuffer.length < pa){
-	    tempBuffer = new int[pa];
-	}
-
-	int indexa = 0;
 	int sample2 = sample * sample;
 
 	for(int j = 0; j < ha; j++){
@@ -270,9 +279,7 @@ public class ViewCommand {
 		g /= sample2;
 		b /= sample2;
 
-		tempBuffer[indexa] = Color32.pack(r, g, b);
-
-		indexa++;
+		bi.setRGB(i, j, Color32.pack(r, g, b));
 	    }
 	}
     }
