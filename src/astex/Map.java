@@ -95,16 +95,13 @@ public class Map extends Symmetry {
 
     /** Is header initialised. */
     public boolean headerInitialised = false;
-
-    /** Various definitions of map types. */
-    public static final int CCP4_BINARY   = 1;
-    public static final int SYBYL_ASCII   = 2;
-    public static final int INSIGHT_ASCII = 3;
-    public static final int ASTEX_ASCII   = 4;
-    public static final int O_BINARY      = 5;
+    
+    public enum MapType {
+	CCP4_BINARY,SYBYL_ASCII,INSIGHT_ASCII,ASTEX_ASCII,O_BINARY
+    }
 
     /** What type is the map? */
-    private int mapType = CCP4_BINARY;
+    private MapType mapType = MapType.CCP4_BINARY;
 
     /** The center grid point for the current stored map data. */
     public int centerGrid[] = new int[3];
@@ -160,7 +157,7 @@ public class Map extends Symmetry {
 
         map.nv[0] = map.nv[1] = map.nv[2] = 1;
 	map.headerInitialised = true;
-	map.setMapType(astex.Map.INSIGHT_ASCII);
+	map.setMapType(MapType.INSIGHT_ASCII);
 	map.setSigma(1.0);
 
 	map.initialiseContours = false;
@@ -192,7 +189,7 @@ public class Map extends Symmetry {
      * Get the value of mapType.
      * @return value of mapType.
      */
-    public int getMapType() {
+    public MapType getMapType() {
 	return mapType;
     }
     
@@ -200,7 +197,7 @@ public class Map extends Symmetry {
      * Set the value of mapType.
      * @param v  Value to assign to mapType.
      */
-    public void setMapType(int  v) {
+    public void setMapType(MapType  v) {
 	this.mapType = v;
     }
 
@@ -227,19 +224,17 @@ public class Map extends Symmetry {
     /** Read a map from the specified file object. */
     public void readHeader(){
 
-        System.out.println("mapType " + mapType);
-
 	if(headerInitialised){
 	    return;
 	}
 
-	if(mapType == CCP4_BINARY){
+	if(mapType == MapType.CCP4_BINARY){
 	    readCCP4Header();
-	}else if(mapType == O_BINARY){
+	}else if(mapType == MapType.O_BINARY){
 	    readOHeader();
-	}else if(mapType == INSIGHT_ASCII){
+	}else if(mapType == MapType.INSIGHT_ASCII){
 	    readInsightHeader();
-	}else if(mapType == ASTEX_ASCII){
+	}else if(mapType == MapType.ASTEX_ASCII){
 	    readAstexHeader();
 	}
     }
@@ -674,18 +669,16 @@ public class Map extends Symmetry {
 
 	filename = file;
 	if(file.indexOf(".grd") != -1){
-	    mapType = INSIGHT_ASCII;
+	    mapType = MapType.INSIGHT_ASCII;
 	}else if(file.indexOf(".acnt") != -1){
-	    mapType = SYBYL_ASCII;
+	    mapType = MapType.SYBYL_ASCII;
 	}else if(file.indexOf(".map") != -1){
-	    mapType = CCP4_BINARY;
+	    mapType = MapType.CCP4_BINARY;
 	}else if(file.indexOf(".omap") != -1){
-	    mapType = O_BINARY;
+	    mapType = MapType.O_BINARY;
 	}else if(file.indexOf(".sag") != -1){
-	    mapType = ASTEX_ASCII;
+	    mapType = MapType.ASTEX_ASCII;
 	}
-
-        System.out.println("mapType " + mapType);
     }
 
     /** Get the filename. */
@@ -704,11 +697,11 @@ public class Map extends Symmetry {
     public void readRegion(){
 	//System.out.println("readRegion");
 
-	if(mapType != CCP4_BINARY && mapType != O_BINARY){
+	if(mapType != MapType.CCP4_BINARY && mapType != MapType.O_BINARY){
 	    return;
 	}
 
-	if((mapType == CCP4_BINARY && mode != 0 && mode != 2)){
+	if((mapType == MapType.CCP4_BINARY && mode != 0 && mode != 2)){
 	    return;
 	}
 
@@ -734,7 +727,7 @@ public class Map extends Symmetry {
 	int min1 = minimumGrid[1];
 	int min2 = minimumGrid[2];
 
-	if(mapType == CCP4_BINARY){
+	if(mapType == MapType.CCP4_BINARY){
 	    for(int s = 0; s < grid2; s++){
 		if(s >= maximumGrid[2]){
 		    // we got the region we were interested in
@@ -761,7 +754,7 @@ public class Map extends Symmetry {
 		    }
 		}
 	    }
-	}else if(mapType == O_BINARY){
+	}else if(mapType == MapType.O_BINARY){
 	    for(int s = 0; s < grid2; s++){
 		for(int r = 0; r < grid1; r++){
 		    for(int c = 0; c < grid0; c++){
@@ -811,7 +804,7 @@ public class Map extends Symmetry {
 	int ysize = maximumGrid[1] - minimumGrid[1];
 	int zsize = maximumGrid[2] - minimumGrid[2];
 
-        if(mapType == INSIGHT_ASCII){
+        if(mapType == MapType.INSIGHT_ASCII){
             xsize = ngrid[0];
             ysize = ngrid[1];
             zsize = ngrid[2];
@@ -835,7 +828,7 @@ public class Map extends Symmetry {
 	int ysize = maximumGrid[1] - minimumGrid[1];
 	int zsize = maximumGrid[2] - minimumGrid[2];
 
-        if(mapType == INSIGHT_ASCII){
+        if(mapType == MapType.INSIGHT_ASCII){
             xsize = ngrid[0];
             ysize = ngrid[1];
             zsize = ngrid[2];
@@ -854,7 +847,7 @@ public class Map extends Symmetry {
 
     /** Return the size of map we have loaded. */
     public void getMapBoxDimensions(int dims[]){
-        if(mapType == INSIGHT_ASCII){
+        if(mapType == MapType.INSIGHT_ASCII){
 	    System.arraycopy(ngrid, 0, dims, 0, 3);
         }else{
             dims[0] = maximumGrid[0] - minimumGrid[0];
@@ -879,7 +872,7 @@ public class Map extends Symmetry {
 					Point3d p){
 	xxx[0] = ix; xxx[1] = iy; xxx[2] = iz;
 
-        if(mapType == INSIGHT_ASCII){
+        if(mapType == MapType.INSIGHT_ASCII){
             p.x = origin.x + spacing.x * ix;
             p.y = origin.y + spacing.y * iy;
             p.z = origin.z + spacing.z * iz;

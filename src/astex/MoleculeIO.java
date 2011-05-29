@@ -236,7 +236,7 @@ public class MoleculeIO {
 	    file.nextLine();
 	    int firstAtom = file.readIntegerFromField(1);
 	    int secondAtom = file.readIntegerFromField(2);
-	    int bondOrder = 0;
+	    Bond.BondOrder bondOrder;
 
 	    int field3start = file.getFieldStart(3);
 	    char char17 = file.getChar(field3start);
@@ -246,12 +246,21 @@ public class MoleculeIO {
 	    }
 
 	    if(char17 == 'a' && char18 == 'r'){
-		bondOrder = Bond.AromaticBond;
+		bondOrder = Bond.BondOrder.AromaticBond;
 	    }else if(char17 == 'a' && char18 == 'm'){
 				// for now store as aromatic
-		bondOrder = Bond.AmideBond;
+		bondOrder = Bond.BondOrder.AmideBond;
 	    }else{
-		bondOrder = file.readIntegerFromField(3);
+		int order = file.readIntegerFromField(3);
+		if (order == 1) {
+		    bondOrder = Bond.BondOrder.SingleBond;
+		} else if (order == 2) {
+		    bondOrder = Bond.BondOrder.DoubleBond;
+		} else if (order == 3) {
+		    bondOrder = Bond.BondOrder.TripleBond;
+		} else {
+		    bondOrder = Bond.BondOrder.AnyBond;
+		}
 	    }
 
 	    // if we know the atoms were in sequential order
@@ -519,7 +528,7 @@ public class MoleculeIO {
 		    System.err.println("invalid vertex " +
 				       vertices[v] + " " + vertices[v1]);
 		}else{
-		    molecule.addBond(vertices[v], vertices[v1], 1);
+		    molecule.addBond(vertices[v], vertices[v1], Bond.BondOrder.SingleBond);
 		}
 	    }
 	}	
@@ -600,7 +609,38 @@ public class MoleculeIO {
 	    file.nextLine();
 	    int firstAtom = file.readIntegerFromField(0);
 	    int secondAtom = file.readIntegerFromField(1);
-	    int bondOrder = file.readIntegerFromField(2);
+	    int bondType = file.readIntegerFromField(2);
+	    
+	    Bond.BondOrder bondOrder;
+	    switch(bondType) {
+		case 1:
+		    bondOrder = Bond.BondOrder.SingleBond;
+		    break;
+		case 2:
+		    bondOrder = Bond.BondOrder.DoubleBond;
+		    break;
+		case 3:
+		    bondOrder = Bond.BondOrder.TripleBond;
+		    break;
+		case 4:
+		    bondOrder = Bond.BondOrder.AromaticBond;
+		    break;
+		case 5:
+		    bondOrder = Bond.BondOrder.SingleOrDoubleBond;
+		    break;
+		case 6:
+		    bondOrder = Bond.BondOrder.SingleOrAromaticBond;
+		    break;
+		case 7:
+		    bondOrder = Bond.BondOrder.DoubleOrAromaticBond;
+		    break;
+		case 8:
+		    bondOrder = Bond.BondOrder.AnyBond;
+		    break;
+		default:
+		    bondOrder = Bond.BondOrder.AnyBond;
+		    break;
+	    }
 
 	    molecule.addBond(firstAtom - 1, secondAtom - 1,
 					 bondOrder);
@@ -670,7 +710,38 @@ public class MoleculeIO {
 	    file.nextLine();
 	    int firstAtom = file.readInteger(0, 3);
 	    int secondAtom = file.readInteger(3, 3);
-	    int bondOrder = file.readInteger(6, 3);
+	    int bondType = file.readInteger(6, 3);
+	    
+	    Bond.BondOrder bondOrder;
+	    switch(bondType) {
+		case 1:
+		    bondOrder = Bond.BondOrder.SingleBond;
+		    break;
+		case 2:
+		    bondOrder = Bond.BondOrder.DoubleBond;
+		    break;
+		case 3:
+		    bondOrder = Bond.BondOrder.TripleBond;
+		    break;
+		case 4:
+		    bondOrder = Bond.BondOrder.AromaticBond;
+		    break;
+		case 5:
+		    bondOrder = Bond.BondOrder.SingleOrDoubleBond;
+		    break;
+		case 6:
+		    bondOrder = Bond.BondOrder.SingleOrAromaticBond;
+		    break;
+		case 7:
+		    bondOrder = Bond.BondOrder.DoubleOrAromaticBond;
+		    break;
+		case 8:
+		    bondOrder = Bond.BondOrder.AnyBond;
+		    break;
+		default:
+		    bondOrder = Bond.BondOrder.AnyBond;
+		    break;
+	    }
 
 	    molecule.addBond(firstAtom - 1, secondAtom - 1,
 					 bondOrder);
@@ -821,9 +892,14 @@ public class MoleculeIO {
                             Bond bond = firstAtom.getBond(secondAtom);
 
 			    if(bond != null){
-				bond.setBondOrder(bond.getBondOrder()+ 1);
+				if (bond.getBondOrder() == Bond.BondOrder.SingleBond) {
+				    bond.setBondOrder(Bond.BondOrder.DoubleBond);
+				}else if (bond.getBondOrder() == Bond.BondOrder.DoubleBond) {
+				    bond.setBondOrder(Bond.BondOrder.TripleBond);
+				}
+				    
 			    }else{
-				bond = molecule.addBond(firstAtom, secondAtom, Bond.SingleBond);
+				bond = molecule.addBond(firstAtom, secondAtom, Bond.BondOrder.SingleBond);
 			    }
 			}
 		    }
@@ -961,7 +1037,7 @@ public class MoleculeIO {
 
 	// record if the atom had a left justified name...
 	if(c12 != ' '){
-	    atom.attributes |= Atom.NameLeftJustified;
+	    atom.attributes.add(Atom.Attribute.NameLeftJustified);
 	}
 		
 	if(isSolventAtom()){
@@ -1284,19 +1360,19 @@ public class MoleculeIO {
 	    if(len == 4){
 		output.print("%s", atomName);
 	    }else if(len == 3){
-		if((atom.attributes & Atom.NameLeftJustified) != 0){
+		if(atom.attributes.contains(Atom.Attribute.NameLeftJustified)){
 		    output.print("%s ", atomName);
 		}else{
 		    output.print(" %s", atomName);
 		}
 	    }else if(len == 2){
-		if((atom.attributes & Atom.NameLeftJustified) != 0){
+		if(atom.attributes.contains(Atom.Attribute.NameLeftJustified)){
 		    output.print("%s  ", atomName);
 		}else{
 		    output.print(" %s ", atomName);
 		}
 	    }else if(len == 1){
-		if((atom.attributes & Atom.NameLeftJustified) != 0){
+		if(atom.attributes.contains(Atom.Attribute.NameLeftJustified)){
 		    output.print("%s   ", atomName);
 		}else{
 		    output.print(" %s  ", atomName);
@@ -1358,7 +1434,7 @@ public class MoleculeIO {
 	    boolean needsConects = false;
 	    for(int b = 0; b < bondCount; b++){
 		Bond bond = atom.getBond(b);
-		if(bond.getBondOrder() > 1){
+		if(bond.getBondOrder() != Bond.BondOrder.SingleBond){
 		    needsConects = true;
 		    break;
 		}
@@ -1371,7 +1447,7 @@ public class MoleculeIO {
 		    Atom otherAtom = bond.getOtherAtom(atom);
 		    output.print("CONECT");
 		    output.print("%5d", atom.getId());
-		    int bondOrder = bond.getBondOrder();
+		    int bondOrder = bond.getBondOrder().getMdlBondType();
 		    int otherId = otherAtom.getId();
 		    for(int bo = 0; bo < bondOrder; bo++){
 			output.print("%5d", otherId);
@@ -1446,13 +1522,13 @@ public class MoleculeIO {
             output.print(" %5d", i);
             output.print(" %5d", j);
 
-            int bondOrder = bond.getBondOrder();
+            Bond.BondOrder bondOrder = bond.getBondOrder();
 
-            if(bondOrder > 0 && bondOrder <= 3){
-                output.print(" %3d", bondOrder);
-            }else if(bondOrder == Bond.AromaticBond){
+	    if (EnumSet.range(Bond.BondOrder.SingleBond, Bond.BondOrder.TripleBond).contains(bondOrder)) {
+                output.print(" %3d", bondOrder.getMdlBondType());
+            }else if(bondOrder == Bond.BondOrder.AromaticBond){
                 output.print("  ar");
-            }else if(bondOrder == Bond.AmideBond){
+            }else if(bondOrder == Bond.BondOrder.AmideBond){
                 output.print("  am");
             }else{
                 output.print("  un");
@@ -1526,7 +1602,7 @@ public class MoleculeIO {
 	    Bond bond = molecule.getBond(b);
 	    Atom firstAtom = bond.getFirstAtom();
 	    Atom secondAtom = bond.getSecondAtom();
-	    int order = bond.getBondOrder();
+	    int order = bond.getBondOrder().getMdlBondType();
 
 	    output.print("%3d", firstAtom.getId());
 	    output.print("%3d", secondAtom.getId());

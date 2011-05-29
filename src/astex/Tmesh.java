@@ -1200,13 +1200,13 @@ public class Tmesh {
     }
     
     /** Which pass of the renderer do we get drawn in. */
-    private int renderPass = Renderer.RenderPass;
+    private Renderer.Pass renderPass = Renderer.Pass.RenderPass;
 
     /**
      * Get the RenderPass value.
      * @return the RenderPass value.
      */
-    public int getRenderPass() {
+    public Renderer.Pass getRenderPass() {
 	return renderPass;
     }
 
@@ -1214,7 +1214,7 @@ public class Tmesh {
      * Set the RenderPass value.
      * @param newRenderPass The new RenderPass value.
      */
-    private void setRenderPass(int newRenderPass) {
+    private void setRenderPass(Renderer.Pass newRenderPass) {
 	this.renderPass = newRenderPass;
     }
 }

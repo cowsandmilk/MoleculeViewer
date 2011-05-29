@@ -74,6 +74,7 @@ class March {
     private static final int V3 =   8;
     private static final int V4 =  16;
     private static final int V5 =  32;
+    private static final int V6 =  64;
     private static final int V7 = 128;
 
     /** Face masks. */
@@ -211,10 +212,10 @@ class March {
 	    cell[3] = localData[cell0 + ijDim];
 
 	    cellIndex = 0;
-	    if(cell[0] > threshold) cellIndex |=   1;
-	    if(cell[1] > threshold) cellIndex |=   2;
-	    if(cell[2] > threshold) cellIndex |=   4;
-	    if(cell[3] > threshold) cellIndex |=   8;
+	    if(cell[0] > threshold) cellIndex |= V0;
+	    if(cell[1] > threshold) cellIndex |= V1;
+	    if(cell[2] > threshold) cellIndex |= V2;
+	    if(cell[3] > threshold) cellIndex |= V3;
 	    
 	    for(i = 0; i < iDim1; i++) {
 
@@ -225,10 +226,10 @@ class March {
 		cell[7] = localData[cell0 + ijDim];
 
 		/** Compute the index for the edge intersections for i. */
-		if(cell[4] > threshold) cellIndex |=  16;
-		if(cell[5] > threshold) cellIndex |=  32;
-		if(cell[6] > threshold) cellIndex |=  64;
-		if(cell[7] > threshold) cellIndex |= 128;
+		if(cell[4] > threshold) cellIndex |= V4;
+		if(cell[5] > threshold) cellIndex |= V5;
+		if(cell[6] > threshold) cellIndex |= V6;
+		if(cell[7] > threshold) cellIndex |= V7;
 
 		/* Skip loop if no edges */
 		if(cellIndex != 0 && cellIndex != 255){

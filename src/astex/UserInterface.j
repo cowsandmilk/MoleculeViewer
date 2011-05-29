@@ -259,7 +259,7 @@ class UserInterface implements MouseListener, JCOutlinerListener,
 	cartoonCB = new Checkbox("Cartoon");
 	cartoonCB.addItemListener(this);
 
-	if(moleculeRenderer.renderer.getLightingModel() == Renderer.CartoonLightingModel){
+	if(moleculeRenderer.renderer.getLightingModel() == Renderer.LightingModel.CartoonLightingModel){
 	    cartoonCB.setState(true);
 	}
 

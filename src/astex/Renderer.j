@@ -64,19 +64,16 @@ import java.awt.image.*;
 #endif
 
 public class Renderer {
+    public enum ShadowMode {
+	ShadowsOff, ShadowsAccumulate, ShadowsOn
+    }
+
     /** Shadow mode for the renderer. */
-    public int shadowMode = ShadowsOff;
+    public ShadowMode shadowMode = ShadowMode.ShadowsOff;
 
-    /** Defines for the shadowing states. */
-    public static final int ShadowsOff        = 0;
-    public static final int ShadowsAccumulate = 1;
-    public static final int ShadowsOn         = 2;
-
-    /** Different settings for the render passes. */
-    public static final int PreRenderPass   = 1;
-    public static final int RenderPass      = 2;
-    public static final int PostRenderPass  = 4;
-    public static final int FinalRenderPass = 8;
+    public enum Pass {
+	PreRenderPass, RenderPass, PostRenderPass, FinalRenderPass
+    }
 
     /** Width of the renderer. */
     public int pixelWidth = 0;
@@ -132,14 +129,12 @@ public class Renderer {
     private int ambientg = 0;
     private int ambientb = 0;
 
-    /** The style of lighting model. */
-    private int lightingModel = DefaultLightingModel;
+    public enum LightingModel {
+	DefaultLightingModel, CartoonLightingModel
+    }
 
-    /** The default lighting model. */
-    public static final int DefaultLightingModel = 0;
-    
-    /** The cartoon style. */
-    public static final int CartoonLightingModel = 1;
+    /** The style of lighting model. */
+    private LightingModel lightingModel = LightingModel.DefaultLightingModel;
 
     /** The normal cutoff for cartoon rendering. */
     private double cartoonNormalCutoff = 0.08;
@@ -243,13 +238,13 @@ public class Renderer {
     }
 
     /** Set the lighting model. */
-    public void setLightingModel(int lm){
+    public void setLightingModel(LightingModel lm){
 	lightingModel = lm;
 
 	calculateLightMap();
     }
 
-    public int getLightingModel(){
+    public LightingModel getLightingModel(){
 	return lightingModel;
     }
 
@@ -785,7 +780,7 @@ public class Renderer {
     /** Post process the buffers. */
     public void postProcess(){
 
-	drawObjects(PostRenderPass);
+	drawObjects(Pass.PostRenderPass);
 
 	if(depthcue){
 	    int zb[] = zbuffer;
@@ -898,7 +893,7 @@ public class Renderer {
 	    }
 	}
 
-	drawObjects(FinalRenderPass);
+	drawObjects(Pass.FinalRenderPass);
     }
 
     /** Minimum intensity for depth cueing. */
@@ -956,7 +951,7 @@ public class Renderer {
 
 	// first pass, draw opaque objects
 	for(Tmesh tm : objects){
-	    if(tm.getRenderPass() == RenderPass &&
+	    if(tm.getRenderPass() == Pass.RenderPass &&
 	       tm.isVisible() && tm.transparency == 255){
 		renderObject(tm);
 	    }
@@ -964,7 +959,7 @@ public class Renderer {
 
 	// third pass, draw transparent objects
 	for(Tmesh tm : objects){
-	    if(tm.getRenderPass() == RenderPass &&
+	    if(tm.getRenderPass() == Pass.RenderPass &&
 	       tm.isVisible() && tm.transparency != 255){
 		renderObject(tm);
 	    }
@@ -978,7 +973,7 @@ public class Renderer {
     }
 
     /** Draw object that belong to a particular render pass. */
-    private void drawObjects(int pass){
+    private void drawObjects(Pass pass){
 	for(Tmesh tm : objects){
 	    if(tm.getRenderPass() == pass &&
 	       tm.isVisible()){
@@ -1512,7 +1507,7 @@ public class Renderer {
 
 	    trianglesRendered++;
 
-	    if(shadowMode == ShadowsOn && triangles > 100000 &&
+	    if(shadowMode == ShadowMode.ShadowsOn && triangles > 100000 &&
 	       (trianglesRendered % 10000) == 0){
 		FILE.out.print("%7d/", trianglesRendered);
 		FILE.out.print("%d\n", triangles);
@@ -1529,7 +1524,7 @@ public class Renderer {
 
 	    if(totallyOnScreen ||
 	       ((clipped[v0] & clipped[v1] & clipped[v2]) == 0) ||
-	       shadowMode == ShadowsAccumulate){
+	       shadowMode == ShadowMode.ShadowsAccumulate){
 
 		/* Only special case is triangles that cross z-clip. */
 		if((((clipped[v0] | clipped[v1] | clipped[v2]) &
@@ -1551,7 +1546,7 @@ public class Renderer {
 		if (yt[v1] > yt[v2]) { temp = v1; v1 = v2; v2 = temp; }
 		if (yt[v0] > yt[v1]) { temp = v0; v0 = v1; v1 = temp; }
 		    
-		if(yt[v0] == yt[v2] && shadowMode != ShadowsAccumulate){
+		if(yt[v0] == yt[v2] && shadowMode != ShadowMode.ShadowsAccumulate){
 		    continue;
 		}
 
@@ -1591,7 +1586,7 @@ public class Renderer {
 		    }
 		}
 
-		if(shadowMode == ShadowsOn){
+		if(shadowMode == ShadowMode.ShadowsOn){
 		    applyTransform(tmesh.x[v0], tmesh.y[v0], tmesh.z[v0], cx0);
 		    applyTransform(tmesh.x[v1], tmesh.y[v1], tmesh.z[v1], cx1);
 		    applyTransform(tmesh.x[v2], tmesh.y[v2], tmesh.z[v2], cx2);
@@ -1611,7 +1606,7 @@ public class Renderer {
 
 		    renderAccurateTriangle();
 		    continue;
-		}else if(shadowMode == ShadowsAccumulate){
+		}else if(shadowMode == ShadowMode.ShadowsAccumulate){
 		    applyTransform(tmesh.x[v0], tmesh.y[v0], tmesh.z[v0], cx0);
 		    applyTransform(tmesh.x[v1], tmesh.y[v1], tmesh.z[v1], cx1);
 		    applyTransform(tmesh.x[v2], tmesh.y[v2], tmesh.z[v2], cx2);
@@ -1626,7 +1621,7 @@ public class Renderer {
 						       transparency);
 		    // don't return, need to keep processing other triangles in this loop
 		    continue;
-		}else if(shadowMode == ShadowsOff){
+		}else if(shadowMode == ShadowMode.ShadowsOff){
 		    renderTriangle();
 		}
 	    }
@@ -1802,7 +1797,7 @@ public class Renderer {
 	// figure out if we need shadowin
 	boolean shadowed = false;
 
-	if(shadowMode == ShadowsOn &&
+	if(shadowMode == ShadowMode.ShadowsOn &&
 	   (ShadowCache.selfShadowed(nx, ny, nz, cosWrapAngle) ||
 	    ShadowCache.pointShadowed(x, y, z * getOverallScale()))){
 	    shadowed = true;
@@ -2263,12 +2258,12 @@ public class Renderer {
 	// the JIT in jdk1.1.8. Some sort of memory overwrite error
 	
 	// we have to draw it...
-	if(shadowMode == ShadowsOn){
+	if(shadowMode == ShadowMode.ShadowsOn){
 	    // form bounding sphere
 	    ShadowCache.prepareCylinderCacheList(cx1[0], cx1[1], cx1[2],
 						 cx2[0], cx2[1], cx2[2],
 						 rt);
-	}else if(shadowMode == ShadowsAccumulate){
+	}else if(shadowMode == ShadowMode.ShadowsAccumulate){
 	    ShadowCache.addCylinderToCacheList(cx1[0], cx1[1], cx1[2] ,
 					       cx2[0], cx2[1], cx2[2],
 					       rt);
@@ -2326,7 +2321,7 @@ public class Renderer {
 			    (int)(NormalSamples - cylNormal[1]*NormalSamples);
 			int lutID = inx + (iny<<NormalBits);
 
-			if(shadowMode == ShadowsOn){
+			if(shadowMode == ShadowMode.ShadowsOn){
 			    if(ShadowCache.pointShadowed(i, j, zpos*overallScale )){
 				c = Color32.multiply(rgb1shade, shadowMap[lutID]);
 			    }else{
@@ -2654,10 +2649,10 @@ public class Renderer {
 	// store the transformed coordinates as
 	// we will be shadowing intersection points
 	// from the transformed spheres
-	if(shadowMode == ShadowsAccumulate){
+	if(shadowMode == ShadowMode.ShadowsAccumulate){
 	    ShadowCache.addSphereToCacheList(tx, ty, tz, rt);
 	    return;
-	}else if(shadowMode == ShadowsOn){
+	}else if(shadowMode == ShadowMode.ShadowsOn){
 	    ShadowCache.prepareSphereCacheList(tx, ty, tz, rt, false);
 	}
 
@@ -2730,7 +2725,7 @@ public class Renderer {
 
 				int c = Color32.multiply(rgb, diffuseMap[lutID]);
 				
-				if(shadowMode == ShadowsOn){
+				if(shadowMode == ShadowMode.ShadowsOn){
 				   if(sol == -1 || ShadowCache.pointShadowed(i, j, zp)){
 				    
 				       c = Color32.multiply(rgb, shadowMap[lutID]);
@@ -2830,22 +2825,18 @@ public class Renderer {
     /** Offsets for the character positioning. */
     private double charOffsets[] = new double[3];
 
-    /** Justification styles for text. */
-    private static final int JustifyLeft       =  1;
-    private static final int JustifyRight      =  2;
-    private static final int JustifyTop        =  4;
-    private static final int JustifyBottom     =  8;
-    private static final int JustifyVertical   = 16;
-    private static final int JustifyHorizontal = 32;
+    private enum Justification {
+	JustifyLeft, JustifyRight, JustifyTop, JustifyBottom, JustifyVertical, JustifyHorizontal
+    }
 
-    private static final int JustifyDefault    = JustifyLeft | JustifyBottom;
+    private static final EnumSet<Justification> JustifyDefault = EnumSet.of(Justification.JustifyLeft, Justification.JustifyBottom);
 
     /** Bounding box of drawn string. */
     private double fontMin[]    = new double[3];
     private double fontMax[]    = new double[3];
 
     /** Attributes that are set in the string prefix. */
-    private int stringJustification = JustifyDefault;
+    private EnumSet<Justification> stringJustification = JustifyDefault;
     private int stringColor         = Color32.white;
     private boolean colorDefined    = false;
     private double stringSize       = 0.5;
@@ -2930,19 +2921,19 @@ public class Renderer {
 		int ystart      = y;
 
 		if(pass == 1){
-		    if((stringJustification & JustifyLeft) != 0){
+		    if(stringJustification.contains(Justification.JustifyLeft)){
 			xstart = x;
-		    }else if((stringJustification & JustifyRight) != 0){
+		    }else if(stringJustification.contains(Justification.JustifyRight)){
 			xstart = x - (pixMax[0] - pixMin[0]);
-		    }else if((stringJustification & JustifyHorizontal) != 0){
+		    }else if(stringJustification.contains(Justification.JustifyHorizontal)){
 			xstart = x - (pixMax[0] - pixMin[0])/2;
 		    }
 		
-		    if((stringJustification & JustifyBottom) != 0){
+		    if(stringJustification.contains(Justification.JustifyBottom)){
 			ystart = y;
-		    }else if((stringJustification & JustifyTop) != 0){
+		    }else if(stringJustification.contains(Justification.JustifyTop)){
 			ystart = y + (pixMax[1] - pixMin[1]);
-		    }else if((stringJustification & JustifyVertical) != 0){
+		    }else if(stringJustification.contains(Justification.JustifyVertical)){
 			ystart = y + (pixMax[1] - pixMin[1])/2;
 		    }
 		}
@@ -3115,19 +3106,19 @@ public class Renderer {
 		double dx = 0.0;
 		double dy = 0.0;
 
-		if((stringJustification & JustifyLeft) != 0){
+		if(stringJustification.contains(Justification.JustifyLeft)){
 		    dx = x - fontMin[0];
-		}else if((stringJustification & JustifyRight) != 0){
+		}else if(stringJustification.contains(Justification.JustifyRight)){
 		    dx = x - fontMax[0];
-		}else if((stringJustification & JustifyHorizontal) != 0){
+		}else if(stringJustification.contains(Justification.JustifyHorizontal)){
 		    dx = x - 0.5 * (fontMax[0] + fontMin[0]);
 		}
 		
-		if((stringJustification & JustifyBottom) != 0){
+		if(stringJustification.contains(Justification.JustifyBottom)){
 		    dy = y - fontMin[1];
-		}else if((stringJustification & JustifyTop) != 0){
+		}else if(stringJustification.contains(Justification.JustifyTop)){
 		    dy = y - fontMax[1];
-		}else if((stringJustification & JustifyVertical) != 0){
+		}else if(stringJustification.contains(Justification.JustifyVertical)){
 		    dy = y - 0.5 * (fontMax[1] + fontMin[1]);
 		}
 
@@ -3344,25 +3335,25 @@ public class Renderer {
 			    String option = bits[0];
 
 			    if("justify".equals(option)){
-				stringJustification = 0;
+				stringJustification = EnumSet.noneOf(Justification.class);
 
 				if(bits[1].indexOf('l') != -1){
-				    stringJustification |= JustifyLeft;
+				    stringJustification.add(Justification.JustifyLeft);
 				}
 				if(bits[1].indexOf('r') != -1){
-				    stringJustification |= JustifyRight;
+				    stringJustification.add(Justification.JustifyRight);
 				}
 				if(bits[1].indexOf('t') != -1){
-				    stringJustification |= JustifyTop;
+				    stringJustification.add(Justification.JustifyTop);
 				}
 				if(bits[1].indexOf('b') != -1){
-				    stringJustification |= JustifyBottom;
+				    stringJustification.add(Justification.JustifyBottom);
 				}
 				if(bits[1].indexOf('v') != -1){
-				    stringJustification |= JustifyVertical;
+				    stringJustification.add(Justification.JustifyVertical);
 				}
 				if(bits[1].indexOf('h') != -1){
-				    stringJustification |= JustifyHorizontal;
+				    stringJustification.add(Justification.JustifyHorizontal);
 				}
 			    }else if("color".equals(option) || "colour".equals(option)){
 				stringColor = Color32.getColorFromName(bits[1]);
@@ -3510,7 +3501,7 @@ public class Renderer {
 	int outCode2 = clipped[v2];
 	int rgb1shade = 0, rgb2shade = 0;
 
-	if(false && shadowMode != ShadowsOff){
+	if(false && shadowMode != ShadowMode.ShadowsOff){
 	    drawCylinder(tmesh.x[v1], tmesh.y[v1], tmesh.z[v1],
 			 tmesh.x[v2], tmesh.y[v2], tmesh.z[v2],
 			 rgb1, rgb2, (pixelWidth * 0.02));
@@ -4098,7 +4089,7 @@ public class Renderer {
 
 	buildOverallMatrix();
 
-	drawObjects(PreRenderPass);
+	drawObjects(Pass.PreRenderPass);
     }
 
     /** Public redrawing operations that can be overridden. */
@@ -4161,9 +4152,9 @@ public class Renderer {
 
     /** Redraw the image. */
     public void redraw(){
-	if(shadowMode == ShadowsAccumulate){
+	if(shadowMode == ShadowMode.ShadowsAccumulate){
 	    ShadowCache.clearShadowCaches();
-	}else if(shadowMode == ShadowsOn){
+	}else if(shadowMode == ShadowMode.ShadowsOn){
 	    ShadowCache.setupShadowCaches(lights.get(0),
 					  getOverallScale());
 	}
@@ -4422,7 +4413,7 @@ public class Renderer {
 
 		dnz = 1.0 - Math.sqrt(dnx * dnx + dny * dny);
 
-		if(lightingModel == CartoonLightingModel){
+		if(lightingModel == LightingModel.CartoonLightingModel){
 		    drgb[0] = drgb[1] = drgb[2] = 255;
 		    srgb[0] = srgb[1] = srgb[2] = 0;
 		    shadowrgb[0] = shadowrgb[1] = shadowrgb[2] = 128;

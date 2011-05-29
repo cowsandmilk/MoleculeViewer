@@ -896,7 +896,7 @@ public class Selection {
     }
 
     /** Return atoms that have the specified property. */
-    public static byte[] property(MoleculeRenderer r, int property){
+    public static byte[] property(MoleculeRenderer r, Atom.Attribute property){
 	byte[] mask = generateSelectionMask(r);
 	AtomIterator iterator = r.getAtomIterator();
 	int count = 0;
@@ -905,7 +905,7 @@ public class Selection {
 	// by going through residues and setting blocks
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
-	    if((atom.attributes & property) != 0){
+	    if(atom.attributes.contains(property)){
 		mask[count] = 1;
 	    }else{
 		mask[count] = 0;

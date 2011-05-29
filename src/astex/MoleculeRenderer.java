@@ -170,21 +170,13 @@ public class MoleculeRenderer {
 
     /** Should we display solvent. */
     private boolean displaySolvent = true;
-
-    /** Normal picking mode. */
-    public static final int NORMAL_PICK = 1;
-
-    /** Distance picking mode. */
-    public static final int DISTANCE_PICK = 2;
-
-    /** Angle picking mode. */
-    public static final int ANGLE_PICK = 3;
-
-    /** Angle picking mode. */
-    public static final int TORSION_PICK = 4;
+    
+    public enum PickMode {
+	NORMAL_PICK,DISTANCE_PICK,ANGLE_PICK,TORSION_PICK
+    }
 
     /** The current pick mode. */
-    public int pickMode = NORMAL_PICK;
+    public PickMode pickMode = PickMode.NORMAL_PICK;
 
     public boolean allowFastDraw = true;
 
@@ -232,12 +224,12 @@ public class MoleculeRenderer {
     }
 
     /** Set the picking mode. */
-    public void setPickMode(int pick){
-	if(pick != NORMAL_PICK && 
-	   pick != DISTANCE_PICK && 
-	   pick != ANGLE_PICK && 
-	   pick != TORSION_PICK){
-	    pick = NORMAL_PICK;
+    public void setPickMode(PickMode pick){
+	if(pick != PickMode.NORMAL_PICK && 
+	   pick != PickMode.DISTANCE_PICK && 
+	   pick != PickMode.ANGLE_PICK && 
+	   pick != PickMode.TORSION_PICK){
+	    pick = PickMode.NORMAL_PICK;
 
 	}
 	pickMode = pick;
@@ -292,13 +284,13 @@ public class MoleculeRenderer {
      */
     public void handlePick(Atom pickedAtom){
 
-	if(pickMode == NORMAL_PICK){
+	if(pickMode == PickMode.NORMAL_PICK){
 	    return;
 	}
 
 	// add the latest atom to the pick list
 
-	if(pickMode == DISTANCE_PICK){
+	if(pickMode == PickMode.DISTANCE_PICK){
 	    if(pickedAtoms.size() == 2){
 		Atom atom0 = pickedAtoms.get(0);
 		Atom atom1 = pickedAtoms.get(1);
@@ -306,7 +298,7 @@ public class MoleculeRenderer {
 		addDistance(distance);
 		pickedAtoms.clear();
 	    }
-	}else if(pickMode == ANGLE_PICK){
+	}else if(pickMode == PickMode.ANGLE_PICK){
 
 	    if(pickedAtoms.size() == 3){
 		Atom atom0 = pickedAtoms.get(0);
@@ -315,7 +307,7 @@ public class MoleculeRenderer {
 		addAngle(atom0, atom1, atom2);
 		pickedAtoms.clear();
 	    }
-	}else if(pickMode == TORSION_PICK){
+	}else if(pickMode == PickMode.TORSION_PICK){
 
 	    if(pickedAtoms.size() == 4){
 		Atom atom0 = pickedAtoms.get(0);
@@ -1146,7 +1138,7 @@ public class MoleculeRenderer {
 	    }
 	}
 
-	tmesh.setColorStyle(Tmesh.VertexColor);
+	tmesh.setColorStyle(Tmesh.ColorStyle.VertexColor);
     }
 
     /** Name of properties resource for the MoleculeRenderer class. */
@@ -2188,8 +2180,8 @@ public class MoleculeRenderer {
 	if(symmetry == null){
 	    for(Map map : maps){
 
-		if(map.getMapType() != Map.O_BINARY &&
-		   map.getMapType() != Map.INSIGHT_ASCII){
+		if(map.getMapType() != Map.MapType.O_BINARY &&
+		   map.getMapType() != Map.MapType.INSIGHT_ASCII){
 		    // we don't want symmetry if its p1
 
 		    if(map.getSpaceGroupNumber() > 1){
@@ -2998,8 +2990,8 @@ public class MoleculeRenderer {
     /** Figure out the region of the map we will contour. */
     private void determineRegion(Map map){
 	map.read();
-	if(map.getMapType() == Map.CCP4_BINARY ||
-	   map.getMapType() == Map.O_BINARY){
+	if(map.getMapType() == Map.MapType.CCP4_BINARY ||
+	   map.getMapType() == Map.MapType.O_BINARY){
 
 	    Matrix cartesianToFractional =
 		map.getCartesianToFractionalMatrix();
@@ -3045,7 +3037,7 @@ public class MoleculeRenderer {
     /** Contour the data that is in stored in the map. */
     private Tmesh contourRegion(Map map, int contourNumber, int style){
 	int nx =0, ny=0, nz=0;
-	int mapType = map.getMapType();
+	Map.MapType mapType = map.getMapType();
 	double level = map.getContourLevel(contourNumber);
 	Tmesh contour = getContourGraphicalObject(map, contourNumber);
 
@@ -3058,7 +3050,7 @@ public class MoleculeRenderer {
 	    contour.style = Tmesh.Style.TRIANGLES;
 	}
 
-	if(mapType == Map.CCP4_BINARY || mapType == Map.O_BINARY){
+	if(mapType == Map.MapType.CCP4_BINARY || mapType == Map.MapType.O_BINARY){
 	    nx = map.maximumGrid[0] - map.minimumGrid[0];
 	    ny = map.maximumGrid[1] - map.minimumGrid[1];
 	    nz = map.maximumGrid[2] - map.minimumGrid[2];
@@ -3096,9 +3088,9 @@ public class MoleculeRenderer {
     private void transformContourPoints(Map map, Tmesh contour){
 	int pointCount = contour.np;
 	Point3d p = new Point3d();
-	int mapType = map.getMapType();
+	Map.MapType mapType = map.getMapType();
 
-	if(mapType == Map.CCP4_BINARY || mapType == Map.O_BINARY){
+	if(mapType == Map.MapType.CCP4_BINARY || mapType == Map.MapType.O_BINARY){
 
 	    for(int i = 0; i < pointCount; i++){
 		map.relativeGridToCartesian(contour.x[i], contour.y[i],
@@ -3253,7 +3245,7 @@ public class MoleculeRenderer {
     public boolean dirty = false;
 
     /** Render passes. */
-    private int renderPasses[] = new int[2];
+    private Renderer.ShadowMode renderPasses[] = new Renderer.ShadowMode[2];
 
     /** Paint the rendered image into the screen. */
     public synchronized void paint(){
@@ -3265,11 +3257,11 @@ public class MoleculeRenderer {
 
 	if(shadows){
 	    passCount = 2;
-	    renderPasses[0] = Renderer.ShadowsAccumulate;
-	    renderPasses[1] = Renderer.ShadowsOn;
+	    renderPasses[0] = Renderer.ShadowMode.ShadowsAccumulate;
+	    renderPasses[1] = Renderer.ShadowMode.ShadowsOn;
 	}else{
 	    passCount = 1;
-	    renderPasses[0] = Renderer.ShadowsOff;
+	    renderPasses[0] = Renderer.ShadowMode.ShadowsOff;
 	}
 
 	// this paint method needs completely restructuring
@@ -3538,17 +3530,17 @@ public class MoleculeRenderer {
 
 				atom.transformToScreen(renderer.overallMatrix);
 
-				if((atom.attributes & Atom.VDWSphere) != 0){
+				if(atom.attributes.contains(Atom.Attribute.VDWSphere)){
 				    sphereAtoms.add(atom);
 				}
 
-				if((atom.attributes & Atom.BallAndStick) != 0){
+				if(atom.attributes.contains(Atom.Attribute.BallAndStick)){
 				    renderer.drawSphere(atom.x, atom.y, atom.z,
 							atom.getBallRadius(),
 							atom.getSelectedColor());
 				}
 
-				if((atom.attributes & Atom.Cylinder) != 0 &&
+				if(atom.attributes.contains(Atom.Attribute.Cylinder) &&
 				   atom.getBondCount() == 0){
 				    renderer.drawAccurateSphere(atom.x, atom.y, atom.z,
 								atom.getBallRadius(),
@@ -3667,14 +3659,14 @@ public class MoleculeRenderer {
 						drawBond(bond, w);
 					    }
 
-					    if((firstAtom.attributes & Atom.Cylinder) != 0 &&
-					       (secondAtom.attributes & Atom.Cylinder) != 0){
+					    if(firstAtom.attributes.contains(Atom.Attribute.Cylinder) &&
+					       secondAtom.attributes.contains(Atom.Attribute.Cylinder)){
 						double w = bond.getCylinderWidth();
 						drawBond(bond, w);
 					    }
 
-					    if((firstAtom.attributes & Atom.BallAndStick) != 0 &&
-					       (secondAtom.attributes & Atom.BallAndStick) != 0){
+					    if(firstAtom.attributes.contains(Atom.Attribute.BallAndStick) &&
+					       secondAtom.attributes.contains(Atom.Attribute.BallAndStick)){
 						double w = bond.getStickWidth();
 						drawSimpleBond(bond, w);
 					    }
@@ -4162,7 +4154,7 @@ public class MoleculeRenderer {
 
     /** Draw one bond. */
     private void drawBond(Bond bond, double w){
-	if(fastDraw || bond.getBondOrder() == Bond.SingleBond){
+	if(fastDraw || bond.getBondOrder() == Bond.BondOrder.SingleBond){
 	    drawSimpleBond(bond, w);
 	}else{
 	    drawDetailedBond(bond, w);
@@ -4176,13 +4168,13 @@ public class MoleculeRenderer {
 
     /** Draw a bond that shows the bond order. */
     private void drawDetailedBond(Bond bond, double w){
-	int bondOrder = bond.getBondOrder();
+	Bond.BondOrder bondOrder = bond.getBondOrder();
 
-	if(bondOrder == Bond.DoubleBond ||
-	   bondOrder == Bond.AromaticBond){
+	if(bondOrder == Bond.BondOrder.DoubleBond ||
+	   bondOrder == Bond.BondOrder.AromaticBond){
 	    drawDoubleBond(bond, false, w > 0.0 ? w * doubleBondRadiusScale : w);
 	    drawSimpleBond(bond, w);
-	}else if(bondOrder == Bond.TripleBond){
+	}else if(bondOrder == Bond.BondOrder.TripleBond){
 	    drawDoubleBond(bond, true, w > 0.0 ? w * doubleBondRadiusScale : w);
 	    drawSimpleBond(bond, w);
 	}else{
@@ -4223,7 +4215,7 @@ public class MoleculeRenderer {
 	    first2Center.add(firstAtom);
 	    second2Center.add(secondAtom);
 
-	    if(bond.getBondOrder() == Bond.AromaticBond){
+	    if(bond.getBondOrder() == Bond.BondOrder.AromaticBond){
 		dummyAtom1.set(first2Center);
 		dummyAtom2.set(second2Center);
 		drawTwinColourDottedLine(dummyAtom1, dummyAtom2, aromaticBondDotGap);
@@ -4251,7 +4243,7 @@ public class MoleculeRenderer {
 		secondEnd.subtract(first2second);
 	    }
 
-	    if(bond.getBondOrder() == Bond.AromaticBond){
+	    if(bond.getBondOrder() == Bond.BondOrder.AromaticBond){
 		dummyAtom1.set(firstEnd);
 		dummyAtom2.set(secondEnd);
 		drawTwinColourDottedLine(dummyAtom1, dummyAtom2, aromaticBondDotGap);
@@ -4328,7 +4320,7 @@ public class MoleculeRenderer {
 	int secondAtomColor = secondAtom.getColor();
 
 	if(w < 0.0){
-	    if(renderer.shadowMode != Renderer.ShadowsOff){
+	    if(renderer.shadowMode != Renderer.ShadowMode.ShadowsOff){
 		drawLine(firstAtom.x, firstAtom.y, firstAtom.z,
 			 secondAtom.x, secondAtom.y, secondAtom.z,
 			 firstAtomColor, secondAtomColor, (-w * bondLineRadius));

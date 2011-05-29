@@ -176,7 +176,7 @@ non terminal Arguments arguments;
 
 non terminal byte[] selection_expression;
 non terminal List selection;
-non terminal Integer render_style;
+non terminal Atom.Attribute render_style;
 non terminal String on_off;
 
 non terminal script, command;
@@ -512,58 +512,49 @@ display_command ::=
 				}else{
 		   			atom.setDisplayed(false);
 				}
-	    		}
+	    	}
 		:}
 	| DISPLAY render_style:mode selection:selectedAtoms
 		{:
-			int displayBit = mode.intValue();
+			Atom.Attribute displayBit = mode;
 
-			if(displayBit != 0){
-		   	 	AtomIterator iterator =
-					parser.renderer.getAtomIterator();
-		    
-	  		  	while(iterator.hasMoreElements()){
-					Atom atom = iterator.getNextAtom();
-					atom.attributes &= ~displayBit;
-				}
-				
-				int atomCount = selectedAtoms.size();
-	
-				for(int a = 0; a < atomCount; a++){
-					Atom atom = (Atom)selectedAtoms.get(a);
-					atom.attributes |= displayBit;
-				}
-			}else{
-				System.out.println("invalid display mode " + mode);
+		   	AtomIterator iterator =
+			parser.renderer.getAtomIterator();
+	    
+  		  	while(iterator.hasMoreElements()){
+				Atom atom = iterator.getNextAtom();
+				atom.attributes.remove(displayBit);
+			}
+			
+			int atomCount = selectedAtoms.size();
+
+			for(int a = 0; a < atomCount; a++){
+				Atom atom = (Atom)selectedAtoms.get(a);
+				atom.attributes.add(displayBit);
 			}
 		:}
 	| DISPLAY render_style:mode on_off:onoff selection:selectedAtoms
 		{:
-			int displayBit = mode.intValue();
-			int on = 0;
+			Atom.Attribute displayBit = mode;
+			boolean on = false;
 
 			if("on".equals(onoff)){
-				on = 1;
+				on = true;
 			}else if("off".equals(onoff)){
-				on = 0;
-				displayBit = ~displayBit;
+				on = false;
 			}else{
 				System.out.println("illegal state in display command " + onoff);
 			}
 			
-			if(displayBit != 0){
-				int atomCount = selectedAtoms.size();
-	
-				for(int a = 0; a < atomCount; a++){
-					Atom atom = (Atom)selectedAtoms.get(a);
-					if(on == 1){
-						atom.attributes |= displayBit;
-					}else{
-						atom.attributes &= displayBit;
-					}
+			int atomCount = selectedAtoms.size();
+
+			for(int a = 0; a < atomCount; a++){
+				Atom atom = (Atom)selectedAtoms.get(a);
+				if(on){
+					atom.attributes.add(displayBit);
+				}else{
+					atom.attributes.remove(displayBit);
 				}
-			}else{
-				System.out.println("invalid display mode " + mode);
 			}
 		:}
         | DISPLAY WIDE selection:selectedAtoms
@@ -922,16 +913,16 @@ miscellaneous_command ::=
 				int d = FILE.readInteger(value);
 				parser.renderer.setContourSize(d);
 			}else if("pick".equals(name)){
-				int pickMode = -1;
+				MoleculeRenderer.PickMode pickMode = null;
 				if("distances".equals(value)){
-					pickMode = parser.renderer.DISTANCE_PICK;
+					pickMode = MoleculeRenderer.PickMode.DISTANCE_PICK;
 				}else if("angles".equals(value)){
-					pickMode = parser.renderer.ANGLE_PICK;
+					pickMode = MoleculeRenderer.PickMode.ANGLE_PICK;
 				}else{
 					System.out.println("invalid pick mode " + value);
 				}
 
-				if(pickMode != -1){
+				if(pickMode != null){
 					parser.renderer.setPickMode(pickMode);
 				}
 			}else{
@@ -1070,16 +1061,16 @@ schematic_command ::=
 					parser.renderer.addGraphicalObject(tm);
 				}
 			}else{
-				int sstype = -1;
+				Residue.SS sstype = Residue.SS.Undefined;
 				if("helix".equals(type)){
-					sstype = Residue.Helix;
+					sstype = Residue.SS.Helix;
 				}else if("sheet".equals(type)){
-					sstype = Residue.Sheet;
+					sstype = Residue.SS.Sheet;
 				}else if("coil".equals(type)){
-					sstype = Residue.Coil;
+					sstype = Residue.SS.Coil;
 				}
 
-				if(sstype != -1){
+				if(sstype != Residue.SS.Undefined){
 					// inefficient
 					for(Atom a : (List<Atom>) selectedAtoms){
 						Residue r = a.getResidue();
@@ -1271,7 +1262,7 @@ object_command ::=
 			for(Tmesh tm : objects){
 				Texgen.property_map(tm, selectedAtoms, uv,
 					dmax.doubleValue(), false,
-					Texgen.Electrostatic);
+					Texgen.MapFunc.Electrostatic);
 			}
 		:}
 	| OBJECT STRING:name TEXTURE LIPOPHILICITY
@@ -1290,7 +1281,7 @@ object_command ::=
 			for(Tmesh tm : objects){
 				Texgen.property_map(tm, selectedAtoms, uv,
 					dmax.doubleValue(), false,
-					Texgen.Lipophilicity);
+					Texgen.MapFunc.Lipophilicity);
 			}
 		:}
 	| OBJECT STRING:name COLOR STRING:colorName
@@ -1300,7 +1291,7 @@ object_command ::=
 			int color = Color32.getColorFromName(colorName);
 
 			for(Tmesh tm : objects){
-				tm.setColorStyle(Tmesh.ObjectColor);
+				tm.setColorStyle(Tmesh.ColorStyle.ObjectColor);
 				tm.setColor(color);
 			}
 		:}
@@ -1396,10 +1387,10 @@ texture_command ::=
 	;
 
 render_style ::=
-	  SPHERES	{: RESULT = Integer.valueOf(Atom.VDWSphere); :}
-	| CYLINDERS	{: RESULT = Integer.valueOf(Atom.Cylinder); :}
-	| STICKS	{: RESULT = Integer.valueOf(Atom.BallAndStick); :}
-	| LINES		{: RESULT = Integer.valueOf(Atom.Displayed); :}
+	  SPHERES	{: RESULT = Atom.Attribute.VDWSphere; :}
+	| CYLINDERS	{: RESULT = Atom.Attribute.Cylinder; :}
+	| STICKS	{: RESULT = Atom.Attribute.BallAndStick; :}
+	| LINES		{: RESULT = Atom.Attribute.Displayed; :}
 	;
 
 on_off ::=
@@ -1528,19 +1519,19 @@ statement ::=
 	| CURRENT
 		{: RESULT = Selection.current(parser.renderer); :}
 	| SURFACE
-		{: RESULT = Selection.property(parser.renderer, Atom.Surface); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.Surface); :}
 	| CONTEXT
-		{: RESULT = Selection.property(parser.renderer, Atom.SurfaceContext); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.SurfaceContext); :}
 	| PROPERTY
-		{: RESULT = Selection.property(parser.renderer, Atom.Property); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.Property); :}
 	| ACTIVE
-		{: RESULT = Selection.property(parser.renderer, Atom.ModellingActive); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.ModellingActive); :}
 	| ENVIRONMENT
-		{: RESULT = Selection.property(parser.renderer, Atom.ModellingEnvironment); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.ModellingEnvironment); :}
 	| FIXED
-		{: RESULT = Selection.property(parser.renderer, Atom.ModellingFixed); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.ModellingFixed); :}
 	| XRAY
-		{: RESULT = Selection.property(parser.renderer, Atom.ModellingXray); :}
+		{: RESULT = Selection.property(parser.renderer, Atom.Attribute.ModellingXray); :}
 	| LABELLED
 		{: RESULT = Selection.labelled(parser.renderer); :}
 	| WIDE

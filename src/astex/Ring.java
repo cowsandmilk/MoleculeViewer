@@ -107,7 +107,7 @@ class Ring extends Generic {
 	boolean allAromatic = true;
 
 	for(Bond bond: bonds){
-	    if(bond.getBondOrder() != Bond.AromaticBond){
+	    if(bond.getBondOrder() != Bond.BondOrder.AromaticBond){
 		allAromatic = false;
 		break;
 	    }
@@ -138,13 +138,13 @@ class Ring extends Generic {
 	    for(int i = 0; i < bondCount; i++){
 		Bond bond = getBond(i);
 		Bond nextBond = getBond(i == bondCount - 1 ? 0 : i + 1);
-		int bondOrder = bond.getBondOrder();
-		int nextBondOrder = nextBond.getBondOrder();
+		Bond.BondOrder bondOrder = bond.getBondOrder();
+		Bond.BondOrder nextBondOrder = nextBond.getBondOrder();
 
-		if((bondOrder == Bond.SingleBond &&
-		    nextBondOrder == Bond.DoubleBond) ||
-		   (nextBondOrder == Bond.SingleBond &&
-		    bondOrder == Bond.DoubleBond)){
+		if((bondOrder == Bond.BondOrder.SingleBond &&
+		    nextBondOrder == Bond.BondOrder.DoubleBond) ||
+		   (nextBondOrder == Bond.BondOrder.SingleBond &&
+		    bondOrder == Bond.BondOrder.DoubleBond)){
 		    continue;
 		}else{
 		    allAromatic = false;
@@ -158,7 +158,7 @@ class Ring extends Generic {
 	}else if(atomCount == 5){
 	    int doubleBondCount = 0;
 	    for(Bond bond: bonds){
-		if(bond.getBondOrder() == Bond.DoubleBond){
+		if(bond.getBondOrder() == Bond.BondOrder.DoubleBond){
 		    doubleBondCount++;
 		}
 	    }

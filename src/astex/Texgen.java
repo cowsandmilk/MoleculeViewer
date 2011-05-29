@@ -164,8 +164,9 @@ public class Texgen {
     private static double z[] = null;
     private static double q[] = null;
 
-    public static final int Electrostatic = 1;
-    public static final int Lipophilicity = 2;
+    public enum MapFunc {
+	Electrostatic, Lipophilicity
+    }
 
     /** Generate potential. */
     public static synchronized void property_map(Tmesh tm,
@@ -173,7 +174,7 @@ public class Texgen {
 						 int uv,
 						 double maxd,
 						 boolean absolute,
-						 int func){
+						 MapFunc func){
 	int atomCount = atoms.size();
 	float tlocal[] = null;
 	double min =  1.0e10;
@@ -205,7 +206,7 @@ public class Texgen {
 	for(Atom a : atoms){
 	    String name = a.getAtomLabel();
 
-	    if(func == Electrostatic && "N".equals(name)){
+	    if(func == MapFunc.Electrostatic && "N".equals(name)){
 		Point3d nh = getAmideHydrogen(a);
 		// nh will be null if we already had an nh
 		if(nh != null){
@@ -226,7 +227,7 @@ public class Texgen {
 
 	    // scale charge by occupancy
 	    // to allow for multiple positions.
-	    if(func == Electrostatic){
+	    if(func == MapFunc.Electrostatic){
 		qa *= a.getOccupancy();
 	    }
 	    // only considering atoms with non-zero charge
@@ -247,7 +248,7 @@ public class Texgen {
 	    l.add(ia, x[ia], y[ia], z[ia]);
 	}
 
-	if(func == Electrostatic){
+	if(func == MapFunc.Electrostatic){
 	    System.out.println("added " + amideProtons + " amide protons");
 	}
 
@@ -273,9 +274,9 @@ public class Texgen {
 		double d2 = dx*dx + dy*dy + dz*dz;
 
 		if(d2 < maxd2){
-		    if(func == Electrostatic){
+		    if(func == MapFunc.Electrostatic){
 			dtotal += q[j]/d2;
-		    }else if(func == Lipophilicity){
+		    }else if(func == MapFunc.Lipophilicity){
 			double d = Math.sqrt(d2);
 			double gd = topPart /
 			    (Math.exp(halfWidth * (d - dCutoff)) + 1.0);
@@ -287,7 +288,7 @@ public class Texgen {
 		}
 	    }
 
-	    if(func == Lipophilicity){
+	    if(func == MapFunc.Lipophilicity){
 		dtotal /= norm;
 	    }
 
@@ -305,14 +306,14 @@ public class Texgen {
 	FILE.out.print("max %.3f\n", max);
 
 	if(uv == Tmesh.UTexture){
-	    if(func == Lipophilicity){
+	    if(func == MapFunc.Lipophilicity){
 		tm.setUOffset(min);
 		tm.setUScale(1.0/(max - min));
 	    }else{
 		tm.setUOffset(-0.5);
 	    }
 	}else{
-	    if(func == Lipophilicity){
+	    if(func == MapFunc.Lipophilicity){
 		tm.setVOffset(min);
 		tm.setVScale(1.0/(max - min));
 	    }else{

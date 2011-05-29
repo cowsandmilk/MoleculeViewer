@@ -380,12 +380,12 @@ public class Molecule extends Generic implements Selectable {
     }
 
     /** Add a bond to the molecule and return a reference to it. */
-    public Bond addBond(Atom firstAtom, Atom secondAtom, int bondOrder){
+    public Bond addBond(Atom firstAtom, Atom secondAtom, Bond.BondOrder bondOrder){
 	return addBond(firstAtom, secondAtom, bondOrder, true);
     }
 
     /** Add a bond to the molecule and return a reference to it. */
-    public Bond addBond(Atom firstAtom, Atom secondAtom, int bondOrder, boolean explicit){
+    public Bond addBond(Atom firstAtom, Atom secondAtom, Bond.BondOrder bondOrder, boolean explicit){
 	// handle insertion codes for multiple positions of
 	// atoms in pdb structures.
 	int firstInsertion = firstAtom.getInsertionCode();
@@ -419,7 +419,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Add a bond to the molecule and return a reference to it. */
     public Bond addBond(int firstAtomIndex, int secondAtomIndex,
-			int bondOrder){
+			Bond.BondOrder bondOrder){
 	Atom firstAtom = getAtom(firstAtomIndex);
 	Atom secondAtom = getAtom(secondAtomIndex);
 
@@ -428,7 +428,7 @@ public class Molecule extends Generic implements Selectable {
 
     /** Add a bond to the molecule and return a reference to it. */
     public Bond addBondFromIds(int firstAtomIndex, int secondAtomIndex,
-			       int bondOrder){
+			       Bond.BondOrder bondOrder){
 	// attempt to improve caching
 	Atom a1 = getAtomWithId(firstAtomIndex);
 	int searchAtom = startAtom;
@@ -688,7 +688,7 @@ public class Molecule extends Generic implements Selectable {
 		d2 *= d2;
 
 		if(a1.distanceSq(a2) < d2){
-		    addBond(a1, a2, Bond.SingleBond, false);
+		    addBond(a1, a2, Bond.BondOrder.SingleBond, false);
 		}
 	    }
 	}
@@ -712,7 +712,7 @@ public class Molecule extends Generic implements Selectable {
 		d2 *= d2;
 
 		if(a1.distanceSq(a2) < d2){
-		    addBond(a1, a2, Bond.SingleBond, false);
+		    addBond(a1, a2, Bond.BondOrder.SingleBond, false);
 		}
 	    }
 	}
@@ -766,10 +766,10 @@ public class Molecule extends Generic implements Selectable {
 			    Bond bond = firstAtom.getBond(secondAtom);
 						
 			    if(bond == null){
-				addBond(firstAtom, secondAtom, Bond.SingleBond, false);
+				addBond(firstAtom, secondAtom, Bond.BondOrder.SingleBond, false);
 			    }
 			}else{
-			    addBond(firstAtom, secondAtom, Bond.SingleBond, false);
+			    addBond(firstAtom, secondAtom, Bond.BondOrder.SingleBond, false);
 			}
 		    }
 		}

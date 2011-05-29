@@ -35,11 +35,9 @@ import astex.generic.*;
  */
 
 public class Bond extends Generic {
-    private static final String BondOrder = "bondorder";
-
     /** Default constructor. */
     public Bond(Atom a1, Atom a2){
-	setBondOrder(SingleBond);
+	setBondOrder(BondOrder.SingleBond);
 	setBondColor(Color32.white);
 	setBondWidth(1);
 	setStickWidth(0.12);
@@ -49,28 +47,6 @@ public class Bond extends Generic {
 	secondAtom = a2;
     }
 
-    @Override
-    public Object set(Object key, Object property){
-        String name = (String)key;
-
-        if(name.equals(BondOrder)){
-            setBondOrder(((Integer)property).intValue());
-        }else{
-            super.set(key, property);
-        }
-
-        // should return old value
-        return null;
-    }
-
-    @Override
-    public Object get(Object key, Object def){
-        if(key.equals(BondOrder))
-            return Integer.valueOf(bondOrder);
-
-        return super.get(key, def);
-    }
-
     /** The first atom in the bond. */
     private Atom firstAtom;
 
@@ -78,39 +54,27 @@ public class Bond extends Generic {
     private Atom secondAtom;
 
     /** The bond order of the bond. */
-    private int bondOrder;
+    private BondOrder bondOrder;
 
-    private byte radii[] = new byte[4];
+    private byte radii[] = new byte[3];
 
     /** The ideal bond length for this bond. */
     private float idealBondLength = -1.0f;
-
-    /** Constant that defines a single bond. */
-    public static final int SingleBond = 1;
-
-    /** Constant that defines a single bond. */
-    public static final int DoubleBond = 2;
-
-    /** Constant that defines a single bond. */
-    public static final int TripleBond = 3;
-
-    /** Constant that defines an aromatic bond. */
-    public static final int AromaticBond = 4;
-
-    /** Constant that defines an aromatic bond. */
-    public static final int AmideBond = 5;
-
-    /** Constant that defines a single or double bond. */
-    public static final int SingleOrDoubleBond = 6;
-
-    /** Constant that defines a single or aromatic bond. */
-    public static final int SingleOrAromaticBond = 7;
-
-    /** Constant that defines a double or aromatic bond. */
-    public static final int DoubleOrAromaticBond = 8;
-
-    /** Constant that defines any bond. */
-    public static final int AnyBond = 9;
+    
+    public enum BondOrder {
+	SingleBond(1), DoubleBond(2), TripleBond(3), AromaticBond(4),
+	SingleOrDoubleBond(5), SingleOrAromaticBond(6), DoubleOrAromaticBond(7),
+	AmideBond(8), AnyBond(8);
+	
+	private final int mdlBondType;
+	BondOrder(int bondType) {
+	    this.mdlBondType = bondType;
+	}
+	
+	public int getMdlBondType() {
+	    return mdlBondType;
+	}
+    }
 
     private static final double bondScale = 2./128.;
 
@@ -241,18 +205,13 @@ public class Bond extends Generic {
     }
 
     /** Set the bond order. */
-    public void setBondOrder(int order){
+    public void setBondOrder(BondOrder order){
 	bondOrder = order;
     }
 
     /** Get the bond order. */
-    public int getBondOrder(){
+    public BondOrder getBondOrder(){
 	return bondOrder;
-    }
-
-    /** Is the bond a query bond. */
-    public boolean isQueryBond(){
-	return (bondOrder > TripleBond && bondOrder <= AnyBond);
     }
 
     /** Set the first atom in the bond. */
@@ -301,13 +260,13 @@ public class Bond extends Generic {
 
     /** Return a smiles style symbol for the bond. */
     public String getBondSymbol(){
-	if(bondOrder == SingleBond)
+	if(bondOrder == BondOrder.SingleBond)
 	    return "-";
-	if(bondOrder == DoubleBond)
+	if(bondOrder == BondOrder.DoubleBond)
 	    return "=";
-	if(bondOrder == TripleBond)
+	if(bondOrder == BondOrder.TripleBond)
 	    return "#";
-	if(bondOrder == AromaticBond)
+	if(bondOrder == BondOrder.AromaticBond)
 	    return ":";
 
         return "-";
@@ -325,7 +284,7 @@ public class Bond extends Generic {
 
     /** Is this bond non rotatable. */
     public boolean isNonRotatable(){
-	return (bondOrder == Bond.DoubleBond || bondOrder == Bond.AromaticBond);
+	return (bondOrder == BondOrder.DoubleBond || bondOrder == BondOrder.AromaticBond);
     }
 
     /** Set the ideal bond length. */

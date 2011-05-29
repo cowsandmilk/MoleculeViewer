@@ -46,7 +46,7 @@ public class SecondaryStructure {
     private static Residue residues[]  = new Residue[MaxResidues];
     private static Point3d hpos[]      = new Point3d[MaxResidues];
     private static Atom opos[]         = new Atom[MaxResidues];
-    private static int types[]         = new int[MaxResidues];
+    private static Residue.SS types[]  = new Residue.SS[MaxResidues];
     private static int mapping[]       = new int[MaxResidues];
     private static IntArrayList hbond_no[] = new IntArrayList[MaxResidues];
     private static IntArrayList hbond_on[] = new IntArrayList[MaxResidues];
@@ -73,7 +73,7 @@ public class SecondaryStructure {
 	    for(int r = 0; r < residueCount; r++){
 		Residue res = chain.getResidue(r);
 
-		res.setSecondaryStructure(Residue.Coil);
+		res.setSecondaryStructure(Residue.SS.Coil);
 
 		// need to assign gaps here to 
 		// stop helix hbonds being fooled by gaps
@@ -93,7 +93,7 @@ public class SecondaryStructure {
 	    // h-bond spanning different chains.
 	    for(int i = 0; i < 4; i++){
 		residues[nres] = null;
-		types[nres] = Residue.Undefined;
+		types[nres] = Residue.SS.Undefined;
 		hbond_no[nres] = new IntArrayList();
 		hbond_on[nres] = new IntArrayList();
 		hpos[nres] = null;
@@ -167,7 +167,7 @@ public class SecondaryStructure {
 	for(int r1 = 3; r1 < nres; r1++){
 	    if(hbonded(r1, r1 - 3)){
 		for(int r2 = r1 - 2; r2 < r1; r2++){
-		    types[r2] = Residue.Turn;
+		    types[r2] = Residue.SS.Turn;
 		}
 	    }
 	}
@@ -177,13 +177,13 @@ public class SecondaryStructure {
 	    if(hbonded(r1 + 3, r1 - 1) &&
 	       hbonded(r1 + 4, r1)){
 		for(int r2 = r1; r2 <= r1 + 3; r2++){
-		    types[r2] = Residue.Helix;
+		    types[r2] = Residue.SS.Helix;
 		}
 	    }
 	    if(hbonded(r1 + 2, r1 - 1) &&
 	       hbonded(r1 + 3, r1)){
 		for(int r2 = r1; r2 <= r1 + 2; r2++){
-		    types[r2] = Residue.Helix;
+		    types[r2] = Residue.SS.Helix;
 		}
 	    }
 	}
@@ -193,7 +193,7 @@ public class SecondaryStructure {
 	// Kabsch and Sander, Biopolymers, 22, 2577-2637 (1983).
 	// anti-parallel
 	for(int ri = 0; ri < nres; ri++){
-	    if(types[ri] == Residue.Coil || types[ri] == Residue.Sheet){
+	    if(types[ri] == Residue.SS.Coil || types[ri] == Residue.SS.Sheet){
 		int hbondCount = hbond_no[ri].size();
 		if(debug && hbondCount > 0){
 		    System.out.println("checking residue " + residues[ri] + " " +
@@ -232,7 +232,7 @@ public class SecondaryStructure {
 	}
 
 	for(int ri = 0; ri < nres; ri++){
-	    if(types[ri] == Residue.Coil || types[ri] == Residue.Sheet){
+	    if(types[ri] == Residue.SS.Coil || types[ri] == Residue.SS.Sheet){
 		int hbondCount = hbond_no[ri].size();
 		for(int hb = 0; hb < hbondCount; hb++){
 		    int rrj = hbond_no[ri].getInt(hb);
@@ -273,8 +273,8 @@ public class SecondaryStructure {
 
     private static void assignSheetType(int r){
 	if(r >= 0 && r < nres &&
-	   (types[r] == Residue.Coil || types[r] == Residue.Sheet)){
-	    types[r] = Residue.Sheet;
+	   (types[r] == Residue.SS.Coil || types[r] == Residue.SS.Sheet)){
+	    types[r] = Residue.SS.Sheet;
 	}
     }
 
@@ -323,43 +323,43 @@ public class SecondaryStructure {
 	return hpos;
     }
 
-    private static void regulariseSS(int types[], int n){
+    private static void regulariseSS(Residue.SS types[], int n){
 	// single residue gaps in sheets/helix
 	for(int r = 1; r < n - 1; r++){
-	    if(types[r] == Residue.Coil &&
-	       ((types[r-1] == Residue.Sheet &&
-		 types[r+1] == Residue.Sheet) ||
-		((types[r-1] == Residue.Helix &&
-		  types[r+1] == Residue.Helix)))){
+	    if(types[r] == Residue.SS.Coil &&
+	       ((types[r-1] == Residue.SS.Sheet &&
+		 types[r+1] == Residue.SS.Sheet) ||
+		((types[r-1] == Residue.SS.Helix &&
+		  types[r+1] == Residue.SS.Helix)))){
 
 		if(debug){
 		    System.out.println("changing " + residues[r]);
 		}
 		types[r] = types[r-1];
-	    } else if(types[r] == Residue.Helix &&
-	       ((types[r-1] == Residue.Sheet &&
-		 types[r+1] == Residue.Sheet))){
+	    } else if(types[r] == Residue.SS.Helix &&
+	       ((types[r-1] == Residue.SS.Sheet &&
+		 types[r+1] == Residue.SS.Sheet))){
 		if(debug){
 		    System.out.println("changing " + residues[r]);
 		}
 		types[r] = types[r-1];
-	    } else if(types[r] == Residue.Sheet &&
-	       ((types[r-1] != Residue.Sheet &&
-		 types[r+1] != Residue.Sheet))){
+	    } else if(types[r] == Residue.SS.Sheet &&
+	       ((types[r-1] != Residue.SS.Sheet &&
+		 types[r+1] != Residue.SS.Sheet))){
 		if(debug){
 		    System.out.println("changing " + residues[r]);
 		}
 		types[r] = types[r-1];
-	    } else if(types[r] != Residue.Coil &&
-	       ((types[r-1] == Residue.Coil &&
-		 types[r+1] == Residue.Coil))){
+	    } else if(types[r] != Residue.SS.Coil &&
+	       ((types[r-1] == Residue.SS.Coil &&
+		 types[r+1] == Residue.SS.Coil))){
 		if(debug){
 		    System.out.println("changing " + residues[r]);
 		}
-		types[r] = Residue.Coil;
+		types[r] = Residue.SS.Coil;
 
-	    } else if(types[r] == -1){
-		types[r] = Residue.Coil;
+	    } else if(types[r] == Residue.SS.Undefined){
+		types[r] = Residue.SS.Coil;
 	    }
 	}
 	
@@ -368,30 +368,30 @@ public class SecondaryStructure {
 
 	for(int r = 0; r < n - 2; r++){
 	    if(r == 0 &&
-	       types[r]   == Residue.Sheet &&
-	       types[r+1] == Residue.Sheet &&
-	       types[r+2] != Residue.Sheet){
+	       types[r]   == Residue.SS.Sheet &&
+	       types[r+1] == Residue.SS.Sheet &&
+	       types[r+2] != Residue.SS.Sheet){
 		System.out.println("removing 2 residue strand at n-terminus");
-		types[r] = types[r+1] = Residue.Coil;
+		types[r] = types[r+1] = Residue.SS.Coil;
 	    }else if(r == n - 2 && 
-	       types[r]   != Residue.Sheet &&
-	       types[r+1] == Residue.Sheet &&
-	       types[r+2] == Residue.Sheet){
-		types[r+1] = types[r+2] = Residue.Coil;
+	       types[r]   != Residue.SS.Sheet &&
+	       types[r+1] == Residue.SS.Sheet &&
+	       types[r+2] == Residue.SS.Sheet){
+		types[r+1] = types[r+2] = Residue.SS.Coil;
 		System.out.println("removing 2 residue strand at c-terminus");
 	    }else if(
-	       types[r]   != Residue.Sheet &&
-	       types[r+1] == Residue.Sheet &&
-	       types[r+2] == Residue.Sheet &&
-	       types[r+3] != Residue.Sheet){
+	       types[r]   != Residue.SS.Sheet &&
+	       types[r+1] == Residue.SS.Sheet &&
+	       types[r+2] == Residue.SS.Sheet &&
+	       types[r+3] != Residue.SS.Sheet){
 		System.out.println("removing 2 residue internal strand");
-		types[r+1] = types[r+2] = Residue.Coil;
+		types[r+1] = types[r+2] = Residue.SS.Coil;
 	    }
 	}
 
 	for(int r = 0; r < n; r++){
-	    if(types[r] == Residue.Turn){
-		types[r] = Residue.Coil;
+	    if(types[r] == Residue.SS.Turn){
+		types[r] = Residue.SS.Coil;
 	    }
 	}
     }

@@ -1205,9 +1205,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    while(atomIterator.hasMoreElements()){
 	    	Atom atom = atomIterator.getNextAtom();
 		if(atom.isSelected()){
-		    atom.attributes |= Atom.VDWSphere;
+		    atom.attributes.contains(Atom.Attribute.VDWSphere);
 		}else{
-		    atom.attributes &= ~Atom.VDWSphere;
+		    atom.attributes.remove(Atom.Attribute.VDWSphere);
 		}
 	    }
 	    
@@ -1216,10 +1216,10 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		!moleculeRenderer.renderer.emulate555;
 	}else if(c == 'a'){
 	    
-	    if(moleculeRenderer.pickMode != MoleculeRenderer.ANGLE_PICK){
-		moleculeRenderer.setPickMode(MoleculeRenderer.ANGLE_PICK);
+	    if(moleculeRenderer.pickMode != MoleculeRenderer.PickMode.ANGLE_PICK){
+		moleculeRenderer.setPickMode(MoleculeRenderer.PickMode.ANGLE_PICK);
 	    }else{
-		moleculeRenderer.setPickMode(MoleculeRenderer.NORMAL_PICK);
+		moleculeRenderer.setPickMode(MoleculeRenderer.PickMode.NORMAL_PICK);
 	    }
 	}else{
 	    redraw = false;
@@ -1772,7 +1772,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	Scrollbar contourScrollbar = new ContourScrollbar(Scrollbar.HORIZONTAL);
 	int range = 500;
-	if(map.getMapType() != Map.CCP4_BINARY){
+	if(map.getMapType() != Map.MapType.CCP4_BINARY){
 	    range = 2000;
 	}
 	contourScrollbar.setMinimum(-range);
@@ -2019,7 +2019,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		excludeFromSelection = state;
 	    }else if("Torsions".equals(command)){
 		if(state){
-		    moleculeRenderer.setPickMode(MoleculeRenderer.TORSION_PICK);
+		    moleculeRenderer.setPickMode(MoleculeRenderer.PickMode.TORSION_PICK);
 		}else{
 		    nothingCheckbox.setState(true);
 		}
@@ -2028,7 +2028,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		nothingCheckbox.setState(false);
 	    }else if("Angles".equals(command)){
 		if(state){
-		    moleculeRenderer.setPickMode(MoleculeRenderer.ANGLE_PICK);
+		    moleculeRenderer.setPickMode(MoleculeRenderer.PickMode.ANGLE_PICK);
 		}else{
 		    nothingCheckbox.setState(true);
 		}
@@ -2037,7 +2037,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		nothingCheckbox.setState(false);
 	    }else if("Distances".equals(command)){
 		if(state){
-		    moleculeRenderer.setPickMode(MoleculeRenderer.DISTANCE_PICK);
+		    moleculeRenderer.setPickMode(MoleculeRenderer.PickMode.DISTANCE_PICK);
 		}else{
 		    nothingCheckbox.setState(true);
 		}
@@ -2046,7 +2046,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 		nothingCheckbox.setState(false);
 	    }else if("Nothing".equals(command)){
 		if(state){
-		    moleculeRenderer.setPickMode(MoleculeRenderer.NORMAL_PICK);
+		    moleculeRenderer.setPickMode(MoleculeRenderer.PickMode.NORMAL_PICK);
 		}
 		torsionsCheckbox.setState(false);
 		distancesCheckbox.setState(false);

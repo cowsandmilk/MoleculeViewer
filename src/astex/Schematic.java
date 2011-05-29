@@ -73,7 +73,7 @@ public class Schematic {
     private static Point3d t[] = null;
     private static Point3d tout[] = null;
     private static Point3d h[] = null;
-    private static int type[] = null;
+    private static Residue.SS type[] = null;
     private static int colors[] = null;
     private static int resids[] = null;
     private static boolean widthInitialised[] = null;
@@ -93,7 +93,7 @@ public class Schematic {
 	    h = new Point3d[resCount];
 	    t = new Point3d[resCount];
 	    tout = new Point3d[resCount];
-	    type = new int[resCount];
+	    type = new Residue.SS[resCount];
 	    colors = new int[resCount];
 	    resids = new int[resCount];
 	    widthInitialised = new boolean[resCount];
@@ -120,7 +120,7 @@ public class Schematic {
 
 	ensureCapacity(chain);
 
-	tm.setColorStyle(Tmesh.TriangleColor);
+	tm.setColorStyle(Tmesh.ColorStyle.TriangleColor);
 
 	guideCount = 0;
 
@@ -156,7 +156,7 @@ public class Schematic {
 		widthInitialised[guideCount] = false;
 		colors[guideCount] = C5.getColor();
 		guides[guideCount].set(C5);
-		type[guideCount] = Residue.Sheet;
+		type[guideCount] = Residue.SS.Sheet;
 		guideCount++;
 	    }
 	}
@@ -223,7 +223,7 @@ public class Schematic {
 	    // Sheet.
 	    for(int r = 0; r < guideCount; r++){
 		
-		if(type[r] == Residue.Sheet){
+		if(type[r] == Residue.SS.Sheet){
 		    resids[residCount] = r;
 		    residCount++;
 		}else{
@@ -241,7 +241,7 @@ public class Schematic {
 	    
 	    // Helix.
 	    for(int r = 0; r < guideCount; r++){
-		if(type[r] == Residue.Helix){
+		if(type[r] == Residue.SS.Helix){
 		    resids[residCount] = r;
 		    residCount++;
 		}else{
@@ -259,11 +259,11 @@ public class Schematic {
 	    
 	    // Coil.
 	    for(int r = 0; r < guideCount; r++){
-		if((r > 0 && type[r] != Residue.Coil &&
-		    type[r - 1] == Residue.Coil) ||
-		   (r < guideCount - 1 && type[r] != Residue.Coil
-		    && type[r + 1] == Residue.Coil) ||
-		   type[r] == Residue.Coil){
+		if((r > 0 && type[r] != Residue.SS.Coil &&
+		    type[r - 1] == Residue.SS.Coil) ||
+		   (r < guideCount - 1 && type[r] != Residue.SS.Coil
+		    && type[r + 1] == Residue.SS.Coil) ||
+		   type[r] == Residue.SS.Coil){
 		    
 		    if(residCount > 0 &&
 		       guides[r].distance(guides[resids[residCount - 1]]) > 4.2){
@@ -274,8 +274,8 @@ public class Schematic {
 		    resids[residCount] = r;
 		    residCount++;
 		    
-		    if(r > 0 && type[r] != Residue.Coil &&
-		       type[r - 1] == Residue.Coil){
+		    if(r > 0 && type[r] != Residue.SS.Coil &&
+		       type[r - 1] == Residue.SS.Coil){
 			tube(args, tm);
 			residCount = 0;
 		    }
@@ -294,8 +294,8 @@ public class Schematic {
 	    }
 	    
 	    for(int r = 1; r < guideCount; r++){
-		if((type[r] == Residue.Sheet && type[r-1] == Residue.Helix) ||
-		   (type[r-1] == Residue.Sheet && type[r] == Residue.Helix)){
+		if((type[r] == Residue.SS.Sheet && type[r-1] == Residue.SS.Helix) ||
+		   (type[r-1] == Residue.SS.Sheet && type[r] == Residue.SS.Helix)){
 		    resids[0] = r - 1;
 		    resids[1] = r;
 		    residCount = 2;
@@ -741,7 +741,7 @@ public class Schematic {
 		// spline points to lie near curved sections.
 		if(smooth == 0){
 		    if(t < 0.5){
-			t = t * t;
+			t *= t;
 		    }else{
 			t = 1.0 - t;
 			t *= t;

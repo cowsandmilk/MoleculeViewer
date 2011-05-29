@@ -55,80 +55,23 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public static final int Undefined = -1;
 
     /** An integer for storing various attributes. */
-    public int attributes = 0;
+    public EnumSet<Attribute> attributes = EnumSet.noneOf(Attribute.class);
 
     /** The radius of the atom. */
     private float radius = -1.0f;
 
     /** The stick radius of the atom. */
     private float ballRadius = defaultBallRadius;
+    
+    public enum Attribute {
+	Solvent, Labelled, Selected, Hetero, TemporarilySelected, Visited,
+	Displayed, Wide, VDWSphere, Surface, SurfaceContext, Property, Ring,
+	BallAndStick, Cylinder, CustomLabelled, ModellingActive, Aromatic,
+	ModellingEnvironment, ModellingXray, ModellingFixed, NameLeftJustified
+    }
 
-    /** The atom is solvent. */
-    public static final int Solvent = 0x1;
-
-    /** The atom is labelled. */
-    public static final int Labelled = 0x2;
-
-    /** The atom is selected. */
-    public static final int Selected = 0x4;
-
-    /** The atom is an heteroatom. */
-    public static final int Hetero = 0x8;
-
-    /** The atom is temporarily selected. */
-    public static final int TemporarilySelected =   0x10;
-
-    /** The atom visit flag. */
-    public static final int Visited             =   0x20;
-
-    /** The atom display flag. */
-    public static final int Displayed           =   0x40;
-
-    /** The wide atom flag. */
-    public static final int Wide                =   0x80;
-
-    /** The sphere flag. */
-    public static final int VDWSphere           =  0x100;
-
-    /** The surfaced atom flag. */
-    public static final int Surface             =  0x200;
-
-    /** The surface context flag. */
-    public static final int SurfaceContext      =  0x400;
-
-    /** The property set flag. */
-    public static final int Property            =  0x800;
-
-    /** The property set flag. */
-    public static final int BallAndStick        = 0x1000;
-
-    /** The property set flag. */
-    public static final int Cylinder            = 0x2000;
-
-    /** The property set flag. */
-    public static final int CustomLabelled      = 0x4000;
-
-    public static final int DisplayedMask	  =
-	Displayed | Cylinder | BallAndStick | VDWSphere;
-
-    /** Atom is active in energy calculations. */
-    public static final int ModellingActive     = 0x8000;
-
-    /** Atom is environment in energy calculations. */
-    public static final int ModellingEnvironment= 0x10000;
-
-    /** Atom is xray terms in energy calculations. */
-    public static final int ModellingXray       = 0x20000;
-
-    /** Atom is fixed in energy calculations. */
-    public static final int ModellingFixed      = 0x40000;
-
-    /** Atom is fixed in energy calculations. */
-    public static final int NameLeftJustified   = 0x80000;
-
-    public static final int Aromatic      = 0x100000;
-
-    public static final int Ring      = 0x200000;
+    public static final EnumSet<Attribute> DisplayedMask =
+	EnumSet.of(Attribute.Displayed, Attribute.Cylinder, Attribute.BallAndStick, Attribute.VDWSphere);
 
     /** The X coordinate attribute. */
     public static final int X = 0;
@@ -178,7 +121,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	transparency  = 255;
 	charge        = 0;
 	partialCharge = 0.0f;
-	attributes    = Displayed;
+	attributes    = EnumSet.of(Attribute.Displayed);
 	bFactor       = 0.0f;
 	occupancy     = 1.0f;
 	radius        = -1.0f;
@@ -832,26 +775,6 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	return false;
     }
 
-    /** Return a bond with the specified order. */
-    public Bond getBondWithOrder(int bondOrder){
-	int bondCount = getBondCount();
-
-	for(int b = 0; b < bondCount; b++){
-	    Bond bond = getBond(b);
-
-	    if(bond.getBondOrder() == bondOrder){
-		return bond;
-	    }
-	}
-
-	return null;
-    }
-
-    /** Does this atom have a bond of the specified bond order. */
-    public boolean hasBondWithOrder(int bondOrder){
-	return getBondWithOrder(bondOrder) != null;
-    }
-
     /** Get the bonding radius for the atom. */
     public double getBondingRadius(){
 	if(element == PeriodicTable.CARBON ||
@@ -909,14 +832,14 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
     public double getBiggestDisplayedRadius(){
 	double maxRadius = 0.0;
 
-	if((attributes & VDWSphere) != 0){
+	if(attributes.contains(Attribute.VDWSphere)){
 	    double r = getVDWRadius();
 	    if(r > maxRadius){
 		maxRadius = r;
 	    }
 	}
 
-	if((attributes & BallAndStick) != 0){
+	if(attributes.contains(Attribute.BallAndStick)){
 	    double r = getBallRadius();
 	    if(r > maxRadius){
 		maxRadius = r;
@@ -924,7 +847,7 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	}
 
 	// can't see where that is recorded...
-	if((attributes & Cylinder) != 0){
+	if(attributes.contains(Attribute.Cylinder)){
 	    double r = getBallRadius();
 	    if(r > maxRadius){
 		maxRadius = r;
@@ -1061,26 +984,26 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Does the atom have any attributes set? */
     public boolean hasAttributes(){
-	return attributes != 0;
+	return attributes.size() != 0;
     }
 
     /** Set or clear a particular attribute. */
-    public void setOrClearAttribute(int attribute, boolean state){
+    public void setOrClearAttribute(Attribute attribute, boolean state){
 	if(state){
-	    attributes |= attribute;
+	    attributes.add(attribute);
 	}else{
-	    attributes &= ~attribute;
+	    attributes.remove(attribute);
 	}
     }
 
     /** Set whether the atom is solvent. */
     public void setSolvent(boolean state){
-	setOrClearAttribute(Solvent, state);
+	setOrClearAttribute(Attribute.Solvent, state);
     }
 
     /** Is this atom a solvent atom. */
     public boolean isSolvent(){
-	return (attributes & Solvent) != 0;
+	return attributes.contains(Attribute.Solvent);
     }
 
     /** Set whether the atom is solvent. */
@@ -1088,9 +1011,9 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 	customLabel = l;
 
 	if(customLabel == null){
-	    setOrClearAttribute(CustomLabelled, false);
+	    setOrClearAttribute(Attribute.CustomLabelled, false);
 	}else{
-	    setOrClearAttribute(CustomLabelled, true);
+	    setOrClearAttribute(Attribute.CustomLabelled, true);
 	}
     }
 
@@ -1101,79 +1024,82 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
     /** Is this atom a solvent atom. */
     public boolean isLabelled(){
-	return (attributes & Labelled) != 0;
+	return attributes.contains(Attribute.Labelled);
     }
 
     /** Set whether the atom is solvent. */
     public void setLabelled(boolean state){
-	setOrClearAttribute(Labelled, state);
+	setOrClearAttribute(Attribute.Labelled, state);
     }
 
     /** Set whether the atom is selected. */
     public void setSelected(boolean state){
-	setOrClearAttribute(Selected, state);
+	setOrClearAttribute(Attribute.Selected, state);
     }
 
     /** Is this atom selected. */
     public boolean isSelected(){
-	return (attributes & Selected) != 0;
+	return attributes.contains(Attribute.Selected);
     }
 
     /** Set whether the atom is a heteroatom. */
     public void setHeteroAtom(boolean state){
-	setOrClearAttribute(Hetero, state);
+	setOrClearAttribute(Attribute.Hetero, state);
     }
 
     /** Is this atom a heteroatom. */
     public boolean isHeteroAtom(){
-	return (attributes & Hetero) != 0;
+	return attributes.contains(Attribute.Hetero);
     }
 
     /** Set whether the atom is temporarily selected. */
     public void setTemporarilySelected(boolean state){
-	setOrClearAttribute(TemporarilySelected, state);
+	setOrClearAttribute(Attribute.TemporarilySelected, state);
     }
 
     /** Is this atom temporarily selected. */
     public boolean isTemporarilySelected(){
-	return (attributes & TemporarilySelected) != 0;
+	return attributes.contains(Attribute.TemporarilySelected);
     }
 
     /** Set whether the atom has been visited. */
     public void setVisited(boolean state){
-	setOrClearAttribute(Visited, state);
+	setOrClearAttribute(Attribute.Visited, state);
     }
 
     /** Has this atom been visited. */
     public boolean isVisited(){
-	return (attributes & Visited) != 0;
+	return attributes.contains(Attribute.Visited);
     }
 
     /** Set whether the atom has been wide. */
     public void setWide(boolean state){
-	setOrClearAttribute(Wide, state);
+	setOrClearAttribute(Attribute.Wide, state);
     }
 
     /** Has this atom been wide. Its a bond property.*/
     public boolean isWide(){
-	return (attributes & Wide) != 0;
+	return attributes.contains(Attribute.Wide);
     }
 
     /** Set whether the atom has been displayed. */
     public void setDisplayed(boolean state){
-	setOrClearAttribute(Displayed, state);
+	setOrClearAttribute(Attribute.Displayed, state);
     }
 
     /** Has this atom been displayed. */
     public boolean isSimpleDisplayed(){
-	return (attributes & Displayed) != 0;
+	return attributes.contains(Attribute.Displayed);
     }
 
     /** Has this atom been displayed. */
     public boolean isDisplayed(){
 	Molecule mol = getMolecule();
-	if(mol.getDisplayed())
-	    return (attributes & DisplayedMask) != 0;
+	if(mol.getDisplayed()) {
+	    EnumSet<Attribute> tmp = attributes.clone();
+	    tmp.retainAll(DisplayedMask);
+	    return !tmp.isEmpty();
+	}
 
 	return false;
     }
@@ -1204,11 +1130,11 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 
 	for(int b = 0; b < bondCount; b++){
 	    Bond bond = getBond(b);
-	    int bondOrder = bond.getBondOrder();
+	    Bond.BondOrder bondOrder = bond.getBondOrder();
 
-	    if(bondOrder == Bond.DoubleBond)
+	    if(bondOrder == Bond.BondOrder.DoubleBond)
 		return sp2;
-	    if(bondOrder == 3)
+	    if(bondOrder == Bond.BondOrder.TripleBond)
 		return sp;
 	}
 

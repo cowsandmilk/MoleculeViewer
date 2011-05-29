@@ -102,33 +102,19 @@ public class Residue extends Generic implements Selectable {
 
         return name;
     }
-
-    /** Sheet secondary structure type. */
-    public static final int Undefined = -1;
-
-    /** Sheet secondary structure type. */
-    public static final int Sheet = 1;
-
-    /** Helix secondary structure type. */
-    public static final int Helix = 2;
-
-    /** Helix secondary structure type. */
-    public static final int Helix310 = 3;
-
-    /** Sheet secondary structure type. */
-    public static final int Turn = 4;
-
-    /** Sheet secondary structure type. */
-    public static final int Coil = 5;
+    
+    public enum SS {
+	Undefined, Sheet, Helix, Helix310, Turn, Coil
+    }
 
     /** The secondary structure type. */
-    private int secondaryStructure = Coil;
+    private SS secondaryStructure = SS.Coil;
     
     /**
      * Get the value of secondaryStructure.
      * @return value of secondaryStructure.
      */
-    public int getSecondaryStructure() {
+    public SS getSecondaryStructure() {
 	return secondaryStructure;
     }
     
@@ -136,7 +122,7 @@ public class Residue extends Generic implements Selectable {
      * Set the value of secondaryStructure.
      * @param v  Value to assign to secondaryStructure.
      */
-    public void setSecondaryStructure(int  v) {
+    public void setSecondaryStructure(SS  v) {
 	this.secondaryStructure = v;
     }
     
