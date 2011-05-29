@@ -69,7 +69,7 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
 
         if(getParameter("appletui") != null){
             try {
-                setLayout(new SplitterLayout(SplitterLayout.HORIZONTAL));
+                setLayout(new SplitterLayout(SplitterLayout.Orientation.HORIZONTAL));
 
                 add("3", moleculeViewer);
                 

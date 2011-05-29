@@ -67,7 +67,7 @@ public class SplitterBar extends Panel {
 	static final Cursor VERT_CURSOR = new Cursor(Cursor.N_RESIZE_CURSOR);
 	static final Cursor HORIZ_CURSOR = new Cursor(Cursor.E_RESIZE_CURSOR);
 	static final Cursor DEF_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
-	private int orientation = SplitterLayout.VERTICAL;
+	private SplitterLayout.Orientation orientation = SplitterLayout.Orientation.VERTICAL;
 	
 	private boolean alreadyDrawn = false;
 	private Rectangle originalBounds=null;
@@ -94,7 +94,7 @@ public class SplitterBar extends Panel {
 		for(curr=0; (curr < comps.length) && (comps[curr] != this); curr++);
 		int origCurr = curr; // hold for part II check
 
-		if (orientation == SplitterLayout.VERTICAL) {
+		if (orientation == SplitterLayout.Orientation.VERTICAL) {
 			if (currBounds.y < originalBounds.y) { // moved up
 				// could have moved _into_ splitter bars above (or top edge)
 				//   and/or away from splitter bars below (or bottom edge)
@@ -284,7 +284,7 @@ public class SplitterBar extends Panel {
 			} // orientation==HORIZONTAL
 
 		} // checkComponents()
-	public int getOrientation() {return orientation;}
+	public SplitterLayout.Orientation getOrientation() {return orientation;}
 	public void mouseDrag(MouseEvent e) {
 		if (SplitterLayout.dragee == null)
 			SplitterLayout.dragee = this;
@@ -303,22 +303,22 @@ public class SplitterBar extends Panel {
 		Dimension parentDim = cp.getSize();
 		Point l = getLocationOnScreen();
 		Insets insets = (cp).getInsets();
-		if (orientation == SplitterLayout.VERTICAL)
+		if (orientation == SplitterLayout.Orientation.VERTICAL)
 			parentDim.width -= insets.right + insets.left;
 		else
 			parentDim.height -= insets.top + insets.bottom;
 		Rectangle r = getBounds(); // mouse event is relative to this...
-		int x = l.x+(orientation==SplitterLayout.HORIZONTAL?e.getX():0);
-		int y = l.y+(orientation==SplitterLayout.VERTICAL?e.getY():0);
+		int x = l.x+(orientation==SplitterLayout.Orientation.HORIZONTAL?e.getX():0);
+		int y = l.y+(orientation==SplitterLayout.Orientation.VERTICAL?e.getY():0);
 		if (x<fl.x+insets.left) x = fl.x+insets.left;
-		else if ((orientation==SplitterLayout.HORIZONTAL) && (x > fl.x+parentDim.width-r.width))
+		else if ((orientation==SplitterLayout.Orientation.HORIZONTAL) && (x > fl.x+parentDim.width-r.width))
 			x = fl.x+parentDim.width-r.width;
 		if (y<fl.y+insets.top) y = fl.y+insets.top;
-		else if ((orientation==SplitterLayout.VERTICAL) && (y > fl.y+parentDim.height-r.height))
+		else if ((orientation==SplitterLayout.Orientation.VERTICAL) && (y > fl.y+parentDim.height-r.height))
 			y = fl.y+parentDim.height-r.height;
 		wBar.setBounds(x,y,
-					 	(orientation==SplitterLayout.HORIZONTAL)?r.width:parentDim.width,
-					 	(orientation==SplitterLayout.VERTICAL)?r.height:parentDim.height);
+					 	(orientation==SplitterLayout.Orientation.HORIZONTAL)?r.width:parentDim.width,
+					 	(orientation==SplitterLayout.Orientation.VERTICAL)?r.height:parentDim.height);
 		if (!alreadyDrawn) {
 			wBar.setVisible(true);
 			alreadyDrawn=true;
@@ -326,7 +326,7 @@ public class SplitterBar extends Panel {
 		}
 	public void mouseEnter(MouseEvent e) {
 		if (SplitterLayout.dragee != null) return;
-		setCursor((orientation == SplitterLayout.VERTICAL)?VERT_CURSOR:HORIZ_CURSOR);
+		setCursor((orientation == SplitterLayout.Orientation.VERTICAL)?VERT_CURSOR:HORIZ_CURSOR);
 		invalidate();
 		validate();
 		repaint();
@@ -344,8 +344,8 @@ public class SplitterBar extends Panel {
 			SplitterLayout.dragee = null;
 			wBar.setVisible(false); wBar.dispose(); wBar=null; alreadyDrawn=false;
 			Rectangle r = getBounds(); // mouse event is relative to this...
-			r.x += (orientation==SplitterLayout.HORIZONTAL?e.getX():0);
-			r.y += (orientation==SplitterLayout.VERTICAL?e.getY():0);
+			r.x += (orientation==SplitterLayout.Orientation.HORIZONTAL?e.getX():0);
+			r.y += (orientation==SplitterLayout.Orientation.VERTICAL?e.getY():0);
 			setLocation(r.x, r.y);
 			setCursor(DEF_CURSOR);
 
@@ -370,7 +370,7 @@ public class SplitterBar extends Panel {
 		Component c[] = getComponents();
 		if (c == null || c.length == 0) {
                     Rectangle r = getBounds();
-			if (orientation == SplitterLayout.VERTICAL){
+			if (orientation == SplitterLayout.Orientation.VERTICAL){
                             g.drawLine(2, r.height/2 -12, 2, r.height/2 + 12);
                             g.drawLine(r.width - 2, r.height/2 -12, r.width - 2, r.height/2 + 12);
 			}else{
@@ -379,9 +379,9 @@ public class SplitterBar extends Panel {
 			}
                 }
         }
-	public void setOrientation(int o) {orientation = o;}
+	public void setOrientation(SplitterLayout.Orientation o) {orientation = o;}
 	public void swapOrientation() {
-		setOrientation(getOrientation()==SplitterLayout.HORIZONTAL?SplitterLayout.VERTICAL:SplitterLayout.HORIZONTAL);
+		setOrientation(orientation==SplitterLayout.Orientation.HORIZONTAL ? SplitterLayout.Orientation.VERTICAL : SplitterLayout.Orientation.HORIZONTAL);
 	}
 	/** Called by AWT to update the image produced by the SplitterBar */
 	public void update (Graphics g)  {paint(g);}

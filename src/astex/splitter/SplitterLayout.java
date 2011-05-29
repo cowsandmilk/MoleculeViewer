@@ -119,10 +119,10 @@ import java.util.HashMap;
 
 */
 public class SplitterLayout implements LayoutManager2, java.io.Serializable {
-	/** Aligns components vertically -- SplitterBars will move up/down */
-	public static final int VERTICAL   = 0;
-	/** Aligns components horizontally -- SplitterBars will move left-right */
-	public static final int HORIZONTAL = 1;
+	public enum Orientation {
+	    VERTICAL, /** Aligns components vertically -- SplitterBars will move up/down */
+	    HORIZONTAL /** Aligns components horizontally -- SplitterBars will move left-right */
+	}
 	
 	public static SplitterBar dragee=null;
 
@@ -131,12 +131,12 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 	private HashMap<Component,Integer> relations = new HashMap<Component,Integer>(11);
 	
 	private static final long serialVersionUID = -8658291919501921765L;
-	private int fieldOrientation = VERTICAL;
+	private Orientation fieldOrientation = Orientation.VERTICAL;
 
 	/** Create a new SplitterLayout
 		@param orientation -- VERTICAL or HORIZONTAL
 	*/
-	public SplitterLayout(int orientation) {
+	public SplitterLayout(Orientation orientation) {
 		setOrientation(orientation);
 		}
 	/** Adds a component w/ constraints to the layout.  This should only
@@ -157,7 +157,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 	public void addLayoutComponent(String name, Component comp) {
 		newComponentAdded = true;
 		if (comp instanceof SplitterBar) {
-			((SplitterBar)comp).setOrientation(getOrientation());
+			((SplitterBar)comp).setOrientation(fieldOrientation);
  	   		}
 		else {
 			if (name == null) name = "1";
@@ -180,7 +180,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 					d = c[i].getPreferredSize();
 				else
 					d = c[i].getMinimumSize();
-				if (getOrientation() == VERTICAL) {
+				if (fieldOrientation == Orientation.VERTICAL) {
 					dim.width = Math.max(d.width, dim.width);
 					dim.height += d.height;
 					}
@@ -200,15 +200,7 @@ public class SplitterLayout implements LayoutManager2, java.io.Serializable {
 	public float getLayoutAlignmentX(Container parent) {return 0.5f;}
 	/** Tells the caller that we prefer to be centered */
 	public float getLayoutAlignmentY(Container parent) {return 0.5f;}
-/**
- * Gets the orientation property (int) value.
- * @return The orientation property value.
- * @see #setOrientation
- */
-private int getOrientation() {
-	/* Returns the orientation property value. */
-	return fieldOrientation;
-}
+
 	/** Does not have any effect (overridden to null the effect) */
 	public void  invalidateLayout(Container target)     {}
 	/** Lays out the components in the specified container by telling
@@ -251,13 +243,12 @@ private int getOrientation() {
 
 		Component c[] = target.getComponents();
 		Object pSize[] = new Object[c.length];
-		int orientation = getOrientation();
 		for(int i = 0; i < c.length; i++) {
 			if (c[i].isVisible())
 				if (c[i] instanceof SplitterBar) {
-	 	   			((SplitterBar)c[i]).setOrientation(orientation);
+	 	   			((SplitterBar)c[i]).setOrientation(fieldOrientation);
 					pSize[i] = c[i].getPreferredSize();
-					if (orientation == VERTICAL) {
+					if (fieldOrientation == Orientation.VERTICAL) {
 						dim.height -= ((Dimension)pSize[i]).height;
 						if (reScaleH) {
 							Point p = c[i].getLocation();
@@ -284,7 +275,7 @@ private int getOrientation() {
 			if (c[i].isVisible()) {
 				Rectangle r = c[i].getBounds();
 				if (c[i] instanceof SplitterBar)
-					if (orientation == VERTICAL) {
+					if (fieldOrientation == Orientation.VERTICAL) {
 						if (r.x != left || r.y != top || r.width != dim.width || r.height != ((Dimension)pSize[i]).height)
 							c[i].setBounds(left,top,dim.width,((Dimension)pSize[i]).height);
 						top += ((Dimension)pSize[i]).height;
@@ -296,7 +287,7 @@ private int getOrientation() {
 						}
 				else {
 					if (i == (c.length-1)) {			
-						if (orientation == VERTICAL) {
+						if (fieldOrientation == Orientation.VERTICAL) {
 							if (r.x != left || r.y != top || r.width != dim.width || r.height != (bottom-top))
 								c[i].setBounds(left,top,dim.width,bottom-top);
 							}
@@ -310,7 +301,7 @@ private int getOrientation() {
 						Point p = c[i+1].getLocation();
 						if (!newComponentAdded && 
 							(c[i+1] instanceof SplitterBar) && (p.x != 0 || p.y != 0)) {
-							if (orientation == VERTICAL) {
+							if (fieldOrientation == Orientation.VERTICAL) {
 								if (r.x != left || r.y != top || r.width != dim.width || r.height != (p.y-top))
 									c[i].setBounds(left,top,dim.width,p.y-top);
 								top = p.y;
@@ -324,7 +315,7 @@ private int getOrientation() {
 						else {
 							int rel = ((Integer)pSize[i]).intValue();
 							float ratio = ((float)rel/(float)relativeSize);
-							if (orientation == VERTICAL) {
+							if (fieldOrientation == Orientation.VERTICAL) {
 								ratio *= dim.height;
 								if (r.x != left || r.y != top || r.width != dim.width || r.height != (int)ratio)
 									c[i].setBounds(left,top,dim.width,(int)ratio);
@@ -374,13 +365,13 @@ private int getOrientation() {
  * @param orientation The new value for the property.
  * @see #getOrientation
  */
-private void setOrientation(int orientation) {
+private void setOrientation(Orientation orientation) {
 	fieldOrientation = orientation;
 }
 	/** Returns a String representation of the Layout */
     @Override
 	public String toString() {
-		if (getOrientation() == VERTICAL)
+		if (fieldOrientation == Orientation.VERTICAL)
 			return getClass().getName() + "[orientation=VERTICAL]";
 		else
 			return getClass().getName() + "[orientation=HORIZONTAL]";
