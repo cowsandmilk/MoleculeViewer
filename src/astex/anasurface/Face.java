@@ -30,18 +30,16 @@ import java.util.*;
 
 class Face extends Stack<Edge> {
     /** Type of face. */
-    public int type = 0;
+    public Type type;
 
-    /** Intsersection status. */
+    /** Intersection status. */
     public int intersection = 0;
 
     public static final int ProbeIntersection = 1;
 
-    /** Possible types of face. */
-    public static final int Convex  = 1;
-    public static final int Saddle  = 2;
-    public static final int Concave = 3;
-    public static final int Undefined = 4;
+    public enum Type {
+	Convex, Saddle, Concave, Undefined
+    }
 
     /** Interpolation start on i. */
     double iij[] = null;
@@ -68,18 +66,18 @@ class Face extends Stack<Edge> {
     public Torus torus = null;
 
     /** Constructor. */
-    public Face(int t){
+    public Face(Type t){
 	super();
 	type = t;
 
-	if(type == Saddle){
+	if(type == Type.Saddle){
 	    iij = new double[3];
 	    iji = new double[3];
 	}
     }
 
     public boolean add(Edge e){
-	if(this.type == Face.Concave && e.probeFace == null){
+	if(type == Type.Concave && e.probeFace == null){
 	    e.probeFace = this;
 	}
 

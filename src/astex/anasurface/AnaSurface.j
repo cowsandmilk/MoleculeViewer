@@ -154,7 +154,7 @@ public class AnaSurface {
 	deCuspSurface(tmesh);
 	System.out.println("done");
 
-	tmesh.setColorStyle(Tmesh.VertexColor);
+	tmesh.setColorStyle(Tmesh.ColorStyle.VertexColor);
 
 	return tmesh;
     }
@@ -238,7 +238,7 @@ public class AnaSurface {
 	for(Face f : faces){
 	    int edgeCount = f.size();
 
-	    if(edgeCount == 4 && f.type == Face.Saddle){
+	    if(edgeCount == 4 && f.type == Face.Type.Saddle){
 		processToroidalFace(f);
 	    }
 	}
@@ -246,7 +246,7 @@ public class AnaSurface {
 	for(Face f : faces){
 	    int edgeCount = f.size();
 
-	    if(!(edgeCount == 4 && f.type == Face.Saddle) && !f.skip){
+	    if(!(edgeCount == 4 && f.type == Face.Type.Saddle) && !f.skip){
 		processFace(f);
 	    }
 	}
@@ -256,9 +256,9 @@ public class AnaSurface {
     private void processFace(Face f){
 	int edgeCount = f.size();
 
-	if(f.type == Face.Undefined){
+	if(f.type == Face.Type.Undefined){
 	    processUndefinedFace(f);
-	}else if(edgeCount == 4 && f.type == Face.Saddle){
+	}else if(edgeCount == 4 && f.type == Face.Type.Saddle){
 	    processToroidalFace(f);
 	}else{
 	    processIrregularFace(f, -1);
@@ -285,11 +285,11 @@ public class AnaSurface {
 	    return;
 	}
 
-	if(f.type == Face.Concave){
+	if(f.type == Face.Type.Concave){
 	    transformSphere(f.cen, f.r);
 	}
 
-	if(f.type != Face.Undefined){
+	if(f.type != Face.Type.Undefined){
 	    clipSphere(f, ia);
 	    
 	    addWholeTriangles();
@@ -300,8 +300,8 @@ public class AnaSurface {
 
     /** Edges on the sphere. */
     private boolean used[] = new boolean[100];
-    private Face convexFace = new Face(Face.Convex);
-    private Face sphereFace = new Face(Face.Convex);
+    private Face convexFace = new Face(Face.Type.Convex);
+    private Face sphereFace = new Face(Face.Type.Convex);
 
     /** The final triangulation stage for the remaining sphere surface. */
     private void triangulateSphere(int ia){
@@ -309,7 +309,7 @@ public class AnaSurface {
 	    return;
 	}
 
-	convexFace.type = Face.Convex;
+	convexFace.type = Face.Type.Convex;
 	copy(xyz[ia], convexFace.cen);
 	convexFace.r = radius[ia];
 
@@ -382,7 +382,7 @@ public class AnaSurface {
 	vArray.clear();
 	eArray.clear();
 
-	if(f.type == Face.Concave && f.size() > 3){
+	if(f.type == Face.Type.Concave && f.size() > 3){
 	    System.out.println("concave edge count "+ f.size());
 	}
 
@@ -476,7 +476,7 @@ public class AnaSurface {
 
 	if(debug)System.out.println("after edges edge count " + ecount);
 
-	if(f.type != Face.Undefined){
+	if(f.type != Face.Type.Undefined){
 	    for(int i = 0; i < nsp; i++){
 		if(hull[i] == 1){
 		    // always needs putting in list.
@@ -1082,7 +1082,7 @@ public class AnaSurface {
 	for(int isp = 0; isp < nsp; isp++){
 	    // add all the points
 	    if(clipped[isp] == -1){
-		if(f.type == Face.Concave){
+		if(f.type == Face.Type.Concave){
 		    invertn[0] = -snx[isp][0];
 		    invertn[1] = -snx[isp][1];
 		    invertn[2] = -snx[isp][2];
@@ -1542,7 +1542,7 @@ public class AnaSurface {
 		Edge topRight = addSimpleEdge(e0.v0, vi0, e0, null, null, -1.);
 		Edge topLeft = addSimpleEdge(vi0, e1.v1, e1, null, null, -1.);
 
-		Face topf = new Face(Face.Undefined);
+		Face topf = new Face(Face.Type.Undefined);
 		topf.add(e3); topf.add(topRight); topf.add(topLeft);
 		faces.add(topf);
 
@@ -1551,7 +1551,7 @@ public class AnaSurface {
 		Edge bottomRight =
 		    addSimpleEdge(vj0, e0.v1, e0, null, null, -1.);
 
-		Face bottomf = new Face(Face.Undefined);
+		Face bottomf = new Face(Face.Type.Undefined);
 		bottomf.add(e2);
 		bottomf.add(bottomLeft);
 		bottomf.add(bottomRight);
@@ -1579,7 +1579,7 @@ public class AnaSurface {
 
 		// and add the new face
 
-		Face f = new Face(Face.Saddle);
+		Face f = new Face(Face.Type.Saddle);
 		
 		f.torus = t;
 
@@ -2021,7 +2021,7 @@ public class AnaSurface {
 	}
 
 	// store the face
-	Face f = new Face(Face.Concave);
+	Face f = new Face(Face.Type.Concave);
 	f.add(edge0);
 	f.add(edge1);
 	f.add(edge2);
