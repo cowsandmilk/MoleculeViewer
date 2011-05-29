@@ -18,20 +18,10 @@
 package astex;
 
 class AnimationObject {
-    /** Constant to indicate that we are rocking. */
-    public static final int Rock     = 1;
-
-    /** Constant to indicate that we are rolling. */
-    public static final int Roll     = 2;
-
-    /** Constant to indicate that we are recentering. */
-    public static final int Recenter = 3;
-
-    /** Constant to indicate that we are recentering. */
-    public static final int Command =  4;
-
-    /** Constant to indicate that we are recentering. */
-    public static final int MoleculeAnimation = 5;
+    
+    public enum Mode {
+	Rock, Roll, Recenter, Command, MoleculeAnimation
+    }
 
     /** The angle through which we rock (in degrees). */
     private double rockAngle         = 7.5;
@@ -40,7 +30,7 @@ class AnimationObject {
     private int sleepDuration        = 100;
 
     /** The current animation mode. */
-    private int animationMode        = Rock;
+    private Mode animationMode        = Mode.Rock;
 
     /** The number of steps for an animation. */
     private int stepCount            = 0;
@@ -60,7 +50,7 @@ class AnimationObject {
     }
 
     /** Set the current mode. */
-    public void setMode(int v){
+    public void setMode(Mode v){
 	animationMode = v;
     }
 
@@ -169,7 +159,7 @@ class AnimationObject {
 	MoleculeRenderer moleculeRenderer = moleculeViewer.getMoleculeRenderer();
         interactive = moleculeViewer.interactiveAnimation();
 
-	if(animationMode == Rock){
+	if(animationMode == Mode.Rock){
 	    if(step == 0){
 		currentAngle = 0.0;
 		lastRock = 0.0;
@@ -200,11 +190,11 @@ class AnimationObject {
 	    moleculeRenderer.execute(command);
 
 	    lastRock = disp;
-	}else if(animationMode == MoleculeAnimation){
+	}else if(animationMode == Mode.MoleculeAnimation){
 
-	}else if(animationMode == Command){
+	}else if(animationMode == Mode.Command){
 
-	}else if(animationMode == Roll){
+	}else if(animationMode == Mode.Roll){
 	    if(step == 0){
 		deltaAngle = rockAngle/(double)stepCount;
                 if(!interactive){
@@ -221,7 +211,7 @@ class AnimationObject {
 
 	    moleculeRenderer.execute(command);
 
-	}else if(animationMode == Recenter){
+	}else if(animationMode == Mode.Recenter){
 	    if(step == 0){
 		Point3d center = moleculeRenderer.renderer.getCenter();
 		double r       = moleculeRenderer.renderer.getRadius();

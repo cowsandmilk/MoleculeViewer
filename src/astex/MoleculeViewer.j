@@ -148,15 +148,15 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	    stage.setRockAngle(a);
 
-	    stage.setMode(AnimationObject.Rock);
+	    stage.setMode(AnimationObject.Mode.Rock);
 	}else if("roll".equals(mode)){
 	    double a = args.getDouble("-angle", 360.0);
 	    stage.setRockAngle(a);
 	    
-	    stage.setMode(AnimationObject.Roll);
+	    stage.setMode(AnimationObject.Mode.Roll);
 	}else if("command".equals(mode)){
 
-	    stage.setMode(AnimationObject.Command);
+	    stage.setMode(AnimationObject.Mode.Command);
 
 	}else if("recenter".equals(mode)){
 	    String matrix = args.getString("-matrix", null);
@@ -244,7 +244,7 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 	    }
 
 	    stage.setFinishCenter(center.x, center.y, center.z, r, cf, cb);
-	    stage.setMode(AnimationObject.Recenter);
+	    stage.setMode(AnimationObject.Mode.Recenter);
 	}else{
 	    System.out.println("handleAnimation: unhandled animation mode " + mode);
 	}
