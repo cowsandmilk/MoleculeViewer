@@ -15,12 +15,12 @@ import astex.*;
 "{"		{ return new Symbol(sym.LCURLY); }
 "}"		{ return new Symbol(sym.RCURLY); }
 
-">"		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.GT)); }
-">="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.GE)); }
-"<"		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.LT)); }
-"<="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.LE)); }
-"="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.EQ)); }
-"!="		{ return new Symbol(sym.OPERATOR, Integer.valueOf(Selection.NE)); }
+">"		{ return new Symbol(sym.OPERATOR, Selection.Operator.GT); }
+">="	{ return new Symbol(sym.OPERATOR, Selection.Operator.GE); }
+"<"		{ return new Symbol(sym.OPERATOR, Selection.Operator.LT); }
+"<="	{ return new Symbol(sym.OPERATOR, Selection.Operator.LE); }
+"="		{ return new Symbol(sym.OPERATOR, Selection.Operator.EQ); }
+"!="	{ return new Symbol(sym.OPERATOR, Selection.Operator.NE); }
 
 "and"		{ return new Symbol(sym.AND); }
 "or"		{ return new Symbol(sym.OR); }

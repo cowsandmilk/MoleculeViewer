@@ -157,7 +157,7 @@ terminal ARG;
 terminal TRUE;
 terminal FALSE;
 
-terminal Integer OPERATOR;
+terminal Selection.Operator OPERATOR;
 terminal Integer ATTRIBUTE;
 
 terminal Integer INTEGER;
@@ -1561,14 +1561,14 @@ statement ::=
 		{:
 			RESULT = Selection.attribute(parser.renderer,
 		 					a.intValue(),
-							o.intValue(),
+							o,
 		 					d.doubleValue());
 		:}
 	| ID OPERATOR:o number:d
 		{:
 			RESULT = Selection.attribute(parser.renderer,
 		 					Atom.ID,
-							o.intValue(),
+							o,
 		 					d.doubleValue());
 		:}
 

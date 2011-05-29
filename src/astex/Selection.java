@@ -83,23 +83,9 @@ public class Selection {
 	return new byte[atomCount];
     }
 
-    /** Greater than attribute. */
-    public static final int GT = 0;
-
-    /** Greater equal attribute. */
-    public static final int GE = 1;
-
-    /** Less than attribute. */
-    public static final int LT = 2;
-
-    /** Less equal attribute. */
-    public static final int LE = 3;
-
-    /** Equal attribute. */
-    public static final int EQ = 4;
-
-    /** Not equal attribute. */
-    public static final int NE = 5;
+    public enum Operator {
+	GT, GE, LT, LE, EQ, NE
+    }
 
     /** Return a List from a selection mask. */
     public static synchronized List<Atom> maskToList(MoleculeRenderer r,
@@ -186,7 +172,7 @@ public class Selection {
     }
 
     /** Select on the basis of an attribute. */
-    public static byte[] attribute(MoleculeRenderer r, int attribute, int operator,
+    public static byte[] attribute(MoleculeRenderer r, int attribute, Operator operator,
 				   double value){
 	byte[] mask = generateSelectionMask(r);
 	AtomIterator iterator = r.getAtomIterator();
