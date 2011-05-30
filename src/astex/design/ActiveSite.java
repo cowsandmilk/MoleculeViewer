@@ -424,7 +424,7 @@ public class ActiveSite {
 			double rc = vdwRadii[catom.getElement()];
 			double r = rc - dtol;
 			
-			if(gp.distanceSq(catom) < r*r){
+			if(gp.distanceSquared(catom) < r*r){
 			    scatterPlot[index] = 0.0f;
 			    break;
 			}
@@ -517,7 +517,7 @@ public class ActiveSite {
 		    for(int j = bymin; j < bymax; j++){
 			for(int k = bzmin; k < bzmax; k++){
 			    gridPoint(map, i, j, k, pp);
-			    double r2 = pp.distanceSq(atom);
+			    double r2 = pp.distanceSquared(atom);
 			    if(r2 < 1.0){
 				int index = gridIndex(map, i, j, k);
 				double v = Math.exp(-r2/expConst);
@@ -715,7 +715,7 @@ public class ActiveSite {
 		    double rr = vdwRadii[celement];
 		    double rcheck = rc + rr + rOffset;
 
-		    if(a.distanceSq(catom) < rcheck*rcheck){
+		    if(a.distanceSquared(catom) < rcheck*rcheck){
 			// record that this was an active atom
 			a.setOccupancy(1.0);
 			break;
@@ -824,7 +824,7 @@ public class ActiveSite {
 			double rc    = vdwRadii[elementc];
 			double rvdw  = (ra + rc) - 2.0 * dtol;
 
-			if(cacheHit.distanceSq(p) < rvdw*rvdw){
+			if(cacheHit.distanceSquared(p) < rvdw*rvdw){
 			    addit = false;
 			}else{
 			    cacheHit = null;
@@ -861,7 +861,7 @@ public class ActiveSite {
 			    double rvdw        = (ra + rn) - 2.0 * dtol;
 			    boolean ignore     = false;
 			
-			    if(p.distanceSq(atomNeighbour) < rvdw*rvdw){
+			    if(p.distanceSquared(atomNeighbour) < rvdw*rvdw){
 				// but we shouldn't allow collisions
 				// with the actual fit atoms
 				// of the central group itself
@@ -972,7 +972,7 @@ public class ActiveSite {
 
 		double max01 = max + rs[0] + rs[1];
 
-		if(atom0.distanceSq(atom1) < max01*max01){
+		if(atom0.distanceSquared(atom1) < max01*max01){
 		    for(ListIterator<Atom> it2 = atoms.listIterator(a1+1); it2.hasNext();){
 			int a2 = it2.nextIndex();
 			Atom atom2 = it2.next();
@@ -985,8 +985,8 @@ public class ActiveSite {
 			double max02 = max + rs[0] + rs[2];
 			double max12 = max + rs[1] + rs[2];
 
-			if(atom0.distanceSq(atom2) < (max02*max02) &&
-			   atom1.distanceSq(atom2) < (max12*max12)){
+			if(atom0.distanceSquared(atom2) < (max02*max02) &&
+			   atom1.distanceSquared(atom2) < (max12*max12)){
 			    for(ListIterator<Atom> it3 = atoms.listIterator(a2+1); it3.hasNext();){
 				Atom atom3 = it3.next();
 				rs[3] = atom3.getVDWRadius();
@@ -996,9 +996,9 @@ public class ActiveSite {
 				double max13 = max + rs[1] + rs[3];
 				double max23 = max + rs[2] + rs[3];
 
-				if(atom0.distanceSq(atom3) < (max03*max03) &&
-				   atom1.distanceSq(atom3) < (max13*max13) &&
-				   atom2.distanceSq(atom3) < (max23*max23)){
+				if(atom0.distanceSquared(atom3) < (max03*max03) &&
+				   atom1.distanceSquared(atom3) < (max13*max13) &&
+				   atom2.distanceSquared(atom3) < (max23*max23)){
 				    xs[0][3] = atom3.x;
 				    xs[1][3] = atom3.y;
 				    xs[2][3] = atom3.z;
@@ -1026,7 +1026,7 @@ public class ActiveSite {
 						continue;
 					    }
 					    double r = xe[3] + aa.getVDWRadius();
-					    if(p.distanceSq(aa) < r*r){
+					    if(p.distanceSquared(aa) < r*r){
 						addit = false;
 						break;
 					    }
@@ -1253,7 +1253,7 @@ public class ActiveSite {
 
 		    int gridPoint = ix + iy * nx + iz * nx * ny;
 
-		    double d2 = gp.distanceSq(atom);
+		    double d2 = gp.distanceSquared(atom);
 
 		    if(d2 < maxd2){
 			double d = Math.sqrt(d2);

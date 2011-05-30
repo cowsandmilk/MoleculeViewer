@@ -210,9 +210,9 @@ public class Texgen {
 		Point3d nh = getAmideHydrogen(a);
 		// nh will be null if we already had an nh
 		if(nh != null){
-		    x[na] = nh.getX();
-		    y[na] = nh.getY();
-		    z[na] = nh.getZ();
+		    x[na] = nh.x;
+		    y[na] = nh.y;
+		    z[na] = nh.z;
 		    // this is the charmm19 value of
 		    // the amide proton charge.
 		    // should be customisable somehow...
@@ -233,9 +233,9 @@ public class Texgen {
 	    // only considering atoms with non-zero charge
 
 	    if(Math.abs(qa) > 1.e-3){
-		x[na] = a.getX();
-		y[na] = a.getY();
-		z[na] = a.getZ();
+		x[na] = a.x;
+		y[na] = a.y;
+		z[na] = a.z;
 		q[na] = qa;
 		na++;
 	    }

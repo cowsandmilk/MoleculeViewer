@@ -1802,7 +1802,7 @@ public class MoleculeRenderer {
 			double dSq = atomVDWRadius + vdwRadius;
 			dSq *= dSq;
 
-			if(atom.distanceSq(sphereAtom) < dSq){
+			if(atom.distanceSquared(sphereAtom) < dSq){
 			    addBumpPair(atom, sphereAtom);
 			}
 		    }
@@ -2058,7 +2058,7 @@ public class MoleculeRenderer {
 		p.set(atom);
 		p.transform(transform);
 
-		if(p.distanceSq(center) < radiusSq){
+		if(p.distanceSquared(center) < radiusSq){
 		    inSphere[a] = 1;
 		}
 	    }
@@ -2498,7 +2498,7 @@ public class MoleculeRenderer {
 	    while(iterator.hasMoreElements()){
 		Atom atom = iterator.getNextAtom();
 		for(Atom selectedAtom : selectedAtoms){
-		    if(atom.distanceSq(selectedAtom) < radiusSq){
+		    if(atom.distanceSquared(selectedAtom) < radiusSq){
 			radiusSelection.add(atom);
 		    }
 		}
@@ -2520,7 +2520,7 @@ public class MoleculeRenderer {
 	    for(int a = 0; a < atomCount; a++){
 		Atom atom = molecule.getAtom(a);
 
-		if(atom.distanceSq(c) < rSq){
+		if(atom.distanceSquared(c) < rSq){
 		    selectedAtoms.add(atom);
 		}
 	    }
@@ -2549,7 +2549,7 @@ public class MoleculeRenderer {
 	    for(Atom atom : sphereSelection){
 		if(!include || !selection.contains(atom)){
 		    for(Atom selectedAtom : selection){
-			if(atom.distanceSq(selectedAtom) < radiusSq){
+			if(atom.distanceSquared(selectedAtom) < radiusSq){
 			    newSelection.add(atom);
 			    break;
 			}
@@ -3211,7 +3211,7 @@ public class MoleculeRenderer {
 
 	// first check the last atom that clipped.
 	if(lastAtom != null){
-	    if(p.distanceSq(lastAtom) < dSq){
+	    if(p.distanceSquared(lastAtom) < dSq){
 		lastAtomClips ++;
 		return true;
 	    }
@@ -3228,7 +3228,7 @@ public class MoleculeRenderer {
 	    }
 
 	    if(dx < clipDistance &&
-	       p.distanceSq(atom) < dSq){
+	       p.distanceSquared(atom) < dSq){
 		lastAtom = atom;
 		clips++;
 		return true;
@@ -3390,26 +3390,26 @@ public class MoleculeRenderer {
     /** Figure out the molecule center and scale to make it just fit. */
     private void initialiseCenter(){
 	if(renderer.getCenter() == null || true){
-	    double xmin = Double.MAX_VALUE;
-	    double xmax = -Double.MAX_VALUE;
-	    double ymin = Double.MAX_VALUE;
-	    double ymax = -Double.MAX_VALUE;
-	    double zmin = Double.MAX_VALUE;
-	    double zmax = -Double.MAX_VALUE;
+	    double xmin = Double.POSITIVE_INFINITY;
+	    double xmax = Double.NEGATIVE_INFINITY;
+	    double ymin = Double.POSITIVE_INFINITY;
+	    double ymax = Double.NEGATIVE_INFINITY;
+	    double zmin = Double.POSITIVE_INFINITY;
+	    double zmax = Double.NEGATIVE_INFINITY;
 
 	    for(Molecule molecule : molecules){
 		for(int a = 0; a < molecule.getAtomCount(); a++){
 		    Atom atom = molecule.getAtom(a);
 		    if(!atom.isSolvent()){
-			double x = atom.getX();
-			double y = atom.getY();
-			double z = atom.getZ();
-			if(x < xmin) xmin = x;
-			if(y < ymin) ymin = y;
-			if(z < zmin) zmin = z;
-			if(x > xmax) xmax = x;
-			if(y > ymax) ymax = y;
-			if(z > zmax) zmax = z;
+			double x = atom.x;
+			double y = atom.y;
+			double z = atom.z;
+			xmin = Math.min(xmin, x);
+			ymin = Math.min(ymin, y);
+			zmin = Math.min(zmin, z);
+			xmax = Math.max(xmax, x);
+			ymax = Math.max(ymax, y);
+			zmax = Math.max(zmax, z);
 		    }
 		}
 	    }

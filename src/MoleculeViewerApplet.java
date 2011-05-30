@@ -615,9 +615,9 @@ public class MoleculeViewerApplet extends Applet implements Runnable{
                 if(buf.length() > 0){
                     buf.append("|");
                 }
-                buf.append("").append(atom.getX());
-                buf.append(",").append(atom.getY());
-                buf.append(",").append(atom.getZ());
+                buf.append("").append(atom.x);
+                buf.append(",").append(atom.y);
+                buf.append(",").append(atom.z);
             }
         }
 

@@ -378,11 +378,11 @@ public class Atom extends Point3d implements Selectable, GenericInterface {
 		    if(nc == '%'){
 			s.append('%');
 		    }else if(nc == 'x'){
-			s.append(String.format("%.3f", getX()));
+			s.append(String.format("%.3f", x));
 		    }else if(nc == 'y'){
-			s.append(String.format("%.3f", getY()));
+			s.append(String.format("%.3f", y));
 		    }else if(nc == 'z'){
-			s.append(String.format("%.3f", getZ()));
+			s.append(String.format("%.3f", z));
 		    }else if(nc == 'e'){
 			double v = 0.0;
 			s.append(String.format("%.2f", v));

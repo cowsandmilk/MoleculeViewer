@@ -687,7 +687,7 @@ public class Molecule extends Generic implements Selectable {
 		double d2 = r1 + r2;
 		d2 *= d2;
 
-		if(a1.distanceSq(a2) < d2){
+		if(a1.distanceSquared(a2) < d2){
 		    addBond(a1, a2, Bond.BondOrder.SingleBond, false);
 		}
 	    }
@@ -711,7 +711,7 @@ public class Molecule extends Generic implements Selectable {
 		double d2 = r1 + r2;
 		d2 *= d2;
 
-		if(a1.distanceSq(a2) < d2){
+		if(a1.distanceSquared(a2) < d2){
 		    addBond(a1, a2, Bond.BondOrder.SingleBond, false);
 		}
 	    }
@@ -761,7 +761,7 @@ public class Molecule extends Generic implements Selectable {
 
 		    dSquare *= dSquare;
 
-		    if(firstAtom.distanceSq(secondAtom) < dSquare){
+		    if(firstAtom.distanceSquared(secondAtom) < dSquare){
 			if(specialAtom){
 			    Bond bond = firstAtom.getBond(secondAtom);
 						
@@ -1006,7 +1006,7 @@ public class Molecule extends Generic implements Selectable {
 	for(int a = 0; a < atomCount; a++){
 	    Atom atom = getAtom(a);
 
-	    double dSq = moleculeCenter.distanceSq(atom);
+	    double dSq = moleculeCenter.distanceSquared(atom);
 
 	    if(dSq > radius){
 		radius = dSq;

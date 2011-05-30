@@ -158,9 +158,9 @@ public class Surface {
 		maxRadius = ar[a];
 	    }
 	    ar2[a] = ar[a] * ar[a];
-	    ax[a] = atom.getX();
-	    ay[a] = atom.getY();
-	    az[a] = atom.getZ();
+	    ax[a] = atom.x;
+	    ay[a] = atom.y;
+	    az[a] = atom.z;
 	    if(atom.isSelected()){
 		selected[a] = 1;
 		selectionCount++;
@@ -850,7 +850,7 @@ public class Surface {
 
 	int d = 0;
 	for(Point3d p : dots){
-	    if(p.distanceSq(mid) < 0.0001){
+	    if(p.distanceSquared(mid) < 0.0001){
 		return d;
 	    }
 	    d++;
@@ -941,7 +941,7 @@ public class Surface {
 		// XXX only need to consider pairs of selected atoms once..
 		if(a != b){
 		    double rb = atom2.getVDWRadius();
-		    if(atom.distanceSq(atom2) < (ra + rb) * (ra + rb)){
+		    if(atom.distanceSquared(atom2) < (ra + rb) * (ra + rb)){
 			neighbours[neighbourCount++] = b;
 		    }
 		}
@@ -964,7 +964,7 @@ public class Surface {
 		
 		if(lastClippingAtom != null){
 		    double lastr = lastClippingAtom.getVDWRadius();
-		    if(lastClippingAtom.distanceSq(dot) < lastr*lastr){
+		    if(lastClippingAtom.distanceSquared(dot) < lastr*lastr){
 			clipped = true;
 		    }else{
 			lastClippingAtom = null;
@@ -975,7 +975,7 @@ public class Surface {
 		    for(int b = 0; b < neighbourCount; b++){
 			Atom atom2 = selectedAtoms.get(neighbours[b]);
 			double r2 = atom2.getVDWRadius();
-			if(atom2.distanceSq(dot) < r2*r2){
+			if(atom2.distanceSquared(dot) < r2*r2){
 			    lastClippingAtom = atom2;
 			    clipped = true;
 			}

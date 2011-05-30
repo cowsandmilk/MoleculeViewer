@@ -2291,9 +2291,9 @@ public class VIEWER_CLASS extends VIEWER_BASE implements MouseListener,
 
 	Point3d center = r.getCenter();
 
-	viewString.append("center ").append(center.getX())
-		  .append(' ').append(center.getY()).append(' ')
-		  .append(center.getZ()).append(";");
+	viewString.append("center ").append(center.x)
+		  .append(' ').append(center.y).append(' ')
+		  .append(center.z).append(";");
 
 	viewString.append("radius ").append(r.width / r.getZoom()).append(";");
 

@@ -97,36 +97,6 @@ public class Point3d extends Vector3d implements Cloneable {
 	set(0.0, 0.0, 0.0);
     }
 
-    /** Return the x coordinate. */
-    public double getX(){
-	return x;
-    }
-
-    /** Return the y coordinate. */
-    public double getY(){
-	return y;
-    }
-
-    /** Return the z coordinate. */
-    public double getZ(){
-	return z;
-    }
-
-    /** Set the x coordinate. */
-    public void setX(double xx){
-	x = xx;
-    }
-
-    /** Set the y coordinate. */
-    public void setY(double yy){
-	y = yy;
-    }
-
-    /** Set the x coordinate. */
-    public void setZ(double zz){
-	z = zz;
-    }
-
     /**
      * Construct a point with the x, y and z coordinates equal to the
      * midpoint of two other Point3ds.
@@ -270,7 +240,7 @@ public class Point3d extends Vector3d implements Cloneable {
     }
 
     /** Return the square of the distance to the specified point. */
-    public double distanceSq(Point3d p){
+    public double distanceSquared(Point3d p){
 	double dx = p.x - x;
 	double dy = p.y - y;
 	double dz = p.z - z;

@@ -681,11 +681,11 @@ display_command ::=
 				}else if(value == Atom.O){
 					a.setOccupancy(newr);
 				}else if(value == Atom.X){
-					a.setX(newr);
+					a.x = newr;
 				}else if(value == Atom.Y){
-					a.setY(newr);
+					a.y = newr;
 				}else if(value == Atom.Z){
-					a.setZ(newr);
+					a.z = newr;
 				}else{
 					if(!printedError){
 						System.out.println("error unknown attribute " + value);

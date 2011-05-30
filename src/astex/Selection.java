@@ -1036,7 +1036,7 @@ public class Selection {
 
 	while(iterator.hasMoreElements()){
 	    Atom atom = iterator.getNextAtom();
-	    if(atom.distanceSq(p) < radSq){
+	    if(atom.distanceSquared(p) < radSq){
 		mask[count] = 1;
 	    }else{
 		mask[count] = 0;
@@ -1059,7 +1059,7 @@ public class Selection {
 	    Atom atom = iterator.getNextAtom();
 	    int inside = 0;
 	    for(Atom sphereAtom: sphereSelection){
-		if(atom.distanceSq(sphereAtom) < radSq){
+		if(atom.distanceSquared(sphereAtom) < radSq){
 		    inside = 1;
 		    break;
 		}
@@ -1095,7 +1095,7 @@ public class Selection {
 		double radSq = arad + srad;
 		radSq *= radSq;
 
-		if(atom.distanceSq(sphereAtom) < radSq){
+		if(atom.distanceSquared(sphereAtom) < radSq){
 		    inside = 1;
 		    break;
 		}

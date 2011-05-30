@@ -1409,9 +1409,9 @@ public class MoleculeIO {
 
 	    output.print("   ");
 
-	    output.print("%8.3f", atom.getX());
-	    output.print("%8.3f", atom.getY());
-	    output.print("%8.3f", atom.getZ());
+	    output.print("%8.3f", atom.x);
+	    output.print("%8.3f", atom.y);
+	    output.print("%8.3f", atom.z);
 	    output.print("%6.2f", atom.getOccupancy());
 	    output.print("%6.2f", atom.getBFactor());
 	    output.print("          ");
@@ -1485,9 +1485,9 @@ public class MoleculeIO {
             Atom atom = molecule.getAtom(a);
             output.print("%5d", a + 1);
             output.print(" %-4s", atom.getAtomLabel());
-            output.print(" %8.3f", atom.getX());
-            output.print(" %8.3f", atom.getY());
-            output.print(" %8.3f", atom.getZ());
+            output.print(" %8.3f", atom.x);
+            output.print(" %8.3f", atom.y);
+            output.print(" %8.3f", atom.z);
             output.print(" %-6s", atom.getAtomType());
 
             Residue res = atom.getResidue();
@@ -1566,9 +1566,9 @@ public class MoleculeIO {
 	for(int a = 0; a < atomCount; a++){
 	    Atom atom = molecule.getAtom(a);
 	    // coordinates
-	    output.print("%10.4f", atom.getX());
-	    output.print("%10.4f", atom.getY());
-	    output.print("%10.4f", atom.getZ());
+	    output.print("%10.4f", atom.x);
+	    output.print("%10.4f", atom.y);
+	    output.print("%10.4f", atom.z);
 
 	    // element symbol
 	    output.print(" ");
